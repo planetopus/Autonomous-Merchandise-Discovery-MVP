@@ -64,6 +64,7 @@ from merchandise_discovery.infrastructure.providers.research_provider import (
     FixtureResearchProvider,
     OpenAIWebResearchProvider,
 )
+from merchandise_discovery.infrastructure.providers.web_listing_search import WebListingSearch
 from merchandise_discovery.infrastructure.storage import LocalArtworkStorage
 from merchandise_discovery.shared.configuration import Settings
 from merchandise_discovery.shared.seed_loader import load_seed_libraries
@@ -196,6 +197,11 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
                 live=live_mode,
             ),
             ebay_checker=EbayStickerSearch(app_token=settings.ebay_app_token),
+            listing_search=(
+                WebListingSearch(search=reasoning_provider.search_web)
+                if reasoning_provider is not None
+                else None
+            ),
             reddit_reader=(
                 RedditReader(
                     client_id=settings.reddit_client_id,

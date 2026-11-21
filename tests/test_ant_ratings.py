@@ -32,6 +32,12 @@ def test_committed_ratings_match_ants_scores() -> None:
     assert ratings["Calm through forty overdoses. Panics when the doorbell rings."].score == 10
     assert ratings["Hands on hips, auditing the beer fridge again."].verdict == "not funny"
     assert "no twist" in ratings["Hands on hips, auditing the beer fridge again."].reason
+    assert ratings["BIG BACK DADS WHO 'TEST' THE BRISKET"].verdict == "very funny"
+    assert ratings["BIG BACK DADS WHO 'TEST' THE BRISKET"].score == 9
+    assert ratings["GRANDMA HAS RIZZ (SHE GOT YOUR GRANDPA, DIDN'T SHE)"].score == 7
+    assert "parenthetical" in ratings[
+        "ELDEST DAUGHTER: THIRD PARENT SINCE AGE 6. BUILT DIFFERENT (DAMAGED)."
+    ].reason
     calibration = ant_calibration_block(list(ratings.values()))
     assert "target group and most people" in calibration
     assert calibration.startswith("OWNER CALIBRATION")

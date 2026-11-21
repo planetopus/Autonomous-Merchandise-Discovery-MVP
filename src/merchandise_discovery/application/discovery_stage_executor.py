@@ -169,6 +169,7 @@ class DiscoveryStageExecutor:
         reddit_reader=None,
         humor_reference_loader=None,
         ebay_checker=None,
+        listing_search=None,
     ):
         self._seeds = seed_repository
         self._intersections = intersection_repository
@@ -188,6 +189,7 @@ class DiscoveryStageExecutor:
         self._reddit_reader = reddit_reader
         self._humor_reference_loader = humor_reference_loader
         self._ebay_checker = ebay_checker
+        self._listing_search = listing_search
 
     def _recent_identity_selections(self, run: WorkflowRun, limit: int = 12) -> list[str]:
         """Return bounded identity history for diversity-aware auto-selection prompts.
@@ -420,6 +422,9 @@ class DiscoveryStageExecutor:
         ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
         if sale_note:
             warnings.append(sale_note)
+        search_usage = getattr(self._listing_search, "usage", None)
+        if search_usage is not None and getattr(search_usage, "request_count", 0):
+            usage = self._add_usage(usage, search_usage)
         output = chosen.model_copy(
             update={
                 "candidates": ordered,
@@ -451,35 +456,61 @@ class DiscoveryStageExecutor:
         return updated, stamped
 
     def _drop_already_for_sale(self, candidates, reviews):
-        """Flag eBay sticker duplicates. Skip the check when no app token is configured."""
+        """Flag final lines already sold. Web search always runs; eBay is an extra."""
 
-        checker = self._ebay_checker
-        if checker is None or not getattr(checker, "enabled", False):
-            return candidates, reviews, ""
         clean = []
         flagged = False
         for candidate in candidates:
             text = str(getattr(candidate, "artwork_text", "") or "")
-            try:
-                hit = checker.already_for_sale(text)
-            except (OSError, RuntimeError, TypeError, ValueError):
-                hit = None
-            if hit:
-                flagged = True
-                reviews.append(
-                    LineReviewRecord(
-                        artwork_text=text,
-                        pattern=str(getattr(candidate, "pattern", "") or ""),
-                        who_its_for=list(getattr(candidate, "who_its_for", []) or []),
-                        kept=False,
-                        reason="already for sale",
-                    )
-                )
+            hit, url = self._listing_hit(text)
+            if not hit:
+                clean.append(candidate)
                 continue
-            clean.append(candidate)
+            flagged = True
+            reason = "already for sale" if not url else f"already for sale: {url}"
+            reviews.append(
+                LineReviewRecord(
+                    artwork_text=text,
+                    pattern=str(getattr(candidate, "pattern", "") or ""),
+                    who_its_for=list(getattr(candidate, "who_its_for", []) or []),
+                    kept=False,
+                    reason=reason,
+                )
+            )
         if clean and flagged:
-            return clean, reviews, "Some lines were already for sale as stickers and were dropped."
+            return clean, reviews, "Some lines were already for sale and were dropped."
+        if flagged:
+            return (
+                candidates,
+                reviews,
+                "Every final line is already for sale. Keeping them so the run is not empty.",
+            )
         return candidates, reviews, ""
+
+    def _listing_hit(self, text: str) -> tuple[bool, str]:
+        """Return a selling URL from web search, then from eBay when a token is set."""
+
+        search = self._listing_search
+        if search is not None and getattr(search, "enabled", False):
+            try:
+                found = search.find_listing(text)
+            except (OSError, RuntimeError, TypeError, ValueError):
+                found = None
+            if found is not None:
+                return True, str(getattr(found, "url", "") or "")
+        checker = self._ebay_checker
+        if checker is None or not getattr(checker, "enabled", False):
+            return False, ""
+        try:
+            if hasattr(checker, "match"):
+                found = checker.match(text)
+                if not found:
+                    return False, ""
+                flagged, url = found
+                return bool(flagged), str(url or "")
+            return bool(checker.already_for_sale(text)), ""
+        except (OSError, RuntimeError, TypeError, ValueError):
+            return False, ""
 
     def _note_social_progress(self, usage, pair_meta, candidates, reviews, warnings) -> None:
         """Keep the latest drafts and token total so a later error can still fill the page."""
