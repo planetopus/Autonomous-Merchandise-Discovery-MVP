@@ -54,10 +54,11 @@ def brand_prompt(brands: list[dict]) -> str:
         return ""
     lines = [
         (
-            "Major brand logo spoofs. At least 2 of 5 lines use brand_logo_spoof. "
-            "Write a new pun for this buyer. Recreate the logo layout and colors. "
-            "Set spoof_brand to the brand name. Set image_idea to that shape and those colors "
-            "plus the new words. Do not reprint an anchor line."
+            "Major brand logo spoofs are optional and rare. Use brand_logo_spoof only when "
+            "the brand's product, slogan, or identity is why the joke is funny. "
+            "A name swap that only sticks the topic into the logo fails. "
+            "Set spoof_brand and describe the logo colors and shape in image_idea. "
+            "Do not reprint an anchor line."
         )
     ]
     for brand in brands:

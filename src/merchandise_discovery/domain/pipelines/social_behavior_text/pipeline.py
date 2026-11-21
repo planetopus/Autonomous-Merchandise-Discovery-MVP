@@ -84,6 +84,8 @@ class SocialBehaviorTextCandidate(BaseModel):
         max_length=80,
         description="Major brand whose logo layout and colors this spoof recreates. Empty otherwise.",
     )
+    brand_fits: bool = True
+    brand_joke_link: str = Field(default="", max_length=240)
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the
     # durable source of truth for the visual direction instead of re-deriving it downstream.
     artwork_prompt: str = Field(min_length=20, max_length=4_000)

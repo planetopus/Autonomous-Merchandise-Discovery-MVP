@@ -18,16 +18,18 @@ from merchandise_discovery.domain.humor import (
     NichePairBatch,
     NichePairRecord,
     PlaybookPatternRecord,
+    apply_brand_cap,
     apply_jargon_cap,
     apply_line_caps,
     apply_line_critic,
     apply_pun_cap,
     apply_trope_cap,
-    brand_spoofs_needed,
     critic_average,
+    dark_humor_needed,
     finished_sticker_examples_block,
     is_anchor_echo,
     is_brand_spoof,
+    is_dark_humor,
     keep_strong_pairs,
     line_is_pun,
     member_would_not_buy,
@@ -38,6 +40,7 @@ from merchandise_discovery.domain.humor import (
     pun_share_is_thin,
     puns_still_needed,
     reading_failed,
+    spoof_earns_final,
     synergy_failed,
     tired_trope_block,
 )
@@ -527,28 +530,27 @@ class DiscoveryStageExecutor:
                 warnings.append(
                     "Fewer than three puns or spoofs survived. Showing the best lines anyway."
                 )
-        spoof_count = sum(1 for item in candidates if is_brand_spoof(item))
-        missing_spoofs = brand_spoofs_needed(input_model.candidate_count, spoof_count)
-        if missing_spoofs:
-            filled, fill_usage, fill_reviews = self._fill_brand_spoofs(
+        dark_count = sum(1 for item in candidates if is_dark_humor(item))
+        missing_dark = dark_humor_needed(input_model.candidate_count, dark_count)
+        if missing_dark:
+            filled, fill_usage, fill_reviews = self._fill_dark_humor(
                 run,
                 output_model,
                 pipeline_module,
-                missing_spoofs,
+                missing_dark,
             )
             usage = self._add_usage(usage, fill_usage)
             reviews.extend(fill_reviews)
             candidates = self._merge_by_text(
                 candidates,
-                [item for item in filled if is_brand_spoof(item)],
+                [item for item in filled if is_dark_humor(item)],
             )
-            if brand_spoofs_needed(
+            if dark_humor_needed(
                 input_model.candidate_count,
-                sum(1 for item in candidates if is_brand_spoof(item)),
+                sum(1 for item in candidates if is_dark_humor(item)),
             ):
                 warnings.append(
-                    "Fewer than two major-brand logo spoofs survived. "
-                    "Showing the best lines anyway."
+                    "No dark-humor line cleared. Showing the best lines anyway."
                 )
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
@@ -580,7 +582,12 @@ class DiscoveryStageExecutor:
             warnings.append("No line cleared the critic. Showing the drafted lines anyway.")
             candidates = usable[: input_model.candidate_count]
         if input_model.candidate_count >= 5:
-            ordered = order_kept_lines(candidates, input_model.candidate_count) or candidates[:1]
+            eligible = [item for item in candidates if spoof_earns_final(item)]
+            if len(eligible) < len(candidates):
+                warnings.append(
+                    "Logo spoofs under 8.5, or without a real brand-joke link, were left out."
+                )
+            ordered = order_kept_lines(eligible or candidates, input_model.candidate_count) or candidates[:1]
         else:
             ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
         ordered, reviews = self._apply_who_its_for(ordered, reviews, atlas, chosen_names)
@@ -1190,6 +1197,30 @@ class DiscoveryStageExecutor:
         ]
         return (head + tail)[:keep_count]
 
+    def _fill_dark_humor(self, run, output_model, pipeline_module, missing: int):
+        """One short call for a cute picture with a morbid turn. It does not search again."""
+
+        count = max(1, min(2, missing))
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                f"Write exactly {count} dark-humor sticker lines, 2 to 8 words. "
+                "Death, misery, doom, dread, or a morbid twist in a cute or innocent picture. "
+                "Still funny and clear to this group. Not hateful. "
+                "Set pattern to dark_twist_scene and humor_mechanism to gallows. "
+                "Set image_idea to the cute picture that makes the dread land. "
+                "Do not reprint an anchor line.\n"
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        fresh, reviews = self._drop_unoriginal(
+            list(getattr(response.output, "candidates", [])),
+            [],
+            None,
+        )
+        return fresh, response.usage, reviews
+
     def _fill_brand_spoofs(self, run, output_model, pipeline_module, missing: int):
         """One short call that writes the missing major-brand logo spoofs."""
 
@@ -1389,6 +1420,12 @@ class DiscoveryStageExecutor:
                 "for a groan and pun_lands false when the group would not get it. "
                 "Parody of a famous logo, celebrity, or movie character is allowed. "
                 "Mild adult innuendo is allowed. Do not punish either for taste. "
+                "For a brand_logo_spoof, set brand_joke_link to one sentence on why the "
+                "brand's product, slogan, or identity makes the joke. Set brand_fits false "
+                "when the line only pastes the topic onto the logo. That name swap scores "
+                "at most 4. A logo spoof needs sticker_buy_score of at least 8.5 to survive. "
+                "Dark humor is a real shape: a cute or innocent picture with death, misery, "
+                "doom, or dread. Reward it when the group gets it. Do not reward hate. "
                 "Before the scores, set plain_reading to one sentence a random adult would "
                 "think the line means. If you cannot, set can_explain false. "
                 "Does every word earn its place in the joke? Outside or common words are "
@@ -1461,11 +1498,14 @@ class DiscoveryStageExecutor:
                 pun_lands=getattr(review, "pun_lands", True) is not False,
                 pun_forced=bool(getattr(review, "pun_forced", False)),
                 literal_image=bool(getattr(review, "literal_image", False)),
+                brand_fits=getattr(review, "brand_fits", True) is not False,
+                brand_joke_link=str(getattr(review, "brand_joke_link", "") or ""),
             )
             apply_jargon_cap(row, text)
             apply_line_caps(row, text)
             if 0 <= review.index < len(candidates):
                 apply_pun_cap(row, candidates[review.index])
+                apply_brand_cap(row, candidates[review.index])
             apply_trope_cap(row, text, load_humor_lab().tired_tropes)
             reviews.append(row)
         scored = []
@@ -1479,7 +1519,15 @@ class DiscoveryStageExecutor:
                 scored.append(candidate)
                 continue
             shown = buy if buy is not None else average if average is not None else score
-            scored.append(candidate.model_copy(update={"funny_score": shown}))
+            scored.append(
+                candidate.model_copy(
+                    update={
+                        "funny_score": shown,
+                        "brand_fits": getattr(review, "brand_fits", True) is not False,
+                        "brand_joke_link": str(getattr(review, "brand_joke_link", "") or ""),
+                    }
+                )
+            )
         kept = apply_line_critic(
             scored,
             reviews,
@@ -1501,6 +1549,8 @@ class DiscoveryStageExecutor:
                 reason, kept_flag = "unclear", False
             elif review is not None and getattr(review, "filler_contrast", False):
                 reason, kept_flag = "filler contrast", False
+            elif is_brand_spoof(candidate) and getattr(review, "brand_fits", True) is False:
+                reason, kept_flag = "forced brand spoof", False
             elif line_is_pun(candidate) and getattr(review, "pun_forced", False):
                 reason, kept_flag = "forced pun", False
             elif line_is_pun(candidate) and getattr(review, "pun_lands", True) is False:
