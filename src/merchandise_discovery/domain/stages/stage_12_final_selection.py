@@ -16,6 +16,7 @@ class FinalSelectionInput(BaseModel):
 
     concepts: list[MerchandiseConcept]
     max_finalists: int = Field(ge=1, le=50)
+    humor_tone: str = "dry"
 
 
 class FinalSelectionEvaluation(BaseModel):
@@ -73,14 +74,16 @@ def execute(
         if missing:
             raise ValueError(f"Stage 12 provider response is missing concept IDs: {sorted(missing)}")
         for concept_id, evaluation in evaluations_by_id.items():
-            dimensions = (
+            dimensions = [
                 evaluation.distinctiveness,
                 evaluation.emotional_recognition,
                 evaluation.natural_wording,
-                evaluation.giftability,
                 evaluation.commercial_appeal,
                 evaluation.visual_potential,
-            )
+            ]
+            # Dark humor is allowed to be a poor gift. Giftability must not veto it.
+            if input_data.humor_tone != "dark":
+                dimensions.append(evaluation.giftability)
             scores[concept_id] = round(sum(dimensions) / len(dimensions), 2)
     else:
         scores = {

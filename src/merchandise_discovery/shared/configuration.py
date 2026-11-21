@@ -35,6 +35,10 @@ class Settings:
     openai_web_search_price_per_call: float = 0.01
     xai_image_price: float = 0.02
     xai_image_edit_price: float = 0.022
+    etsy_api_key: str | None = None
+    reddit_client_id: str | None = None
+    reddit_client_secret: str | None = None
+    reddit_user_agent: str | None = None
     provider_mode: str = "fixture"
     # The current MVP intentionally evaluates only Stage 1 until the client approves expanding
     # the funnel. This is a demo boundary, not a claim that later stages are complete.
@@ -77,9 +81,68 @@ def load_settings() -> Settings:
         ),
         xai_image_price=float(os.getenv("XAI_IMAGE_PRICE", "0.02")),
         xai_image_edit_price=float(os.getenv("XAI_IMAGE_EDIT_PRICE", "0.022")),
+        etsy_api_key=_optional_secret("ETSY_API_KEY"),
+        reddit_client_id=_optional_secret("REDDIT_CLIENT_ID"),
+        reddit_client_secret=_optional_secret("REDDIT_CLIENT_SECRET"),
+        reddit_user_agent=_optional_secret("REDDIT_USER_AGENT"),
         provider_mode=os.getenv("MVP_PROVIDER_MODE", "fixture").strip().lower(),
         stop_after_stage=max(1, min(18, int(os.getenv("MVP_STOP_AFTER_STAGE", "1")))),
     )
+
+
+def _optional_secret(name: str) -> str | None:
+    """Read one credential from the environment, then Streamlit secrets.
+
+    Environment variables win so a shell or deployed env can override a local secrets file.
+    The secrets file is the same TOML Streamlit loads, which lets the worker see those values
+    without importing Streamlit. A running Streamlit process is checked last.
+    """
+
+    environment = (os.getenv(name) or "").strip()
+    if environment:
+        return environment
+    from_file = _secrets_file_value(name)
+    if from_file:
+        return from_file
+    return _streamlit_secret_value(name)
+
+
+def _secrets_file_value(name: str) -> str | None:
+    """Read a flat key from `.streamlit/secrets.toml` when that file exists."""
+
+    path = ENV_FILE.parent / ".streamlit" / "secrets.toml"
+    if not path.is_file():
+        return None
+    try:
+        import tomllib
+
+        with path.open("rb") as handle:
+            data = tomllib.load(handle)
+    except (OSError, ValueError):
+        return None
+    return _secret_text(data.get(name) if isinstance(data, dict) else None)
+
+
+def _streamlit_secret_value(name: str) -> str | None:
+    """Read one key from Streamlit secrets when the app runtime is available."""
+
+    try:
+        import streamlit as st
+
+        if name not in st.secrets:
+            return None
+        return _secret_text(st.secrets[name])
+    except Exception:  # noqa: BLE001 - missing Streamlit secrets must not break startup.
+        return None
+
+
+def _secret_text(value: object) -> str | None:
+    """Normalize a secret value and treat blanks as missing."""
+
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
 
 
 def _default_openai_token_prices(model: str) -> tuple[float, float]:

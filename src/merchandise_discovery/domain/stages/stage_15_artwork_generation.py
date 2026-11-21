@@ -63,10 +63,11 @@ def execute(
                     prompt=prompt.prompt,
                     combination_name=prompt.combination_name,
                     storage_key=stored.storage_key,
+                    raw_storage_key=stored.raw_storage_key,
                     source_url=generated.source_url,
-                    width=generated.width,
-                    height=generated.height,
-                    mime_type=generated.mime_type,
+                    width=stored.width or generated.width,
+                    height=stored.height or generated.height,
+                    mime_type=stored.mime_type or generated.mime_type,
                     file_size_bytes=stored.file_size_bytes,
                 )
             )

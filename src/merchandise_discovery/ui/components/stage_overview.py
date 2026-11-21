@@ -83,6 +83,10 @@ def _render_social_behavior_text(
         )
     if request.get("auto_identity"):
         st.caption("Identity and identity type selected by AI from the searched discussions.")
+    niche_a = str(request.get("niche_a") or "").strip()
+    niche_b = str(request.get("niche_b") or "").strip()
+    if niche_a and niche_b:
+        st.write(f"**Niche crossover:** {niche_a} × {niche_b}")
     if request.get("auto_topic"):
         st.write(f"**Behavior or topic selected by AI:** {query}")
     else:
@@ -125,7 +129,17 @@ def _render_social_behavior_text(
                 st.caption(_text(evidence, "source_excerpt"))
 
     for index, candidate in enumerate(candidates, start=1):
-        st.markdown(f"### {index}. {_text(candidate, 'artwork_text')}")
+        st.markdown(
+            f"### {index}. {_text(candidate, 'artwork_text', default='Image only')}"
+        )
+        if candidate.get("source_quote"):
+            st.caption(f"Quote: {_text(candidate, 'source_quote')}")
+        if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
+            st.caption(
+                "Humor: "
+                f"{_text(candidate, 'humor_mechanism', default='unspecified')} · "
+                f"{_text(candidate, 'concrete_detail', default='no detail')}"
+            )
         if candidate.get("identity"):
             identity_type = _text(candidate, "identity_type", default="other")
             try:
@@ -604,8 +618,15 @@ def _render_artwork_cards(artworks: list[dict[str, Any]], category: str) -> None
                     st.code(_text(artwork, "prompt"), language="text")
                 _render_artwork_image(
                     artwork,
-                    str(artwork.get("_image_caption") or "Generated artwork"),
+                    str(artwork.get("_image_caption") or "Die-cut sticker"),
                 )
+                raw_key = artwork.get("raw_storage_key")
+                if raw_key:
+                    with st.expander("Original generation"):
+                        _render_artwork_image(
+                            {"storage_key": raw_key},
+                            "Original before die-cut",
+                        )
                 st.caption(
                     f"{_text(artwork, 'mime_type', default='Unknown format')} · "
                     f"{_text(artwork, 'width')} × {_text(artwork, 'height')}"

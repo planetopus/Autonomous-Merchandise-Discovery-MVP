@@ -20,6 +20,12 @@ from merchandise_discovery.domain.stages.stage_15_artwork_generation import (
 from merchandise_discovery.domain.stages.stage_15_artwork_generation import (
     execute as execute_artwork_generation,
 )
+from merchandise_discovery.domain.sticker_direction import (
+    artwork_preamble,
+    crossover_block,
+    merchandise_text_clause,
+    merged_avoid_list,
+)
 from merchandise_discovery.infrastructure.providers.image_provider import ImageProvider
 from merchandise_discovery.infrastructure.storage import ArtworkStorage
 
@@ -29,6 +35,8 @@ class SocialArtworkInput(BaseModel):
 
     candidates: list[SocialBehaviorTextCandidate] = Field(min_length=1, max_length=25)
     artwork_variants_per_candidate: int = Field(default=1, ge=1, le=3)
+    niche_a: str = ""
+    niche_b: str = ""
 
 
 def _stable_id(run_id: str, source_url: str, index: int, kind: str) -> str:
@@ -46,14 +54,18 @@ def to_artwork_generation_input(
 
     prompts: list[PromptCompilation] = []
     for index, candidate in enumerate(input_model.candidates, start=1):
-        prompt = build_targeted_artwork_prompt(candidate)
+        prompt = build_targeted_artwork_prompt(
+            candidate,
+            niche_a=input_model.niche_a,
+            niche_b=input_model.niche_b,
+        )
         prompts.append(
             PromptCompilation(
                 run_id=run_id,
                 concept_id=_stable_id(run_id, candidate.source_url, index, "concept"),
                 brief_id=_stable_id(run_id, candidate.source_url, index, "brief"),
                 prompt=prompt,
-                combination_name=candidate.artwork_text,
+                combination_name=candidate.artwork_text or "Image-only sticker",
             )
         )
     return ArtworkGenerationInput(
@@ -62,24 +74,27 @@ def to_artwork_generation_input(
     )
 
 
-def build_targeted_artwork_prompt(candidate: SocialBehaviorTextCandidate) -> str:
-    """Compile AI creative direction into a strict, audience-specific Grok image prompt.
+def build_targeted_artwork_prompt(
+    candidate: SocialBehaviorTextCandidate,
+    *,
+    niche_a: str = "",
+    niche_b: str = "",
+) -> str:
+    """Compile AI creative direction into a strict die-cut sticker prompt for Grok.
 
-    The model supplies the joke and audience insight, while this deterministic wrapper prevents
-    Grok from defaulting to soft lifestyle scenes or literal prop collages.
+    The model supplies the joke and audience insight. This wrapper keeps the image on one
+    isolated subject with a plain background instead of a full-bleed shirt or poster.
     """
 
-    avoid = "; ".join(candidate.things_to_avoid)
+    avoid = merged_avoid_list(candidate.things_to_avoid)
     return (
-        "Create a targeted novelty T-shirt graphic, not a product mockup, advertisement, or "
-        "lifestyle illustration. Use the exact merchandise text below as the primary headline and "
-        "render it prominently, legibly, and exactly once. Use one dominant visual joke tied to "
-        "the audience's specific behavior. Use bold expressive illustration, high contrast, a "
-        "limited color palette, strong typographic hierarchy, and a print-ready composition. Do "
-        "not use soft gradients, cozy stock-photo lighting, generic bedroom/clock/meal/couch "
-        "imagery, an infographic timeline, decorative filler, logos, brands, or extra text unless "
-        "the creative direction explicitly transforms that object into the joke.\n\n"
-        f'Exact merchandise text: "{candidate.artwork_text}"\n'
+        f"{artwork_preamble()}\n"
+        f"{crossover_block(niche_a, niche_b)}"
+        "Use one dominant visual joke tied to the audience's specific behavior. Do not use "
+        "soft gradients, cozy stock-photo lighting, generic bedroom/clock/meal/couch imagery, "
+        "an infographic timeline, decorative filler, logos, brands, or extra text unless the "
+        "creative direction explicitly transforms that object into the joke.\n\n"
+        f"{merchandise_text_clause(candidate.artwork_text)}\n"
         f"Audience: {candidate.audience_context}\n"
         f"Audience-specific visual cue: {candidate.audience_specific_cue}\n"
         f"Visual punchline: {candidate.visual_punchline}\n"
@@ -88,7 +103,7 @@ def build_targeted_artwork_prompt(candidate: SocialBehaviorTextCandidate) -> str
         f"Style direction: {candidate.style_direction}\n"
         f"AI visual direction: {candidate.artwork_prompt}\n"
         f"Do not include: {avoid}\n"
-        "The final image should make the target audience think: 'That is literally me.'"
+        "The final sticker should make the target audience think: 'That is literally me.'"
     )
 
 

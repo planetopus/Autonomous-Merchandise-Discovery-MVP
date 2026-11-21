@@ -4,13 +4,22 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, model_validator
 
+from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
 from merchandise_discovery.domain.models.common import (
+    HumorTone,
     IdentityType,
     SocialSource,
     identity_type_guidance,
 )
 from merchandise_discovery.domain.pipelines.social_behavior_text.pipeline import (
     SocialBehaviorTextCandidate,
+)
+from merchandise_discovery.domain.sticker_direction import (
+    STICKER_AVOID,
+    STICKER_STYLE_DIRECTION,
+    crossover_block,
+    sticker_copy_rules,
+    sticker_visual_rules,
 )
 
 
@@ -21,6 +30,9 @@ class BehaviorIdentityInput(BaseModel):
     query: str = Field(default="", max_length=500)
     auto_topic: bool = False
     candidate_count: int = Field(ge=1, le=25)
+    niche_a: str = Field(default="", max_length=200)
+    niche_b: str = Field(default="", max_length=200)
+    humor_tone: HumorTone = HumorTone.DRY
 
     @model_validator(mode="after")
     def validate_topic_source(self) -> "BehaviorIdentityInput":
@@ -64,11 +76,11 @@ class BehaviorIdentityOutput(BaseModel):
         return value
 
 
-def reasoning_instructions() -> str:
+def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
     """Define the behavior-first, per-candidate identity and copy requirements."""
 
     return (
-        "You are a social-discussion researcher and targeted novelty-T-shirt creative director. "
+        "You are a social-discussion researcher and die-cut vinyl sticker creative director. "
         "Use the supplied web search tool to inspect public discussions from the selected Reddit "
         "and/or X domains. First find distinct, concrete behaviors, rituals, frictions, contradictions, "
         "or private jokes in the discussions. Then, independently for each behavior, identify the "
@@ -83,19 +95,22 @@ def reasoning_instructions() -> str:
         "that group fits this behavior. The "
         "merchandise line must make the audience recognizable through lived details, not by merely "
         "prefixing an identity label. Use natural role, relationship, duty, setting, time, tool, or "
-        "insider language where supported. Write clear, personal, context-rich targeted T-shirt copy: "
-        "a specific claim, confession, complaint, or dry observation with a concrete action and payoff. "
-        "It must make sense without metadata; use as many words as necessary, but avoid case-summary "
-        "detail and forced 'I ...' templates. Keep each candidate's `audience_context` specific to "
-        "that candidate's identity and behavior. Create an artwork prompt that renders the exact "
-        "merchandise line and turns that identity-specific behavior into one bold, high-contrast, "
-        "limited-palette T-shirt graphic. Avoid soft lifestyle imagery, generic category props, logos, "
-        "brands, and extra text. Preserve source URLs and source-specific excerpts. Return only the "
-        "requested structured output."
+        f"insider language where supported. {sticker_copy_rules()} Keep each candidate's "
+        "`audience_context` specific to that candidate's identity and behavior. Create an artwork "
+        "prompt that renders the exact merchandise line when text is present and turns that "
+        f"identity-specific behavior into one sticker subject. {sticker_visual_rules()} Avoid soft "
+        "lifestyle imagery, generic category props, logos, brands, and extra text. Preserve source "
+        "URLs and source-specific excerpts. Return only the requested structured output. "
+        f"{humor_prompt_suffix(tone)}"
     )
 
 
-def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
+def build_user_prompt(
+    input_model: BehaviorIdentityInput,
+    *,
+    draft_count: int | None = None,
+    quotes: list | None = None,
+) -> str:
     """Ask the provider to map each discovered behavior to its own best-supported audience."""
 
     platforms = ", ".join(source.value for source in input_model.sources)
@@ -107,10 +122,20 @@ def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
         if input_model.auto_topic
         else f"Behavior/topic to investigate: {input_model.query}"
     )
+    limit = draft_count or input_model.candidate_count
+    draft_note = ""
+    if draft_count and draft_count > input_model.candidate_count:
+        draft_note = (
+            f"Generate {draft_count} distinct lines so a separate critic can cut most of them.\n"
+        )
     return (
+        f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{quote_block(quotes)}"
+        f"{draft_note}"
+        f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"Search these public platforms: {platforms}.\n"
         f"{behavior_instruction}\n"
-        f"Return up to {input_model.candidate_count} distinct behavior-led candidates. For each "
+        f"Return up to {limit} distinct behavior-led candidates. For each "
         "candidate, first describe one behavior supported by a specific discussion, then assign "
         "the identity group that best fits that behavior's evidence. Do this independently for "
         "each candidate; there is no single run-level target identity. Include candidate-level "
@@ -120,7 +145,10 @@ def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
         "source_excerpt, audience_context, behavior, friction_or_pressure, artwork_text, "
         "artwork_prompt, visual_punchline, main_visual_metaphor, audience_specific_cue, tone, "
         "style_direction, things_to_avoid, and specificity_reason. Make the merchandise text "
-        "understandable on its own and let the audience emerge naturally from its lived details. "
+        "a sticker line of roughly 2 to 5 words, or leave it empty, and let the audience emerge "
+        "naturally from its lived details. Style direction must describe a flat vector die-cut "
+        "sticker on a plain white background, and things_to_avoid must include scenes, full-bleed "
+        "backgrounds, realistic shading, and poster layouts. "
         "Return the behavior or topic actually explored in `topic_explored` and a concise "
         "`search_summary`."
     )
@@ -148,18 +176,26 @@ def execute(
                 audience_context=f"People dealing with {topic}",
                 behavior=f"People repeatedly deal with {topic}.",
                 friction_or_pressure="The routine keeps colliding with ordinary daily demands.",
-                artwork_text=f"Still making {topic} work",
+                artwork_text="Still Making It",
                 artwork_prompt=(
-                    f'Create a bold, print-ready T-shirt graphic for "Still making {topic} work". '
-                    "Show one specific visual joke about this audience and behavior."
+                    'Create a die-cut vinyl sticker for "Still Making It". '
+                    "One isolated subject, flat colors, plain white background, no scene or extra text."
                 ),
                 visual_punchline="A small daily workaround is treated like a heroic operation.",
                 main_visual_metaphor="An everyday tool becomes an overworked control panel.",
                 audience_specific_cue=f"People dealing with {topic}",
                 tone="dry and self-aware",
-                style_direction="High-contrast, limited-palette novelty T-shirt illustration.",
-                things_to_avoid=["generic category imagery", "soft lifestyle photography", "extra text"],
+                style_direction=STICKER_STYLE_DIRECTION,
+                things_to_avoid=[
+                    "generic category imagery",
+                    "soft lifestyle photography",
+                    "extra text",
+                    *STICKER_AVOID,
+                ],
                 specificity_reason="Fixture output only; replace with source-backed live research.",
+                source_quote=f"Fixture comment about {topic}.",
+                humor_mechanism="recognition",
+                concrete_detail=topic[:200],
             )
             for index in range(1, input_model.candidate_count + 1)
         ]
@@ -191,9 +227,16 @@ def execute(
                 "expected the selected platform domain."
             )
 
+    quoted = []
+    for candidate in reasoning_output.candidates:
+        if candidate.source_quote.strip():
+            quoted.append(candidate)
+        else:
+            quoted.append(candidate.model_copy(update={"source_quote": candidate.source_excerpt[:500]}))
     return reasoning_output.model_copy(
         update={
             "topic_explored": reasoning_output.topic_explored or input_model.query,
             "model": model,
+            "candidates": quoted,
         }
     )

@@ -79,9 +79,11 @@ def test_stage_04_provider_contract_selects_a_diverse_hopeful_portfolio() -> Non
 
     assert "one research portfolio" in instructions
     assert "prefer candidates that differ in primary audience" in instructions
-    assert "hopeful opportunities" in instructions
     assert "recent-relocator candidates" in instructions
     assert "distinct portfolio angle" in instructions
+    assert "warm, dry, and dark" in instructions
+    assert "duplicate joke" in instructions
+    assert "shared affinity tags" in instructions
 
 
 def test_pre_research_filter_does_not_reapply_deduplication() -> None:

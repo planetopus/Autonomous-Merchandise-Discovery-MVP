@@ -124,9 +124,10 @@ def execute(
                 update={
                     "source_url": edited.source_url,
                     "storage_key": stored.storage_key,
-                    "width": edited.width,
-                    "height": edited.height,
-                    "mime_type": edited.mime_type,
+                    "raw_storage_key": stored.raw_storage_key,
+                    "width": stored.width or edited.width,
+                    "height": stored.height or edited.height,
+                    "mime_type": stored.mime_type or edited.mime_type,
                     "file_size_bytes": stored.file_size_bytes,
                     "revision_prompt": evaluation.edit_prompt,
                     "revision_number": artwork.revision_number + 1,

@@ -35,7 +35,7 @@ class IntersectionGenerationOutput(BaseModel):
 class IntersectionProposal(BaseModel):
     """One AI-proposed combination of references from the supplied identity catalog."""
 
-    identity_refs: list[str] = Field(min_length=3, max_length=6)
+    identity_refs: list[str] = Field(min_length=2, max_length=6)
     composition_rationale: str = Field(min_length=1, max_length=400)
     distinctiveness: int = Field(ge=1, le=10)
 
@@ -81,6 +81,77 @@ def build_identity_catalog(identities: list[ExpandedIdentity]) -> list[dict]:
     ]
 
 
+def life_shape(identity: ExpandedIdentity) -> str:
+    """Classify one identity as a life the collision scorer can pair."""
+
+    text = " ".join(
+        [identity.value, identity.dimension_type, identity.source_seed_name, *identity.affinity_tags]
+    ).casefold()
+    if any(word in text for word in ("parent", "college", "retirement", "newborn", "grief", "divorce", "moved", "relocated")):
+        return "life_situation"
+    if identity.category.value == "interest" or any(
+        word in text for word in ("hobby", "garden", "music", "game", "dog", "plant", "bike")
+    ):
+        return "hobby"
+    if any(word in text for word in ("community", "club", "fans", "subreddit")):
+        return "community"
+    if identity.category.value == "value":
+        return "life_situation"
+    if identity.category.value == "audience":
+        return "job"
+    return "identity"
+
+
+def pair_kind(shapes: list[str]) -> str | None:
+    """Name the cross-life pattern, if the pair is two different lives."""
+
+    unique = set(shapes)
+    if "job" in unique and "hobby" in unique:
+        return "job_x_hobby"
+    if "life_situation" in unique and len(unique) >= 2:
+        return "identity_x_life_situation"
+    if shapes.count("community") >= 2 or (len(shapes) >= 2 and shapes.count("job") >= 2):
+        return "two_communities"
+    if "community" in unique and len(unique) >= 2:
+        return "two_communities"
+    if len(unique) >= 2:
+        return "two_lives"
+    return None
+
+
+def collision_scores(items: tuple[ExpandedIdentity, ...]) -> dict[str, int | str | list[str]]:
+    """Score unexpectedness, a real person being both, and a stranger still getting it.
+
+    Shared affinity tags lower the score. They are not a bonus for a natural pair.
+    """
+
+    tag_sets = [set(item.affinity_tags) for item in items]
+    shared = sorted(set.intersection(*tag_sets)) if tag_sets else []
+    shapes = [life_shape(item) for item in items]
+    kind = pair_kind(shapes)
+    unexpectedness = 4 if kind else 1
+    unexpectedness += max(0, 3 - len(shared))
+    unexpectedness -= min(4, len(shared))
+    unexpectedness = max(0, unexpectedness)
+    if kind in {"job_x_hobby", "identity_x_life_situation", "two_communities"}:
+        real_person = 8
+    elif kind == "two_lives":
+        real_person = 5
+    else:
+        real_person = 2
+    word_counts = [len(item.value.split()) for item in items]
+    stranger = 6 if word_counts and all(1 <= count <= 5 for count in word_counts) else 3
+    return {
+        "unexpectedness": unexpectedness,
+        "real_person_both": real_person,
+        "stranger_gets_it": stranger,
+        "collision_score": unexpectedness + real_person + stranger,
+        "pair_kind": kind or "same_life",
+        "life_shapes": shapes,
+        "shared_tags": shared,
+    }
+
+
 def _candidate(
     items: tuple[ExpandedIdentity, ...],
     run_id: str,
@@ -89,21 +160,25 @@ def _candidate(
     distinctiveness: int | None = None,
     model: str = "deterministic",
 ) -> IdentityIntersection:
-    """Build a candidate and retain metadata needed to explain compatibility."""
+    """Build a candidate and retain the collision score instead of a shared-tag bonus."""
 
-    shared_tags = sorted(set.intersection(*(set(item.affinity_tags) for item in items)))
+    scored = collision_scores(items)
     identities = [item.value for item in items]
     source_ids = [item.source_seed_id for item in items]
     categories = [item.category.value for item in items]
-    candidate_score = sum(item.priority for item in items) + len(shared_tags) * 5
-    if len(items) == 3:
-        candidate_score += 3
+    candidate_score = int(scored["collision_score"])
     if distinctiveness is not None:
         candidate_score += distinctiveness
     metadata = {
         "categories": categories,
-        "shared_tags": shared_tags,
+        "shared_tags": scored["shared_tags"],
         "candidate_score": candidate_score,
+        "collision_score": scored["collision_score"],
+        "unexpectedness": scored["unexpectedness"],
+        "real_person_both": scored["real_person_both"],
+        "stranger_gets_it": scored["stranger_gets_it"],
+        "pair_kind": scored["pair_kind"],
+        "life_shapes": scored["life_shapes"],
         "identity_refs": [identity_ref(item) for item in items],
         "generation_method": "provider" if rationale else "deterministic",
         "model": model,
@@ -137,9 +212,11 @@ def _provider_candidate(
         raise ValueError(f"Stage 3 provider proposal contains unknown identity refs: {missing_refs}.")
 
     items = tuple(catalog[ref] for ref in refs)
-    categories = {item.category for item in items}
-    if "audience" not in categories or "interest" not in categories:
-        raise ValueError("Stage 3 provider proposal must include audience and interest identities.")
+    kind = pair_kind([life_shape(item) for item in items])
+    categories = {item.category.value for item in items}
+    crosses_lives = kind in {"job_x_hobby", "identity_x_life_situation", "two_communities", "two_lives"}
+    if not crosses_lives and not {"audience", "interest"}.issubset(categories):
+        raise ValueError("Stage 3 provider proposal must combine two different lives.")
     if len({item.source_seed_id for item in items}) < 2:
         raise ValueError("Stage 3 provider proposal must combine at least two source seeds.")
     source_counts: dict[str, int] = {}
@@ -213,11 +290,17 @@ def execute(
         group.sort(key=lambda identity: (-identity.priority, identity.value.lower()))
 
     candidates: list[IdentityIntersection] = []
-    for audience in groups.get("audience", []):
+    audiences = groups.get("audience", [])
+    for audience in audiences:
         for interest in groups.get("interest", []):
             candidates.append(_candidate((audience, interest), run_id))
             for value in groups.get("value", []):
                 candidates.append(_candidate((audience, interest, value), run_id))
+    for index, left in enumerate(audiences):
+        for right in audiences[index + 1 :]:
+            if left.source_seed_id == right.source_seed_id:
+                continue
+            candidates.append(_candidate((left, right), run_id))
 
     candidates.sort(
         key=lambda candidate: (

@@ -61,11 +61,11 @@ class CoherenceOutput(BaseModel):
 
 
 def reasoning_instructions() -> str:
-    """Return the provider contract for hopeful, non-overlapping research selection.
+    """Return the provider contract for a mixed, non-duplicate collision portfolio.
 
     Stage 4 receives independent candidates but produces one bounded research portfolio. The
     prompt therefore makes set-level diversity an explicit decision criterion instead of allowing
-    the provider to select several individually strong variations of the same market opportunity.
+    the provider to select several individually strong variations of the same joke.
     """
 
     return (
@@ -73,20 +73,21 @@ def reasoning_instructions() -> str:
         "Research Selection. Review all supplied intersections as written, then select only the "
         "candidates needed by the next research stage. Never create, remove, rename, or combine "
         "candidates, and preserve selected intersection IDs exactly. Treat the selected candidates "
-        "as one research portfolio, not as independent winners. First assess each candidate's "
-        "specific lived-experience coherence, hopeful human outcome, and research value. Then make "
-        "a second portfolio-level comparison and prefer candidates that differ in primary audience, "
+        "as one research portfolio, not as independent winners. First score each candidate as a "
+        "collision: unexpectedness, whether a real person is both, and whether a stranger still "
+        "gets it. Do not prefer natural pairs or shared affinity tags. Then make a second "
+        "portfolio-level comparison and prefer candidates that differ in primary audience, "
         "core activity, emotional job, repeated ritual, and likely visual language. Do not select the "
-        "top individual scores when the candidates would produce similar concepts or artwork. When "
-        "viable alternatives exist, select at most one candidate from the same broad audience-plus-"
-        "emotional-need theme. For example, several recent-relocator candidates about making a new "
-        "city feel like home are one portfolio theme even if one uses music, one cycling, and one "
-        "board games; choose only one of them when distinct alternatives are available. Prefer "
-        "hopeful opportunities involving agency, belonging, progress, creative energy, practical "
-        "relief, or meaningful connection. Avoid candidates whose central promise is merely generic "
-        "lifestyle aspiration, demographic overlap, isolation, or consumption. Each selection_reason "
-        "must explain both the candidate's specific lived experience and what distinct portfolio "
-        "angle it contributes. Return only the requested structured output."
+        "top individual scores when the candidates would produce similar concepts or artwork. Reject "
+        "duplicate jokes. For example, several recent-relocator candidates about making a new "
+        "city feel like home are one duplicate joke even if one uses music, one cycling, and one "
+        "board games; choose only one of them when distinct alternatives are available. Mix the "
+        "finalists across warm, dry, and dark humor. Dark and bleak angles are allowed when they "
+        "stay specific. Do not drop a collision only because it is not hopeful or not giftable. "
+        "Avoid candidates whose central promise is merely generic lifestyle aspiration, demographic "
+        "overlap, isolation, or consumption. Each selection_reason must explain both the candidate's "
+        "specific lived experience and what distinct portfolio angle it contributes. Return only "
+        "the requested structured output."
     )
 
 
@@ -155,10 +156,17 @@ def _materialize_selection(
             str(category).casefold()
             for category in intersection.metadata.get("categories", [])
         }
-        if categories and not {"audience", "interest"}.issubset(categories):
+        pair_kind = str(intersection.metadata.get("pair_kind") or "")
+        crosses_lives = pair_kind in {
+            "job_x_hobby",
+            "identity_x_life_situation",
+            "two_communities",
+            "two_lives",
+        }
+        if categories and not crosses_lives and not {"audience", "interest"}.issubset(categories):
             raise ValueError(
-                f"Stage 4 selected intersection {intersection.intersection_id} must include "
-                "audience and interest categories."
+                f"Stage 4 selected intersection {intersection.intersection_id} must combine "
+                "two different lives."
             )
 
         materialized.append(
@@ -189,42 +197,82 @@ def _materialize_selection(
     )
 
 
+def _joke_key(intersection: IdentityIntersection) -> str:
+    """Identify one joke so the fixture portfolio does not keep the same collision twice."""
+
+    return "|".join(sorted(" ".join(str(identity).casefold().split()) for identity in intersection.identities))
+
+
 def _apply_deterministic_selection(input_data: CoherenceInput) -> CoherenceOutput:
     """Provide a reproducible fixture result without pretending a provider made the decision."""
 
     ordered = sorted(
         input_data.intersections,
         key=lambda intersection: (
-            -int(intersection.metadata.get("candidate_score", 0)),
+            -int(intersection.metadata.get("collision_score", intersection.metadata.get("candidate_score", 0))),
             intersection.intersection_id,
         ),
     )
-    selected = ordered[: input_data.max_researched_niches]
+    selected: list[IdentityIntersection] = []
+    seen_jokes: set[str] = set()
+    for intersection in ordered:
+        key = _joke_key(intersection)
+        if key in seen_jokes:
+            continue
+        seen_jokes.add(key)
+        selected.append(intersection)
+        if len(selected) >= input_data.max_researched_niches:
+            break
+    if len(selected) < min(input_data.max_researched_niches, len(ordered)):
+        for intersection in ordered:
+            if intersection in selected:
+                continue
+            selected.append(intersection)
+            if len(selected) >= input_data.max_researched_niches:
+                break
+    tones = ("warm", "dry", "dark")
     selections = [
         ResearchSelection(
             intersection_id=intersection.intersection_id,
             selection_reason=(
-                "Selected by deterministic fixture ordering from the Stage 3 candidate score."
+                "Selected from the collision score as a "
+                f"{tones[index % len(tones)]} portfolio angle, skipping duplicate jokes."
             ),
             coherence_score=min(
-                10.0, 4.0 + len(intersection.metadata.get("shared_tags", [])) * 1.25
+                10.0,
+                4.0 + int(intersection.metadata.get("collision_score", 0)) / 4,
             ),
             research_value_score=5.0,
             confidence=1.0,
         )
-        for intersection in selected
+        for index, intersection in enumerate(selected)
     ]
     output = _materialize_selection(
         input_data,
         selections,
         model="deterministic",
         summary=(
-            f"Selected {len(selected)} of {len(input_data.intersections)} intersections "
+            f"Selected {len(selected)} of {len(input_data.intersections)} collisions "
             "deterministically for fixture mode."
         ),
         generation_method="deterministic",
     )
-    return output.model_copy(update={"provider_selections_count": 0})
+    angled = []
+    tone_by_id = {
+        intersection.intersection_id: tones[index % len(tones)]
+        for index, intersection in enumerate(selected)
+    }
+    for intersection in output.intersections:
+        tone = tone_by_id.get(intersection.intersection_id)
+        if tone is None:
+            angled.append(intersection)
+            continue
+        angled.append(
+            intersection.model_copy(
+                update={"metadata": {**intersection.metadata, "humor_angle": tone}}
+            )
+        )
+    return output.model_copy(update={"provider_selections_count": 0, "intersections": angled})
 
 
 def execute(

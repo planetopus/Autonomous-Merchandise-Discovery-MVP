@@ -9,7 +9,12 @@ import json
 import logging
 
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
-from merchandise_discovery.domain.models.common import PipelineVariant, StageStatus
+from merchandise_discovery.domain.humor import (
+    HumorCritiqueBatch,
+    LineReview,
+    apply_line_critic,
+)
+from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource, StageStatus
 from merchandise_discovery.domain.models.usage import UsageMetrics, combine_usage
 from merchandise_discovery.domain.models.workflow import StageExecution, WorkflowRun
 from merchandise_discovery.domain.pipelines.social_behavior_identity import (
@@ -77,6 +82,20 @@ from merchandise_discovery.infrastructure.storage import ArtworkStorage
 logger = logging.getLogger(__name__)
 
 
+def _saturation_findings(checker, items: list[tuple[str, str]]) -> list:
+    """Adapt marketplace findings to the stage 11 record."""
+
+    return [
+        stage_11.SaturationFinding(
+            concept_id=finding.item_id,
+            count=finding.count,
+            source=finding.source,
+            note=finding.note,
+        )
+        for finding in checker.check(items)
+    ]
+
+
 def _social_artwork_candidates(run: WorkflowRun, candidates: list) -> list:
     """Return every Stage 1 candidate, or the subset explicitly approved for artwork."""
 
@@ -109,6 +128,8 @@ class DiscoveryStageExecutor:
         artwork_storage: ArtworkStorage | None = None,
         openai_image_detail: str = "high",
         run_repository: RunRepository | None = None,
+        saturation_checker=None,
+        reddit_reader=None,
     ):
         self._seeds = seed_repository
         self._intersections = intersection_repository
@@ -124,6 +145,8 @@ class DiscoveryStageExecutor:
         self._reasoning_provider = reasoning_provider
         self._openai_image_detail = openai_image_detail
         self._runs = run_repository
+        self._saturation_checker = saturation_checker
+        self._reddit_reader = reddit_reader
 
     def _recent_identity_selections(self, run: WorkflowRun, limit: int = 12) -> list[str]:
         """Return bounded identity history for diversity-aware auto-selection prompts.
@@ -160,6 +183,130 @@ class DiscoveryStageExecutor:
             if len(identities) >= limit:
                 break
         return identities
+
+    def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
+        """Collect comments, draft more lines than we will keep, then let a critic cut them."""
+
+        if self._reasoning_provider is None:
+            return None, UsageMetrics()
+        quotes = self._collect_reddit_quotes(input_model)
+        draft_count = min(25, max(input_model.candidate_count, input_model.candidate_count * 3))
+        domains = None
+        if not quotes:
+            domains = tuple(
+                "reddit.com" if source.value == "reddit" else "x.com" for source in input_model.sources
+            )
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=pipeline_module.build_user_prompt(
+                input_model,
+                draft_count=draft_count,
+                quotes=quotes,
+            ),
+            response_model=output_model,
+            web_search_domains=domains,
+        )
+        usage = response.usage
+        output = response.output
+        candidates = list(getattr(output, "candidates", []))
+        if len(candidates) > input_model.candidate_count:
+            kept, critic_usage = self._critic_pass(
+                run,
+                candidates,
+                input_model.candidate_count,
+            )
+            output = output.model_copy(update={"candidates": kept})
+            usage = combine_usage(usage, critic_usage)
+        output = self._drop_crowded_lines(output)
+        return output, usage
+
+    def _collect_reddit_quotes(self, input_model) -> list:
+        """Pull top comments when Reddit is selected. A failure leaves the writer on web search."""
+
+        if self._reddit_reader is None or SocialSource.REDDIT not in input_model.sources:
+            return []
+        parts = [
+            getattr(input_model, "niche_a", ""),
+            getattr(input_model, "niche_b", ""),
+            getattr(input_model, "identity", ""),
+            getattr(input_model, "query", ""),
+        ]
+        query = " ".join(str(part).strip() for part in parts if str(part).strip())
+        if len(query) < 3:
+            query = "everyday frustration"
+        try:
+            return self._reddit_reader.collect(query)
+        except (OSError, RuntimeError, ValueError, TypeError) as error:
+            logger.warning("Reddit comment collection skipped: %s", error)
+            return []
+
+    def _critic_pass(self, run: WorkflowRun, candidates: list, keep_count: int):
+        """Score humor, novelty, and tone, then keep only the lines that landed."""
+
+        numbered = "\n".join(
+            f"{index}. {getattr(candidate, 'artwork_text', '')} "
+            f"(mechanism: {getattr(candidate, 'humor_mechanism', '')}; "
+            f"detail: {getattr(candidate, 'concrete_detail', '')})"
+            for index, candidate in enumerate(candidates)
+        )
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=(
+                "You are a merchandise humor critic. Score each drafted sticker line. "
+                "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
+                "but must not decide the cut when the tone is dark. Do not reward a duplicate joke."
+            ),
+            user_prompt=(
+                f"Requested tone: {run.config.humor_tone.value}. "
+                f"Keep the strongest {keep_count} lines by scoring every index.\n{numbered}"
+            ),
+            response_model=HumorCritiqueBatch,
+        )
+        reviews = [
+            LineReview(
+                index=review.index,
+                humor_landed=review.humor_landed,
+                novelty=review.novelty,
+                tone_match=review.tone_match,
+                giftability=review.giftability,
+            )
+            for review in response.output.reviews
+        ]
+        kept = apply_line_critic(
+            candidates,
+            reviews,
+            keep_count=keep_count,
+            tone=run.config.humor_tone,
+        )
+        return kept, response.usage
+
+    def _drop_crowded_lines(self, output):
+        """Remove sticker lines that already have a crowded marketplace, when a check is configured."""
+
+        if self._saturation_checker is None or not getattr(output, "candidates", None):
+            return output
+        findings = {
+            finding.item_id: finding
+            for finding in self._saturation_checker.check(
+                [
+                    (str(index), candidate.artwork_text)
+                    for index, candidate in enumerate(output.candidates)
+                ]
+            )
+        }
+        kept = []
+        dropped = []
+        for index, candidate in enumerate(output.candidates):
+            finding = findings.get(str(index))
+            if finding is not None and finding.drop:
+                dropped.append((finding.count or 0, candidate))
+                continue
+            kept.append(candidate)
+        if not kept and dropped:
+            dropped.sort(key=lambda item: item[0])
+            kept = [dropped[0][1]]
+        if not kept:
+            return output
+        return output.model_copy(update={"candidates": kept})
 
     def _reason(
         self,
@@ -261,6 +408,9 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
+                    humor_tone=run.config.humor_tone,
                     recent_identity_selections=self._recent_identity_selections(run),
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
@@ -273,6 +423,8 @@ class DiscoveryStageExecutor:
                 return social_identity_v2_artwork.IdentityV2ArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             raise StageNotImplementedError(
                 f"Identity V2 pipeline does not define Stage {stage.stage_number}."
@@ -285,6 +437,9 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
+                    humor_tone=run.config.humor_tone,
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
                 previous = self._stage_repository.get_latest(run.run_id, 1)
@@ -296,6 +451,8 @@ class DiscoveryStageExecutor:
                 return social_artwork.SocialArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             raise StageNotImplementedError(
                 f"Behavior-first identity pipeline does not define Stage {stage.stage_number}."
@@ -313,6 +470,9 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
+                    humor_tone=run.config.humor_tone,
                     recent_identity_selections=self._recent_identity_selections(run),
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
@@ -325,6 +485,8 @@ class DiscoveryStageExecutor:
                 return social_identity_artwork.IdentityArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             raise StageNotImplementedError(
                 f"Identity-focused social pipeline does not define Stage {stage.stage_number}."
@@ -337,6 +499,9 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
+                    humor_tone=run.config.humor_tone,
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
                 previous = self._stage_repository.get_latest(run.run_id, 1)
@@ -348,6 +513,8 @@ class DiscoveryStageExecutor:
                 return social_artwork.SocialArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             else:
                 raise StageNotImplementedError(
@@ -380,15 +547,18 @@ class DiscoveryStageExecutor:
                 intersections=selected,
                 max_researched_niches=run.config.max_researched_niches,
                 concepts_per_niche=run.config.concepts_per_niche,
+                humor_tone=run.config.humor_tone.value,
             ).model_dump(mode="python")
 
         previous = self._stage_repository.get_latest(run.run_id, stage.stage_number - 1)
-        # Stage 11 is optional. When disabled, Stage 12 consumes the Stage 10 critique output.
-        if stage.stage_number == 12 and (
+        # Stage 11 is optional. When disabled, Stage 12 consumes the Stage 10 critique output
+        # and still applies the marketplace saturation check before ranking.
+        stage_11_skipped = stage.stage_number == 12 and (
             previous is None
             or previous.status == StageStatus.SKIPPED
             or not previous.output_data
-        ):
+        )
+        if stage_11_skipped:
             previous = self._stage_repository.get_latest(run.run_id, 10)
         if previous is None or not previous.output_data:
             raise ValueError(f"Stage {stage.stage_number} is missing prior stage output.")
@@ -515,9 +685,21 @@ class DiscoveryStageExecutor:
             else:
                 prior = stage_10.ConceptCritiqueOutput.model_validate(previous.output_data)
                 concepts = prior.concepts
+                if stage_11_skipped and self._saturation_checker is not None:
+                    screened = stage_11.execute(
+                        stage_11.SimilarityCheckInput(
+                            concepts=concepts,
+                            saturation=_saturation_findings(
+                                self._saturation_checker,
+                                [(concept.concept_id, concept.phrase) for concept in concepts],
+                            ),
+                        )
+                    )
+                    concepts = screened.survivors or concepts
             return stage_12.FinalSelectionInput(
                 concepts=concepts,
                 max_finalists=max(1, run.config.max_researched_niches),
+                humor_tone=run.config.humor_tone.value,
             ).model_dump(mode="python")
         if stage.stage_number == 13:
             prior = stage_12.FinalSelectionOutput.model_validate(previous.output_data)
@@ -565,19 +747,12 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_IDENTITY_V2:
             if stage.stage_number == 1:
                 input_model = social_identity_v2.SocialIdentityV2Input.model_validate(input_data)
-                reasoning_output = None
-                if self._reasoning_provider is not None:
-                    response = self._reasoning_provider.complete_structured(
-                        system_prompt=social_identity_v2.reasoning_instructions(),
-                        user_prompt=social_identity_v2.build_user_prompt(input_model),
-                        response_model=social_identity_v2.SocialIdentityV2Output,
-                        web_search_domains=tuple(
-                            "reddit.com" if source.value == "reddit" else "x.com"
-                            for source in input_model.sources
-                        ),
-                    )
-                    reasoning_output = response.output
-                    usage = response.usage
+                reasoning_output, usage = self._social_reasoning(
+                    run,
+                    input_model,
+                    social_identity_v2,
+                    social_identity_v2.SocialIdentityV2Output,
+                )
                 output = social_identity_v2.execute(
                     input_model,
                     reasoning_output=reasoning_output,
@@ -619,19 +794,12 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_BEHAVIOR_IDENTITY:
             if stage.stage_number == 1:
                 input_model = social_behavior_identity.BehaviorIdentityInput.model_validate(input_data)
-                reasoning_output = None
-                if self._reasoning_provider is not None:
-                    response = self._reasoning_provider.complete_structured(
-                        system_prompt=social_behavior_identity.reasoning_instructions(),
-                        user_prompt=social_behavior_identity.build_user_prompt(input_model),
-                        response_model=social_behavior_identity.BehaviorIdentityOutput,
-                        web_search_domains=tuple(
-                            "reddit.com" if source.value == "reddit" else "x.com"
-                            for source in input_model.sources
-                        ),
-                    )
-                    reasoning_output = response.output
-                    usage = response.usage
+                reasoning_output, usage = self._social_reasoning(
+                    run,
+                    input_model,
+                    social_behavior_identity,
+                    social_behavior_identity.BehaviorIdentityOutput,
+                )
                 output = social_behavior_identity.execute(
                     input_model,
                     reasoning_output=reasoning_output,
@@ -677,19 +845,12 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_IDENTITY_FOCUSED:
             if stage.stage_number == 1:
                 input_model = social_identity.SocialIdentityTextInput.model_validate(input_data)
-                reasoning_output = None
-                if self._reasoning_provider is not None:
-                    response = self._reasoning_provider.complete_structured(
-                        system_prompt=social_identity.reasoning_instructions(),
-                        user_prompt=social_identity.build_user_prompt(input_model),
-                        response_model=social_identity.SocialIdentityTextOutput,
-                        web_search_domains=tuple(
-                            "reddit.com" if source.value == "reddit" else "x.com"
-                            for source in input_model.sources
-                        ),
-                    )
-                    reasoning_output = response.output
-                    usage = response.usage
+                reasoning_output, usage = self._social_reasoning(
+                    run,
+                    input_model,
+                    social_identity,
+                    social_identity.SocialIdentityTextOutput,
+                )
                 output = social_identity.execute(
                     input_model,
                     reasoning_output=reasoning_output,
@@ -732,19 +893,12 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_BEHAVIOR_TEXT:
             if stage.stage_number == 1:
                 input_model = social_behavior.SocialBehaviorTextInput.model_validate(input_data)
-                reasoning_output = None
-                if self._reasoning_provider is not None:
-                    response = self._reasoning_provider.complete_structured(
-                        system_prompt=social_behavior.reasoning_instructions(),
-                        user_prompt=social_behavior.build_user_prompt(input_model),
-                        response_model=social_behavior.SocialBehaviorTextOutput,
-                        web_search_domains=tuple(
-                            "reddit.com" if source.value == "reddit" else "x.com"
-                            for source in input_model.sources
-                        ),
-                    )
-                    reasoning_output = response.output
-                    usage = response.usage
+                reasoning_output, usage = self._social_reasoning(
+                    run,
+                    input_model,
+                    social_behavior,
+                    social_behavior.SocialBehaviorTextOutput,
+                )
                 output = social_behavior.execute(
                     input_model,
                     reasoning_output=reasoning_output,
@@ -866,15 +1020,17 @@ class DiscoveryStageExecutor:
                         "references. Return only the requested structured output."
                     ),
                     user_prompt=(
-                        f"Create no more than {input_model.max_intersections * 3} strong candidate "
-                        "intersections from the complete Stage 2 identity catalog below. Each "
-                        "intersection must contain 3 to 6 identity references, including at least "
-                        "one audience and one interest identity. Include a value identity when it "
-                        "makes the combination more specific. A proposal may use at most two "
-                        "dimensions from the same source seed. Prefer natural combinations over "
-                        "clever but forced associations. Explain the lived-experience connection "
-                        "in composition_rationale and score distinctiveness from 1 to 10. Do not "
-                        "evaluate coherence yet; that is Stage 4's responsibility.\n\n"
+                        f"Create no more than {input_model.max_intersections * 3} candidate "
+                        "collisions from the complete Stage 2 identity catalog below. Each "
+                        "intersection must contain 2 to 4 identity references from two different "
+                        "lives: a job and a hobby, an identity and a life situation, or two "
+                        "communities. Do not prefer natural pairs, and do not treat shared affinity "
+                        "tags as a bonus. Score the collision for unexpectedness, whether a real "
+                        "person is both, and whether a stranger still gets it. A proposal may use "
+                        "at most two dimensions from the same source seed and must use at least two "
+                        "source seeds. Explain the collision in composition_rationale and score "
+                        "distinctiveness from 1 to 10. Reject a second proposal that is the same "
+                        "joke. Do not evaluate the final portfolio yet; that is Stage 4.\n\n"
                         f"Identity catalog ({len(catalog)} records):\n"
                         f"{json.dumps(catalog, indent=2, default=str)}"
                     ),
@@ -908,6 +1064,8 @@ class DiscoveryStageExecutor:
                             "identities": intersection.identities,
                             "source_seed_ids": intersection.source_seed_ids,
                             "shared_tags": intersection.metadata.get("shared_tags", []),
+                            "collision_score": intersection.metadata.get("collision_score"),
+                            "pair_kind": intersection.metadata.get("pair_kind", ""),
                             "composition_rationale": intersection.metadata.get(
                                 "composition_rationale", ""
                             ),
@@ -918,10 +1076,10 @@ class DiscoveryStageExecutor:
                         system_prompt=stage_04.reasoning_instructions(),
                         user_prompt=(
                             f"Select exactly {min(input_model.max_researched_niches, len(input_model.intersections))} "
-                            "intersection(s) for niche research. Choose candidates with the strongest "
-                            "specific lived-experience coherence, hopeful human outcome, concrete "
-                            "audience recognition, and research value while maximizing diversity across "
-                            "the selected set. For every selected candidate provide a selection_reason "
+                            "intersection(s) for niche research. Choose collisions a real person could "
+                            "be, that a stranger still gets, and that are not already a saturated "
+                            "natural pair. Mix warm, dry, and dark angles and reject duplicate jokes. "
+                            "For every selected candidate provide a selection_reason "
                             "that refers to the supplied identities, experience signals, or rationale "
                             "and explains its distinct portfolio angle; "
                             "do not use generic reasons such as 'high potential'. Also provide a "
@@ -1184,7 +1342,7 @@ class DiscoveryStageExecutor:
                     "Stage 9 merchandise concept generation",
                     input_data,
                     stage_09.Stage9ReasoningOutput,
-                    instructions=stage_09.reasoning_instructions(),
+                    instructions=stage_09.reasoning_instructions(run.config.humor_tone),
                 )
                 if has_valid_niches
                 else (None, UsageMetrics())
@@ -1229,6 +1387,15 @@ class DiscoveryStageExecutor:
             summary = f"Critiqued {len(output.evaluations)} merchandise concepts using {output.model}."
         elif stage.stage_number == 11:
             input_model = stage_11.SimilarityCheckInput.model_validate(input_data)
+            if self._saturation_checker is not None and not input_model.saturation:
+                input_model = input_model.model_copy(
+                    update={
+                        "saturation": _saturation_findings(
+                            self._saturation_checker,
+                            [(concept.concept_id, concept.phrase) for concept in input_model.concepts],
+                        )
+                    }
+                )
             output = stage_11.execute(input_model)
             self._concepts.replace_for_run(run.run_id, output.concepts)
             summary = (
@@ -1247,7 +1414,8 @@ class DiscoveryStageExecutor:
                         "wording, giftability, commercial appeal, and visual potential. Return one "
                         "evaluation for every concept ID exactly once, with each score from 0 to 10 "
                         "and a concise rationale. Do not select or reject concepts; the application "
-                        "will combine the dimensions and select only concepts already marked KEEP."
+                        "will combine the dimensions and select only concepts already marked KEEP. "
+                        "When the run tone is dark, giftability must not veto or down-rank a line."
                     ),
                 )
                 if input_model.concepts
@@ -1275,7 +1443,13 @@ class DiscoveryStageExecutor:
                         "illustration style, main subject, supporting "
                         "visual elements, composition, typography direction, palette direction, "
                         "detail level, intended merchandise type, visual constraints, and things to "
-                        "avoid."
+                        "avoid. Design every brief as a die-cut vinyl sticker: flat vector "
+                        "illustration, bold clean outlines, flat colors, one centered isolated "
+                        "subject, and a plain white background. Keep the exact phrase to roughly "
+                        "2 to 5 words, or make the sticker image-only when words are unnecessary. "
+                        "Set intended merchandise type to die-cut vinyl sticker. Add scene or "
+                        "landscape backgrounds, full-bleed backgrounds, realistic shading, and "
+                        "poster layouts to things to avoid."
                     ),
                 )
                 if input_model.concepts

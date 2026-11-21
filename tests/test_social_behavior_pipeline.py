@@ -119,7 +119,10 @@ def test_social_stage_two_uses_stage_one_prompt_and_shared_image_contract() -> N
     assert len(result.output_data["artworks"]) == 1
     generated_prompt = result.output_data["artworks"][0]["prompt"]
     assert input_data["candidates"][0]["artwork_prompt"] in generated_prompt
-    assert "targeted novelty T-shirt graphic" in generated_prompt
+    assert "die-cut vinyl sticker" in generated_prompt
+    assert "plain white background" in generated_prompt
+    assert "realistic shading" in generated_prompt
+    assert "poster layout" in generated_prompt
     assert "soft lifestyle photography" in generated_prompt
     assert result.output_data["artworks"][0]["source_url"].startswith("https://fixture.local/")
 
@@ -192,13 +195,12 @@ def test_social_behavior_prompt_requires_standalone_personal_copy() -> None:
 
     assert "MUST make sense when read alone" in instructions
     assert "Preserve the personal relationship" in instructions
-    assert "style of a targeted T-shirt" in instructions
-    assert "there is no hard length limit" in instructions
-    assert "self-contained mini-story" in instructions
-    assert "who or what situation this is about" in instructions
-    assert "Do not compress the idea into a vague aphorism" in instructions
-    assert "one dominant scene or behavior" in instructions
-    assert "Remove source-detail lists" in instructions
+    assert "2 to 5 words" in instructions
+    assert "artwork_text may be an empty string" in instructions
+    assert "die-cut vinyl sticker" in instructions
+    assert "plain white background" in instructions
+    assert "realistic shading" in instructions
+    assert "poster layout" in instructions
     assert "Avoid generic achievement statements" in instructions
     assert "artwork_prompt" in instructions
     assert "exact merchandise line" in instructions

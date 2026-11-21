@@ -33,6 +33,7 @@ class CompactDevelopmentInput(BaseModel):
     intersections: list[IdentityIntersection]
     max_researched_niches: int = Field(ge=1, le=100)
     concepts_per_niche: int = Field(ge=1, le=50)
+    humor_tone: str = "dry"
 
 
 class CompactNicheSynthesis(BaseModel):
@@ -112,7 +113,12 @@ def reasoning_instructions() -> str:
         "in the artwork, not merely implied by target_audience. Use non-branded cues: for healthcare "
         "shift workers, examples include a generic scrub silhouette, blank badge clip, shift-change "
         "clock, locker hook, or break-room meal. Do not use hospital logos or identifiable institutions. "
-        "Also include style, typography, palette, composition, merchandise type, and constraints."
+        "Also include style, typography, palette, composition, merchandise type, and constraints. "
+        "Every visual brief is a die-cut vinyl sticker: flat vector illustration, bold clean "
+        "outlines, flat colors, one centered isolated subject, plain white background, and "
+        "merchandise copy of roughly 2 to 5 words or no text. Set merchandise type to die-cut "
+        "vinyl sticker. Put scene or landscape backgrounds, full-bleed backgrounds, realistic "
+        "shading, and poster layouts in the avoid list."
     )
 
 
@@ -286,7 +292,11 @@ def execute(
             "citations, demographics, or market claims."
         ),
         user_prompt=(
-            f"{reasoning_instructions()}\n\n"
+            f"{reasoning_instructions()}\n"
+            f"Requested humor tone: {input_data.humor_tone}. "
+            "Name the humor mechanism and one concrete detail. Dark humor may be bleak; "
+            "do not invent sensitive traits about real people, and do not reject a dark line "
+            "only because it would be a poor gift.\n\n"
             f"{build_reasoning_prompt(research_output.niches, research_output.evidence)}"
         ),
         response_model=CompactReasoningOutput,

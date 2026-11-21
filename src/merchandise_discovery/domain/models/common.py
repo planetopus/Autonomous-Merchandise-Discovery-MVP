@@ -25,6 +25,40 @@ class PipelineVariant(str, Enum):
     SOCIAL_IDENTITY_V2 = "social_identity_v2"
 
 
+class HumorTone(str, Enum):
+    """How sharp the merchandise joke should be for one run."""
+
+    WARM = "warm"
+    DRY = "dry"
+    SELF_DEPRECATING = "self_deprecating"
+    DARK = "dark"
+    EDGY = "edgy"
+
+    @property
+    def display_name(self) -> str:
+        """Return the Create Run label for this tone."""
+
+        return {
+            HumorTone.WARM: "Warm",
+            HumorTone.DRY: "Dry",
+            HumorTone.SELF_DEPRECATING: "Self-deprecating",
+            HumorTone.DARK: "Dark",
+            HumorTone.EDGY: "Edgy",
+        }[self]
+
+    @property
+    def description(self) -> str:
+        """Explain the tone in a prompt without inventing a new joke style."""
+
+        return {
+            HumorTone.WARM: "affectionate and specific, still a joke rather than a greeting card",
+            HumorTone.DRY: "understated, deadpan, and matter-of-fact",
+            HumorTone.SELF_DEPRECATING: "the wearer is the punchline, without a generic pep talk",
+            HumorTone.DARK: "gallows or bleak humor about the situation, not cruelty toward a real person",
+            HumorTone.EDGY: "sharp and a little uncomfortable, still specific to the lived detail",
+        }[self]
+
+
 class SocialSource(str, Enum):
     """Public social platforms that the social discovery pipelines may search."""
 

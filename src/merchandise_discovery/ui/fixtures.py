@@ -244,7 +244,7 @@ def get_demo_run() -> RunFixture:
     stage_definitions = [
         ("Autonomous Seed Discovery", "Select broad identity groups worth investigating."),
         ("Identity Universe Expansion", "Expand each seed into relevant identity dimensions."),
-        ("Intersection Generation", "Generate combinations that are likely to coexist naturally."),
+        ("Intersection Generation", "Generate collisions between two different lives and score how unexpected they are."),
         ("AI Coherence and Research Selection", "Select research-worthy intersections and explain each AI selection."),
         ("Research Selection Compatibility Pass", "Pass through Stage 4's selected research set for historical compatibility."),
         ("Niche Research and Validation", "Gather evidence from real public communities."),
@@ -252,7 +252,7 @@ def get_demo_run() -> RunFixture:
         ("Niche Opportunity Scoring", "Combine evidence and qualitative opportunity signals."),
         ("Merchandise Concept Generation", "Turn validated experiences into merchandise concepts."),
         ("Single-Call Concept Critique", "Evaluate authenticity, wearability, and commercial appeal."),
-        ("Duplicate Phrase Screen", "Optionally identify duplicate merchandise phrases within this run."),
+        ("Duplicate Phrase Screen", "Optionally drop duplicate phrases and crowded sticker lines before artwork."),
         ("Final Concept Selection", "Rank surviving concepts and select finalists."),
         ("Structured Design Brief", "Convert each finalist into a visual design brief."),
         ("Grok Prompt Compilation", "Apply consistent merchandise prompt constraints."),
