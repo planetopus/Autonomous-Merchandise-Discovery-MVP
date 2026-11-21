@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Streamlit caches the composed runtime, including service instances. Bumping this value forces a
 # rebuild when application-service capabilities change so a hot-reloaded UI cannot retain an older
 # cached DiscoveryService object.
-RUNTIME_CACHE_VERSION = "2026-10-07-behavior-identity-v15"
+RUNTIME_CACHE_VERSION = "2026-11-21-reddit-oauth"
 
 
 @st.cache_resource(show_spinner=False)
@@ -43,6 +43,10 @@ def _initialize_configured_runtime(
     openai_web_search_price_per_call: float = 0.01,
     xai_image_price: float = 0.02,
     xai_image_edit_price: float = 0.022,
+    etsy_api_key: str | None = None,
+    reddit_client_id: str | None = None,
+    reddit_client_secret: str | None = None,
+    reddit_user_agent: str | None = None,
     provider_mode: str = "fixture",
     stop_after_stage: int = 18,
 ) -> ApplicationRuntime:
@@ -65,6 +69,10 @@ def _initialize_configured_runtime(
         openai_web_search_price_per_call=openai_web_search_price_per_call,
         xai_image_price=xai_image_price,
         xai_image_edit_price=xai_image_edit_price,
+        etsy_api_key=etsy_api_key,
+        reddit_client_id=reddit_client_id,
+        reddit_client_secret=reddit_client_secret,
+        reddit_user_agent=reddit_user_agent,
         provider_mode=provider_mode,
         stop_after_stage=stop_after_stage,
     )
@@ -104,6 +112,10 @@ def render_database_status() -> ApplicationRuntime | None:
                 openai_web_search_price_per_call=settings.openai_web_search_price_per_call,
                 xai_image_price=settings.xai_image_price,
                 xai_image_edit_price=settings.xai_image_edit_price,
+                etsy_api_key=settings.etsy_api_key,
+                reddit_client_id=settings.reddit_client_id,
+                reddit_client_secret=settings.reddit_client_secret,
+                reddit_user_agent=settings.reddit_user_agent,
                 provider_mode=settings.provider_mode,
                 stop_after_stage=settings.stop_after_stage,
             )

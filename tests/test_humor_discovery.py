@@ -295,3 +295,146 @@ def test_reddit_reader_is_slow_uses_a_user_agent_and_reads_top_comments() -> Non
     assert len(found) == 1
     assert found[0].body.startswith("I chart until the sun")
     assert found[0].url.startswith("https://www.reddit.com/")
+    assert reader.uses_oauth is False
+
+
+def _reddit_payloads():
+    search = {
+        "data": {
+            "children": [
+                {
+                    "data": {
+                        "id": "abc",
+                        "title": "Night shift",
+                        "permalink": "/r/nursing/comments/abc/night_shift/",
+                        "score": 20,
+                        "stickied": False,
+                    }
+                }
+            ]
+        }
+    }
+    comments = [
+        {"data": {"children": []}},
+        {
+            "data": {
+                "children": [
+                    {
+                        "kind": "t1",
+                        "data": {
+                            "author": "nurse",
+                            "body": "I chart until the sun comes up and then I walk the dog.",
+                            "score": 12,
+                            "permalink": "/r/nursing/comments/abc/night_shift/c1/",
+                        },
+                    }
+                ]
+            }
+        },
+    ]
+    return search, comments
+
+
+class _Response:
+    def __init__(self, payload, status=200, headers=None):
+        self._payload = payload
+        self.status_code = status
+        self.headers = headers or {}
+
+    def json(self):
+        return self._payload
+
+
+def test_oauth_reader_uses_client_credentials_and_backs_off_on_rate_limit() -> None:
+    """Official API calls mint a bearer token and wait when the rate window is empty."""
+
+    search, comments = _reddit_payloads()
+    slept: list[float] = []
+    now = {"value": 0.0}
+
+    def clock() -> float:
+        return now["value"]
+
+    def sleep(seconds: float) -> None:
+        slept.append(seconds)
+        now["value"] += seconds
+
+    class Client:
+        def __init__(self):
+            self.posts = []
+            self.gets = []
+
+        def post(self, url, data=None, auth=None, headers=None):
+            self.posts.append((url, data, auth, headers))
+            return _Response({"access_token": "token-1", "expires_in": 3600})
+
+        def get(self, url, params=None, headers=None):
+            self.gets.append((url, headers))
+            if url.endswith("/search"):
+                return _Response(
+                    search,
+                    headers={"X-Ratelimit-Remaining": "0", "X-Ratelimit-Reset": "5"},
+                )
+            return _Response(comments, headers={"X-Ratelimit-Remaining": "9", "X-Ratelimit-Reset": "40"})
+
+    client = Client()
+    reader = RedditReader(
+        client=client,
+        client_id="app-id",
+        client_secret="app-secret",
+        user_agent="sticker-research/0.1",
+        min_interval_seconds=0,
+        sleep=sleep,
+        clock=clock,
+    )
+    found = reader.collect("night shift")
+    reader.collect("night shift again")
+
+    assert reader.uses_oauth is True
+    assert client.posts[0][0] == "https://www.reddit.com/api/v1/access_token"
+    assert client.posts[0][1] == {"grant_type": "client_credentials"}
+    assert client.posts[0][2] == ("app-id", "app-secret")
+    assert client.posts[0][3]["User-Agent"] == "sticker-research/0.1"
+    assert len(client.posts) == 1
+    assert client.gets[0][0] == "https://oauth.reddit.com/search"
+    assert client.gets[1][0] == "https://oauth.reddit.com/comments/abc"
+    assert client.gets[0][1]["Authorization"] == "Bearer token-1"
+    assert slept == [5.0, 5.0]
+    assert found[0].body.startswith("I chart until the sun")
+
+
+def test_missing_reddit_credentials_stay_on_public_json() -> None:
+    """A client id without a secret does not attempt the OAuth token endpoint."""
+
+    search, comments = _reddit_payloads()
+
+    class Client:
+        def __init__(self):
+            self.posts = 0
+            self.urls = []
+
+        def post(self, *args, **kwargs):
+            self.posts += 1
+            raise AssertionError("public mode must not request a token")
+
+        def get(self, url, params=None, headers=None):
+            self.urls.append(url)
+            if url.endswith("search.json"):
+                return _Response(search)
+            return _Response(comments)
+
+    client = Client()
+    reader = RedditReader(
+        client=client,
+        client_id="app-id",
+        client_secret="",
+        min_interval_seconds=0,
+        sleep=lambda _seconds: None,
+        clock=lambda: 0.0,
+    )
+    found = reader.collect("night shift")
+
+    assert reader.uses_oauth is False
+    assert client.posts == 0
+    assert client.urls[0] == "https://www.reddit.com/search.json"
+    assert found[0].score == 12

@@ -188,7 +188,15 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
                 etsy_api_key=settings.etsy_api_key,
                 live=live_mode,
             ),
-            reddit_reader=RedditReader() if live_mode else None,
+            reddit_reader=(
+                RedditReader(
+                    client_id=settings.reddit_client_id,
+                    client_secret=settings.reddit_client_secret,
+                    user_agent=settings.reddit_user_agent,
+                )
+                if live_mode
+                else None
+            ),
         )
         runtime = ApplicationRuntime(
             client=client,

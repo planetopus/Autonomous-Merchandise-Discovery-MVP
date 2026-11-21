@@ -102,6 +102,21 @@ generation stage as part of the same run.
 
 Copy `.env.example` to `.env` when local credentials are needed. Real credentials belong in environment variables or a local Streamlit secrets file; they must not be committed.
 
+## Secrets
+
+Set these in the environment or in `.streamlit/secrets.toml` (flat keys). Environment variables win when both are present. Leave a value blank to skip that integration.
+
+| Name | Required | Used for |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | Live research and copy | OpenAI structured outputs, web search, and artwork critique |
+| `XAI_API_KEY` | Live sticker images | xAI `grok-imagine-image` generation and edits |
+| `REDDIT_CLIENT_ID` | Optional | Reddit app-only OAuth client id |
+| `REDDIT_CLIENT_SECRET` | Optional | Reddit app-only OAuth client secret |
+| `REDDIT_USER_AGENT` | Optional | Descriptive User-Agent sent with every Reddit request |
+| `ETSY_API_KEY` | Optional | Etsy listing counts for the crowded-line check |
+
+Reddit uses the client-credentials flow against `oauth.reddit.com` when both `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` are set. The reader backs off when `X-Ratelimit-Remaining` is exhausted. If those credentials are absent, live runs fall back to Reddit's public JSON endpoints. Create the script app at `https://www.reddit.com/prefs/apps`. `ETSY_API_KEY` is optional; without it, live mode counts public web results for the phrase plus "sticker", and fixture mode skips the check.
+
 ## Design rules
 
 - `entrypoints` contains Streamlit and worker adapters only.
