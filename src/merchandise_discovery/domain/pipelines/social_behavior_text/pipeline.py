@@ -36,8 +36,8 @@ class SocialBehaviorTextInput(BaseModel):
     query: str = Field(default="", max_length=500)
     auto_topic: bool = False
     candidate_count: int = Field(ge=1, le=25)
-    niche_a: str = Field(default="", max_length=200)
-    niche_b: str = Field(default="", max_length=200)
+    niche_a: str = Field(default="", max_length=500)
+    niche_b: str = Field(default="", max_length=500)
     humor_tone: HumorTone = HumorTone.DRY
 
     @model_validator(mode="after")

@@ -1,0 +1,193 @@
+"""The identity atlas is optional and tolerant of the lab's field names."""
+
+import random
+from unittest.mock import Mock
+
+from merchandise_discovery.application.discovery_stage_executor import DiscoveryStageExecutor
+from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource
+from merchandise_discovery.domain.models.workflow import RunConfig, StageExecution, WorkflowRun
+from merchandise_discovery.domain.pipelines.social_behavior_text import pipeline
+from merchandise_discovery.infrastructure.identity_atlas_loader import (
+    IdentityAtlas,
+    IdentitySubgroup,
+    OverlapCombo,
+    SlangTerm,
+    load_identity_atlas,
+    sample_overlap_pairs,
+    split_identity_names,
+)
+from tests.live_reasoning import scripted_social_provider
+
+
+def test_loader_accepts_wrapped_objects_and_alternate_keys(tmp_path) -> None:
+    """A list, a wrapped object, comma-separated traits, and nested self-words all load."""
+
+    folder = tmp_path / "identity_atlas"
+    folder.mkdir()
+    (folder / "identity_atlas.json").write_text(
+        """
+        {"subgroups": [
+          {
+            "label": "Night-shift nurses",
+            "dimension": "job",
+            "true_traits": "charts after clock-out, podcast in the car",
+            "self_vs_outsider": {"self": ["on nights"], "outsider": ["nurse life"]},
+            "co_occurrences": ["True-crime listeners"],
+            "buyer_pride_score": 8,
+            "dark_tolerance": 6,
+            "self_ownable_note": "They can claim the charting joke. Do not mock patients."
+          }
+        ]}
+        """,
+        encoding="utf-8",
+    )
+    (folder / "slang_lexicon.json").write_text(
+        """
+        [{"word": "delulu", "definition": "delusional optimism", "register": "gen z", "mismatch": 9},
+         {"term": "rizz", "meaning": "charm", "register": "gen alpha", "mismatch_score": 4}]
+        """,
+        encoding="utf-8",
+    )
+    (folder / "overlap_combos.json").write_text(
+        """
+        {"combos": [
+          {"subgroups": ["Night-shift nurses", "True-crime listeners"],
+           "detail": "the drive home is an episode",
+           "hook": "delulu",
+           "buyerPride": 9}
+        ]}
+        """,
+        encoding="utf-8",
+    )
+
+    atlas = load_identity_atlas(folder)
+
+    assert atlas.subgroups[0].name == "Night-shift nurses"
+    assert atlas.subgroups[0].traits == ["charts after clock-out", "podcast in the car"]
+    assert atlas.subgroups[0].self_words == ["on nights"]
+    assert atlas.subgroups[0].overlaps == ["True-crime listeners"]
+    assert atlas.subgroups[0].self_ownable.startswith("They can claim")
+    assert atlas.slang[0].term == "delulu"
+    assert atlas.slang[0].mismatch_score == 9
+    assert atlas.combos[0].names[1] == "True-crime listeners"
+    assert load_identity_atlas(tmp_path / "missing").subgroups == []
+
+
+def test_overlap_sampling_prefers_buyer_pride() -> None:
+    """A high buyer-pride combo is chosen far more often than a low-pride one."""
+
+    atlas = IdentityAtlas(
+        combos=[
+            OverlapCombo(names=["Church dads", "Vaping"], buyer_pride=10),
+            OverlapCombo(names=["Accountants", "Scuba"], buyer_pride=0.1),
+        ]
+    )
+    hits = 0
+    for seed in range(40):
+        picked = sample_overlap_pairs(atlas, limit=1, rng=random.Random(seed))
+        if picked and picked[0]["niche_a"] == "Church dads":
+            hits += 1
+    assert hits >= 30
+
+
+def test_one_field_can_hold_one_identity_or_several() -> None:
+    """Niche fields no longer require a pair, and commas split several identities."""
+
+    single = RunConfig(
+        pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+        social_sources=[SocialSource.REDDIT],
+        social_query="weekend plans",
+        social_niche_a="church dads",
+    )
+    several = RunConfig(
+        pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+        social_sources=[SocialSource.REDDIT],
+        social_query="weekend plans",
+        social_niche_a="church dads, weekend grilling",
+        social_niche_b="vaping",
+    )
+
+    assert single.social_niche_b == ""
+    assert split_identity_names(several.social_niche_a, several.social_niche_b) == [
+        "church dads",
+        "weekend grilling",
+        "vaping",
+    ]
+
+
+def test_live_run_feeds_atlas_traits_slang_and_self_ownable_notes(monkeypatch) -> None:
+    """A supplied identity pulls traits into the draft and the self-ownable note into the critic."""
+
+    atlas = IdentityAtlas(
+        subgroups=[
+            IdentitySubgroup(
+                name="Church dads",
+                dimension="religion",
+                traits=["Sunday service", "smokes outside after"],
+                self_words=["blessed"],
+                outsider_words=["church guy"],
+                overlaps=["Vaping"],
+                buyer_pride=9,
+                dark_tolerance=4,
+                self_ownable="They can claim the habit. Do not mock the faith.",
+            )
+        ],
+        slang=[
+            SlangTerm(term="delulu", meaning="delusional optimism", register="gen z", mismatch_score=9),
+            SlangTerm(term="rizz", meaning="charm", register="gen alpha", mismatch_score=3),
+        ],
+        combos=[OverlapCombo(names=["Church dads", "Vaping"], buyer_pride=9, slang_hook="delulu")],
+    )
+    monkeypatch.setattr(
+        "merchandise_discovery.application.discovery_stage_executor.load_identity_atlas",
+        lambda: atlas,
+    )
+    run = WorkflowRun(
+        title="Atlas",
+        config=RunConfig(
+            pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+            social_sources=[SocialSource.REDDIT],
+            social_query="sunday habits",
+            social_candidate_count=1,
+            social_niche_a="Church dads, Vaping",
+        ),
+    )
+    stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")
+    candidate = pipeline.execute(
+        pipeline.SocialBehaviorTextInput(
+            sources=[SocialSource.REDDIT],
+            query="sunday habits",
+            candidate_count=1,
+        )
+    ).candidates[0].model_copy(
+        update={
+            "source_url": "https://reddit.com/r/daddit/comments/abc/sunday",
+            "artwork_text": "My small group brings the snacks",
+            "pattern": "confession",
+        }
+    )
+    provider = scripted_social_provider(
+        pipeline.SocialBehaviorTextOutput(
+            candidates=[candidate],
+            search_summary="Dads who stay after the service.",
+        )
+    )
+    executor = DiscoveryStageExecutor(*(Mock() for _ in range(10)))
+    executor._reasoning_provider = provider
+
+    executor.execute(run, stage, executor.prepare(run, stage))
+
+    writer = next(
+        call.kwargs["user_prompt"]
+        for call in provider.complete_structured.call_args_list
+        if call.kwargs["response_model"].__name__ != "HumorCritiqueBatch"
+    )
+    critic = next(
+        call.kwargs["system_prompt"]
+        for call in provider.complete_structured.call_args_list
+        if call.kwargs["response_model"].__name__ == "HumorCritiqueBatch"
+    )
+    assert "Sunday service" in writer
+    assert "delulu" in writer
+    assert "Do not mock the faith" in critic
+    assert provider.complete_structured.call_count == 2
