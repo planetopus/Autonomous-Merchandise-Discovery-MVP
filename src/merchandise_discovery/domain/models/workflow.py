@@ -58,9 +58,9 @@ class RunConfig(BaseModel):
     # downstream prompt can preserve the same audience anchor without inferring sensitive traits.
     social_identity: str = Field(default="", max_length=300)
     social_identity_type: IdentityType | None = None
-    # Optional pair. Both must be set for research, copy, and artwork to target the intersection.
-    social_niche_a: str = Field(default="", max_length=200)
-    social_niche_b: str = Field(default="", max_length=200)
+    # Optional identities. One field, both fields, or a comma-separated list are all valid.
+    social_niche_a: str = Field(default="", max_length=500)
+    social_niche_b: str = Field(default="", max_length=500)
     humor_tone: HumorTone = HumorTone.DRY
     social_auto_identity: bool = False
     social_manual_artwork_selection: bool = False
@@ -82,8 +82,6 @@ class RunConfig(BaseModel):
             raise ValueError("Saved artwork choices require manual artwork selection to be enabled.")
         self.social_niche_a = self.social_niche_a.strip()
         self.social_niche_b = self.social_niche_b.strip()
-        if bool(self.social_niche_a) != bool(self.social_niche_b):
-            raise ValueError("Niche crossover requires both niche A and niche B, or neither.")
         if any(index < 0 for index in self.social_selected_candidate_indices):
             raise ValueError("Selected candidate indices must be non-negative.")
         if len(set(self.social_selected_candidate_indices)) != len(

@@ -242,19 +242,18 @@ def render_run_create(
                 help="Describe the behavior or tension. Avoid entering a broad product category.",
                 disabled=auto_topic,
             )
-            st.markdown("#### Cross two niches")
+            st.markdown("#### Identities")
             st.caption(
-                "Enter two niches or identities to research their intersection and write "
-                "sticker text only for people who are both. Leave both blank and the AI picks "
-                "two niches whose audiences share a life, then scores that pairing."
+                "Enter one identity, or several separated by commas, in either field. "
+                "Two or more are crossed. Leave both blank and the AI picks a real overlap."
             )
             social_niche_a = st.text_input(
                 "Niche / identity A",
-                placeholder="For example: night-shift nurses",
+                placeholder="For example: night-shift nurses, true crime",
             )
             social_niche_b = st.text_input(
                 "Niche / identity B",
-                placeholder="For example: pit bull owners",
+                placeholder="Optional. For example: pit bull owners",
             )
             social_candidate_count = st.slider(
                 "Text candidates",
@@ -305,10 +304,6 @@ def render_run_create(
         ):
             st.error("Enter the target identity for the identity-focused pipeline.")
             return
-        if bool(social_niche_a.strip()) != bool(social_niche_b.strip()):
-            st.error("Enter both niche A and niche B to cross them, or leave both blank.")
-            return
-
     try:
         run = discovery_service.create_run(
             title=title.strip(),

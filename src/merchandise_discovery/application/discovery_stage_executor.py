@@ -79,6 +79,14 @@ from merchandise_discovery.infrastructure.humor_lab_loader import (
     load_humor_lab,
     merge_lab_playbook,
 )
+from merchandise_discovery.infrastructure.identity_atlas_loader import (
+    atlas_prompt,
+    load_identity_atlas,
+    sample_overlap_pairs,
+    self_ownable_block,
+    split_identity_names,
+    subgroup_context,
+)
 from merchandise_discovery.infrastructure.mongo.repositories.artwork_repository import (
     ArtworkRepository,
 )
@@ -260,17 +268,40 @@ class DiscoveryStageExecutor:
             return None, UsageMetrics(), selection, [], playbook, None
         supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
         supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
-        need_pair = not (supplied_a and supplied_b)
+        supplied_names = split_identity_names(supplied_a, supplied_b)
+        atlas = load_identity_atlas()
+        pair_bank = self._atlas_pair_bank(
+            atlas,
+            lab.niche_pairs,
+            supplied_names[0] if len(supplied_names) == 1 else "",
+        )
+        need_pair = len(supplied_names) < 2
         pair_meta = None
         usage = UsageMetrics()
         self._social_usage = usage
         self._social_preview = None
         warnings: list[str] = []
+        if len(supplied_names) >= 2:
+            pair_meta = {
+                "niche_pair_a": supplied_names[0],
+                "niche_pair_b": " + ".join(supplied_names[1:]),
+                "pairing_score": None,
+                "pairing_reason": "The user named these identities.",
+                "niche_pair_candidates": [],
+            }
+            input_model = input_model.model_copy(
+                update={
+                    "niche_a": pair_meta["niche_pair_a"],
+                    "niche_b": pair_meta["niche_pair_b"],
+                }
+            )
         # The pair call does not need Reddit, so the two waits overlap.
         with ThreadPoolExecutor(max_workers=2) as pool:
             quote_job = pool.submit(self._collect_reddit_quotes, input_model)
             pair_job = (
-                pool.submit(self._score_niche_pairs, input_model, lab.niche_pairs) if need_pair else None
+                pool.submit(self._score_niche_pairs, input_model, pair_bank, supplied_names[:1])
+                if need_pair
+                else None
             )
             quotes = quote_job.result()
             if pair_job is not None:
@@ -290,11 +321,19 @@ class DiscoveryStageExecutor:
             domains = tuple(
                 "reddit.com" if source.value == "reddit" else "x.com" for source in input_model.sources
             )
+        chosen_names = split_identity_names(
+            str(getattr(input_model, "niche_a", "") or ""),
+            str(getattr(input_model, "niche_b", "") or ""),
+        )
+        groups, slang = subgroup_context(atlas, *chosen_names)
+        atlas_block = atlas_prompt(groups, slang)
+        ownable = self_ownable_block(groups)
+        critic_rubric = "\n".join(part for part in (lab.rubric, ownable) if part)
         user_prompt = pipeline_module.build_user_prompt(
             input_model,
             draft_count=12,
             quotes=quotes,
-            humor_reference_block=reference_block,
+            humor_reference_block=reference_block + atlas_block,
         )
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
@@ -312,7 +351,7 @@ class DiscoveryStageExecutor:
                 candidates,
                 len(candidates),
                 reference_block,
-                lab.rubric,
+                critic_rubric,
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
@@ -323,10 +362,10 @@ class DiscoveryStageExecutor:
                 input_model,
                 output_model,
                 pipeline_module,
-                reference_block,
+                reference_block + atlas_block,
                 selection.examples,
                 lab.gold_lines,
-                lab.rubric,
+                critic_rubric,
             )
             usage = self._add_usage(usage, fill_usage)
             reviews.extend(fill_reviews)
@@ -430,10 +469,26 @@ class DiscoveryStageExecutor:
             return extra
         return combine_usage(current, extra)
 
-    def _score_niche_pairs(self, input_model, bank: list[dict] | None = None):
+    def _atlas_pair_bank(self, atlas, lab_pairs: list[dict], anchor: str) -> list[dict]:
+        """Prefer real atlas overlaps, then any humor-lab pairs, when the model must pick."""
+
+        sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10)
+        bank = [
+            {"niche_a": item["niche_a"], "niche_b": item["niche_b"]}
+            for item in sampled
+        ]
+        seen = {(item["niche_a"].casefold(), item["niche_b"].casefold()) for item in bank}
+        for item in lab_pairs:
+            key = (str(item.get("niche_a", "")).casefold(), str(item.get("niche_b", "")).casefold())
+            if key[0] and key[1] and key not in seen:
+                bank.append({"niche_a": item["niche_a"], "niche_b": item["niche_b"]})
+                seen.add(key)
+        return bank[:12]
+
+    def _score_niche_pairs(self, input_model, bank: list[dict] | None = None, anchor: list[str] | None = None):
         """Score about ten pairs once and keep the best, even when it is under 7."""
 
-        identity = str(getattr(input_model, "identity", "") or "")
+        identity = (anchor[0] if anchor else "") or str(getattr(input_model, "identity", "") or "")
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
                 "You pair two niches that share a life. Score shared lived experience and "
