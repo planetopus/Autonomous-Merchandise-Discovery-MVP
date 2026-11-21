@@ -1,0 +1,202 @@
+{
+  "version": "2026-11-21",
+  "core_mechanics": "IRONY (opposite of what is expected, e.g. a sincere cause attached to a vice) and SARCASM (saying the opposite with a straight face, e.g. fake enthusiasm about misery) power every pattern below. Every line should have a clear ironic or sarcastic turn.",
+  "core_rule": "Name a real overlapping identity group truthfully, in words they wouldn't use about themselves. Critic test: would a real member read it, say 'that's me', and buy it?",
+  "patterns": [
+    {
+      "id": "situational_irony",
+      "rank": 1,
+      "name": "Situational Irony (opposite of expected)",
+      "how": "Pairs two true things that should not go together: a sincere/wholesome cause attached to a vice, a calm professional who panics at small things, a 'safety' role doing the unsafe thing. The brain expects consistency and gets the opposite, but because both halves are TRUE of the same person it lands as recognition, not randomness. This is the engine under 'THICC DADS WHO VAPE FOR CHRIST' (vape + for Christ).",
+      "template": "[Wholesome/serious identity or cause] + [the true opposite habit] / [Calm at BIG thing], [panics at tiny thing].",
+      "kills": "Halves that aren't both true of one real person; explaining the irony; an opposite so mild nobody notices.",
+      "dark": "Calm through 40 overdoses. Panics when the doorbell rings.",
+      "examples": [
+        "Talks people off ledges for a living. Can't call the dentist.",
+        "Church choir on Sunday, murder podcasts all week."
+      ]
+    },
+    {
+      "id": "deadpan_sarcasm",
+      "rank": 2,
+      "name": "Deadpan Sarcasm (fake enthusiasm about misery)",
+      "how": "Says the opposite of what's meant with a straight face: chipper, grateful or proud wording about something miserable. The reader decodes the real meaning in a beat; that 'I see what you did' moment is the laugh, and wearing it signals 'I'm coping and I'm in on it'.",
+      "template": "[Enthusiastic/grateful word]! [miserable true situation]. / Love that for me: [misery].",
+      "kills": "Sarcasm that could be read literally (no clear tell); bitterness with no wink; tired formats ('Oh great, another Monday').",
+      "dark": "Yay! Another code at shift change!",
+      "examples": [
+        "Thrilled to be the emergency contact again!",
+        "Living the dream. The dream is a 4 AM vending machine burrito."
+      ]
+    },
+    {
+      "id": "true_identity_stack",
+      "rank": 3,
+      "name": "True Identity Stack (wrong-voice roll call)",
+      "how": "Names a REAL group of people who already overlap (every trait is true of the same person), but says it in a voice they would never use about themselves: Gen Z/internet slang on an older or wholesome identity, or blunt/clinical words on a sincere one. The comedy is (a) generational voice mismatch, (b) wholesome sincerity left intact, (c) self-recognition: the buyer reads it, says 'that's literally me', and buys it. NOT random: if any trait isn't true of a real, recognizable person, it dies.",
+      "template": "[WRONG-VOICE ADJECTIVE] [REAL WHOLESOME/OLDER IDENTITY] WHO [TRUE, SPECIFIC HABIT OF THAT SAME PERSON] (optional: FOR [SINCERE CAUSE])",
+      "kills": "Random stacking of unrelated identities; traits nobody in the group actually has; using the group's OWN slang (no mismatch); mocking the group from outside instead of naming them lovingly; more than ~3 traits; vague habits ('who love life').",
+      "dark": "Add a true grim trait the group jokes about privately: 'SOFT-SPOKEN MORTICIANS WHO HAVE SEEN YOUR WHOLE FAMILY NAKED'.",
+      "examples": [
+        "SIGMA RETIREES WHO GET TO THE AIRPORT FIVE HOURS EARLY",
+        "HOT GIRL WALK GRANDPAS IN BRAND NEW NEW BALANCES"
+      ]
+    },
+    {
+      "id": "cheerful_dark_label",
+      "rank": 4,
+      "name": "Cheerful Dark Label",
+      "how": "Peppy name-tag / greeting-card formatting (exclamation point, 'Ask me about', 'Proud') wrapped around something grim but true. The gap between bubbly tone and dark content is the joke; the wearer signals they cope with darkness by laughing.",
+      "template": "[Upbeat label format]: [grim truth about the wearer's life/job]!",
+      "kills": "Content that's sad without being true-to-life; punching at victims; too long; when the cheerful frame is missing (then it's just bleak).",
+      "dark": "It already is dark; level 3 = death/divorce/estate stuff stated sunnily: 'Hi! I'm the emergency contact!'",
+      "examples": [
+        "Hi! I'm everyone's emergency contact!",
+        "Ask me about my layaway casket plan!"
+      ]
+    },
+    {
+      "id": "official_warning_sign",
+      "rank": 5,
+      "name": "Official Warning Sign About a Person",
+      "how": "Borrows the authority of OSHA/road/caution signage and points it at a personality trait or job. The hazard is real and recognizable to anyone who lives with that person, so it doubles as a gift from family.",
+      "template": "CAUTION / WARNING / NOTICE: [ROLE] [specific behavior that is the 'hazard'].",
+      "kills": "Generic hazards ('caution: crazy'); behaviors that aren't specific to the role; over-explaining after the hazard line.",
+      "dark": "WARNING: OFF-DUTY NURSE. DO NOT SHOW ME YOUR RASH.",
+      "examples": [
+        "CAUTION: MORTICIAN. WILL GUESS YOUR CASKET SIZE.",
+        "NOTICE: THIS TRUCK IS PAID OFF. THE DRIVER IS NOT."
+      ]
+    },
+    {
+      "id": "self_defeating_sign",
+      "rank": 6,
+      "name": "Self-Defeating / Meta Sign",
+      "how": "The object contradicts its own existence ('PRIVATE SIGN DO NOT READ'). Logic short-circuits in under a second; best when the contradiction mirrors the wearer's trait (anxiety, ADHD, introversion).",
+      "template": "[INSTRUCTION THE STICKER ITSELF BREAKS] / [READER ACTION] IF [CONDITION]. ACTUALLY DON'T.",
+      "kills": "Contradiction that takes thought to see; wordiness; no link to a trait the buyer identifies with.",
+      "dark": "DO NOT TELL MY THERAPIST ABOUT THIS STICKER.",
+      "examples": [
+        "HONK IF YOU HAVE ANXIETY. ACTUALLY, PLEASE DON'T.",
+        "QUIET STICKER. PLEASE READ SILENTLY."
+      ]
+    },
+    {
+      "id": "clinical_life_report",
+      "rank": 7,
+      "name": "Clinical / Professional Jargon on Personal Life",
+      "how": "A profession's dry jargon (chart notes, repair orders, police reports) describing the wearer's personal mess. Insiders laugh at their own language; outsiders get it from the shape.",
+      "template": "[JARGON FIELD]: [personal-life fact]. / [Procedure verb] [personal situation].",
+      "kills": "Jargon only 1% of buyers know; puns on the job title ('Code Blue, Cold Case'); no personal stake.",
+      "dark": "MARRIAGE STATUS: DNR.",
+      "examples": [
+        "Discharged against medical advice to go to Applebee's.",
+        "Diagnosis: Dad. Prognosis: Cargo shorts."
+      ]
+    },
+    {
+      "id": "insider_deadpan_confession",
+      "rank": 8,
+      "name": "Insider Deadpan Confession",
+      "how": "Flat, matter-of-fact admission of something only an insider knows. Deadpan delivery + specificity = authority. Readers outside the group get a peek behind the curtain; insiders feel seen.",
+      "template": "I've [seen/heard/done] [specific insider thing]. [Flat consequence].",
+      "kills": "Exaggeration that breaks deadpan; generic 'my job is hard'; lifted forum sentences with no twist.",
+      "dark": "I've heard your worst day. Three times before lunch.",
+      "examples": [
+        "I have seen everyone naked eventually.",
+        "Don't worry, I've seen worse. You're not special."
+      ]
+    },
+    {
+      "id": "oddly_specific_vibe",
+      "rank": 9,
+      "name": "Oddly Specific Sensory/Vibe Description",
+      "how": "Describes a person with a hyper-specific smell, sound or object everyone has experienced but never named ('smells like earring backs'). Recognition hits instantly; the specificity is the laugh.",
+      "template": "[He/She/I] [smells/sounds/has the energy] like [hyper-specific shared sensory memory] (+ [unexpected emotional noun]).",
+      "kills": "Invented smells nobody knows; general insults; too many images.",
+      "dark": "Smells like brake cleaner and divorce.",
+      "examples": [
+        "Smells like Bengay and old grudges.",
+        "Hugs like a man who owns a pressure washer."
+      ]
+    },
+    {
+      "id": "unfair_comparison_gripe",
+      "rank": 10,
+      "name": "Unfair Comparison Gripe",
+      "how": "Observational 'why does X get [nice thing] but Y gets [awful thing]' where Y is the wearer's own body/life. The bitter specificity and self-pity read as relatable.",
+      "template": "Why does [object] get [helpful feature] but I just get [grim personal equivalent]?",
+      "kills": "Comparison that isn't true of both sides; too long for a bumper; political.",
+      "dark": "Cars get recalls. My ex never did.",
+      "examples": [
+        "My truck gets a check engine light. I just get back pain.",
+        "Printers get a low ink warning. I get nothing."
+      ]
+    },
+    {
+      "id": "club_roster",
+      "rank": 11,
+      "name": "Club / Society Roster",
+      "how": "Formal society/auxiliary/union naming for an informal true habit. Pomp + mundanity. Great for group gifting (the whole crew buys one).",
+      "template": "[Formal org word] of [REAL GROUP] Who [specific habit] \u2014 Est. [silly date]",
+      "kills": "Habit not specific; org name too long to read on a car; 'club' with no formality contrast.",
+      "dark": "Ladies Auxiliary of Women Who Know Exactly How They'd Do It.",
+      "examples": [
+        "Local Union of Dads Who Stand in the Garage for No Reason",
+        "Night Shift Lunch Club \u2014 Lunch Served at 4 AM"
+      ]
+    },
+    {
+      "id": "economy_downgrade",
+      "rank": 12,
+      "name": "Economy Downgrade",
+      "how": "'Due to inflation/budget cuts' frame applied to a personal coping mechanism or condition, downgraded to a sad cheaper version. Timely + self-deprecating.",
+      "template": "Due to [inflation/the economy], my [luxury coping/condition] is now [sad cheap version].",
+      "kills": "Downgrade that isn't concrete; reusing known memes ('light at end of tunnel turned off').",
+      "dark": "Due to the economy, my midlife crisis is a used kayak.",
+      "examples": [
+        "Due to inflation, my therapy is driving with the windows down.",
+        "Couldn't afford therapy so I bought another smoker."
+      ]
+    },
+    {
+      "id": "seasonal_or_object_standoff",
+      "rank": 13,
+      "name": "Object/Season Takes a Stand",
+      "how": "A season, holiday mascot or object speaks with petty territorial attitude ('Back off Santa... this is my month' on a turkey). Personifying a thing with human pettiness + perfect timing = seasonal impulse buys.",
+      "template": "[Mascot/object]: 'Back off [rival], [territorial claim].'",
+      "kills": "No clear speaker; no rivalry; seasonal with no visual hook.",
+      "dark": "Groundhog: 'Six more weeks or I take a hostage.'",
+      "examples": [
+        "Deer: 'Opening day? Cute. I've seen your aim.'",
+        "Pumpkin Spice: 'Peppermint, I will end you in December.'"
+      ]
+    },
+    {
+      "id": "fake_credential",
+      "rank": 14,
+      "name": "Fake Credential / Job Title",
+      "how": "Mock-official certification for a true, unglamorous skill. Works when the skill is specific and the format is bureaucratic.",
+      "template": "[Board Certified / Licensed / Doctorate] in [specific unglamorous real skill]",
+      "kills": "'Professional overthinker' and other worn-out titles; vague skills.",
+      "dark": "Board Certified in Crying in the Parking Garage.",
+      "examples": [
+        "Licensed to Back a Trailer In On the First Try (Once)",
+        "Doctor of Driveway Diagnostics"
+      ]
+    },
+    {
+      "id": "brand_new_sentence",
+      "rank": 15,
+      "name": "Confident Absurd Statement",
+      "how": "A sentence that has never been said, delivered with total confidence, about a real niche experience (the r/BrandNewSentence mechanic). Absurd but logically true in the niche's world.",
+      "template": "[Confident claim linking niche thing to unexpected domain].",
+      "kills": "Pure randomness with no niche truth; trying too hard to be 'random'.",
+      "dark": "My birdwatching hobby is just a stakeout with snacks.",
+      "examples": [
+        "The deer know which truck is mine.",
+        "Crows remember my face and honestly they're right to."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,905 @@
+{
+  "count": 100,
+  "pairs": [
+    {
+      "id": "p001",
+      "niche_a": "nurses",
+      "niche_b": "true crime",
+      "shared_experience": "Unwind from 12-hour shifts with murder podcasts and judge the autopsy details",
+      "sense_score": 10,
+      "sellability_score": 10,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p002",
+      "niche_a": "church moms",
+      "niche_b": "true crime",
+      "shared_experience": "Go from Bible study straight to Dateline and know every detail of every case",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p003",
+      "niche_a": "divorced dads",
+      "niche_b": "BBQ smoking",
+      "shared_experience": "Weekend custody, new smoker, 14-hour briskets as a love language",
+      "sense_score": 10,
+      "sellability_score": 10,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p004",
+      "niche_a": "retirees",
+      "niche_b": "air travel",
+      "shared_experience": "Arrive at the airport five hours early and narrate the whole process",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p005",
+      "niche_a": "grandpas",
+      "niche_b": "mall walking",
+      "shared_experience": "Brand new New Balances, 6 AM laps, strong opinions about the food court",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p006",
+      "niche_a": "youth pastors",
+      "niche_b": "Gen Z slang",
+      "shared_experience": "Try very hard to say 'bet' and 'no cap' to stay relatable to teens",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p007",
+      "niche_a": "morticians",
+      "niche_b": "crochet",
+      "shared_experience": "Calm, soft-spoken people with a gentle hobby and a very dark day job",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p008",
+      "niche_a": "ER nurses",
+      "niche_b": "night shift eating",
+      "shared_experience": "Dinner at 4 AM, standing, out of a vending machine",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "club_roster"
+    },
+    {
+      "id": "p009",
+      "niche_a": "911 dispatchers",
+      "niche_b": "anxiety",
+      "shared_experience": "Perfectly calm on a stranger's worst call, panic when their own doorbell rings",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p010",
+      "niche_a": "ER techs",
+      "niche_b": "full moon",
+      "shared_experience": "Swear the full moon fills the waiting room with chaos",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p011",
+      "niche_a": "mechanics",
+      "niche_b": "dads",
+      "shared_experience": "Can hear what's wrong with your car at a red light and will tell you",
+      "sense_score": 9,
+      "sellability_score": 9,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p012",
+      "niche_a": "dads",
+      "niche_b": "garage standing",
+      "shared_experience": "Stand in the open garage for no reason, staring at nothing, fully content",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "club_roster"
+    },
+    {
+      "id": "p013",
+      "niche_a": "grandmas",
+      "niche_b": "Facebook",
+      "shared_experience": "Comment 'beautiful' on strangers' posts and share warnings from 2014",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p014",
+      "niche_a": "ADHD adults",
+      "niche_b": "coffee",
+      "shared_experience": "Reheat the same coffee four times and find it in the microwave at dinner",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p015",
+      "niche_a": "anxiety",
+      "niche_b": "drive-thru",
+      "shared_experience": "Rehearse the order six times and still say 'you too' to 'enjoy your meal'",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "self_defeating_sign"
+    },
+    {
+      "id": "p016",
+      "niche_a": "teachers",
+      "niche_b": "wine",
+      "shared_experience": "Survive parent emails with a bottle of wine on Friday",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "economy_downgrade"
+    },
+    {
+      "id": "p017",
+      "niche_a": "truckers",
+      "niche_b": "gas station food",
+      "shared_experience": "Rate roller hot dogs across 48 states like a food critic",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p018",
+      "niche_a": "hunters",
+      "niche_b": "patience/coffee",
+      "shared_experience": "Sit in a freezing stand for 9 hours and see zero deer",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p019",
+      "niche_a": "fishermen",
+      "niche_b": "lying",
+      "shared_experience": "The fish was always bigger; the photo always didn't load",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p020",
+      "niche_a": "retirees",
+      "niche_b": "4:30 AM wake-ups",
+      "shared_experience": "Retired with nowhere to be, still up before the birds",
+      "sense_score": 10,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p021",
+      "niche_a": "Catholic moms",
+      "niche_b": "big families",
+      "shared_experience": "Six kids, a minivan, rosary in the cupholder and a wine fridge",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p022",
+      "niche_a": "homeschool moms",
+      "niche_b": "essential oils",
+      "shared_experience": "There is an oil for that, and a lesson plan for the oil",
+      "sense_score": 9,
+      "sellability_score": 7,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p023",
+      "niche_a": "librarians",
+      "niche_b": "being strict",
+      "shared_experience": "Soft cardigan, iron rules, shush with authority",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p024",
+      "niche_a": "farmers",
+      "niche_b": "talking to animals",
+      "shared_experience": "Won't go to therapy, will tell the cows everything",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p025",
+      "niche_a": "Jeep owners",
+      "niche_b": "dads",
+      "shared_experience": "The Jeep wave is the only emotion they show",
+      "sense_score": 9,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p026",
+      "niche_a": "midlife dads",
+      "niche_b": "cycling",
+      "shared_experience": "Spent $6,000 on a gravel bike and spandex at 47",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p027",
+      "niche_a": "recently divorced dads",
+      "niche_b": "skincare",
+      "shared_experience": "Just discovered moisturizer and a new apartment",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p028",
+      "niche_a": "soccer moms",
+      "niche_b": "folding chairs",
+      "shared_experience": "Three folding chairs, snacks for 20 and a trunk that never closes",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p029",
+      "niche_a": "grandpas",
+      "niche_b": "Home Depot",
+      "shared_experience": "Talk to every employee for 40 minutes and buy one screw",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p030",
+      "niche_a": "widowers",
+      "niche_b": "senior centers",
+      "shared_experience": "Suddenly the most popular man at bingo",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p031",
+      "niche_a": "deacons",
+      "niche_b": "offering plates",
+      "shared_experience": "Count the money twice and know who tips God poorly",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p032",
+      "niche_a": "grandmas",
+      "niche_b": "bingo",
+      "shared_experience": "Six cards, lucky troll doll, will fight you",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p033",
+      "niche_a": "nurses",
+      "niche_b": "caffeine",
+      "shared_experience": "Run a whole floor on cold coffee and no bathroom breaks",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "clinical_life_report"
+    },
+    {
+      "id": "p034",
+      "niche_a": "nurses",
+      "niche_b": "off-duty",
+      "shared_experience": "Family shows them rashes at Thanksgiving",
+      "sense_score": 10,
+      "sellability_score": 10,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p035",
+      "niche_a": "morticians",
+      "niche_b": "dark humor",
+      "shared_experience": "See everyone eventually and joke about it at dinner",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p036",
+      "niche_a": "morticians",
+      "niche_b": "small talk",
+      "shared_experience": "Strangers either go quiet or ask too many questions",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p037",
+      "niche_a": "true crime fans",
+      "niche_b": "anxiety",
+      "shared_experience": "Know too much, lock the door three times",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p038",
+      "niche_a": "true crime fans",
+      "niche_b": "divorce",
+      "shared_experience": "Watch Dateline and think about the ex",
+      "sense_score": 8,
+      "sellability_score": 8,
+      "best_pattern": "clinical_life_report"
+    },
+    {
+      "id": "p039",
+      "niche_a": "divorced dads",
+      "niche_b": "custody weekends",
+      "shared_experience": "Every other weekend, Chuck E. Cheese and a sad apartment",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p040",
+      "niche_a": "divorced people",
+      "niche_b": "new freedom",
+      "shared_experience": "Just happy to have the remote and the whole bed",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p041",
+      "niche_a": "911 dispatchers",
+      "niche_b": "night shift",
+      "shared_experience": "Eat dinner at 3 AM while someone describes a crime scene",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "club_roster"
+    },
+    {
+      "id": "p042",
+      "niche_a": "paramedics",
+      "niche_b": "fast food",
+      "shared_experience": "Eat a whole meal in 90 seconds at red lights",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p043",
+      "niche_a": "ICU nurses",
+      "niche_b": "death",
+      "shared_experience": "Hold more hands at the end than anyone should",
+      "sense_score": 8,
+      "sellability_score": 6,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p044",
+      "niche_a": "hospice nurses",
+      "niche_b": "gallows humor",
+      "shared_experience": "Laugh hardest because they see the most goodbyes",
+      "sense_score": 8,
+      "sellability_score": 6,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p045",
+      "niche_a": "pharmacists",
+      "niche_b": "people asking for advice",
+      "shared_experience": "Everyone wants a free consult in the grocery store",
+      "sense_score": 9,
+      "sellability_score": 7,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p046",
+      "niche_a": "vets",
+      "niche_b": "crying",
+      "shared_experience": "Cry in the car after every sad appointment",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p047",
+      "niche_a": "dental hygienists",
+      "niche_b": "asking questions",
+      "shared_experience": "Ask you questions with both hands in your mouth",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p048",
+      "niche_a": "cops' wives",
+      "niche_b": "anxiety",
+      "shared_experience": "Every late text is a small panic attack",
+      "sense_score": 8,
+      "sellability_score": 6,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p049",
+      "niche_a": "firefighters",
+      "niche_b": "cooking",
+      "shared_experience": "Firehouse chili and competitive kitchen culture",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "club_roster"
+    },
+    {
+      "id": "p050",
+      "niche_a": "construction workers",
+      "niche_b": "port-a-potties",
+      "shared_experience": "Know every porta-john on the job by temperature",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "oddly_specific_vibe"
+    },
+    {
+      "id": "p051",
+      "niche_a": "electricians",
+      "niche_b": "getting shocked",
+      "shared_experience": "Lick a 9-volt to test it and call it 'tingly'",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p052",
+      "niche_a": "plumbers",
+      "niche_b": "seeing horrors",
+      "shared_experience": "Have seen things in pipes you'd call the police about",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p053",
+      "niche_a": "truckers",
+      "niche_b": "loneliness",
+      "shared_experience": "Talk to the dashboard for 11 hours a day",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p054",
+      "niche_a": "truckers",
+      "niche_b": "four-wheelers",
+      "shared_experience": "Hate cars cutting them off at 70 mph",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p055",
+      "niche_a": "retail workers",
+      "niche_b": "holiday shoppers",
+      "shared_experience": "Survive Black Friday and still smile",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p056",
+      "niche_a": "servers",
+      "niche_b": "bad tippers",
+      "shared_experience": "Know you're a 10% table before you sit down",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p057",
+      "niche_a": "accountants",
+      "niche_b": "tax season",
+      "shared_experience": "Disappear from January to April 15",
+      "sense_score": 9,
+      "sellability_score": 7,
+      "best_pattern": "seasonal_or_object_standoff"
+    },
+    {
+      "id": "p058",
+      "niche_a": "office workers",
+      "niche_b": "meetings",
+      "shared_experience": "That meeting could have been an email",
+      "sense_score": 8,
+      "sellability_score": 8,
+      "best_pattern": "clinical_life_report"
+    },
+    {
+      "id": "p059",
+      "niche_a": "IT people",
+      "niche_b": "users",
+      "shared_experience": "'Did you restart it?' and quiet rage",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p060",
+      "niche_a": "gamers",
+      "niche_b": "dads",
+      "shared_experience": "Dad gamers with 20 minutes of play a week and a backlog of 300",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p061",
+      "niche_a": "cat owners",
+      "niche_b": "anxiety",
+      "shared_experience": "Cat is the only one allowed to see them cry",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p062",
+      "niche_a": "dog moms",
+      "niche_b": "wine",
+      "shared_experience": "Dog has a birthday party, mom has the wine",
+      "sense_score": 8,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p063",
+      "niche_a": "plant parents",
+      "niche_b": "overwatering",
+      "shared_experience": "Love their plants to death literally",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p064",
+      "niche_a": "gardeners",
+      "niche_b": "tomatoes",
+      "shared_experience": "Delusional faith every spring that the tomatoes will make it",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "fake_credential"
+    },
+    {
+      "id": "p065",
+      "niche_a": "birdwatchers",
+      "niche_b": "introverts",
+      "shared_experience": "Binoculars, silence and a reason to avoid people",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "brand_new_sentence"
+    },
+    {
+      "id": "p066",
+      "niche_a": "crows",
+      "niche_b": "people who feed them",
+      "shared_experience": "Crow-feeders who believe the crows know them",
+      "sense_score": 9,
+      "sellability_score": 7,
+      "best_pattern": "brand_new_sentence"
+    },
+    {
+      "id": "p067",
+      "niche_a": "pickleball",
+      "niche_b": "retirees",
+      "shared_experience": "Retirees who treat pickleball like the Olympics",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p068",
+      "niche_a": "golf dads",
+      "niche_b": "lying",
+      "shared_experience": "Score card fiction and a beer by hole 3",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p069",
+      "niche_a": "boat dads",
+      "niche_b": "debt",
+      "shared_experience": "Bought a boat, now drown in payments",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "unfair_comparison_gripe"
+    },
+    {
+      "id": "p070",
+      "niche_a": "lawn dads",
+      "niche_b": "grass",
+      "shared_experience": "Diagonal stripes and daily inspections of the neighbor's lawn",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p071",
+      "niche_a": "ADHD",
+      "niche_b": "online shopping",
+      "shared_experience": "Impulse buy at 2 AM, forgot by morning",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "economy_downgrade"
+    },
+    {
+      "id": "p072",
+      "niche_a": "anxiety",
+      "niche_b": "therapy budget",
+      "shared_experience": "Can't afford therapy, cope with something weirder",
+      "sense_score": 9,
+      "sellability_score": 9,
+      "best_pattern": "economy_downgrade"
+    },
+    {
+      "id": "p073",
+      "niche_a": "depression",
+      "niche_b": "humor",
+      "shared_experience": "Make the darkest jokes and smile through it",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p074",
+      "niche_a": "chronic pain",
+      "niche_b": "aging",
+      "shared_experience": "Thirty-five, back pain like 80",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "unfair_comparison_gripe"
+    },
+    {
+      "id": "p075",
+      "niche_a": "millennials",
+      "niche_b": "aging",
+      "shared_experience": "Knee hurts from sleeping wrong",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "unfair_comparison_gripe"
+    },
+    {
+      "id": "p076",
+      "niche_a": "moms",
+      "niche_b": "being emergency contact",
+      "shared_experience": "The responsible one everyone calls",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p077",
+      "niche_a": "oldest daughters",
+      "niche_b": "responsibility",
+      "shared_experience": "Raised the siblings, run the group chat, still the emergency contact",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "cheerful_dark_label"
+    },
+    {
+      "id": "p078",
+      "niche_a": "introverts",
+      "niche_b": "cancelled plans",
+      "shared_experience": "Pure joy when plans get cancelled",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "self_defeating_sign"
+    },
+    {
+      "id": "p079",
+      "niche_a": "night shift workers",
+      "niche_b": "sleep",
+      "shared_experience": "Sleep with foil on the windows at noon",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "club_roster"
+    },
+    {
+      "id": "p080",
+      "niche_a": "true crime fans",
+      "niche_b": "birdwatching",
+      "shared_experience": "Both are basically stakeouts with snacks",
+      "sense_score": 7,
+      "sellability_score": 6,
+      "best_pattern": "brand_new_sentence"
+    },
+    {
+      "id": "p081",
+      "niche_a": "morticians",
+      "niche_b": "gardening",
+      "shared_experience": "Both put things in the ground and wait",
+      "sense_score": 7,
+      "sellability_score": 6,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p082",
+      "niche_a": "nurses",
+      "niche_b": "wine moms",
+      "shared_experience": "Clock out, wine in, chart in their head anyway",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p083",
+      "niche_a": "grandpas",
+      "niche_b": "weather channel",
+      "shared_experience": "Watch the weather channel like it's a sport",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p084",
+      "niche_a": "dads",
+      "niche_b": "thermostat",
+      "shared_experience": "Guard the thermostat like a nuclear code",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p085",
+      "niche_a": "dads",
+      "niche_b": "directions",
+      "shared_experience": "Won't use GPS, know a shortcut",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p086",
+      "niche_a": "grandmas",
+      "niche_b": "candy dish",
+      "shared_experience": "Purse full of butterscotch from 1987",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "oddly_specific_vibe"
+    },
+    {
+      "id": "p087",
+      "niche_a": "boomers",
+      "niche_b": "leftovers",
+      "shared_experience": "Cool Whip tub that never contains Cool Whip",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "oddly_specific_vibe"
+    },
+    {
+      "id": "p088",
+      "niche_a": "hunters",
+      "niche_b": "deer season",
+      "shared_experience": "Deer season is the real holiday",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "seasonal_or_object_standoff"
+    },
+    {
+      "id": "p089",
+      "niche_a": "Thanksgiving",
+      "niche_b": "family drama",
+      "shared_experience": "Politics at dinner and leftovers as therapy",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "seasonal_or_object_standoff"
+    },
+    {
+      "id": "p090",
+      "niche_a": "Halloween",
+      "niche_b": "morticians",
+      "shared_experience": "Halloween is just a regular Tuesday for them",
+      "sense_score": 7,
+      "sellability_score": 6,
+      "best_pattern": "seasonal_or_object_standoff"
+    },
+    {
+      "id": "p091",
+      "niche_a": "mechanics",
+      "niche_b": "Chinese parts",
+      "shared_experience": "Cheap parts that break before you leave the lot",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p092",
+      "niche_a": "truck owners",
+      "niche_b": "truck payments",
+      "shared_experience": "Truck is lifted, credit score is not",
+      "sense_score": 9,
+      "sellability_score": 9,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p093",
+      "niche_a": "cyclists",
+      "niche_b": "drivers",
+      "shared_experience": "Both hate each other in traffic",
+      "sense_score": 8,
+      "sellability_score": 7,
+      "best_pattern": "official_warning_sign"
+    },
+    {
+      "id": "p094",
+      "niche_a": "true crime fans",
+      "niche_b": "podcast addiction",
+      "shared_experience": "Fall asleep to murder",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "true_identity_stack"
+    },
+    {
+      "id": "p095",
+      "niche_a": "anxiety",
+      "niche_b": "phone calls",
+      "shared_experience": "Would rather die than call to make an appointment",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "self_defeating_sign"
+    },
+    {
+      "id": "p096",
+      "niche_a": "parents of toddlers",
+      "niche_b": "exhaustion",
+      "shared_experience": "Haven't slept since 2022",
+      "sense_score": 9,
+      "sellability_score": 9,
+      "best_pattern": "clinical_life_report"
+    },
+    {
+      "id": "p097",
+      "niche_a": "teachers",
+      "niche_b": "summer break",
+      "shared_experience": "Summer is the only reason they're alive",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "seasonal_or_object_standoff"
+    },
+    {
+      "id": "p098",
+      "niche_a": "nurses",
+      "niche_b": "cold cases",
+      "shared_experience": "Watch true crime and spot the medical errors",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p099",
+      "niche_a": "nail techs",
+      "niche_b": "gossip",
+      "shared_experience": "Know everyone's divorce before the lawyers do",
+      "sense_score": 9,
+      "sellability_score": 8,
+      "best_pattern": "insider_deadpan_confession"
+    },
+    {
+      "id": "p100",
+      "niche_a": "hairstylists",
+      "niche_b": "therapy",
+      "shared_experience": "Unlicensed therapists with scissors",
+      "sense_score": 10,
+      "sellability_score": 9,
+      "best_pattern": "fake_credential"
+    }
+  ]
+}

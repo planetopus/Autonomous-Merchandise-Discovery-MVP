@@ -1,0 +1,2056 @@
+{
+  "count": 200,
+  "identity_stacks": 48,
+  "candidates_written": 331,
+  "selection": "Self-judged by tough-Reddit-crowd rubric (critic_rubric.md); kept critic_score>=7 with a clear irony/sarcasm turn, 4-14 words, string+token similarity to every R&D Reddit line below threshold; lines echoing ant's reference favorites (vape/for Christ/pre-) removed.",
+  "lines": [
+    {
+      "line": "SIGMA RETIREES WHO GET TO THE AIRPORT FIVE HOURS EARLY",
+      "pattern": "true_identity_stack",
+      "niche_pair": "retirees x air travel",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g001",
+      "critic_score": 9
+    },
+    {
+      "line": "HOT GIRL WALK GRANDPAS IN BRAND NEW NEW BALANCES",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandpas x mall walking",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g002",
+      "critic_score": 9
+    },
+    {
+      "line": "RIZZLESS DIVORCED DADS WHO SMOKE BRISKET FOR FOURTEEN HOURS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "divorced dads x BBQ smoking",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.45,
+      "id": "g003",
+      "critic_score": 9
+    },
+    {
+      "line": "SWOLE YOUTH PASTORS WHO SAY \"BET\" ON PURPOSE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "youth pastors x Gen Z slang",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g004",
+      "critic_score": 9
+    },
+    {
+      "line": "UNHINGED CHURCH MOMS WHO KNOW EVERY DATELINE EPISODE BY HEART",
+      "pattern": "true_identity_stack",
+      "niche_pair": "church moms x true crime",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g005",
+      "critic_score": 9
+    },
+    {
+      "line": "CERTIFIED YAPPER GRANDPAS WHO HOLD HOME DEPOT EMPLOYEES HOSTAGE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandpas x Home Depot",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g006",
+      "critic_score": 9
+    },
+    {
+      "line": "FERAL NIGHT SHIFT NURSES WHO FALL ASLEEP TO MURDER PODCASTS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "nurses x true crime",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g007",
+      "critic_score": 9
+    },
+    {
+      "line": "EMOTIONALLY UNAVAILABLE DADS WHO ONLY EXPRESS LOVE VIA JEEP WAVE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "Jeep owners x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g008",
+      "critic_score": 9
+    },
+    {
+      "line": "DELULU GARDEN DADS WHO THINK THIS IS THE TOMATO YEAR",
+      "pattern": "true_identity_stack",
+      "niche_pair": "gardeners x tomatoes",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.44,
+      "id": "g009",
+      "critic_score": 9
+    },
+    {
+      "line": "RIZZED UP WIDOWERS RUNNING GAME AT THE SENIOR CENTER",
+      "pattern": "true_identity_stack",
+      "niche_pair": "widowers x senior centers",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g010",
+      "critic_score": 9
+    },
+    {
+      "line": "RECENTLY DIVORCED DADS IN THEIR SKINCARE ERA",
+      "pattern": "true_identity_stack",
+      "niche_pair": "recently divorced dads x skincare",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.45,
+      "id": "g011",
+      "critic_score": 9
+    },
+    {
+      "line": "THERAPY-RESISTANT FARMERS WHO TELL THE COWS EVERYTHING",
+      "pattern": "true_identity_stack",
+      "niche_pair": "farmers x talking to animals",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g012",
+      "critic_score": 9
+    },
+    {
+      "line": "SOFT-SPOKEN MORTICIANS WHO HAVE SEEN YOUR WHOLE FAMILY NAKED",
+      "pattern": "true_identity_stack",
+      "niche_pair": "morticians x dark humor",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.33,
+      "id": "g013",
+      "critic_score": 9
+    },
+    {
+      "line": "SIGMA DADS WHO STAND IN THE GARAGE FOR NO REASON",
+      "pattern": "true_identity_stack",
+      "niche_pair": "dads x garage standing",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.51,
+      "id": "g014",
+      "critic_score": 9
+    },
+    {
+      "line": "UNMEDICATED ADHD MOMS WITH FOUR COFFEES IN THE MICROWAVE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "ADHD adults x coffee",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g015",
+      "critic_score": 9
+    },
+    {
+      "line": "MAIN CHARACTER RETIREES WHO WAKE UP AT 4:30 FOR NOTHING",
+      "pattern": "true_identity_stack",
+      "niche_pair": "retirees x 4:30 AM wake-ups",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g016",
+      "critic_score": 9
+    },
+    {
+      "line": "HIGHLY REGARDED DADS WHO REFUSE TO USE THE GPS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "dads x directions",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g017",
+      "critic_score": 9
+    },
+    {
+      "line": "CHRONICALLY CALM DISPATCHERS WHO PANIC WHEN THE DOORBELL RINGS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "911 dispatchers x anxiety",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.48,
+      "id": "g018",
+      "critic_score": 9
+    },
+    {
+      "line": "BOUJEE PICKLEBALL RETIREES WHO TRASH TALK LIKE IT'S THE NBA",
+      "pattern": "true_identity_stack",
+      "niche_pair": "pickleball x retirees",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g019",
+      "critic_score": 9
+    },
+    {
+      "line": "EMOTIONALLY FRAGILE LAWN DADS WHO MOW DIAGONAL FOR VALIDATION",
+      "pattern": "true_identity_stack",
+      "niche_pair": "lawn dads x grass",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.44,
+      "id": "g020",
+      "critic_score": 9
+    },
+    {
+      "line": "BIG BACK FIREFIGHTERS WHO TAKE CHILI PERSONALLY",
+      "pattern": "true_identity_stack",
+      "niche_pair": "firefighters x cooking",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g021",
+      "critic_score": 9
+    },
+    {
+      "line": "FERAL TRUE CRIME MOMS WHO LOCK THE DOOR THREE TIMES",
+      "pattern": "true_identity_stack",
+      "niche_pair": "true crime fans x anxiety",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g022",
+      "critic_score": 9
+    },
+    {
+      "line": "SUPER CHILL HOSPICE NURSES WITH THE DARKEST GROUP CHAT",
+      "pattern": "true_identity_stack",
+      "niche_pair": "hospice nurses x gallows humor",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g023",
+      "critic_score": 9
+    },
+    {
+      "line": "Talks strangers off ledges for a living. Can't call the dentist.",
+      "pattern": "situational_irony",
+      "niche_pair": "911 dispatchers x anxiety",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g024",
+      "critic_score": 9
+    },
+    {
+      "line": "Calm through forty overdoses. Panics when the doorbell rings.",
+      "pattern": "situational_irony",
+      "niche_pair": "911 dispatchers x anxiety",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g025",
+      "critic_score": 9
+    },
+    {
+      "line": "Church choir on Sunday. Murder podcasts the other six days.",
+      "pattern": "situational_irony",
+      "niche_pair": "church moms x true crime",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g026",
+      "critic_score": 9
+    },
+    {
+      "line": "Hunts for nine hours in the snow. Too cold to take out the trash.",
+      "pattern": "situational_irony",
+      "niche_pair": "hunters x patience/coffee",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g027",
+      "critic_score": 9
+    },
+    {
+      "line": "Thrilled to be the emergency contact again!",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "oldest daughters x responsibility",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.42,
+      "id": "g028",
+      "critic_score": 9
+    },
+    {
+      "line": "Living the dream. The dream is a vending machine burrito at 4 AM.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "ER nurses x night shift eating",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.38,
+      "id": "g029",
+      "critic_score": 9
+    },
+    {
+      "line": "Yay! Another code at shift change!",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 3,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.44,
+      "id": "g030",
+      "critic_score": 9
+    },
+    {
+      "line": "Hi! I'm everyone's emergency contact!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "moms x being emergency contact",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.35,
+      "id": "g031",
+      "critic_score": 9
+    },
+    {
+      "line": "Ask me about my layaway casket plan!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "morticians x dark humor",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g032",
+      "critic_score": 9
+    },
+    {
+      "line": "CAUTION: MORTICIAN. WILL GUESS YOUR CASKET SIZE.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "morticians x small talk",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g033",
+      "critic_score": 9
+    },
+    {
+      "line": "WARNING: OFF-DUTY NURSE. DO NOT SHOW ME YOUR RASH.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "nurses x off-duty",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g034",
+      "critic_score": 9
+    },
+    {
+      "line": "NOTICE: THIS TRUCK IS PAID OFF. THE DRIVER IS NOT.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "truck owners x truck payments",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g035",
+      "critic_score": 9
+    },
+    {
+      "line": "HONK IF YOU HAVE ANXIETY. ACTUALLY, PLEASE DON'T.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x drive-thru",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g036",
+      "critic_score": 9
+    },
+    {
+      "line": "Discharged against medical advice to go to Applebee's.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g037",
+      "critic_score": 9
+    },
+    {
+      "line": "Diagnosis: Dad. Prognosis: Cargo shorts.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "dads x directions",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g038",
+      "critic_score": 9
+    },
+    {
+      "line": "MY MARRIAGE HAD A DNR AND WE HONORED IT.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "true crime fans x divorce",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g039",
+      "critic_score": 9
+    },
+    {
+      "line": "I have seen everyone naked eventually.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "morticians x dark humor",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g040",
+      "critic_score": 9
+    },
+    {
+      "line": "Don't worry, I've seen worse. You're not special.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "nurses x off-duty",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.39,
+      "id": "g041",
+      "critic_score": 9
+    },
+    {
+      "line": "I've heard your worst day. Three times before lunch.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "911 dispatchers x anxiety",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g042",
+      "critic_score": 9
+    },
+    {
+      "line": "My truck gets a check engine light. I just get back pain.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "chronic pain x aging",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g043",
+      "critic_score": 9
+    },
+    {
+      "line": "Cars get recalls. My ex never did.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "true crime fans x divorce",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g044",
+      "critic_score": 9
+    },
+    {
+      "line": "Couldn't afford therapy, so I bought another smoker.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "divorced dads x BBQ smoking",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g045",
+      "critic_score": 9
+    },
+    {
+      "line": "BLESSED AND STRESSED CHURCH MOMS WHO BINGE SERIAL KILLER DOCS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "church moms x true crime",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g046",
+      "critic_score": 9
+    },
+    {
+      "line": "ZADDY DEACONS WHO RUN THE CHURCH FISH FRY",
+      "pattern": "true_identity_stack",
+      "niche_pair": "deacons x offering plates",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g047",
+      "critic_score": 9
+    },
+    {
+      "line": "Told 'em I was gonna rest in retirement. Joined three committees.",
+      "pattern": "situational_irony",
+      "niche_pair": "retirees x 4:30 AM wake-ups",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g048",
+      "critic_score": 9
+    },
+    {
+      "line": "BIG BACK TRUCKERS WHO RANK GAS STATION ROLLER DOGS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "truckers x gas station food",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g049",
+      "critic_score": 8
+    },
+    {
+      "line": "Keeps strangers alive for twelve hours. Kills every houseplant.",
+      "pattern": "situational_irony",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g050",
+      "critic_score": 8
+    },
+    {
+      "line": "Love that for me: a full moon on a Friday shift.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "ER techs x full moon",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.47,
+      "id": "g051",
+      "critic_score": 8
+    },
+    {
+      "line": "Recently divorced and fully hydrated!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "divorced people x new freedom",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g052",
+      "critic_score": 8
+    },
+    {
+      "line": "CAUTION: DAD IS EXPLAINING SOMETHING. DO NOT MAKE EYE CONTACT.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "dads x directions",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g053",
+      "critic_score": 8
+    },
+    {
+      "line": "QUIET STICKER. PLEASE READ SILENTLY.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "introverts x cancelled plans",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g054",
+      "critic_score": 8
+    },
+    {
+      "line": "Patient is alert, oriented, and completely over it.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.38,
+      "id": "g055",
+      "critic_score": 8
+    },
+    {
+      "line": "I know you're a ten percent table. I knew in the parking lot.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "servers x bad tippers",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g056",
+      "critic_score": 8
+    },
+    {
+      "line": "Smells like brake cleaner and divorce.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "mechanics x dads",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.55,
+      "id": "g057",
+      "critic_score": 8
+    },
+    {
+      "line": "Printers get a low ink warning. I get nothing.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "depression x humor",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g058",
+      "critic_score": 8
+    },
+    {
+      "line": "Local Union of Dads Who Stand in the Garage for No Reason",
+      "pattern": "club_roster",
+      "niche_pair": "dads x garage standing",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.46,
+      "id": "g059",
+      "critic_score": 8
+    },
+    {
+      "line": "Due to inflation, my therapy is driving with the windows down.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "anxiety x therapy budget",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.54,
+      "id": "g060",
+      "critic_score": 8
+    },
+    {
+      "line": "Deer: 'Opening day? Cute. I've seen your aim.'",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "hunters x deer season",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.34,
+      "id": "g061",
+      "critic_score": 8
+    },
+    {
+      "line": "Licensed to back a trailer in on the first try (once)",
+      "pattern": "fake_credential",
+      "niche_pair": "truck owners x truck payments",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g062",
+      "critic_score": 8
+    },
+    {
+      "line": "The deer know which truck is mine.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "hunters x patience/coffee",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g063",
+      "critic_score": 8
+    },
+    {
+      "line": "BADDIE NANAS WHO RUN SIX BINGO CARDS AND A GRUDGE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandmas x bingo",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g064",
+      "critic_score": 8
+    },
+    {
+      "line": "CHRONICALLY ONLINE GRANDMAS WHO COMMENT \"BEAUTIFUL\" ON STRANGERS' DOGS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandmas x Facebook",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g065",
+      "critic_score": 8
+    },
+    {
+      "line": "Embalms people all day. Cries at Pixar movies.",
+      "pattern": "situational_irony",
+      "niche_pair": "morticians x dark humor",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g066",
+      "critic_score": 8
+    },
+    {
+      "line": "So blessed to explain the same email for the fourth time.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "office workers x meetings",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.43,
+      "id": "g067",
+      "critic_score": 8
+    },
+    {
+      "line": "Proud owner of the whole bed again!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "divorced people x new freedom",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g068",
+      "critic_score": 8
+    },
+    {
+      "line": "WARNING: MECHANIC ON BOARD. WILL DIAGNOSE YOUR CAR AT RED LIGHTS.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "mechanics x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g069",
+      "critic_score": 8
+    },
+    {
+      "line": "DO NOT TELL MY THERAPIST ABOUT THIS STICKER.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x therapy budget",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g070",
+      "critic_score": 8
+    },
+    {
+      "line": "Toddler mom. Last documented sleep: 2022.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "parents of toddlers x exhaustion",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g071",
+      "critic_score": 8
+    },
+    {
+      "line": "I've seen what's in your pipes. I'm not mad, just disappointed.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "plumbers x seeing horrors",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.44,
+      "id": "g072",
+      "critic_score": 8
+    },
+    {
+      "line": "Smells like Bengay and old grudges.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "grandpas x weather channel",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.54,
+      "id": "g073",
+      "critic_score": 8
+    },
+    {
+      "line": "My dog gets a cone of shame. I get a copay.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "dog moms x wine",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g074",
+      "critic_score": 8
+    },
+    {
+      "line": "Night Shift Lunch Club. Lunch served at 4 AM.",
+      "pattern": "club_roster",
+      "niche_pair": "night shift workers x sleep",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g075",
+      "critic_score": 8
+    },
+    {
+      "line": "Due to the economy, my midlife crisis is a used kayak.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "midlife dads x cycling",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.38,
+      "id": "g076",
+      "critic_score": 8
+    },
+    {
+      "line": "Pumpkin Spice: 'Peppermint, I will end you in December.'",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "Thanksgiving x family drama",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g077",
+      "critic_score": 8
+    },
+    {
+      "line": "Doctor of Driveway Diagnostics",
+      "pattern": "fake_credential",
+      "niche_pair": "mechanics x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g078",
+      "critic_score": 8
+    },
+    {
+      "line": "The crows remember my face and they're right to.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "crows x people who feed them",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g079",
+      "critic_score": 8
+    },
+    {
+      "line": "SPICY CATHOLIC MOMS WITH SIX KIDS AND A WINE FRIDGE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "Catholic moms x big families",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g080",
+      "critic_score": 8
+    },
+    {
+      "line": "MIDLIFE CRISIS DADS IN THEIR GRAVEL BIKE ERA",
+      "pattern": "true_identity_stack",
+      "niche_pair": "midlife dads x cycling",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g081",
+      "critic_score": 8
+    },
+    {
+      "line": "Fixes everyone's car. Drives a 2004 with three warning lights.",
+      "pattern": "situational_irony",
+      "niche_pair": "mechanics x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g082",
+      "critic_score": 8
+    },
+    {
+      "line": "What an honor to be your free medical consult at Thanksgiving.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "nurses x off-duty",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.37,
+      "id": "g083",
+      "critic_score": 8
+    },
+    {
+      "line": "Every other weekend and thriving!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "divorced dads x custody weekends",
+      "darkness": 2,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.39,
+      "id": "g084",
+      "critic_score": 8
+    },
+    {
+      "line": "CAUTION: DRIVER IS ON EPISODE 9 OF A MURDER PODCAST.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "true crime fans x podcast addiction",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g085",
+      "critic_score": 8
+    },
+    {
+      "line": "IF YOU CAN READ THIS, I'VE ALREADY OVERTHOUGHT YOUR REACTION.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x drive-thru",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g086",
+      "critic_score": 8
+    },
+    {
+      "line": "Relationship status: pending autopsy",
+      "pattern": "clinical_life_report",
+      "niche_pair": "true crime fans x divorce",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g087",
+      "critic_score": 8
+    },
+    {
+      "line": "I can tell you the whole plot of your divorce from your cuticles.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "nail techs x gossip",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g088",
+      "critic_score": 8
+    },
+    {
+      "line": "Hugs like a man who owns a pressure washer.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "lawn dads x grass",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g089",
+      "critic_score": 8
+    },
+    {
+      "line": "My boat gets a winter cover. I get a second job.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "boat dads x debt",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g090",
+      "critic_score": 8
+    },
+    {
+      "line": "Ladies Auxiliary of Women Who Know Exactly How They'd Do It",
+      "pattern": "club_roster",
+      "niche_pair": "true crime fans x podcast addiction",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g091",
+      "critic_score": 8
+    },
+    {
+      "line": "Due to budget cuts, my coping mechanism is a $4 rotisserie chicken.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "anxiety x therapy budget",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.37,
+      "id": "g092",
+      "critic_score": 8
+    },
+    {
+      "line": "Deer season is Christmas. Christmas is just traffic.",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "hunters x deer season",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g093",
+      "critic_score": 8
+    },
+    {
+      "line": "Board certified in crying in the parking garage",
+      "pattern": "fake_credential",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g094",
+      "critic_score": 8
+    },
+    {
+      "line": "Birdwatching is just a stakeout where nobody gets arrested.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "true crime fans x birdwatching",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g095",
+      "critic_score": 8
+    },
+    {
+      "line": "GOTH MORTICIANS WHO ARE HONESTLY JUST VERY NICE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "morticians x crochet",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.44,
+      "id": "g096",
+      "critic_score": 8
+    },
+    {
+      "line": "SOFT-SPOKEN MORTICIANS WITH A MEAN CROCHET GAME",
+      "pattern": "true_identity_stack",
+      "niche_pair": "morticians x crochet",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g097",
+      "critic_score": 8
+    },
+    {
+      "line": "Retired so he could relax. Now he patrols the lawn at 5 AM.",
+      "pattern": "situational_irony",
+      "niche_pair": "retirees x 4:30 AM wake-ups",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g098",
+      "critic_score": 8
+    },
+    {
+      "line": "Can't wait to hear about your rash at dinner!",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "nurses x off-duty",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.41,
+      "id": "g099",
+      "critic_score": 8
+    },
+    {
+      "line": "Proud parent of a plant I'm actively drowning!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "plant parents x overwatering",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g100",
+      "critic_score": 8
+    },
+    {
+      "line": "AUTHORIZED PERSONNEL ONLY: DAD'S THERMOSTAT",
+      "pattern": "official_warning_sign",
+      "niche_pair": "dads x thermostat",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g101",
+      "critic_score": 8
+    },
+    {
+      "line": "PLEASE CALL ME. I WILL NOT ANSWER.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x phone calls",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g102",
+      "critic_score": 8
+    },
+    {
+      "line": "Time of death: the 3 PM all-hands meeting.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "office workers x meetings",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g103",
+      "critic_score": 8
+    },
+    {
+      "line": "I will ask you about your vacation with both hands in your mouth.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "dental hygienists x asking questions",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g104",
+      "critic_score": 8
+    },
+    {
+      "line": "Has the energy of a Kohl's Cash coupon that expires tomorrow.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "soccer moms x folding chairs",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g105",
+      "critic_score": 8
+    },
+    {
+      "line": "My phone gets a software update. My knees just get louder.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "millennials x aging",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g106",
+      "critic_score": 8
+    },
+    {
+      "line": "Firehouse Chili Committee. Disagreements settled by hose.",
+      "pattern": "club_roster",
+      "niche_pair": "firefighters x cooking",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g107",
+      "critic_score": 8
+    },
+    {
+      "line": "Impulse buys are my retirement plan.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "ADHD x online shopping",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.4,
+      "id": "g108",
+      "critic_score": 8
+    },
+    {
+      "line": "Leftover turkey: 'I'm what's holding this family together.'",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "Thanksgiving x family drama",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g109",
+      "critic_score": 8
+    },
+    {
+      "line": "Certified tomato optimist. Zone 6b. Zero tomatoes.",
+      "pattern": "fake_credential",
+      "niche_pair": "gardeners x tomatoes",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g110",
+      "critic_score": 8
+    },
+    {
+      "line": "My smoker and I are in a committed relationship.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "divorced dads x BBQ smoking",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.47,
+      "id": "g111",
+      "critic_score": 8
+    },
+    {
+      "line": "GYM RAT GRANDMAS WHO MOG AT WATER AEROBICS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandmas x bingo",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g112",
+      "critic_score": 8
+    },
+    {
+      "line": "BAPTIST BADDIES WHO ARE ALWAYS LATE TO SUNDAY SCHOOL",
+      "pattern": "true_identity_stack",
+      "niche_pair": "church moms x true crime",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g113",
+      "critic_score": 8
+    },
+    {
+      "line": "Teaches kids to use their words. Screams into the car at 3:05.",
+      "pattern": "situational_irony",
+      "niche_pair": "teachers x wine",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g114",
+      "critic_score": 8
+    },
+    {
+      "line": "Oh good, the 'quick question' guy is back.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "IT people x users",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.43,
+      "id": "g115",
+      "critic_score": 8
+    },
+    {
+      "line": "Cried in the car after work today! Personal best: four minutes!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "vets x crying",
+      "darkness": 2,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.39,
+      "id": "g116",
+      "critic_score": 8
+    },
+    {
+      "line": "WARNING: RETIRED. HAS NOWHERE TO BE AND WILL DISCUSS IT.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "retirees x 4:30 AM wake-ups",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g117",
+      "critic_score": 8
+    },
+    {
+      "line": "I'D RATHER DIE THAN MAKE A PHONE CALL. CALL ME IF YOU AGREE.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x phone calls",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g118",
+      "critic_score": 8
+    },
+    {
+      "line": "Cause of death: reply-all.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "office workers x meetings",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g119",
+      "critic_score": 8
+    },
+    {
+      "line": "I eat a full meal at a red light. Don't make it weird.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "paramedics x fast food",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g120",
+      "critic_score": 8
+    },
+    {
+      "line": "Gives off folding-chair-at-a-funeral energy.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "morticians x small talk",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g121",
+      "critic_score": 8
+    },
+    {
+      "line": "The fish gets released. I don't.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "fishermen x lying",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.45,
+      "id": "g122",
+      "critic_score": 8
+    },
+    {
+      "line": "Dispatch Book Club. We Don't Read. We Eat at 3 AM.",
+      "pattern": "club_roster",
+      "niche_pair": "911 dispatchers x night shift",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g123",
+      "critic_score": 8
+    },
+    {
+      "line": "Due to inflation, my midlife crisis is now a nice flashlight.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "midlife dads x cycling",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.46,
+      "id": "g124",
+      "critic_score": 8
+    },
+    {
+      "line": "April 15: 'Accountants, you're mine now.'",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "accountants x tax season",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g125",
+      "critic_score": 8
+    },
+    {
+      "line": "Unlicensed therapist with scissors and a booking app",
+      "pattern": "fake_credential",
+      "niche_pair": "hairstylists x therapy",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g126",
+      "critic_score": 8
+    },
+    {
+      "line": "My lawn has a better skincare routine than me.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "lawn dads x grass",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g127",
+      "critic_score": 8
+    },
+    {
+      "line": "NO-CAP GRANDPAS WHO STILL USE A FLIP PHONE ON PURPOSE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandpas x weather channel",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g128",
+      "critic_score": 8
+    },
+    {
+      "line": "DRIP-CHECK DEACONS IN PLEATED KHAKIS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "deacons x offering plates",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g129",
+      "critic_score": 8
+    },
+    {
+      "line": "Plumber. Has not unclogged his own drain since 2017.",
+      "pattern": "situational_irony",
+      "niche_pair": "plumbers x seeing horrors",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g130",
+      "critic_score": 8
+    },
+    {
+      "line": "Have you tried turning it off and on? Me neither. Let's both suffer.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "IT people x users",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.4,
+      "id": "g131",
+      "critic_score": 8
+    },
+    {
+      "line": "Hospice nurse! Ask me about my unbeatable goodbye game!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "hospice nurses x gallows humor",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.33,
+      "id": "g132",
+      "critic_score": 8
+    },
+    {
+      "line": "CAUTION: PHARMACIST. I'M AT TARGET. NO, I WON'T LOOK AT IT.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "pharmacists x people asking for advice",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.39,
+      "id": "g133",
+      "critic_score": 8
+    },
+    {
+      "line": "I STARTED THIS STICKER BUT GOT DISTRA",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "ADHD adults x coffee",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g134",
+      "critic_score": 8
+    },
+    {
+      "line": "Customer declined the repair. The noise is now part of the family.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "mechanics x Chinese parts",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g135",
+      "critic_score": 8
+    },
+    {
+      "line": "Full moon. Lock the doors. Not because of murderers. Because of patients.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "ER techs x full moon",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g136",
+      "critic_score": 8
+    },
+    {
+      "line": "Smells like hospital hand sanitizer and survival.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g137",
+      "critic_score": 8
+    },
+    {
+      "line": "Hospitals have visiting hours. My mother-in-law doesn't.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "nurses x off-duty",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g138",
+      "critic_score": 8
+    },
+    {
+      "line": "American Legion of Grandpas Who Watch the Weather Channel Recreationally",
+      "pattern": "club_roster",
+      "niche_pair": "grandpas x weather channel",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g139",
+      "critic_score": 8
+    },
+    {
+      "line": "Due to the economy, I'm downgrading from therapy to yelling into the freezer.",
+      "pattern": "economy_downgrade",
+      "niche_pair": "anxiety x therapy budget",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.59,
+      "id": "g140",
+      "critic_score": 8
+    },
+    {
+      "line": "Santa: 'Not now, I'm talking to the deer about their union.'",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "hunters x deer season",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.34,
+      "id": "g141",
+      "critic_score": 8
+    },
+    {
+      "line": "Bachelor's in Buying Bird Seed. Master's in Hating Squirrels.",
+      "pattern": "fake_credential",
+      "niche_pair": "birdwatchers x introverts",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g142",
+      "critic_score": 8
+    },
+    {
+      "line": "My Weather Channel subscription is my emotional support.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "grandpas x weather channel",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g143",
+      "critic_score": 8
+    },
+    {
+      "line": "BIG DAWG DEACONS WHO COUNT THE OFFERING TWICE",
+      "pattern": "true_identity_stack",
+      "niche_pair": "deacons x offering plates",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.45,
+      "id": "g144",
+      "critic_score": 8
+    },
+    {
+      "line": "TRAUMA-BONDED ER NURSES WHO SPLIT ONE BAG OF PRETZELS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "ER nurses x night shift eating",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g145",
+      "critic_score": 8
+    },
+    {
+      "line": "Pharmacist. Takes zero vitamins. Lives on spite and Diet Coke.",
+      "pattern": "situational_irony",
+      "niche_pair": "pharmacists x people asking for advice",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g146",
+      "critic_score": 8
+    },
+    {
+      "line": "Super excited to be your 10% table's emotional support server!",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "servers x bad tippers",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.4,
+      "id": "g147",
+      "critic_score": 8
+    },
+    {
+      "line": "Officially medicated and only slightly haunted!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "depression x humor",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.44,
+      "id": "g148",
+      "critic_score": 8
+    },
+    {
+      "line": "CAUTION: WIDE LOAD, WIDER OPINIONS ABOUT YOUR LANE CHANGE",
+      "pattern": "official_warning_sign",
+      "niche_pair": "truckers x four-wheelers",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g149",
+      "critic_score": 8
+    },
+    {
+      "line": "MY THERAPIST SAID I SHOULDN'T BUY THIS STICKER.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x therapy budget",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g150",
+      "critic_score": 8
+    },
+    {
+      "line": "Witness statement: the dog started it.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "dog moms x wine",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g151",
+      "critic_score": 8
+    },
+    {
+      "line": "My shop's parts come from the finest website that ships in 9 weeks.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "mechanics x Chinese parts",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.34,
+      "id": "g152",
+      "critic_score": 8
+    },
+    {
+      "line": "Every Cool Whip tub in this house is lying to you.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "boomers x leftovers",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.44,
+      "id": "g153",
+      "critic_score": 8
+    },
+    {
+      "line": "Patients get morphine. Nurses get a pizza party.",
+      "pattern": "unfair_comparison_gripe",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g154",
+      "critic_score": 8
+    },
+    {
+      "line": "Pickleball Mafia. Senior Division. No Mercy.",
+      "pattern": "club_roster",
+      "niche_pair": "pickleball x retirees",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.46,
+      "id": "g155",
+      "critic_score": 8
+    },
+    {
+      "line": "Thanksgiving is just a family hostage negotiation with gravy.",
+      "pattern": "seasonal_or_object_standoff",
+      "niche_pair": "Thanksgiving x family drama",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g156",
+      "critic_score": 8
+    },
+    {
+      "line": "Licensed to say 'that's a new one' at 3 AM.",
+      "pattern": "fake_credential",
+      "niche_pair": "ER techs x full moon",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g157",
+      "critic_score": 8
+    },
+    {
+      "line": "Every snake in my yard has been relocated to God.",
+      "pattern": "brand_new_sentence",
+      "niche_pair": "farmers x talking to animals",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g158",
+      "critic_score": 8
+    },
+    {
+      "line": "FERAL DISPATCHERS WHO EAT DINNER AT 3 AM",
+      "pattern": "true_identity_stack",
+      "niche_pair": "911 dispatchers x night shift",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.45,
+      "id": "g159",
+      "critic_score": 8
+    },
+    {
+      "line": "MID-TIER HUNTERS WHO HAVEN'T SEEN A DEER SINCE 2019",
+      "pattern": "true_identity_stack",
+      "niche_pair": "hunters x patience/coffee",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g160",
+      "critic_score": 8
+    },
+    {
+      "line": "Gives everyone therapy for $45 and a tip. Has never been to therapy.",
+      "pattern": "situational_irony",
+      "niche_pair": "hairstylists x therapy",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.35,
+      "id": "g161",
+      "critic_score": 8
+    },
+    {
+      "line": "Tax season! My favorite three months of not seeing my kids!",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "accountants x tax season",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.57,
+      "id": "g162",
+      "critic_score": 8
+    },
+    {
+      "line": "Happy to help! (Legally required to say that.)",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "retail workers x holiday shoppers",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.34,
+      "id": "g163",
+      "critic_score": 8
+    },
+    {
+      "line": "CAUTION: TEACHER IN SUMMER MODE. DO NOT SAY 'AUGUST'.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "teachers x summer break",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g164",
+      "critic_score": 8
+    },
+    {
+      "line": "SORRY FOR THIS STICKER. AND FOR WHATEVER I DID.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x drive-thru",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g165",
+      "critic_score": 8
+    },
+    {
+      "line": "Chart note: patient's husband explained my job to me.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "nurses x off-duty",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g166",
+      "critic_score": 8
+    },
+    {
+      "line": "The 9-volt test is my only medical screening.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "electricians x getting shocked",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.45,
+      "id": "g167",
+      "critic_score": 8
+    },
+    {
+      "line": "Purse sounds like a maraca of butterscotch.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "grandmas x candy dish",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g168",
+      "critic_score": 8
+    },
+    {
+      "line": "DELULU FISHERMEN WHOSE PHOTOS NEVER LOAD",
+      "pattern": "true_identity_stack",
+      "niche_pair": "fishermen x lying",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g169",
+      "critic_score": 8
+    },
+    {
+      "line": "GIRLBOSS GRANDMAS WHO STILL DON'T TRUST THE ATM",
+      "pattern": "true_identity_stack",
+      "niche_pair": "grandmas x Facebook",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g170",
+      "critic_score": 8
+    },
+    {
+      "line": "Saves lives at work. Can't save my marriage.",
+      "pattern": "situational_irony",
+      "niche_pair": "paramedics x fast food",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g171",
+      "critic_score": 8
+    },
+    {
+      "line": "Mother's Day gift idea: let me pee alone.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "parents of toddlers x exhaustion",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.35,
+      "id": "g172",
+      "critic_score": 8
+    },
+    {
+      "line": "Proud member of the 'I'll just do it myself' family!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "oldest daughters x responsibility",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.37,
+      "id": "g173",
+      "critic_score": 8
+    },
+    {
+      "line": "WARNING: INTROVERT. PLANS CANCELLED = PARTY.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "introverts x cancelled plans",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g174",
+      "critic_score": 8
+    },
+    {
+      "line": "READ THIS AND I'LL REPLAY IT IN THE SHOWER FOR A WEEK.",
+      "pattern": "self_defeating_sign",
+      "niche_pair": "anxiety x drive-thru",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.42,
+      "id": "g175",
+      "critic_score": 8
+    },
+    {
+      "line": "Work order: 'Customer heard a noise.' Customer is the noise.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "mechanics x Chinese parts",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g176",
+      "critic_score": 8
+    },
+    {
+      "line": "Did you restart it? Answer honestly. I'll know.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "IT people x users",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.4,
+      "id": "g177",
+      "critic_score": 8
+    },
+    {
+      "line": "Energy of a dad who just heard a noise in the engine.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "mechanics x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.36,
+      "id": "g178",
+      "critic_score": 8
+    },
+    {
+      "line": "LOWKEY UNHINGED HOMESCHOOL MOMS WITH AN OIL FOR THAT",
+      "pattern": "true_identity_stack",
+      "niche_pair": "homeschool moms x essential oils",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g179",
+      "critic_score": 8
+    },
+    {
+      "line": "BAD BITCH LIBRARIANS WHO SHUSH WITH THEIR WHOLE CHEST",
+      "pattern": "true_identity_stack",
+      "niche_pair": "librarians x being strict",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g180",
+      "critic_score": 8
+    },
+    {
+      "line": "Lifeguard of strangers. Drowning in my own group chat.",
+      "pattern": "situational_irony",
+      "niche_pair": "oldest daughters x responsibility",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.47,
+      "id": "g181",
+      "critic_score": 8
+    },
+    {
+      "line": "Ah yes, my body's favorite hobby: hurting for no reason.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "chronic pain x aging",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.42,
+      "id": "g182",
+      "critic_score": 8
+    },
+    {
+      "line": "Ask me how many minutes until my wife needs the car!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "dads x garage standing",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.41,
+      "id": "g183",
+      "critic_score": 8
+    },
+    {
+      "line": "NOTICE: DISPATCHER. I'VE HEARD WORSE. BE BRIEF.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "911 dispatchers x night shift",
+      "darkness": 1,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.36,
+      "id": "g184",
+      "critic_score": 8
+    },
+    {
+      "line": "Incident #4471: Dad found the thermostat touched.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "dads x thermostat",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g185",
+      "critic_score": 8
+    },
+    {
+      "line": "I can hear your transmission lying.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "mechanics x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.4,
+      "id": "g186",
+      "critic_score": 8
+    },
+    {
+      "line": "Smells like gun oil and Folgers.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "hunters x patience/coffee",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.53,
+      "id": "g187",
+      "critic_score": 8
+    },
+    {
+      "line": "STANLEY CUP TEACHERS WHO ARE ONE EMAIL FROM ARSON",
+      "pattern": "true_identity_stack",
+      "niche_pair": "teachers x wine",
+      "darkness": 2,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g188",
+      "critic_score": 8
+    },
+    {
+      "line": "BRAT SUMMER DADS IN CROCS AND TUBE SOCKS",
+      "pattern": "true_identity_stack",
+      "niche_pair": "dads x directions",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.41,
+      "id": "g189",
+      "critic_score": 8
+    },
+    {
+      "line": "Bible study at 7. True crime documentary at 7:30.",
+      "pattern": "situational_irony",
+      "niche_pair": "church moms x true crime",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g190",
+      "critic_score": 8
+    },
+    {
+      "line": "Wow, so excited to work Thanksgiving again!",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.4,
+      "id": "g191",
+      "critic_score": 8
+    },
+    {
+      "line": "Will cry at your funeral (professionally)!",
+      "pattern": "cheerful_dark_label",
+      "niche_pair": "morticians x dark humor",
+      "darkness": 3,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g192",
+      "critic_score": 8
+    },
+    {
+      "line": "WARNING: CHURCH LADY. HAS CASSEROLE. WILL ASK ABOUT YOUR LOVE LIFE.",
+      "pattern": "official_warning_sign",
+      "niche_pair": "church moms x true crime",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.3,
+      "id": "g193",
+      "critic_score": 8
+    },
+    {
+      "line": "Ticket closed: user unplugged it.",
+      "pattern": "clinical_life_report",
+      "niche_pair": "IT people x users",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g194",
+      "critic_score": 8
+    },
+    {
+      "line": "I know your hair secrets. And your husband's.",
+      "pattern": "insider_deadpan_confession",
+      "niche_pair": "hairstylists x therapy",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.39,
+      "id": "g195",
+      "critic_score": 8
+    },
+    {
+      "line": "Has the energy of a pastor whose mic just cut out.",
+      "pattern": "oddly_specific_vibe",
+      "niche_pair": "youth pastors x Gen Z slang",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.43,
+      "id": "g196",
+      "critic_score": 8
+    },
+    {
+      "line": "GAMER DADS WITH TWENTY MINUTES A WEEK AND A 300-GAME BACKLOG",
+      "pattern": "true_identity_stack",
+      "niche_pair": "gamers x dads",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g197",
+      "critic_score": 8
+    },
+    {
+      "line": "SLAY QUEEN NURSES WHO EAT LUNCH AT 4 PM STANDING UP",
+      "pattern": "true_identity_stack",
+      "niche_pair": "nurses x caffeine",
+      "darkness": 0,
+      "device": "irony",
+      "ref_max_similarity": 0.38,
+      "id": "g198",
+      "critic_score": 8
+    },
+    {
+      "line": "Bought a boat for peace and quiet. Now I owe a bank.",
+      "pattern": "situational_irony",
+      "niche_pair": "boat dads x debt",
+      "darkness": 1,
+      "device": "irony",
+      "ref_max_similarity": 0.37,
+      "id": "g199",
+      "critic_score": 8
+    },
+    {
+      "line": "Can't wait to hear your hot take on the thermostat, Gary.",
+      "pattern": "deadpan_sarcasm",
+      "niche_pair": "dads x thermostat",
+      "darkness": 0,
+      "device": "sarcasm",
+      "ref_max_similarity": 0.4,
+      "id": "g200",
+      "critic_score": 8
+    }
+  ],
+  "rejected_examples": {
+    "too close to a Reddit reference": [
+      "CRUSTY BOOMER DADS WHO GUARD THE THERMOSTAT FOR CHRIST",
+      "THICC LINEMEN WHO CLIMB POLES FOR CHRIST",
+      "Pre-divorced and loving every minute!",
+      "Code Blue, Cold Case",
+      "This is with a 0.4 mm nozzle.",
+      "BEEFY DEACONS WHO VAPE BEHIND THE FELLOWSHIP HALL",
+      "Loves Jesus. Loves vape tricks. Hasn't decided which is louder."
+    ],
+    "critic score < 7": [
+      "HOT TAKE HAIRSTYLISTS WITH NO THERAPY LICENSE"
+    ],
+    "length": [
+      "WHOLESOME VAPING GRANNIES",
+      "Professional overthinker",
+      "WARNING: VET TECH. DO NOT ASK ME TO LOOK AT YOUR DOG'S BUTT AT A PARTY.",
+      "World's okayest dispatcher"
+    ],
+    "no real niche overlap": [
+      "ASTRONAUT GOAT FARMERS WHO LOVE JAZZ"
+    ],
+    "no ironic/sarcastic turn": [
+      "Nurses do it with care",
+      "Keep calm and dispatch on",
+      "Retired: No boss, no deadlines, no idea what day it is.",
+      "Nurse life: coffee, chaos, repeat.",
+      "I like big trucks and I cannot lie",
+      "Hunt. Fish. Nap. Repeat."
+    ],
+    "cut in final ranking": [
+      "NEURODIVERGENT DADS WHO ALPHABETIZE THE SOCKET SET",
+      "ANXIOUS CAT LADIES WHO ONLY CRY IN FRONT OF THE CAT",
+      "DOG MOMS WHO THROW BIRTHDAY PARTIES FOR A PUG",
+      "CERTIFIED MENACE GOLF DADS WHO ROUND DOWN",
+      "SLAY SOCCER MOMS WITH THREE FOLDING CHAIRS IN THE TRUNK",
+      "WEATHER CHANNEL GRANDPAS WHO TRACK STORMS LIKE IT'S FANTASY FOOTBALL",
+      "BUTTERSCOTCH GRANDMAS WITH A PURSE FROM 1987",
+      "UNHINGED NAIL TECHS WHO KNEW ABOUT THE DIVORCE FIRST",
+      "SAD BOI TRUCKERS WHO TALK TO THE DASHBOARD",
+      "HUMBLE BRAG BOAT DADS DROWNING IN PAYMENTS",
+      "RAW-DOGGING-THE-SILENCE TRUCKERS AT 3 AM",
+      "NONCHALANT ELECTRICIANS WHO TEST WIRES WITH THEIR FINGERS",
+      "ROLLER DOG CONNOISSEUR TRUCKERS OF I-80",
+      "BOUGIE DENTAL HYGIENISTS WHO ASK QUESTIONS MID-SCRAPE",
+      "SILENT GENERATION GOBLINS WHO HOARD SOY SAUCE PACKETS"
+    ]
+  }
+}
