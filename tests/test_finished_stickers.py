@@ -36,6 +36,14 @@ def test_xai_is_the_default_image_provider_when_its_key_is_set() -> None:
     assert estimate_image_cost("fixture", 5) == 0.0
 
 
+def test_fast_mode_is_on_and_the_sale_check_is_off() -> None:
+    """A new run skips web evidence and the already-for-sale search unless asked."""
+
+    config = RunConfig()
+    assert config.social_fast_mode is True
+    assert config.social_check_already_for_sale is False
+
+
 def test_text_plus_images_reaches_stage_2_when_the_env_stop_is_1() -> None:
     """The checkbox, not only MVP_STOP_AFTER_STAGE, decides whether images run."""
 

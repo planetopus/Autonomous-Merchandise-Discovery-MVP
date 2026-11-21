@@ -61,6 +61,7 @@ class RunFixture(BaseModel):
     total_tokens: int = 0
     estimated_cost_usd: float = 0.0
     cost_is_estimate: bool = False
+    elapsed: str = ""
 
     @property
     def completion_ratio(self) -> float:

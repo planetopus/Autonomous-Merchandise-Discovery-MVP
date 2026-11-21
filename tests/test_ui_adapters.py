@@ -27,6 +27,7 @@ def test_snapshot_adapter_preserves_persisted_stage_state() -> None:
     fixture = snapshot_to_fixture(RunSnapshot(run=run, stages=[stage]))
 
     assert fixture.current_stage_number == 1
+    assert fixture.elapsed.endswith("s")
     assert fixture.stages[0].progress == 50
     assert fixture.stages[0].metrics["Attempt"] == "2"
     assert "Tokens" not in fixture.stages[0].metrics

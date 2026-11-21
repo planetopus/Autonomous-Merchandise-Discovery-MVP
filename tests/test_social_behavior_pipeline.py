@@ -137,6 +137,7 @@ def test_social_behavior_pipeline_passes_live_source_scope_to_provider() -> None
             social_sources=[SocialSource.REDDIT, SocialSource.X],
             social_query="night workers trying to stay sane",
             social_candidate_count=1,
+            social_fast_mode=False,
         ),
     )
     stage = StageExecution(
@@ -225,6 +226,7 @@ def test_reddit_403_still_asks_web_search_for_source_evidence() -> None:
             social_sources=[SocialSource.REDDIT],
             social_query="night shift charting",
             social_candidate_count=1,
+            social_fast_mode=False,
             social_niche_a="night-shift nurses",
             social_niche_b="true crime",
         ),
@@ -357,6 +359,7 @@ def test_missing_identity_stacks_do_not_fail_the_run() -> None:
             social_candidate_count=2,
             social_niche_a="night-shift nurses",
             social_niche_b="true crime",
+            social_fast_mode=False,
         ),
     )
     stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")

@@ -187,6 +187,7 @@ def test_identity_v2_uses_one_prompt_focused_provider_call() -> None:
     executor._reasoning_provider = provider
 
     run.config.social_candidate_count = 1
+    run.config.social_fast_mode = False
     result = executor.execute(run, stage, executor.prepare(run, stage))
 
     call = first_writer_call(provider).kwargs

@@ -1,5 +1,7 @@
 """Stage 15: generate artwork candidates through the injected image provider."""
 
+from concurrent.futures import ThreadPoolExecutor
+
 from pydantic import BaseModel, Field
 
 from merchandise_discovery.domain.models.artifacts import Artwork
@@ -37,41 +39,52 @@ def execute(
 ) -> ArtworkGenerationOutput:
     """Generate finalist variants, persist binaries, and retain references for review."""
 
-    artworks: list[Artwork] = []
-    usages: list[UsageMetrics] = []
     storage_adapter = storage or ReferenceArtworkStorage()
-    for prompt in input_data.prompts:
-        for variant_number in range(1, input_data.artwork_variants_per_concept + 1):
-            generated = provider.generate(
-                ImageGenerationRequest(
-                    concept_id=prompt.concept_id,
-                    brief_id=prompt.brief_id,
-                    prompt=prompt.prompt,
-                    variant_number=variant_number,
-                )
+    jobs = [
+        (index, prompt, variant_number)
+        for index, prompt in enumerate(input_data.prompts)
+        for variant_number in range(1, input_data.artwork_variants_per_concept + 1)
+    ]
+
+    def _generate_one(job: tuple[int, PromptCompilation, int]):
+        index, prompt, variant_number = job
+        generated = provider.generate(
+            ImageGenerationRequest(
+                concept_id=prompt.concept_id,
+                brief_id=prompt.brief_id,
+                prompt=prompt.prompt,
+                variant_number=variant_number,
             )
-            stored = storage_adapter.persist(
-                source_url=generated.source_url,
-                storage_key=generated.storage_key,
-                reported_size_bytes=generated.file_size_bytes,
-                content=generated.content,
-            )
-            usages.append(generated.usage)
-            artworks.append(
-                Artwork(
-                    run_id=prompt.run_id,
-                    concept_id=prompt.concept_id,
-                    brief_id=prompt.brief_id,
-                    prompt=prompt.prompt,
-                    combination_name=prompt.combination_name,
-                    storage_key=stored.storage_key,
-                    critique={"who_its_for": prompt.audience_label} if prompt.audience_label else {},
-                    raw_storage_key=stored.raw_storage_key,
-                    source_url=generated.source_url,
-                    width=stored.width or generated.width,
-                    height=stored.height or generated.height,
-                    mime_type=stored.mime_type or generated.mime_type,
-                    file_size_bytes=stored.file_size_bytes,
-                )
-            )
+        )
+        stored = storage_adapter.persist(
+            source_url=generated.source_url,
+            storage_key=generated.storage_key,
+            reported_size_bytes=generated.file_size_bytes,
+            content=generated.content,
+        )
+        artwork = Artwork(
+            run_id=prompt.run_id,
+            concept_id=prompt.concept_id,
+            brief_id=prompt.brief_id,
+            prompt=prompt.prompt,
+            combination_name=prompt.combination_name,
+            storage_key=stored.storage_key,
+            critique={"who_its_for": prompt.audience_label} if prompt.audience_label else {},
+            raw_storage_key=stored.raw_storage_key,
+            source_url=generated.source_url,
+            width=stored.width or generated.width,
+            height=stored.height or generated.height,
+            mime_type=stored.mime_type or generated.mime_type,
+            file_size_bytes=stored.file_size_bytes,
+        )
+        return index, artwork, generated.usage
+
+    if not jobs:
+        return ArtworkGenerationOutput()
+    workers = min(5, len(jobs))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        finished = list(pool.map(_generate_one, jobs))
+    finished.sort(key=lambda item: item[0])
+    artworks = [item[1] for item in finished]
+    usages = [item[2] for item in finished]
     return ArtworkGenerationOutput(artworks=artworks, usage=combine_usage(*usages))

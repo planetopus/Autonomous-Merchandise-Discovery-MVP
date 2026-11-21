@@ -185,5 +185,7 @@ def render_run_header(run: RunFixture) -> None:
     with usage_right:
         suffix = " (est.)" if run.cost_is_estimate else ""
         st.metric("Estimated API cost", f"${run.estimated_cost_usd:.6f}{suffix}")
+    if getattr(run, "elapsed", ""):
+        st.caption(f"Total run time: {run.elapsed}")
     if run.last_error:
         st.error(run.last_error)
