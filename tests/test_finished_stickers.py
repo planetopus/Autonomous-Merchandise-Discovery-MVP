@@ -42,6 +42,7 @@ def test_fast_mode_is_on_and_the_sale_check_is_off() -> None:
     config = RunConfig()
     assert config.social_fast_mode is True
     assert config.social_check_already_for_sale is False
+    assert config.social_image_qa is True
 
 
 def test_text_plus_images_reaches_stage_2_when_the_env_stop_is_1() -> None:

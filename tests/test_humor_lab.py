@@ -88,6 +88,7 @@ def test_live_run_uses_the_lab_bank_gold_lines_and_rubric(monkeypatch) -> None:
             social_sources=[SocialSource.REDDIT],
             social_query="weekend plans",
             social_candidate_count=1,
+            social_fast_mode=False,
         ),
     )
     stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")

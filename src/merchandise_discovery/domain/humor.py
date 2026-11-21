@@ -48,6 +48,12 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "Each concept is one word-and-image pair, not a line with a picture added later. "
         "The picture must complete, flip, or reveal the double meaning. "
         "Set image_idea to that picture in one sentence. "
+        "Set artwork_prompt to the full image prompt, not a caption: one character with "
+        "a personality and expression, a scene that shows the double meaning, the layout "
+        "(die-cut cartoon with a thick white border, retro circle badge, warning sign, "
+        "logo spoof, or bold text stack), a color palette, detailed cartoon illustration "
+        "with shading, the exact sticker text in quotes, the words 'text appears exactly once', "
+        "and a white background. "
         "Set why_it_works to one sentence on how the words and the picture combine. "
         "Set format to the layout, such as retro sunset badge, logo spoof, circle badge, "
         "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge. "
@@ -373,7 +379,46 @@ def order_kept_lines(candidates: list, keep_count: int) -> list:
     pun_have = sum(1 for item in chosen if line_is_pun(item) or is_dark_humor(item))
     take(puns, max(0, 3 - pun_have))
     take(ranked, keep_count - len(chosen))
-    return chosen
+    return _cover_buyer_groups(chosen, ranked)
+
+
+def _group_name(candidate) -> str:
+    labels = [
+        str(item).strip()
+        for item in (getattr(candidate, "who_its_for", None) or [])
+        if str(item).strip()
+    ]
+    return labels[0].casefold() if labels else ""
+
+
+def _cover_buyer_groups(chosen: list, ranked: list, minimum: int = 3) -> list:
+    """Swap duplicate groups for a missing group when the pool has one."""
+
+    if len(chosen) < 5:
+        return chosen
+
+    def present(items: list) -> set[str]:
+        return {name for item in items if (name := _group_name(item))}
+
+    result = list(chosen)
+    spare = [
+        item
+        for item in ranked
+        if id(item) not in {id(current) for current in result} and _group_name(item)
+    ]
+    for candidate in spare:
+        have = present(result)
+        if len(have) >= minimum:
+            break
+        group = _group_name(candidate)
+        if group in have:
+            continue
+        for index in range(len(result) - 1, 0, -1):
+            key = _group_name(result[index])
+            if key and sum(1 for item in result if _group_name(item) == key) > 1:
+                result[index] = candidate
+                break
+    return result
 
 
 def brand_spoofs_needed(keep_count: int, spoof_count: int) -> int:
@@ -629,6 +674,24 @@ class HumorCritiqueItem(BaseModel):
         default="",
         description="One sentence on why this brand makes the joke. Empty when it is not a logo spoof.",
     )
+
+
+class StickerTextCheck(BaseModel):
+    """One image in a batched spellcheck."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    index: int = Field(ge=0)
+    text_ok: bool = True
+    problem: str = ""
+
+
+class StickerTextBatch(BaseModel):
+    """Cheap vision pass over the finished stickers."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    checks: list[StickerTextCheck] = Field(default_factory=list)
 
 
 class HumorCritiqueBatch(BaseModel):

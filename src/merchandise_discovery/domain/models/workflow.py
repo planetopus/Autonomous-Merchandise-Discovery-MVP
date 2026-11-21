@@ -73,6 +73,8 @@ class RunConfig(BaseModel):
     social_fast_mode: bool = True
     # The web "already for sale" check is off unless the run asks for it.
     social_check_already_for_sale: bool = False
+    # One cheap vision pass after the images. Off skips the spellcheck.
+    social_image_qa: bool = True
     social_selected_candidate_indices: list[int] = Field(default_factory=list)
 
     @model_validator(mode="after")

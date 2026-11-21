@@ -7,6 +7,7 @@ independently portable and provider dependencies are injected here.
 
 import json
 import logging
+import os
 import random
 from concurrent.futures import ThreadPoolExecutor
 
@@ -18,6 +19,7 @@ from merchandise_discovery.domain.humor import (
     NichePairBatch,
     NichePairRecord,
     PlaybookPatternRecord,
+    StickerTextBatch,
     apply_brand_cap,
     apply_jargon_cap,
     apply_line_caps,
@@ -114,6 +116,7 @@ from merchandise_discovery.infrastructure.humor_lab_loader import (
 )
 from merchandise_discovery.infrastructure.identity_atlas_loader import (
     atlas_prompt,
+    buyer_groups_block,
     infer_who_its_for,
     load_identity_atlas,
     sample_overlap_pairs,
@@ -141,10 +144,13 @@ from merchandise_discovery.infrastructure.mongo.repositories.seed_repository imp
 from merchandise_discovery.infrastructure.mongo.repositories.stage_execution_repository import (
     StageExecutionRepository,
 )
-from merchandise_discovery.infrastructure.providers.image_provider import ImageProvider
+from merchandise_discovery.infrastructure.providers.image_provider import (
+    ImageGenerationRequest,
+    ImageProvider,
+)
 from merchandise_discovery.infrastructure.providers.reasoning_provider import ReasoningProvider
 from merchandise_discovery.infrastructure.providers.research_provider import ResearchProvider
-from merchandise_discovery.infrastructure.storage import ArtworkStorage
+from merchandise_discovery.infrastructure.storage import ArtworkStorage, ReferenceArtworkStorage
 
 logger = logging.getLogger(__name__)
 
@@ -397,6 +403,21 @@ class DiscoveryStageExecutor:
                 }
             )
         fast = bool(getattr(run.config, "social_fast_mode", True))
+        picked_groups: list[dict] = []
+        if fast and need_pair and len(pair_bank) >= 3:
+            picked_groups = pair_bank[: min(5, len(pair_bank))]
+            need_pair = False
+            first = picked_groups[0]
+            pair_meta = {
+                "niche_pair_a": first["niche_a"],
+                "niche_pair_b": first["niche_b"],
+                "pairing_score": None,
+                "pairing_reason": "Several buyer groups from the atlas, not one pair.",
+                "niche_pair_candidates": [],
+            }
+            input_model = input_model.model_copy(
+                update={"niche_a": first["niche_a"], "niche_b": first["niche_b"]}
+            )
         # Fast mode writes from the atlas, trending buyers, and anchors. No Reddit or web search.
         if fast:
             quotes = []
@@ -457,7 +478,7 @@ class DiscoveryStageExecutor:
             input_model,
             draft_count=12,
             quotes=quotes,
-            humor_reference_block=writer_block + atlas_block,
+            humor_reference_block=writer_block + atlas_block + buyer_groups_block(picked_groups),
         )
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
@@ -627,7 +648,7 @@ class DiscoveryStageExecutor:
                 )
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
-        if not fast and needs_extra_line_round(len(candidates), input_model.candidate_count):
+        if needs_extra_line_round(len(candidates), input_model.candidate_count):
             extra, extra_usage, extra_reviews = self._draft_extra_survivors(
                 run,
                 pipeline_module,
@@ -648,9 +669,9 @@ class DiscoveryStageExecutor:
             )
         elif len(candidates) < input_model.candidate_count:
             warnings.append(
-                "Fewer lines cleared the critic than requested. Showing the best lines anyway."
+                f"Only {len(candidates)} lines cleared the critic. "
+                "Dropped lines were not added back."
             )
-            candidates = self._best_available(usable, candidates, input_model.candidate_count)
         if not candidates and usable:
             warnings.append("No line cleared the critic. Showing the drafted lines anyway.")
             candidates = usable[: input_model.candidate_count]
@@ -691,10 +712,11 @@ class DiscoveryStageExecutor:
         by_text: dict[str, list[str]] = {}
         for candidate in candidates:
             text = str(getattr(candidate, "artwork_text", "") or "")
+            own = [str(item).strip() for item in (getattr(candidate, "who_its_for", []) or []) if str(item).strip()]
             labels = infer_who_its_for(
-                list(getattr(candidate, "who_its_for", []) or []),
-                names,
-                groups,
+                own,
+                [] if len(own) >= 2 else names,
+                [] if len(own) >= 2 else groups,
                 atlas,
             )
             by_text[text] = labels
@@ -1136,15 +1158,99 @@ class DiscoveryStageExecutor:
             return False
         return sum(1 for candidate in candidates if self._is_absurd_stack(candidate)) < 2
 
-    def _note_image_fallback(self, output, summary: str):
-        """Keep a failed provider's status and message on the artwork stage."""
+    def _note_image_fallback(self, run, output, summary: str):
+        """Spellcheck the sticker text, then keep a provider fallback note."""
 
+        output = self._check_sticker_text(run, output)
         note = str(getattr(self._image_provider, "fallback_note", "") or "").strip()
         if not note:
             return output, summary
         if hasattr(output, "model_copy"):
             output = output.model_copy(update={"warning": note})
         return output, f"{summary} {note}"
+
+    def _check_sticker_text(self, run, output):
+        """One low-detail vision call. Regenerate only the misspelled images, once, together."""
+
+        if not getattr(run.config, "social_image_qa", True):
+            return output
+        if self._reasoning_provider is None or not getattr(output, "artworks", None):
+            return output
+        artworks = list(output.artworks)
+        urls = []
+        indexed = []
+        for index, artwork in enumerate(artworks):
+            url = str(artwork.source_url or "")
+            if not url or url.startswith(("https://fixture.local/", "openai://")):
+                continue
+            urls.append(url)
+            indexed.append((index, artwork))
+        if not urls:
+            return output
+        lines = "\n".join(
+            f"{index}. expected text: {artwork.combination_name}"
+            for index, artwork in indexed
+        )
+        try:
+            response = self._reasoning_provider.complete_structured(
+                system_prompt=(
+                    "Check sticker images. text_ok is false only when the sticker text is "
+                    "misspelled or appears more than once. Ignore style."
+                ),
+                user_prompt=f"Images are in the same order as this list.\n{lines}",
+                response_model=StickerTextBatch,
+                image_urls=urls,
+                image_detail="low",
+                reasoning_effort="low",
+                model=os.getenv("MVP_VISION_MODEL", "gpt-4o-mini"),
+            )
+        except (OSError, RuntimeError, TypeError, ValueError):
+            return output
+        failed = {
+            check.index
+            for check in response.output.checks
+            if not check.text_ok and 0 <= check.index < len(indexed)
+        }
+        if not failed or self._image_provider is None:
+            return output
+
+        def _redo(position: int):
+            index, artwork = indexed[position]
+            text = artwork.combination_name or ""
+            generated = self._image_provider.generate(
+                ImageGenerationRequest(
+                    concept_id=artwork.concept_id,
+                    brief_id=artwork.brief_id,
+                    prompt=(
+                        f"{artwork.prompt}\n"
+                        f'The previous image misspelled or repeated the words. '
+                        f'Text appears exactly once: "{text}".'
+                    ),
+                    variant_number=2,
+                )
+            )
+            stored = (self._artwork_storage or ReferenceArtworkStorage()).persist(
+                source_url=generated.source_url,
+                storage_key=generated.storage_key,
+                reported_size_bytes=generated.file_size_bytes,
+                content=generated.content,
+            )
+            return index, artwork.model_copy(
+                update={
+                    "storage_key": stored.storage_key,
+                    "raw_storage_key": stored.raw_storage_key,
+                    "source_url": generated.source_url,
+                    "width": stored.width or generated.width,
+                    "height": stored.height or generated.height,
+                    "file_size_bytes": stored.file_size_bytes,
+                }
+            )
+
+        with ThreadPoolExecutor(max_workers=min(5, len(failed))) as pool:
+            replaced = list(pool.map(_redo, sorted(failed)))
+        for index, artwork in replaced:
+            artworks[index] = artwork
+        return output.model_copy(update={"artworks": artworks})
 
     def _draft_extra_survivors(
         self,
@@ -2162,6 +2268,7 @@ class DiscoveryStageExecutor:
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
                 output, summary = self._note_image_fallback(
+                    run,
                     output,
                     f"Generated {len(output.artworks)} Identity V2 artwork candidates with Grok.",
                 )
@@ -2208,6 +2315,7 @@ class DiscoveryStageExecutor:
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
                 output, summary = self._note_image_fallback(
+                    run,
                     output,
                     (
                         f"Generated {len(output.artworks)} behavior-first, identity-grounded "
@@ -2254,6 +2362,7 @@ class DiscoveryStageExecutor:
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
                 output, summary = self._note_image_fallback(
+                    run,
                     output,
                     (
                         f"Generated {len(output.artworks)} identity-focused merchandise artwork "
@@ -2300,6 +2409,7 @@ class DiscoveryStageExecutor:
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
                 output, summary = self._note_image_fallback(
+                    run,
                     output,
                     f"Generated {len(output.artworks)} targeted merchandise artwork candidates with Grok.",
                 )

@@ -23,6 +23,7 @@ from merchandise_discovery.domain.stages.stage_15_artwork_generation import (
 from merchandise_discovery.domain.sticker_direction import (
     artwork_preamble,
     crossover_block,
+    direct_image_prompt,
     finished_sticker_direction,
     merchandise_text_clause,
     merged_avoid_list,
@@ -88,6 +89,9 @@ def build_targeted_artwork_prompt(
     isolated subject with a plain background instead of a full-bleed shirt or poster.
     """
 
+    direct = direct_image_prompt(candidate)
+    if direct:
+        return direct
     avoid = merged_avoid_list(candidate.things_to_avoid)
     return (
         f"{artwork_preamble()}\n"
