@@ -15,6 +15,9 @@ from merchandise_discovery.application.discovery_stage_executor import Discovery
 from merchandise_discovery.application.inline_run_manager import InlineRunManager
 from merchandise_discovery.application.review_service import ReviewService
 from merchandise_discovery.application.workflow_orchestrator import WorkflowOrchestrator
+from merchandise_discovery.infrastructure.humor_reference_loader import (
+    load_fresh_humor_references,
+)
 from merchandise_discovery.infrastructure.mongo.client import initialize_database
 from merchandise_discovery.infrastructure.mongo.repositories.artwork_repository import (
     ArtworkRepository,
@@ -25,6 +28,9 @@ from merchandise_discovery.infrastructure.mongo.repositories.concept_repository 
 )
 from merchandise_discovery.infrastructure.mongo.repositories.evidence_repository import (
     EvidenceRepository,
+)
+from merchandise_discovery.infrastructure.mongo.repositories.humor_reference_repository import (
+    HumorReferenceRepository,
 )
 from merchandise_discovery.infrastructure.mongo.repositories.intersection_repository import (
     IntersectionRepository,
@@ -196,6 +202,10 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
                 )
                 if live_mode
                 else None
+            ),
+            humor_reference_loader=lambda: load_fresh_humor_references(
+                HumorReferenceRepository(database.humor_references),
+                settings.humor_reference_csv_url,
             ),
         )
         runtime = ApplicationRuntime(

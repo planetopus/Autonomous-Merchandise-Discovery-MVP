@@ -83,3 +83,4 @@ def ensure_indexes(database) -> None:
     database.briefs.create_index([("concept_id", ASCENDING), ("created_at", DESCENDING)])
     database.artworks.create_index([("concept_id", ASCENDING), ("created_at", DESCENDING)])
     database.reviews.create_index([("artwork_id", ASCENDING), ("reviewed_at", DESCENDING)])
+    database.humor_references.create_index([("upvotes", DESCENDING)])

@@ -77,6 +77,7 @@ def build_user_prompt(
     *,
     draft_count: int | None = None,
     quotes: list | None = None,
+    humor_reference_block: str = "",
 ) -> str:
     """Build the V2 request while reusing the original identity pipeline's input contract."""
 
@@ -133,6 +134,7 @@ def build_user_prompt(
         )
     return (
         f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{humor_reference_block}"
         f"{quote_block(quotes)}"
         f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
@@ -143,7 +145,7 @@ def build_user_prompt(
         f"{topic_instruction}\n"
         f"Return up to {limit} distinct candidates. Each candidate must be "
         "source-backed and identity-recognizable without the reader seeing any metadata. The actual "
-        "merchandise text must be roughly 2 to 5 words, or empty for an image-only sticker, and "
+        "merchandise text must be a joke-shaped line of about 4 to 14 words, or empty for an image-only sticker, and "
         "contain at least one natural identity cue, or two strong contextual cues working together. "
         "Use a role-specific phrase, object, time, setting, relationship, or duty when the source "
         "supports it. If the text contains only a shared object or setting, connect it naturally to "

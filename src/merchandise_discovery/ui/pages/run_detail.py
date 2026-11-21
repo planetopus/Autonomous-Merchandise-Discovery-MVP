@@ -48,6 +48,8 @@ def _render_manual_artwork_selection(
                 st.markdown(f"#### Candidate {index + 1}")
                 sticker_text = str(candidate.get("artwork_text") or "").strip()
                 st.write(f"**Text:** {sticker_text or 'Image only'}")
+                if candidate.get("funny_score") is not None:
+                    st.caption(f"Funny score: {candidate['funny_score']} / 10")
                 if candidate.get("identity"):
                     identity_type = candidate.get("identity_type", "other")
                     identity_type = getattr(identity_type, "value", identity_type)

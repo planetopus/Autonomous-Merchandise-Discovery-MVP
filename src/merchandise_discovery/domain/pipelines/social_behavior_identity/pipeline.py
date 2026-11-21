@@ -56,6 +56,8 @@ class BehaviorIdentityOutput(BaseModel):
     search_summary: str = Field(min_length=1, max_length=2_000)
     topic_explored: str = Field(default="", max_length=500)
     model: str = "deterministic"
+    humor_examples_used: list[dict] = Field(default_factory=list)
+    humor_themes_used: list[str] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod
@@ -110,6 +112,7 @@ def build_user_prompt(
     *,
     draft_count: int | None = None,
     quotes: list | None = None,
+    humor_reference_block: str = "",
 ) -> str:
     """Ask the provider to map each discovered behavior to its own best-supported audience."""
 
@@ -130,6 +133,7 @@ def build_user_prompt(
         )
     return (
         f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{humor_reference_block}"
         f"{quote_block(quotes)}"
         f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
@@ -145,7 +149,7 @@ def build_user_prompt(
         "source_excerpt, audience_context, behavior, friction_or_pressure, artwork_text, "
         "artwork_prompt, visual_punchline, main_visual_metaphor, audience_specific_cue, tone, "
         "style_direction, things_to_avoid, and specificity_reason. Make the merchandise text "
-        "a sticker line of roughly 2 to 5 words, or leave it empty, and let the audience emerge "
+        "a joke-shaped sticker line of about 4 to 14 words, or leave it empty, and let the audience emerge "
         "naturally from its lived details. Style direction must describe a flat vector die-cut "
         "sticker on a plain white background, and things_to_avoid must include scenes, full-bleed "
         "backgrounds, realistic shading, and poster layouts. "

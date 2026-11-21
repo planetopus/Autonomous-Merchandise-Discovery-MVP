@@ -130,7 +130,7 @@ def test_provider_builds_multimodal_structured_request() -> None:
 def test_provider_requires_domain_restricted_web_search_when_requested() -> None:
     """The social pipeline cannot silently answer without searching its requested platforms."""
 
-    provider = _provider("gpt-4o-mini")
+    provider = _provider("gpt-5")
     provider.complete_structured(
         system_prompt="system",
         user_prompt="find behavior",
@@ -146,6 +146,22 @@ def test_provider_requires_domain_restricted_web_search_when_requested() -> None
             "filters": {"allowed_domains": ["reddit.com", "x.com"]},
         }
     ]
+
+
+def test_models_without_web_search_filters_fail_before_the_request() -> None:
+    """gpt-4o-mini rejects web_search filters, so the adapter stops with a model hint."""
+
+    provider = _provider("gpt-4o-mini")
+
+    with pytest.raises(ReasoningProviderError, match="does not support web_search filters"):
+        provider.complete_structured(
+            system_prompt="system",
+            user_prompt="find behavior",
+            response_model=ExampleOutput,
+            web_search_domains=("reddit.com",),
+        )
+
+    provider._client.responses.parse.assert_not_called()
 
 
 def test_direct_provider_uses_environment_timeout(monkeypatch) -> None:

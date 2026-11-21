@@ -21,7 +21,7 @@ def test_crossover_is_included_in_research_and_artwork_prompts() -> None:
     )
     user_prompt = pipeline.build_user_prompt(behavior_input)
     assert 'both "night-shift nurses" and "pit bull owners"' in user_prompt
-    assert "2 to 5 words" in user_prompt
+    assert "4 to 14 words" in user_prompt
 
     candidate = pipeline.execute(behavior_input).candidates[0]
     image_prompt = artwork.build_targeted_artwork_prompt(
@@ -57,7 +57,7 @@ def test_identity_prompt_keeps_working_and_accepts_a_crossover() -> None:
     solo_prompt = identity_v2.build_user_prompt(solo)
     assert "bedside nurses" in solo_prompt
     assert "Crossover niches" not in solo_prompt
-    assert "2 to 5 words" in solo_prompt
+    assert "4 to 14 words" in solo_prompt
 
     crossed = solo.model_copy(update={"niche_a": "bedside nurses", "niche_b": "houseplant people"})
     crossed_prompt = identity_v2.build_user_prompt(crossed)

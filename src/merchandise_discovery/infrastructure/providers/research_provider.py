@@ -145,7 +145,7 @@ class OpenAIWebResearchProvider:
     def __init__(
         self,
         api_key: str,
-        model: str = "gpt-4o-mini",
+        model: str = "gpt-5",
         *,
         input_price_per_million: float = 0.15,
         output_price_per_million: float = 0.60,

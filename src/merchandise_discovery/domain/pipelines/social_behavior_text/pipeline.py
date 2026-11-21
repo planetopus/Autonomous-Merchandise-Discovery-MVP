@@ -52,7 +52,7 @@ class SocialBehaviorTextCandidate(BaseModel):
     behavior: str = Field(min_length=1, max_length=500)
     friction_or_pressure: str = Field(min_length=1, max_length=500)
     # Sticker lines are short labels. Empty text is an image-only sticker.
-    artwork_text: str = Field(default="", max_length=80)
+    artwork_text: str = Field(default="", max_length=160)
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the
     # durable source of truth for the visual direction instead of re-deriving it downstream.
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
@@ -66,6 +66,7 @@ class SocialBehaviorTextCandidate(BaseModel):
     source_quote: str = Field(default="", max_length=500)
     humor_mechanism: str = Field(default="", max_length=200)
     concrete_detail: str = Field(default="", max_length=200)
+    funny_score: float | None = Field(default=None, ge=0, le=10)
 
     @field_validator("source_url")
     @classmethod
@@ -85,6 +86,8 @@ class SocialBehaviorTextOutput(BaseModel):
     search_summary: str = Field(min_length=1, max_length=2_000)
     topic_explored: str = Field(default="", max_length=500)
     model: str = "deterministic"
+    humor_examples_used: list[dict] = Field(default_factory=list)
+    humor_themes_used: list[str] = Field(default_factory=list)
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
@@ -120,6 +123,7 @@ def build_user_prompt(
     *,
     draft_count: int | None = None,
     quotes: list | None = None,
+    humor_reference_block: str = "",
 ) -> str:
     """Build the single-call request from user scope and source-domain instructions."""
 
@@ -141,6 +145,7 @@ def build_user_prompt(
         )
     return (
         f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{humor_reference_block}"
         f"{quote_block(quotes)}"
         f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
@@ -149,7 +154,7 @@ def build_user_prompt(
         f"Return up to {limit} distinct behavior-based merchandise text "
         "candidates. Avoid repeating the same audience pressure or behavior in different wording. "
         "Before returning each line, check that a reader can understand the joke without any other "
-        "field. Write die-cut sticker copy of roughly 2 to 5 words, or leave artwork_text empty "
+        "field. Write a joke-shaped line of about 4 to 14 words, or leave artwork_text empty "
         "for an image-only sticker. Use the real relationship, behavior, or object instead of a "
         "generic slogan, but do not write a sentence. For every candidate also provide an "
         "artwork_prompt that tells Grok how to render one isolated subject for this audience on "

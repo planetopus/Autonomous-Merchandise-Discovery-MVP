@@ -14,6 +14,11 @@ from merchandise_discovery.domain.humor import (
     LineReview,
     apply_line_critic,
 )
+from merchandise_discovery.domain.humor_references import (
+    humor_reference_prompt,
+    is_too_similar_to_references,
+    select_humor_references,
+)
 from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource, StageStatus
 from merchandise_discovery.domain.models.usage import UsageMetrics, combine_usage
 from merchandise_discovery.domain.models.workflow import StageExecution, WorkflowRun
@@ -130,6 +135,7 @@ class DiscoveryStageExecutor:
         run_repository: RunRepository | None = None,
         saturation_checker=None,
         reddit_reader=None,
+        humor_reference_loader=None,
     ):
         self._seeds = seed_repository
         self._intersections = intersection_repository
@@ -147,6 +153,7 @@ class DiscoveryStageExecutor:
         self._runs = run_repository
         self._saturation_checker = saturation_checker
         self._reddit_reader = reddit_reader
+        self._humor_reference_loader = humor_reference_loader
 
     def _recent_identity_selections(self, run: WorkflowRun, limit: int = 12) -> list[str]:
         """Return bounded identity history for diversity-aware auto-selection prompts.
@@ -184,11 +191,31 @@ class DiscoveryStageExecutor:
                 break
         return identities
 
-    def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
-        """Collect comments, draft more lines than we will keep, then let a critic cut them."""
+    def _finish_social_text(self, run: WorkflowRun, input_model, pipeline_module, output_model):
+        """Validate the drafted lines, then record which humor references the run used."""
 
+        reasoning_output, usage, selection = self._social_reasoning(
+            run,
+            input_model,
+            pipeline_module,
+            output_model,
+        )
+        output = pipeline_module.execute(
+            input_model,
+            reasoning_output=reasoning_output,
+            model=usage.model if usage.provider != "fixture" else "deterministic",
+        )
+        if selection.examples or selection.themes:
+            output = self._stamp_humor_context(output, selection)
+        return output, usage
+
+    def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
+        """Collect comments, draft joke-shaped lines, then let a critic cut them."""
+
+        selection = self._humor_selection(run, input_model)
+        reference_block = humor_reference_prompt(selection)
         if self._reasoning_provider is None:
-            return None, UsageMetrics()
+            return None, UsageMetrics(), selection
         quotes = self._collect_reddit_quotes(input_model)
         draft_count = min(25, max(input_model.candidate_count, input_model.candidate_count * 3))
         domains = None
@@ -196,29 +223,71 @@ class DiscoveryStageExecutor:
             domains = tuple(
                 "reddit.com" if source.value == "reddit" else "x.com" for source in input_model.sources
             )
+        user_prompt = pipeline_module.build_user_prompt(
+            input_model,
+            draft_count=draft_count,
+            quotes=quotes,
+            humor_reference_block=reference_block,
+        )
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
-            user_prompt=pipeline_module.build_user_prompt(
-                input_model,
-                draft_count=draft_count,
-                quotes=quotes,
-            ),
+            user_prompt=user_prompt,
             response_model=output_model,
             web_search_domains=domains,
         )
         usage = response.usage
-        output = response.output
-        candidates = list(getattr(output, "candidates", []))
-        if len(candidates) > input_model.candidate_count:
-            kept, critic_usage = self._critic_pass(
+        candidates = self._without_copied_references(
+            list(getattr(response.output, "candidates", [])),
+            selection.examples,
+        )
+        needs_upvote_bar = bool(selection.examples)
+        if needs_upvote_bar or len(candidates) > input_model.candidate_count:
+            candidates, critic_usage = self._critic_pass(
                 run,
                 candidates,
                 input_model.candidate_count,
+                reference_block,
             )
-            output = output.model_copy(update={"candidates": kept})
             usage = combine_usage(usage, critic_usage)
+        if needs_upvote_bar and len(candidates) < input_model.candidate_count:
+            retry_prompt = (
+                f"{user_prompt}\nThe previous lines were title puns or scored under 7 on "
+                "'would this get upvoted on Reddit'. Write new joke-shaped lines. Do not "
+                "paraphrase the reference examples."
+            )
+            retry = self._reasoning_provider.complete_structured(
+                system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+                user_prompt=retry_prompt,
+                response_model=output_model,
+                web_search_domains=domains,
+            )
+            usage = combine_usage(usage, retry.usage)
+            retried = self._without_copied_references(
+                list(getattr(retry.output, "candidates", [])),
+                selection.examples,
+            )
+            if retried:
+                retried, critic_usage = self._critic_pass(
+                    run,
+                    retried,
+                    input_model.candidate_count,
+                    reference_block,
+                )
+                usage = combine_usage(usage, critic_usage)
+            if len(retried) >= len(candidates):
+                candidates = retried
+        if needs_upvote_bar and not candidates:
+            raise RuntimeError(
+                "Humor critic rejected every line. None scored 7 or higher against the "
+                "upvoted reference jokes, or each line copied a reference."
+            )
+        if not candidates:
+            candidates = list(getattr(response.output, "candidates", []))
+        output = response.output.model_copy(
+            update={"candidates": candidates[: input_model.candidate_count]}
+        )
         output = self._drop_crowded_lines(output)
-        return output, usage
+        return output, usage, selection
 
     def _collect_reddit_quotes(self, input_model) -> list:
         """Pull top comments when Reddit is selected. A failure leaves the writer on web search."""
@@ -240,8 +309,62 @@ class DiscoveryStageExecutor:
             logger.warning("Reddit comment collection skipped: %s", error)
             return []
 
-    def _critic_pass(self, run: WorkflowRun, candidates: list, keep_count: int):
-        """Score humor, novelty, and tone, then keep only the lines that landed."""
+    def _humor_selection(self, run: WorkflowRun, input_model):
+        """Load references for this run only. The loader itself does not cache."""
+
+        from merchandise_discovery.domain.humor_references import HumorReferenceSelection
+
+        if self._humor_reference_loader is None:
+            return HumorReferenceSelection(examples=[], themes=[])
+        try:
+            references = self._humor_reference_loader() or []
+        except Exception as error:  # noqa: BLE001 - references are optional context.
+            logger.warning("Humor references were not loaded (%s).", type(error).__name__)
+            references = []
+        niches = [
+            str(getattr(input_model, "niche_a", "") or ""),
+            str(getattr(input_model, "niche_b", "") or ""),
+            str(getattr(input_model, "identity", "") or ""),
+        ]
+        return select_humor_references(references, tone=run.config.humor_tone, niches=niches)
+
+    def _without_copied_references(self, candidates: list, examples: list) -> list:
+        """Drop lines that reuse an upvoted reference instead of making a new joke."""
+
+        return [
+            candidate
+            for candidate in candidates
+            if not is_too_similar_to_references(str(getattr(candidate, "artwork_text", "")), examples)
+        ]
+
+    def _stamp_humor_context(self, output, selection):
+        """Record the top examples and themes that this run's copy was judged against."""
+
+        return output.model_copy(
+            update={
+                "humor_examples_used": [
+                    {
+                        "text": item.text,
+                        "upvotes": item.upvotes,
+                        "humor_type": item.humor_type,
+                        "niche": item.niche,
+                        "subreddit": item.subreddit,
+                        "post_url": item.post_url,
+                    }
+                    for item in selection.display_examples
+                ],
+                "humor_themes_used": [item.text for item in selection.themes[:10]],
+            }
+        )
+
+    def _critic_pass(
+        self,
+        run: WorkflowRun,
+        candidates: list,
+        keep_count: int,
+        reference_block: str = "",
+    ):
+        """Score humor against the reference set and drop lines under the upvote bar."""
 
         numbered = "\n".join(
             f"{index}. {getattr(candidate, 'artwork_text', '')} "
@@ -253,11 +376,17 @@ class DiscoveryStageExecutor:
             system_prompt=(
                 "You are a merchandise humor critic. Score each drafted sticker line. "
                 "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
-                "but must not decide the cut when the tone is dark. Do not reward a duplicate joke."
+                "but must not decide the cut when the tone is dark. reddit_upvote_score is "
+                "1 to 10 for 'would this get upvoted on Reddit' compared with the reference "
+                "jokes. Score title puns and clever names at 4 or below. Score a real setup "
+                "and turn, confession, or deadpan absurdity at 7 or above only when it would "
+                "actually get a laugh. Do not reward a line that copies a reference."
             ),
             user_prompt=(
-                f"Requested tone: {run.config.humor_tone.value}. "
-                f"Keep the strongest {keep_count} lines by scoring every index.\n{numbered}"
+                f"Requested tone: {run.config.humor_tone.value}.\n"
+                f"{reference_block}"
+                f"Score every index. Lines under 7 on reddit_upvote_score will be dropped.\n"
+                f"{numbered}"
             ),
             response_model=HumorCritiqueBatch,
         )
@@ -268,11 +397,21 @@ class DiscoveryStageExecutor:
                 novelty=review.novelty,
                 tone_match=review.tone_match,
                 giftability=review.giftability,
+                reddit_upvote_score=review.reddit_upvote_score,
             )
             for review in response.output.reviews
         ]
+        scored = []
+        by_index = {review.index: review for review in reviews}
+        for index, candidate in enumerate(candidates):
+            review = by_index.get(index)
+            score = review.reddit_upvote_score if review is not None else None
+            if score is None or not hasattr(candidate, "model_copy"):
+                scored.append(candidate)
+                continue
+            scored.append(candidate.model_copy(update={"funny_score": score}))
         kept = apply_line_critic(
-            candidates,
+            scored,
             reviews,
             keep_count=keep_count,
             tone=run.config.humor_tone,
@@ -747,16 +886,11 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_IDENTITY_V2:
             if stage.stage_number == 1:
                 input_model = social_identity_v2.SocialIdentityV2Input.model_validate(input_data)
-                reasoning_output, usage = self._social_reasoning(
+                output, usage = self._finish_social_text(
                     run,
                     input_model,
                     social_identity_v2,
                     social_identity_v2.SocialIdentityV2Output,
-                )
-                output = social_identity_v2.execute(
-                    input_model,
-                    reasoning_output=reasoning_output,
-                    model=usage.model if usage.provider != "fixture" else "deterministic",
                 )
                 summary = (
                     f"Generated {len(output.candidates)} prompt-focused identity merchandise "
@@ -794,16 +928,11 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_BEHAVIOR_IDENTITY:
             if stage.stage_number == 1:
                 input_model = social_behavior_identity.BehaviorIdentityInput.model_validate(input_data)
-                reasoning_output, usage = self._social_reasoning(
+                output, usage = self._finish_social_text(
                     run,
                     input_model,
                     social_behavior_identity,
                     social_behavior_identity.BehaviorIdentityOutput,
-                )
-                output = social_behavior_identity.execute(
-                    input_model,
-                    reasoning_output=reasoning_output,
-                    model=usage.model if usage.provider != "fixture" else "deterministic",
                 )
                 identity_count = len(
                     {candidate.identity.casefold() for candidate in output.candidates}
@@ -845,16 +974,11 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_IDENTITY_FOCUSED:
             if stage.stage_number == 1:
                 input_model = social_identity.SocialIdentityTextInput.model_validate(input_data)
-                reasoning_output, usage = self._social_reasoning(
+                output, usage = self._finish_social_text(
                     run,
                     input_model,
                     social_identity,
                     social_identity.SocialIdentityTextOutput,
-                )
-                output = social_identity.execute(
-                    input_model,
-                    reasoning_output=reasoning_output,
-                    model=usage.model if usage.provider != "fixture" else "deterministic",
                 )
                 summary = (
                     f"Generated {len(output.candidates)} identity-focused merchandise text "
@@ -893,16 +1017,11 @@ class DiscoveryStageExecutor:
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_BEHAVIOR_TEXT:
             if stage.stage_number == 1:
                 input_model = social_behavior.SocialBehaviorTextInput.model_validate(input_data)
-                reasoning_output, usage = self._social_reasoning(
+                output, usage = self._finish_social_text(
                     run,
                     input_model,
                     social_behavior,
                     social_behavior.SocialBehaviorTextOutput,
-                )
-                output = social_behavior.execute(
-                    input_model,
-                    reasoning_output=reasoning_output,
-                    model=usage.model if usage.provider != "fixture" else "deterministic",
                 )
                 summary = (
                     f"Generated {len(output.candidates)} behavior-based merchandise text candidates "
@@ -1446,7 +1565,8 @@ class DiscoveryStageExecutor:
                         "avoid. Design every brief as a die-cut vinyl sticker: flat vector "
                         "illustration, bold clean outlines, flat colors, one centered isolated "
                         "subject, and a plain white background. Keep the exact phrase to roughly "
-                        "2 to 5 words, or make the sticker image-only when words are unnecessary. "
+                        "about 4 to 14 words and joke-shaped, or make the sticker image-only when words "
+                        "are unnecessary. "
                         "Set intended merchandise type to die-cut vinyl sticker. Add scene or "
                         "landscape backgrounds, full-bleed backgrounds, realistic shading, and "
                         "poster layouts to things to avoid."

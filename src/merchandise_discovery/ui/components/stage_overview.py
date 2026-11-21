@@ -57,6 +57,28 @@ def _section(title: str) -> None:
     st.markdown(f"**{title}**")
 
 
+def _render_humor_references(payload: dict[str, Any]) -> None:
+    """Show the reference jokes this run's copy was measured against."""
+
+    examples = payload.get("humor_examples_used") or []
+    themes = payload.get("humor_themes_used") or []
+    if not examples and not themes:
+        return
+    _section("Humor references used")
+    if examples:
+        st.caption("Top upvoted exact lines. The writer was told to learn the mechanics, not copy them.")
+        for item in examples[:10]:
+            if not isinstance(item, dict):
+                st.write(str(item))
+                continue
+            votes = item.get("upvotes", 0)
+            kind = item.get("humor_type") or "unspecified"
+            st.write(f"- ({votes} upvotes, {kind}) {item.get('text', '')}")
+    if themes:
+        st.caption("Currently funny topics")
+        st.write(" · ".join(str(theme) for theme in themes))
+
+
 def _render_social_behavior_text(
     payload: dict[str, Any],
     input_payload: dict[str, Any] | None = None,
@@ -87,6 +109,7 @@ def _render_social_behavior_text(
     niche_b = str(request.get("niche_b") or "").strip()
     if niche_a and niche_b:
         st.write(f"**Niche crossover:** {niche_a} × {niche_b}")
+    _render_humor_references(payload)
     if request.get("auto_topic"):
         st.write(f"**Behavior or topic selected by AI:** {query}")
     else:
@@ -134,6 +157,9 @@ def _render_social_behavior_text(
         )
         if candidate.get("source_quote"):
             st.caption(f"Quote: {_text(candidate, 'source_quote')}")
+        funny_score = candidate.get("funny_score")
+        if funny_score is not None:
+            st.caption(f"Funny score: {funny_score} / 10")
         if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
             st.caption(
                 "Humor: "
