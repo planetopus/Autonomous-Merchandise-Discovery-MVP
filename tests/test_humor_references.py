@@ -1,7 +1,10 @@
 """Loader, upvote weighting, and anti-copy checks for the humor reference set."""
 
+from merchandise_discovery.domain.humor import niche_pair_block
 from merchandise_discovery.domain.humor_references import (
     HumorReference,
+    HumorReferenceLoadError,
+    copied_from_source,
     humor_reference_id,
     is_too_similar_to_references,
     select_humor_references,
@@ -9,6 +12,7 @@ from merchandise_discovery.domain.humor_references import (
 from merchandise_discovery.domain.models.common import HumorTone
 from merchandise_discovery.infrastructure.humor_reference_loader import (
     DEFAULT_HUMOR_REFERENCE_CSV_URL,
+    find_humor_reference_csv,
     load_fresh_humor_references,
     parse_humor_reference_csv,
 )
@@ -152,6 +156,82 @@ def test_csv_marks_theme_rows_and_hashes_text() -> None:
 
     assert parsed[0].is_theme is True
     assert parsed[0].reference_id == humor_reference_id(parsed[0].text)
+
+
+def test_source_sentences_are_not_treated_as_jokes() -> None:
+    """A merchandise line that is the source sentence, or mostly its words, is rejected."""
+
+    quote = "I also noticed I was getting elephants foot and adhesion issues in places."
+    nozzle = "This is with a 0.4 mm nozzle."
+    corners = "One corner can give you info about the other corners too."
+
+    assert copied_from_source(quote, quote, "something else")
+    assert copied_from_source(nozzle, nozzle)
+    assert copied_from_source(corners, corners)
+    assert copied_from_source(
+        "I was getting elephants foot and adhesion issues",
+        quote,
+    )
+    assert not copied_from_source(
+        "My first layer files a complaint",
+        quote,
+        nozzle,
+    )
+    assert not copied_from_source("", quote)
+
+
+def test_blank_niches_ask_the_model_to_choose_two() -> None:
+    """A run with no Niche A/B still has to cross two lives, and score that pairing."""
+
+    blank = niche_pair_block()
+    assert "two different niches" in blank
+    assert "pairing_score" in blank
+    named = niche_pair_block(identity="night-shift nurses")
+    assert "night-shift nurses" in named
+    assert "second niche" in named
+    supplied = niche_pair_block("nurses", "3D printing")
+    assert 'Cross these two niches exactly: "nurses" and "3D printing"' in supplied
+
+
+def test_empty_fetch_uses_the_file_above_the_working_directory(tmp_path) -> None:
+    """A zero-row download falls back by walking up from the process directory."""
+
+    repo = tmp_path / "repo"
+    nested = repo / "src" / "merchandise_discovery" / "entrypoints"
+    nested.mkdir(parents=True)
+    header = "date_found,subreddit,sticker_text_or_idea,upvotes,humor_type,niche,post_url\n"
+    row = "2026-11-21,nursing,the lake filed my overtime,10,dry,nurses,https://reddit.com/a\n"
+    (repo / "data").mkdir()
+    (repo / "data" / "humor_references.csv").write_text(header + row, encoding="utf-8")
+
+    found = find_humor_reference_csv([nested])
+    assert found == repo / "data" / "humor_references.csv"
+
+    loaded = load_fresh_humor_references(
+        None,
+        "https://example.com/empty.csv",
+        http_get=lambda _url: header,
+        bundled_path=found,
+    )
+    assert [item.text for item in loaded] == ["the lake filed my overtime"]
+
+
+def test_zero_rows_fail_instead_of_returning_an_empty_list(tmp_path) -> None:
+    """A fetch and a missing file must stop the run with a clear error."""
+
+    header = "date_found,subreddit,sticker_text_or_idea,upvotes,humor_type,niche,post_url\n"
+    missing = tmp_path / "missing.csv"
+    try:
+        load_fresh_humor_references(
+            None,
+            "https://example.com/empty.csv",
+            http_get=lambda _url: header,
+            bundled_path=missing,
+        )
+    except HumorReferenceLoadError as error:
+        assert "0 rows" in str(error)
+    else:
+        raise AssertionError("expected a loud failure")
 
 
 def _write_csv(directory, body: str):

@@ -164,8 +164,8 @@ def render_run_create(
                 "Let AI choose the identity and identity type",
                 value=False,
                 help=(
-                    "OpenAI will select one concrete, non-sensitive audience identity and classify "
-                    "it using the supported identity taxonomy: "
+                    "OpenAI will still cross two niches. It names the first as the identity and "
+                    "classifies it with the supported taxonomy: "
                     + identity_type_guidance()
                 ),
             )
@@ -244,9 +244,9 @@ def render_run_create(
             )
             st.markdown("#### Cross two niches")
             st.caption(
-                "Optional. Enter two niches or identities to research their intersection and "
-                "write sticker text and artwork only for people who are both. Leave both blank "
-                "to keep this pipeline's existing audience and behavior input."
+                "Enter two niches or identities to research their intersection and write "
+                "sticker text only for people who are both. Leave both blank and the AI picks "
+                "two niches whose audiences share a life, then scores that pairing."
             )
             social_niche_a = st.text_input(
                 "Niche / identity A",

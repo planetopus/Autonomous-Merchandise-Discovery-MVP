@@ -42,6 +42,7 @@ def test_crossover_is_included_in_research_and_artwork_prompts() -> None:
         )
     )
     assert "Crossover niches" not in blank
+    assert "two different niches" in blank
 
 
 def test_identity_prompt_keeps_working_and_accepts_a_crossover() -> None:

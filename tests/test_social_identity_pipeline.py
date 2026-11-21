@@ -1,6 +1,5 @@
 """Tests for the identity-focused social A/B pipeline."""
 
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 from merchandise_discovery.application.discovery_stage_executor import DiscoveryStageExecutor
@@ -10,6 +9,7 @@ from merchandise_discovery.domain.models.workflow import RunConfig, StageExecuti
 from merchandise_discovery.domain.pipelines.social_identity_focused import pipeline
 from merchandise_discovery.domain.stages.registry import stage_definitions_for
 from merchandise_discovery.infrastructure.providers.image_provider import FixtureImageProvider
+from tests.live_reasoning import scripted_social_provider
 
 
 def _executor(stage_repository: Mock) -> DiscoveryStageExecutor:
@@ -177,13 +177,12 @@ def test_identity_live_stage_canonicalizes_provider_identity_labels() -> None:
         things_to_avoid=["generic healthcare imagery"],
         specificity_reason="The source supports the identity-specific work tension.",
     )
-    provider = Mock()
-    provider.complete_structured.return_value = SimpleNamespace(
-        output=pipeline.SocialIdentityTextOutput(
+    provider = scripted_social_provider(
+        pipeline.SocialIdentityTextOutput(
             candidates=[candidate],
             search_summary="One source-backed behavior.",
         ),
-        usage=UsageMetrics(provider="openai", model="gpt-5.6-luna", request_count=1),
+        UsageMetrics(provider="openai", model="gpt-5.6-luna", request_count=1),
     )
     executor = _executor(Mock())
     executor._reasoning_provider = provider

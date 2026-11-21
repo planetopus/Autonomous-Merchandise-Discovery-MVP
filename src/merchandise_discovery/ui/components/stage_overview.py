@@ -63,6 +63,9 @@ def _render_humor_references(payload: dict[str, Any]) -> None:
     examples = payload.get("humor_examples_used") or []
     themes = payload.get("humor_themes_used") or []
     if not examples and not themes:
+        if payload.get("line_reviews"):
+            _section("Humor references used")
+            st.caption("No humor references were loaded for this run.")
         return
     _section("Humor references used")
     if examples:
@@ -77,6 +80,41 @@ def _render_humor_references(payload: dict[str, Any]) -> None:
     if themes:
         st.caption("Currently funny topics")
         st.write(" · ".join(str(theme) for theme in themes))
+
+
+def _render_playbook(payload: dict[str, Any]) -> None:
+    """Show the shapes the writer was told to use, highest priority first."""
+
+    patterns = payload.get("humor_playbook_used") or []
+    if not patterns:
+        return
+    _section("Humor playbook")
+    st.caption("Structures for this run. The writer was told not to copy sample wording.")
+    for item in patterns:
+        if not isinstance(item, dict):
+            continue
+        weight = item.get("weight")
+        weight_text = f", weight {weight}" if weight else ""
+        st.write(f"- {item.get('label') or item.get('id')}{weight_text}")
+
+
+def _render_line_reviews(payload: dict[str, Any]) -> None:
+    """Show the Reddit-upvote critic: kept lines, dropped lines, and why."""
+
+    reviews = payload.get("line_reviews") or []
+    if not reviews:
+        return
+    _section("Humor critic")
+    st.caption("Lines under 7, or lines copied from the source or a reference, are dropped.")
+    for item in reviews:
+        if not isinstance(item, dict):
+            continue
+        status = "kept" if item.get("kept") else "dropped"
+        score = item.get("funny_score")
+        score_text = f"{score}/10" if score is not None else "unscored"
+        reason = item.get("reason") or "unspecified"
+        text = item.get("artwork_text") or "(empty)"
+        st.write(f"- {status} ({score_text}, {reason}): {text}")
 
 
 def _render_social_behavior_text(
@@ -107,9 +145,17 @@ def _render_social_behavior_text(
         st.caption("Identity and identity type selected by AI from the searched discussions.")
     niche_a = str(request.get("niche_a") or "").strip()
     niche_b = str(request.get("niche_b") or "").strip()
-    if niche_a and niche_b:
-        st.write(f"**Niche crossover:** {niche_a} × {niche_b}")
+    pair_a = str(payload.get("niche_pair_a") or niche_a).strip()
+    pair_b = str(payload.get("niche_pair_b") or niche_b).strip()
+    if pair_a and pair_b:
+        score = payload.get("pairing_score")
+        score_text = f" (pairing score {score}/10)" if score is not None else ""
+        st.write(f"**Niche crossover:** {pair_a} × {pair_b}{score_text}")
+        if payload.get("pairing_reason"):
+            st.caption(str(payload["pairing_reason"]))
     _render_humor_references(payload)
+    _render_playbook(payload)
+    _render_line_reviews(payload)
     if request.get("auto_topic"):
         st.write(f"**Behavior or topic selected by AI:** {query}")
     else:
@@ -160,6 +206,8 @@ def _render_social_behavior_text(
         funny_score = candidate.get("funny_score")
         if funny_score is not None:
             st.caption(f"Funny score: {funny_score} / 10")
+        if candidate.get("pattern"):
+            st.caption(f"Pattern: {_text(candidate, 'pattern')}")
         if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
             st.caption(
                 "Humor: "
