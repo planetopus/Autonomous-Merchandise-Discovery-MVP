@@ -177,6 +177,24 @@ def diversity_factor(names: list[str], recent_counts: dict[str, int]) -> float:
     return factor
 
 
+def buyer_groups_block(pairs: list[dict]) -> str:
+    """Ask one text call to write across several buyer groups."""
+
+    if len(pairs) < 3:
+        return ""
+    lines = [
+        (
+            "Write this batch across these different buyer groups. "
+            "Do not make every line about the same person. "
+            "Cover at least 3 of these groups. "
+            "Set each line's who_its_for to that group's plain labels only."
+        )
+    ]
+    for index, pair in enumerate(pairs[:5], start=1):
+        lines.append(f"{index}. {pair.get('niche_a', '')} + {pair.get('niche_b', '')}")
+    return "\n".join(lines) + "\n"
+
+
 def sample_overlap_pairs(
     atlas: IdentityAtlas,
     *,

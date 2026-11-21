@@ -16,12 +16,16 @@ from merchandise_discovery.domain.pipelines.social_behavior_text.artwork import 
 from merchandise_discovery.domain.pipelines.social_behavior_text.pipeline import (
     SocialBehaviorTextCandidate,
 )
-from merchandise_discovery.domain.sticker_direction import sticker_download_name
+from merchandise_discovery.domain.sticker_direction import (
+    direct_image_prompt,
+    sticker_download_name,
+)
 from merchandise_discovery.infrastructure.brand_catalog import (
     load_brands,
     rotate_brands,
     style_for,
 )
+from merchandise_discovery.infrastructure.identity_atlas_loader import buyer_groups_block
 
 
 def test_brand_catalog_has_a_rotating_set_of_major_logos() -> None:
@@ -131,3 +135,25 @@ def test_the_final_five_keep_the_higher_scores_and_one_dark_line() -> None:
     used: set[str] = set()
     assert sticker_download_name("KENTUCKY FRIED COUCH", used) == "kentucky-fried-couch.png"
     assert sticker_download_name("KENTUCKY FRIED COUCH", used) == "kentucky-fried-couch-2.png"
+
+
+def test_a_rich_art_prompt_is_sent_to_the_image_model_unchanged() -> None:
+    """The writer's full prompt is the xAI prompt. A short caption still gets the wrapper."""
+
+    rich = (
+        "Detailed cartoon sticker of a grumpy orange cat kneading a steaming mug, "
+        "thick white border, warm orange and brown palette, shading, white background. "
+        'Text appears exactly once: "I KNEAD COFFEE".'
+    )
+    candidate = SimpleNamespace(artwork_prompt=rich, artwork_text="I KNEAD COFFEE")
+    assert direct_image_prompt(candidate) == rich
+    assert direct_image_prompt(SimpleNamespace(artwork_prompt="A cat.", artwork_text="CAT")) is None
+    block = buyer_groups_block(
+        [
+            {"niche_a": "Nurses", "niche_b": "Night shift"},
+            {"niche_a": "Dads", "niche_b": "Grilling"},
+            {"niche_a": "Truckers", "niche_b": "Coffee"},
+        ]
+    )
+    assert "at least 3" in block.casefold()
+    assert "Nurses" in block and "Truckers" in block

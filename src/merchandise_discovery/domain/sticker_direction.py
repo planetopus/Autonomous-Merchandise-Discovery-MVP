@@ -54,6 +54,15 @@ def sticker_visual_rules() -> str:
     )
 
 
+def direct_image_prompt(candidate) -> str | None:
+    """Use the writer's full art prompt when it already contains the sticker contract."""
+
+    text = str(getattr(candidate, "artwork_prompt", "") or "").strip()
+    if len(text) >= 180 and "text appears exactly once" in text.casefold():
+        return text
+    return None
+
+
 def finished_sticker_direction(candidate) -> str:
     """Ask the image model for one finished die-cut sticker, text included."""
 

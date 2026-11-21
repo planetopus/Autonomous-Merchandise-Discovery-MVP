@@ -116,30 +116,36 @@ class OpenAIReasoningProvider:
         response_model: type[BaseModel],
         temperature: float = 0.0,
         image_url: str | None = None,
+        image_urls: list[str] | None = None,
         image_detail: str = "high",
         web_search_domains: tuple[str, ...] | None = None,
         reasoning_effort: str | None = None,
+        model: str | None = None,
     ) -> StructuredResponse:
         """Submit one typed request and convert provider usage into the application contract."""
 
         # Keep model-specific request shaping here. Stages can request deterministic behavior
         # without coupling themselves to the parameter rules of whichever reasoning model is
         # configured for the run.
-        user_content: str | list[dict[str, object]] = user_prompt
+        pictures = [url for url in (image_urls or []) if url]
         if image_url:
+            pictures.insert(0, image_url)
+        user_content: str | list[dict[str, object]] = user_prompt
+        if pictures:
             if image_detail not in {"low", "high", "auto", "original"}:
                 raise ValueError(f"Unsupported OpenAI image detail level: {image_detail}")
-            user_content = [
-                {"type": "input_text", "text": user_prompt},
+            user_content = [{"type": "input_text", "text": user_prompt}]
+            user_content.extend(
                 {
                     "type": "input_image",
-                    "image_url": image_url,
+                    "image_url": url,
                     "detail": image_detail,
-                },
-            ]
+                }
+                for url in pictures
+            )
 
         request_kwargs: dict[str, object] = {
-            "model": self._model,
+            "model": model or self._model,
             "input": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content},

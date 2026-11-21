@@ -47,6 +47,7 @@ def build_run_config(
     social_generate_images: bool = True,
     social_fast_mode: bool = True,
     social_check_already_for_sale: bool = False,
+    social_image_qa: bool = True,
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -73,6 +74,7 @@ def build_run_config(
         social_generate_images=social_generate_images,
         social_fast_mode=social_fast_mode,
         social_check_already_for_sale=social_check_already_for_sale,
+        social_image_qa=social_image_qa,
     )
 
 
@@ -157,6 +159,7 @@ def render_run_create(
     generate_images = True
     fast_mode = True
     check_already_for_sale = False
+    image_qa = True
     if is_social_pipeline:
         fast_mode = st.checkbox(
             "Fast mode",
@@ -170,6 +173,14 @@ def render_run_create(
             "Check if already for sale",
             value=False,
             help="Search the web for each final line. Off by default so a run stays fast.",
+        )
+        image_qa = st.checkbox(
+            "Check sticker text",
+            value=True,
+            help=(
+                "After the images, one cheap vision pass looks for misspelled or repeated "
+                "text and regenerates only the failures once. About 30 to 40 seconds."
+            ),
         )
     if is_social_pipeline:
         generate_images = st.checkbox(
@@ -382,6 +393,7 @@ def render_run_create(
                 social_generate_images=generate_images,
                 social_fast_mode=fast_mode,
                 social_check_already_for_sale=check_already_for_sale,
+                social_image_qa=image_qa,
             ),
             triggered_by="manual",
         )
