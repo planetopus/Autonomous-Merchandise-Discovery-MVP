@@ -37,6 +37,8 @@ def build_run_config(
     social_identity_type: IdentityType | None = None,
     social_auto_identity: bool = False,
     social_manual_artwork_selection: bool = False,
+    social_niche_a: str = "",
+    social_niche_b: str = "",
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -56,6 +58,8 @@ def build_run_config(
         social_identity_type=social_identity_type,
         social_auto_identity=social_auto_identity,
         social_manual_artwork_selection=social_manual_artwork_selection,
+        social_niche_a=social_niche_a.strip(),
+        social_niche_b=social_niche_b.strip(),
     )
 
 
@@ -170,9 +174,8 @@ def render_run_create(
             help="A human-readable name used in run history and review screens.",
         )
 
-        # The social experiment does not consume seed libraries, intersections, niches, or image
-        # variants. Keeping those controls out of the form prevents users from configuring values
-        # that the selected pipeline will silently ignore.
+        # Social runs do not consume seed libraries or the long funnel's intersection count.
+        # Niche A and niche B below are the optional two-audience crossover, not that funnel.
         seed_source = "social_behavior"
         intersections = 10
         niches = 3
@@ -183,6 +186,8 @@ def render_run_create(
         social_candidate_count = 5
         social_identity = ""
         social_identity_type: IdentityType | None = None
+        social_niche_a = ""
+        social_niche_b = ""
         if is_social_pipeline:
             st.markdown("### Social behavior search")
             if is_identity_pipeline:
@@ -223,6 +228,20 @@ def render_run_create(
                 ),
                 help="Describe the behavior or tension. Avoid entering a broad product category.",
                 disabled=auto_topic,
+            )
+            st.markdown("#### Cross two niches")
+            st.caption(
+                "Optional. Enter two niches or identities to research their intersection and "
+                "write sticker text and artwork only for people who are both. Leave both blank "
+                "to keep this pipeline's existing audience and behavior input."
+            )
+            social_niche_a = st.text_input(
+                "Niche / identity A",
+                placeholder="For example: night-shift nurses",
+            )
+            social_niche_b = st.text_input(
+                "Niche / identity B",
+                placeholder="For example: pit bull owners",
             )
             social_candidate_count = st.slider(
                 "Text candidates",
@@ -273,6 +292,9 @@ def render_run_create(
         ):
             st.error("Enter the target identity for the identity-focused pipeline.")
             return
+        if bool(social_niche_a.strip()) != bool(social_niche_b.strip()):
+            st.error("Enter both niche A and niche B to cross them, or leave both blank.")
+            return
 
     try:
         run = discovery_service.create_run(
@@ -292,6 +314,8 @@ def render_run_create(
                 social_identity_type=social_identity_type,
                 social_auto_identity=auto_identity,
                 social_manual_artwork_selection=manual_artwork_selection,
+                social_niche_a=social_niche_a,
+                social_niche_b=social_niche_b,
             ),
             triggered_by="manual",
         )

@@ -46,7 +46,8 @@ def _render_manual_artwork_selection(
         for index, candidate in enumerate(candidates):
             with st.container(border=True):
                 st.markdown(f"#### Candidate {index + 1}")
-                st.write(f"**Text:** {candidate.get('artwork_text', 'Text not recorded')}")
+                sticker_text = str(candidate.get("artwork_text") or "").strip()
+                st.write(f"**Text:** {sticker_text or 'Image only'}")
                 if candidate.get("identity"):
                     identity_type = candidate.get("identity_type", "other")
                     identity_type = getattr(identity_type, "value", identity_type)

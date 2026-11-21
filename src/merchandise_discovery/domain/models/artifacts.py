@@ -143,7 +143,7 @@ class DesignBrief(BaseModel):
     typography_direction: str
     palette_direction: str
     detail_level: str = "moderate"
-    intended_merchandise_type: str = "T-shirt or sweatshirt print"
+    intended_merchandise_type: str = "Die-cut vinyl sticker"
     things_to_avoid: list[str] = Field(default_factory=list)
     constraints: list[str] = Field(default_factory=list)
     # Compact runs retain the original intersection wording so downstream artwork review can
@@ -163,6 +163,8 @@ class Artwork(BaseModel):
     prompt: str
     combination_name: str = ""
     storage_key: str | None = None
+    # Untouched provider image. storage_key is the transparent die-cut PNG when both exist.
+    raw_storage_key: str | None = None
     source_url: str | None = None
     decision: ArtworkDecision | None = None
     critique: dict = Field(default_factory=dict)

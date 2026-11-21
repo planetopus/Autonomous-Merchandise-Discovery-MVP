@@ -12,6 +12,13 @@ from merchandise_discovery.domain.models.common import (
 from merchandise_discovery.domain.pipelines.social_behavior_text.pipeline import (
     SocialBehaviorTextCandidate,
 )
+from merchandise_discovery.domain.sticker_direction import (
+    STICKER_AVOID,
+    STICKER_STYLE_DIRECTION,
+    crossover_block,
+    sticker_copy_rules,
+    sticker_visual_rules,
+)
 
 
 class BehaviorIdentityInput(BaseModel):
@@ -21,6 +28,8 @@ class BehaviorIdentityInput(BaseModel):
     query: str = Field(default="", max_length=500)
     auto_topic: bool = False
     candidate_count: int = Field(ge=1, le=25)
+    niche_a: str = Field(default="", max_length=200)
+    niche_b: str = Field(default="", max_length=200)
 
     @model_validator(mode="after")
     def validate_topic_source(self) -> "BehaviorIdentityInput":
@@ -68,7 +77,7 @@ def reasoning_instructions() -> str:
     """Define the behavior-first, per-candidate identity and copy requirements."""
 
     return (
-        "You are a social-discussion researcher and targeted novelty-T-shirt creative director. "
+        "You are a social-discussion researcher and die-cut vinyl sticker creative director. "
         "Use the supplied web search tool to inspect public discussions from the selected Reddit "
         "and/or X domains. First find distinct, concrete behaviors, rituals, frictions, contradictions, "
         "or private jokes in the discussions. Then, independently for each behavior, identify the "
@@ -83,15 +92,12 @@ def reasoning_instructions() -> str:
         "that group fits this behavior. The "
         "merchandise line must make the audience recognizable through lived details, not by merely "
         "prefixing an identity label. Use natural role, relationship, duty, setting, time, tool, or "
-        "insider language where supported. Write clear, personal, context-rich targeted T-shirt copy: "
-        "a specific claim, confession, complaint, or dry observation with a concrete action and payoff. "
-        "It must make sense without metadata; use as many words as necessary, but avoid case-summary "
-        "detail and forced 'I ...' templates. Keep each candidate's `audience_context` specific to "
-        "that candidate's identity and behavior. Create an artwork prompt that renders the exact "
-        "merchandise line and turns that identity-specific behavior into one bold, high-contrast, "
-        "limited-palette T-shirt graphic. Avoid soft lifestyle imagery, generic category props, logos, "
-        "brands, and extra text. Preserve source URLs and source-specific excerpts. Return only the "
-        "requested structured output."
+        f"insider language where supported. {sticker_copy_rules()} Keep each candidate's "
+        "`audience_context` specific to that candidate's identity and behavior. Create an artwork "
+        "prompt that renders the exact merchandise line when text is present and turns that "
+        f"identity-specific behavior into one sticker subject. {sticker_visual_rules()} Avoid soft "
+        "lifestyle imagery, generic category props, logos, brands, and extra text. Preserve source "
+        "URLs and source-specific excerpts. Return only the requested structured output."
     )
 
 
@@ -108,6 +114,7 @@ def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
         else f"Behavior/topic to investigate: {input_model.query}"
     )
     return (
+        f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"Search these public platforms: {platforms}.\n"
         f"{behavior_instruction}\n"
         f"Return up to {input_model.candidate_count} distinct behavior-led candidates. For each "
@@ -120,7 +127,10 @@ def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
         "source_excerpt, audience_context, behavior, friction_or_pressure, artwork_text, "
         "artwork_prompt, visual_punchline, main_visual_metaphor, audience_specific_cue, tone, "
         "style_direction, things_to_avoid, and specificity_reason. Make the merchandise text "
-        "understandable on its own and let the audience emerge naturally from its lived details. "
+        "a sticker line of roughly 2 to 5 words, or leave it empty, and let the audience emerge "
+        "naturally from its lived details. Style direction must describe a flat vector die-cut "
+        "sticker on a plain white background, and things_to_avoid must include scenes, full-bleed "
+        "backgrounds, realistic shading, and poster layouts. "
         "Return the behavior or topic actually explored in `topic_explored` and a concise "
         "`search_summary`."
     )
@@ -148,17 +158,22 @@ def execute(
                 audience_context=f"People dealing with {topic}",
                 behavior=f"People repeatedly deal with {topic}.",
                 friction_or_pressure="The routine keeps colliding with ordinary daily demands.",
-                artwork_text=f"Still making {topic} work",
+                artwork_text="Still Making It",
                 artwork_prompt=(
-                    f'Create a bold, print-ready T-shirt graphic for "Still making {topic} work". '
-                    "Show one specific visual joke about this audience and behavior."
+                    'Create a die-cut vinyl sticker for "Still Making It". '
+                    "One isolated subject, flat colors, plain white background, no scene or extra text."
                 ),
                 visual_punchline="A small daily workaround is treated like a heroic operation.",
                 main_visual_metaphor="An everyday tool becomes an overworked control panel.",
                 audience_specific_cue=f"People dealing with {topic}",
                 tone="dry and self-aware",
-                style_direction="High-contrast, limited-palette novelty T-shirt illustration.",
-                things_to_avoid=["generic category imagery", "soft lifestyle photography", "extra text"],
+                style_direction=STICKER_STYLE_DIRECTION,
+                things_to_avoid=[
+                    "generic category imagery",
+                    "soft lifestyle photography",
+                    "extra text",
+                    *STICKER_AVOID,
+                ],
                 specificity_reason="Fixture output only; replace with source-backed live research.",
             )
             for index in range(1, input_model.candidate_count + 1)

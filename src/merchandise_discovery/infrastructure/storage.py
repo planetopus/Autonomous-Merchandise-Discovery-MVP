@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Protocol
 from urllib.request import Request, urlopen
 
+from merchandise_discovery.infrastructure.sticker_outline import render_die_cut_png
+
 
 @dataclass(frozen=True)
 class StoredArtwork:
@@ -18,6 +20,11 @@ class StoredArtwork:
 
     storage_key: str
     file_size_bytes: int
+    # Live generations keep the provider file and point storage_key at the die-cut PNG.
+    raw_storage_key: str | None = None
+    width: int | None = None
+    height: int | None = None
+    mime_type: str | None = None
 
 
 class ArtworkStorage(Protocol):
@@ -83,4 +90,32 @@ class LocalArtworkStorage:
         temporary = target.with_name(f".{target.name}.tmp")
         temporary.write_bytes(content)
         temporary.replace(target)
-        return StoredArtwork(storage_key=storage_key, file_size_bytes=len(content))
+
+        sticker_key = _die_cut_storage_key(storage_key)
+        sticker_path = Path(sticker_key)
+        if sticker_path.is_absolute() or ".." in sticker_path.parts:
+            raise ValueError("Artwork storage key must be a relative path without parent traversal.")
+        try:
+            sticker_bytes, width, height = render_die_cut_png(content)
+        except ValueError as error:
+            raise RuntimeError("Die-cut sticker post-processing failed.") from error
+        sticker_target = self._root / sticker_path
+        sticker_target.parent.mkdir(parents=True, exist_ok=True)
+        sticker_temporary = sticker_target.with_name(f".{sticker_target.name}.tmp")
+        sticker_temporary.write_bytes(sticker_bytes)
+        sticker_temporary.replace(sticker_target)
+        return StoredArtwork(
+            storage_key=sticker_key,
+            file_size_bytes=len(sticker_bytes),
+            raw_storage_key=storage_key,
+            width=width,
+            height=height,
+            mime_type="image/png",
+        )
+
+
+def _die_cut_storage_key(storage_key: str) -> str:
+    """Place the transparent sticker beside the untouched provider file."""
+
+    path = Path(storage_key)
+    return path.with_name(f"{path.stem}.diecut.png").as_posix()

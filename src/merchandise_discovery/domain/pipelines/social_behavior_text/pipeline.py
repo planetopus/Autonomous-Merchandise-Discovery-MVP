@@ -11,6 +11,13 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from merchandise_discovery.domain.models.common import SocialSource
+from merchandise_discovery.domain.sticker_direction import (
+    STICKER_AVOID,
+    STICKER_STYLE_DIRECTION,
+    crossover_block,
+    sticker_copy_rules,
+    sticker_visual_rules,
+)
 
 
 class SocialBehaviorTextInput(BaseModel):
@@ -20,6 +27,8 @@ class SocialBehaviorTextInput(BaseModel):
     query: str = Field(default="", max_length=500)
     auto_topic: bool = False
     candidate_count: int = Field(ge=1, le=25)
+    niche_a: str = Field(default="", max_length=200)
+    niche_b: str = Field(default="", max_length=200)
 
     @model_validator(mode="after")
     def validate_topic_source(self) -> "SocialBehaviorTextInput":
@@ -40,9 +49,8 @@ class SocialBehaviorTextCandidate(BaseModel):
     audience_context: str = Field(min_length=1, max_length=500)
     behavior: str = Field(min_length=1, max_length=500)
     friction_or_pressure: str = Field(min_length=1, max_length=500)
-    # Targeted-shirt copy may need a full sentence or two to explain the private joke. The prompt
-    # controls usefulness and readability; an arbitrary slogan-length ceiling would remove context.
-    artwork_text: str = Field(min_length=8)
+    # Sticker lines are short labels. Empty text is an image-only sticker.
+    artwork_text: str = Field(default="", max_length=80)
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the
     # durable source of truth for the visual direction instead of re-deriving it downstream.
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
@@ -78,7 +86,7 @@ def reasoning_instructions() -> str:
     """Return the provider contract for standalone, concrete, audience-recognizable copy."""
 
     return (
-        "You are a merchandise discovery researcher and targeted novelty-T-shirt creative director. "
+        "You are a merchandise discovery researcher and die-cut vinyl sticker creative director. "
         "Use the supplied "
         "web search tool to inspect public discussions from the requested Reddit and/or X domains. "
         "Extract concrete repeated behavior, not broad labels or demographic stereotypes. Look for "
@@ -86,41 +94,18 @@ def reasoning_instructions() -> str:
         "insider would recognize. Then write one original merchandise line for each behavior. "
         "The merchandise line is the primary product output and MUST make sense when read alone, "
         "without the observed behavior, friction, or specificity fields. It should make the target "
-        "person think 'that is literally me'. Write in the style of a targeted T-shirt: personal, "
-        "blunt, matter-of-fact, context-rich, slightly provocative, and understandable to an "
-        "outsider. The line should sound like a specific person or relationship making a claim, "
-        "confession, complaint, or dry observation—not like an advertising slogan, product title, "
-        "mission statement, or category label. Treat each line as a self-contained mini-story with "
-        "three ingredients: who or what situation this is about, the concrete duty or behavior, and "
-        "the consequence, contradiction, or emotional payoff. Use a time, role, setting, duration, "
-        "specific object, or exact action when the source supports it. A reader should understand the "
-        "premise without seeing the metadata. Do not compress the idea into a vague aphorism such as "
-        "'my shift ended but my brain did not' unless the line also explains what kind of shift or "
-        "specific experience makes it recognizable. Preserve the personal relationship, concrete "
-        "scene, ordinary detail, exact object or action, and emotional contradiction that make the "
-        "behavior recognizable. If a pronoun such as 'she', 'he', or 'they' would be unclear without "
-        "metadata, name the person or relationship in the line. Use as many words as needed to tell "
-        "the premise clearly; there is no hard length limit. A second clause, setup, or sentence is "
-        "encouraged when it makes the private joke legible. Prefer irony or a recognizable absurd "
-        "collision where supported by the source. After drafting, edit each line like a T-shirt copy "
-        "editor: keep one dominant scene or behavior, one or two details that make it personal, and "
-        "one clear contradiction or payoff. Remove source-detail lists, excessive statistics, extra "
-        "timelines, multiple examples, and explanations that do not improve recognition or humor. "
-        "The line should feel specific without reading like a case summary or study plan. Avoid "
-        "generic achievement statements, broad labels, abstract praise, and lines that only say "
-        "someone is proud, calm, busy, or untraditional. Keep the niche detail in the actual "
-        "merchandise line, not only in the metadata. This is text-first merchandise: do not let the "
-        "visual prompt rewrite the copy, and do not force every line into an 'I ...' "
-        "template. Alongside the merchandise line, write an `artwork_prompt` for Grok. The prompt "
-        "must render the exact merchandise line prominently and legibly, preserve its audience, "
-        "behavior, setting, and emotional contradiction, and use only visual details that make "
-        "the specific joke recognizable. Keep the design text-first and print-ready; use a bold, "
-        "high-contrast, limited-palette novelty-T-shirt graphic rather than a soft lifestyle "
-        "illustration. Do not add extra words, logos, brands, or generic category imagery. The "
-        "artwork prompt is not a "
-        "replacement for the merchandise line: it is the visual execution brief for that exact "
-        "line. Preserve source URLs and provide a source-specific excerpt. Return only the "
-        "requested structured output."
+        "person think 'that is literally me'. "
+        f"{sticker_copy_rules()} Preserve the personal relationship, concrete object, or exact "
+        "action that makes the behavior recognizable, but compress it into the short sticker line "
+        "instead of narrating it. If a pronoun such as 'she', 'he', or 'they' would be unclear, "
+        "name the person or relationship inside those few words or drop the text. Do not force "
+        "every line into an 'I ...' template. This is sticker merchandise: do not let the visual "
+        "prompt rewrite the copy. Alongside the merchandise line, write an `artwork_prompt` for "
+        "Grok. The prompt must render the exact merchandise line when one is present, or no text "
+        "when artwork_text is empty, and preserve the audience and behavior with one isolated "
+        f"subject. {sticker_visual_rules()} The artwork prompt is not a replacement for the "
+        "merchandise line: it is the visual execution brief for that exact line. Preserve source "
+        "URLs and provide a source-specific excerpt. Return only the requested structured output."
     )
 
 
@@ -138,22 +123,23 @@ def build_user_prompt(input_model: SocialBehaviorTextInput) -> str:
         else f"Behavior/topic to investigate: {input_model.query}"
     )
     return (
+        f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"Search these public platforms: {platforms}.\n"
         f"{topic_instruction}\n"
         f"Return up to {input_model.candidate_count} distinct behavior-based merchandise text "
         "candidates. Avoid repeating the same audience pressure or behavior in different wording. "
-        "Before returning each line, check that a reader can understand who, what, and why it is "
-        "funny or emotionally recognizable without reading any other field. Write like targeted "
-        "T-shirt copy: use the real relationship, scene, behavior, or object instead of compressing "
-        "it into a generic slogan. Verify that the line contains the situation, action, and consequence "
-        "in a readable way; use as many words as needed to make the premise clear. For every "
-        "candidate also provide an artwork_prompt that tells Grok how to render the exact line "
-        "for this audience without diluting the behavior into generic imagery. Also provide "
-        "visual_punchline, main_visual_metaphor, audience_specific_cue, tone, style_direction, "
-        "and a things_to_avoid list. The visual punchline must exaggerate the insider behavior "
-        "rather than literally illustrate a bedroom, clock, meal, couch, or other generic prop. "
-        "The style direction must describe a bold targeted novelty-T-shirt graphic: high contrast, "
-        "limited palette, strong typography, expressive illustration, and a clear visual joke. Each "
+        "Before returning each line, check that a reader can understand the joke without any other "
+        "field. Write die-cut sticker copy of roughly 2 to 5 words, or leave artwork_text empty "
+        "for an image-only sticker. Use the real relationship, behavior, or object instead of a "
+        "generic slogan, but do not write a sentence. For every candidate also provide an "
+        "artwork_prompt that tells Grok how to render one isolated subject for this audience on "
+        "a plain white background. Also provide visual_punchline, main_visual_metaphor, "
+        "audience_specific_cue, tone, style_direction, and a things_to_avoid list. The visual "
+        "punchline must exaggerate the insider behavior rather than literally illustrate a "
+        "bedroom, clock, meal, couch, scene, or landscape. The style direction must describe a "
+        "flat vector die-cut vinyl sticker: bold clean outlines, flat colors, one centered "
+        "isolated subject, and a plain white background. things_to_avoid must include a scene or "
+        "landscape, a full-bleed background, realistic shading, and a poster layout. Each "
         "candidate must cite one directly relevant source URL. Also return the final behavior or "
         "topic you actually explored in `topic_explored` from the searched platforms."
     )
@@ -218,12 +204,11 @@ def execute(
             audience_context=effective_query,
             behavior=f"People repeatedly describe the routine of {effective_query}.",
             friction_or_pressure="The routine collides with the ordinary pressure of keeping daily life moving.",
-            artwork_text=f"Still doing {effective_query}",
+            artwork_text="Still Doing It",
             artwork_prompt=(
-                f'Create a text-first merchandise design for the exact line "Still doing '
-                f'{effective_query}". Use a simple, specific visual metaphor for the routine '
-                "and its everyday pressure; keep the design legible, print-ready, and free of "
-                "logos or extra text."
+                "Create a die-cut vinyl sticker with one isolated subject for the line "
+                '"Still Doing It". Flat vector shapes, bold outlines, flat colors, plain white '
+                "background, no scene, logos, or extra text."
             ),
             visual_punchline=(
                 "The ordinary routine is treated as an overdramatic personal rule that protects "
@@ -234,14 +219,12 @@ def execute(
             ),
             audience_specific_cue=effective_query,
             tone="dry, self-aware, and mildly absurd",
-            style_direction=(
-                "Bold two-color screen-print graphic with thick expressive outlines and strong "
-                "headline typography."
-            ),
+            style_direction=STICKER_STYLE_DIRECTION,
             things_to_avoid=[
                 "soft lifestyle photography",
                 "generic decorative props",
                 "extra text",
+                *STICKER_AVOID,
             ],
             specificity_reason="Fixture output only; replace with live source-backed behavior in live mode.",
         )

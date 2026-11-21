@@ -15,6 +15,13 @@ from merchandise_discovery.domain.models.common import (
     SocialSource,
     identity_type_guidance,
 )
+from merchandise_discovery.domain.sticker_direction import (
+    STICKER_AVOID,
+    STICKER_STYLE_DIRECTION,
+    crossover_block,
+    sticker_copy_rules,
+    sticker_visual_rules,
+)
 
 
 class SocialIdentityTextInput(BaseModel):
@@ -27,6 +34,8 @@ class SocialIdentityTextInput(BaseModel):
     query: str = Field(default="", max_length=500)
     auto_topic: bool = False
     candidate_count: int = Field(ge=1, le=25)
+    niche_a: str = Field(default="", max_length=200)
+    niche_b: str = Field(default="", max_length=200)
     recent_identity_selections: list[str] = Field(default_factory=list, max_length=12)
 
     @field_validator("identity")
@@ -62,7 +71,7 @@ class SocialIdentityTextCandidate(BaseModel):
     audience_context: str = Field(min_length=1, max_length=500)
     behavior: str = Field(min_length=1, max_length=500)
     friction_or_pressure: str = Field(min_length=1, max_length=500)
-    artwork_text: str = Field(min_length=8)
+    artwork_text: str = Field(default="", max_length=80)
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
     visual_punchline: str = Field(min_length=1, max_length=500)
     main_visual_metaphor: str = Field(min_length=1, max_length=500)
@@ -98,7 +107,7 @@ def reasoning_instructions() -> str:
     """Return the provider contract that makes identity preservation non-optional."""
 
     return (
-        "You are a merchandise discovery researcher and targeted novelty-T-shirt creative director. "
+        "You are a merchandise discovery researcher and die-cut vinyl sticker creative director. "
         "Use the supplied web search tool to inspect public Reddit and/or X discussions, but treat "
         "the user-supplied identity as a hard audience anchor. Do not replace it with a broad "
         "demographic, invent an identity, or infer sensitive traits. Extract concrete behavior, "
@@ -112,17 +121,12 @@ def reasoning_instructions() -> str:
         "`identity_selected` and its type in `identity_type_selected`. Every "
         "merchandise line and artwork prompt must preserve the identity naturally, "
         "so the target person thinks 'that is literally me' rather than merely seeing a generic joke. "
-        "The merchandise line must make sense alone and should sound like a specific person or "
-        "relationship making a claim, confession, complaint, or dry observation—not an advertising "
-        "slogan, product title, or category label. Use a concrete role-specific duty, tool, setting, "
-        "relationship, object, time, or exact action when supported by the source. Use as many words "
-        "as needed to make the premise clear; there is no hard length limit. A second clause or "
-        "sentence is encouraged when it makes the insider joke legible, but remove unnecessary case "
-        "detail and statistics. Do not force an 'I ...' template. Alongside the copy, create a Grok "
-        "artwork prompt that renders the exact line prominently and visibly identifies the supplied "
-        "identity through one specific cue and one visual joke. Use a bold, high-contrast, limited-"
-        "palette novelty-T-shirt graphic, not soft lifestyle photography, generic category imagery, "
-        "logos, brands, or extra text. Preserve source URLs and source-specific excerpts. Return only "
+        f"{sticker_copy_rules()} Use a concrete role-specific duty, tool, setting, relationship, "
+        "object, time, or exact action when supported by the source, compressed into the short "
+        "sticker line. Do not force an 'I ...' template. Alongside the copy, create a Grok "
+        "artwork prompt that renders the exact line when text is present and visibly identifies "
+        "the supplied identity through one identity-specific cue and one visual joke. "
+        f"{sticker_visual_rules()} Preserve source URLs and source-specific excerpts. Return only "
         "the requested structured output."
     )
 
@@ -174,6 +178,7 @@ def build_user_prompt(input_model: SocialIdentityTextInput) -> str:
         )
     )
     return (
+        f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"{identity_instruction}\n"
         f"{identity_context}"
         f"Search these public platforms: {platforms}.\n"
@@ -182,13 +187,15 @@ def build_user_prompt(input_model: SocialIdentityTextInput) -> str:
         f"Return up to {input_model.candidate_count} distinct candidates. Each candidate must include "
         "identity evidence explaining why the source actually supports this identity, then one "
         "specific behavior and friction grounded in that identity. The merchandise text must be "
-        "self-explanatory, targeted T-shirt copy: preserve the identity, scene, action, and payoff "
-        "without requiring the metadata. Avoid repeating the same identity behavior in different "
-        "wording. Also provide an artwork_prompt, visual_punchline, main_visual_metaphor, "
-        "audience_specific_cue, tone, style_direction, and things_to_avoid. The visual cue must "
-        "make the supplied identity recognizable without relying on a logo, institution, or invented "
-        "uniform. Cite one directly relevant source URL per candidate and return the actual topic in "
-        "`topic_explored`."
+        "self-explanatory die-cut sticker copy of roughly 2 to 5 words, or empty when the sticker "
+        "is image-only. Preserve the identity in that short line without requiring the metadata. "
+        "Avoid repeating the same identity behavior in different wording. Also provide an "
+        "artwork_prompt, visual_punchline, main_visual_metaphor, audience_specific_cue, tone, "
+        "style_direction, and things_to_avoid. The visual cue must make the supplied identity "
+        "recognizable without relying on a logo, institution, or invented uniform. Style direction "
+        "must be a flat vector sticker: one centered subject, bold outlines, flat colors, plain "
+        "white background. Cite one directly relevant source URL per candidate and return the "
+        "actual topic in `topic_explored`."
     )
 
 
@@ -275,19 +282,17 @@ def execute(
             audience_context=effective_identity,
             behavior=f"{effective_identity} repeatedly describes {effective_query}.",
             friction_or_pressure="The identity-specific routine collides with ordinary daily pressure.",
-            artwork_text=(
-                f"{effective_identity} has a very specific way of dealing with {effective_query}"
-            ),
+            artwork_text=" ".join(effective_identity.split()[:4]) or "Still Here",
             artwork_prompt=(
-                f"Create a bold targeted T-shirt graphic for {input_model.identity}. Render the exact "
-                f"line prominently and show one visual joke about {effective_query}; no logos or extra text."
+                f"Create a die-cut vinyl sticker for {effective_identity}. One isolated subject "
+                f"about {effective_query}, flat colors, plain white background, no logos or extra text."
             ),
             visual_punchline="An ordinary identity-specific workaround is treated like a heroic operating rule.",
             main_visual_metaphor="A small object becomes an exaggerated tool of identity-specific survival.",
             audience_specific_cue=effective_identity,
             tone="dry, personal, and mildly absurd",
-            style_direction="Bold limited-palette screen-print with thick outlines and strong type.",
-            things_to_avoid=["generic lifestyle imagery", "invented logos", "extra text"],
+            style_direction=STICKER_STYLE_DIRECTION,
+            things_to_avoid=["generic lifestyle imagery", "invented logos", "extra text", *STICKER_AVOID],
             specificity_reason="Fixture output only; replace with live source-backed identity evidence.",
         )
         for index in range(1, input_model.candidate_count + 1)

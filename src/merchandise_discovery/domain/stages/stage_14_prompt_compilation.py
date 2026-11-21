@@ -32,11 +32,23 @@ def _compile(brief: DesignBrief) -> str:
     """Apply brief-specific instructions plus permanent merchandise safety/layout rules."""
 
     constraints = "; ".join(brief.constraints + brief.things_to_avoid)
+    phrase = brief.exact_phrase.strip()
+    text_rule = (
+        "Merchandise text: none. Do not render any words, letters, or captions. "
+        if not phrase
+        else (
+            f'Exact text: "{phrase}" (primary audience-recognition copy). '
+            "Render the exact text prominently while preserving its original audience voice; do not "
+            "convert it into a product category, club name, campaign title, or generic theme. "
+        )
+    )
     return (
-        "Create merchandise artwork only, not a product mockup. "
-        "Use an isolated, print-ready composition with no unnecessary background scene. "
+        "Create a die-cut vinyl sticker, not a T-shirt graphic, poster, or product mockup. "
+        "Use flat vector-style illustration, bold clean outlines, flat colors, and one centered "
+        "isolated subject on a plain white background. Do not use a scene, landscape, full-bleed "
+        "background, realistic shading, semi-realistic comic shading, or a poster layout. "
         "Use a square 1:1 aspect ratio unless the brief explicitly requests another ratio. "
-        f'Exact text: "{brief.exact_phrase}" (primary audience-recognition copy). '
+        f"{text_rule}"
         f"Target audience: {brief.target_audience}. "
         f"Mandatory audience recognition cues that must be visibly represented: "
         f"{', '.join(brief.audience_visual_cues)}. "
@@ -49,15 +61,14 @@ def _compile(brief: DesignBrief) -> str:
         f"Typography: {brief.typography_direction}. "
         f"Palette: {brief.palette_direction}. "
         f"Detail level: {brief.detail_level}. "
-        f"Intended merchandise: {brief.intended_merchandise_type}. "
+        "Intended merchandise: die-cut vinyl sticker. "
         f"Visual constraints and avoid list: {constraints}. "
-        "Render the exact text prominently while preserving its original audience voice; do not "
-        "convert it into a product category, club name, campaign title, or generic theme. Audience "
-        "identity must be recognizable from the phrase and mandatory cues together, not from generic "
-        "props alone. "
-        "Permanent rules: no extra text, no logos or brand marks, no product mockup unless "
-        "explicitly requested, no unnecessary scene, preserve exact spelling, and keep the "
-        "design legible at merchandise scale."
+        "Audience identity must be recognizable from the phrase and mandatory cues together, not "
+        "from generic props alone. "
+        "Permanent rules: no extra text, no logos or brand marks, no product mockup, no scene or "
+        "landscape, no full-bleed background, no realistic shading, no poster layout, plain white "
+        "background, one centered subject, preserve exact spelling, and keep the design legible "
+        "at sticker scale. Do not draw the white die-cut border; it is added after generation."
     )
 
 

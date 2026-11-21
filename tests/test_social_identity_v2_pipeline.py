@@ -72,7 +72,10 @@ def test_identity_v2_fixture_uses_the_shared_identity_contract() -> None:
 
     assert "dossier" not in result.output_data
     assert len(result.output_data["candidates"]) == 2
-    assert "objective chart language" in result.output_data["candidates"][0]["artwork_text"].casefold()
+    artwork_text = result.output_data["candidates"][0]["artwork_text"]
+    assert artwork_text.casefold() == "bedside nurses"
+    assert len(artwork_text.split()) <= 5
+    assert "objective chart language" in result.output_data["candidates"][0]["behavior"].casefold()
     assert result.usage.request_count == 0
 
 

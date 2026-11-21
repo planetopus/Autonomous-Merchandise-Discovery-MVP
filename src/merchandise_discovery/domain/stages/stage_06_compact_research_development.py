@@ -112,7 +112,12 @@ def reasoning_instructions() -> str:
         "in the artwork, not merely implied by target_audience. Use non-branded cues: for healthcare "
         "shift workers, examples include a generic scrub silhouette, blank badge clip, shift-change "
         "clock, locker hook, or break-room meal. Do not use hospital logos or identifiable institutions. "
-        "Also include style, typography, palette, composition, merchandise type, and constraints."
+        "Also include style, typography, palette, composition, merchandise type, and constraints. "
+        "Every visual brief is a die-cut vinyl sticker: flat vector illustration, bold clean "
+        "outlines, flat colors, one centered isolated subject, plain white background, and "
+        "merchandise copy of roughly 2 to 5 words or no text. Set merchandise type to die-cut "
+        "vinyl sticker. Put scene or landscape backgrounds, full-bleed backgrounds, realistic "
+        "shading, and poster layouts in the avoid list."
     )
 
 

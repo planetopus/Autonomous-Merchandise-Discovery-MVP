@@ -97,13 +97,15 @@ def audience_copy_instructions() -> str:
     """
 
     return (
-        "The merchandise phrase is the primary audience-recognition copy printed on the product: "
-        "write it as an insider statement or shared truth that makes the target audience think, "
-        "'That is literally me.' It may be first-person, second-person, a shared observation, or a "
-        "concise insider phrase; choose the voice that sounds natural for this niche. Do not force a "
-        "grammatical template, and do not begin every concept with 'I'. Include the specific "
-        "behavior, constraint, or relief that defines the niche. Do not return a product category, "
-        "club name, campaign title, broad theme, or abstract slogan in place of the phrase."
+        "The merchandise phrase is the primary audience-recognition copy on a die-cut vinyl sticker: "
+        "roughly 2 to 5 words, or empty when the sticker should be image-only. Write it as an insider "
+        "statement or shared truth that makes the target audience think, 'That is literally me.' It "
+        "may be first-person, second-person, a shared observation, or a concise insider phrase; "
+        "choose the voice that sounds natural for this niche. Do not force a grammatical template, "
+        "and do not begin every concept with 'I'. Include the specific behavior, constraint, or "
+        "relief that defines the niche in those few words. Do not write a sentence. Do not return a "
+        "product category, club name, campaign title, broad theme, or abstract slogan in place of "
+        "the phrase."
     )
 
 
@@ -117,7 +119,7 @@ def reasoning_instructions() -> str:
         "audience, one recognizable moment or repeated behavior, one insider phrase or language "
         "cue, one emotional tension, and one distinctive visual hook. "
         f"{audience_copy_instructions()} The phrase must work as standalone copy on "
-        "a shirt or other product. Reject ideas that could apply equally to almost any audience. Do not "
+        "a die-cut vinyl sticker. Reject ideas that could apply equally to almost any audience. Do not "
         "invent demographics or facts absent from the supplied input. "
         "The specificity_score is a 0 to 10 score, not a 0 to 1 confidence value; use at least "
         "7.0 for a concept that should pass the application gate. Before returning, self-check "

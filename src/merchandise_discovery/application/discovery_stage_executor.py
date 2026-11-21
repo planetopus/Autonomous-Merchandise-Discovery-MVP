@@ -261,6 +261,8 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                     recent_identity_selections=self._recent_identity_selections(run),
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
@@ -273,6 +275,8 @@ class DiscoveryStageExecutor:
                 return social_identity_v2_artwork.IdentityV2ArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             raise StageNotImplementedError(
                 f"Identity V2 pipeline does not define Stage {stage.stage_number}."
@@ -285,6 +289,8 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
                 previous = self._stage_repository.get_latest(run.run_id, 1)
@@ -296,6 +302,8 @@ class DiscoveryStageExecutor:
                 return social_artwork.SocialArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             raise StageNotImplementedError(
                 f"Behavior-first identity pipeline does not define Stage {stage.stage_number}."
@@ -313,6 +321,8 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                     recent_identity_selections=self._recent_identity_selections(run),
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
@@ -325,6 +335,8 @@ class DiscoveryStageExecutor:
                 return social_identity_artwork.IdentityArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             raise StageNotImplementedError(
                 f"Identity-focused social pipeline does not define Stage {stage.stage_number}."
@@ -337,6 +349,8 @@ class DiscoveryStageExecutor:
                     query=run.config.social_query,
                     auto_topic=run.config.social_auto_topic,
                     candidate_count=run.config.social_candidate_count,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             if stage.stage_number == 2:
                 previous = self._stage_repository.get_latest(run.run_id, 1)
@@ -348,6 +362,8 @@ class DiscoveryStageExecutor:
                 return social_artwork.SocialArtworkInput(
                     candidates=_social_artwork_candidates(run, prior.candidates),
                     artwork_variants_per_candidate=1,
+                    niche_a=run.config.social_niche_a,
+                    niche_b=run.config.social_niche_b,
                 ).model_dump(mode="python")
             else:
                 raise StageNotImplementedError(
@@ -1275,7 +1291,13 @@ class DiscoveryStageExecutor:
                         "illustration style, main subject, supporting "
                         "visual elements, composition, typography direction, palette direction, "
                         "detail level, intended merchandise type, visual constraints, and things to "
-                        "avoid."
+                        "avoid. Design every brief as a die-cut vinyl sticker: flat vector "
+                        "illustration, bold clean outlines, flat colors, one centered isolated "
+                        "subject, and a plain white background. Keep the exact phrase to roughly "
+                        "2 to 5 words, or make the sticker image-only when words are unnecessary. "
+                        "Set intended merchandise type to die-cut vinyl sticker. Add scene or "
+                        "landscape backgrounds, full-bleed backgrounds, realistic shading, and "
+                        "poster layouts to things to avoid."
                     ),
                 )
                 if input_model.concepts
