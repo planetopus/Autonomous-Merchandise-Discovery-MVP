@@ -118,6 +118,29 @@ def test_csv_loader_prefers_the_url_then_the_bundled_file_and_adds_mongo(tmp_pat
     assert defaulted == [DEFAULT_HUMOR_REFERENCE_CSV_URL]
 
 
+def test_bundled_humor_csv_matches_the_synced_file_shape() -> None:
+    """The committed list uses integer upvotes, combined types, quotes, and theme rows."""
+
+    from merchandise_discovery.infrastructure.humor_reference_loader import (
+        bundled_humor_reference_csv,
+    )
+
+    body = bundled_humor_reference_csv().read_text(encoding="utf-8")
+    parsed = parse_humor_reference_csv(body)
+
+    assert len(parsed) == 19
+    assert all(isinstance(item.upvotes, int) and item.upvotes > 0 for item in parsed)
+    assert parsed[0].upvotes >= parsed[-1].upvotes
+    assert any(item.humor_type == "dry/edgy" for item in parsed)
+    assert any(item.text == "Grass goes in, fast comes out" for item in parsed)
+    themes = [item for item in parsed if item.is_theme]
+    assert len(themes) == 3
+    assert all("(theme)" in item.text.casefold() for item in themes)
+    selection = select_humor_references(parsed, tone=HumorTone.DRY, niches=["mechanics"])
+    assert all(not item.is_theme for item in selection.examples)
+    assert len(selection.themes) == 3
+
+
 def test_csv_marks_theme_rows_and_hashes_text() -> None:
     """The theme marker is not a separate column; it lives in the sticker text."""
 
