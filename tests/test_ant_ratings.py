@@ -9,6 +9,7 @@ from merchandise_discovery.domain.models.common import HumorTone, PipelineVarian
 from merchandise_discovery.domain.models.workflow import RunConfig, StageExecution, WorkflowRun
 from merchandise_discovery.domain.pipelines.social_behavior_text import pipeline
 from merchandise_discovery.infrastructure.ant_ratings_loader import (
+    ant_calibration_block,
     load_ant_ratings,
     parse_ant_ratings,
 )
@@ -28,6 +29,12 @@ def test_committed_ratings_match_ants_scores() -> None:
     assert ratings["Do Not Enter Late With Coffee Unless It's Mine"].score == 6
     assert ratings["Hall duty: guarding a trash can for frappes."].score == 2
     assert ratings["Leave it on the counter, tardy."].reason == "poor setup"
+    assert ratings["Calm through forty overdoses. Panics when the doorbell rings."].score == 10
+    assert ratings["Hands on hips, auditing the beer fridge again."].verdict == "not funny"
+    assert "no twist" in ratings["Hands on hips, auditing the beer fridge again."].reason
+    calibration = ant_calibration_block(list(ratings.values()))
+    assert "target group and most people" in calibration
+    assert calibration.startswith("OWNER CALIBRATION")
 
 
 def test_ratings_csv_accepts_an_appended_row(tmp_path: Path) -> None:
@@ -40,7 +47,7 @@ def test_ratings_csv_accepts_an_appended_row(tmp_path: Path) -> None:
 
     ratings = parse_ant_ratings(path.read_text(encoding="utf-8"))
 
-    assert len(ratings) == 6
+    assert len(ratings) == len(parse_ant_ratings(original)) + 1
     assert ratings[-1].line == "New line, still a joke."
     assert ratings[-1].score == 9
     assert ratings[-1].verdict == "funny"

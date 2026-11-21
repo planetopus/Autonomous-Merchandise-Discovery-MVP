@@ -12,6 +12,8 @@ from merchandise_discovery.infrastructure.identity_atlas_loader import (
     IdentitySubgroup,
     OverlapCombo,
     SlangTerm,
+    diversity_factor,
+    infer_who_its_for,
     load_identity_atlas,
     sample_overlap_pairs,
     split_identity_names,
@@ -88,6 +90,36 @@ def test_overlap_sampling_prefers_buyer_pride() -> None:
         if picked and picked[0]["niche_a"] == "Church dads":
             hits += 1
     assert hits >= 30
+
+
+def test_unused_identities_are_preferred_and_familiar_groups_get_no_boost() -> None:
+    """Recent dads are downweighted. An unused group with the same pride is not."""
+
+    assert diversity_factor(["dads"], {}) == diversity_factor(["beekeepers"], {})
+    atlas = IdentityAtlas(
+        combos=[
+            OverlapCombo(names=["Church dads", "Garages"], buyer_pride=5),
+            OverlapCombo(names=["Beekeepers", "Weeknight cooks"], buyer_pride=5),
+        ]
+    )
+    hits = 0
+    for seed in range(30):
+        picked = sample_overlap_pairs(
+            atlas,
+            limit=1,
+            rng=random.Random(seed),
+            avoid=["church dads", "garage"],
+        )
+        if picked and picked[0]["niche_a"] == "Beekeepers":
+            hits += 1
+    assert hits >= 20
+    buyers = infer_who_its_for(
+        ["DIY"],
+        ["Church dads", "beer"],
+        [IdentitySubgroup(name="Church dads", overlaps=["beer drinkers"])],
+    )
+    assert buyers[0] == "DIY"
+    assert 2 <= len(buyers) <= 4
 
 
 def test_one_field_can_hold_one_identity_or_several() -> None:

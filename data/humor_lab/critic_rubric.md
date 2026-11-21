@@ -1,6 +1,12 @@
 # Sticker Line Critic Rubric
 
-Score every line 1–10. **Keep only lines scoring 7 or higher.** Judge like a tough Reddit crowd that also has $5 to spend on a sticker.
+Score every line 1–10. **Keep only lines scoring 7 or higher.**
+
+These scores mean whether the **target group and most people** would find the line funny, not whether it matches one person's private taste. The catalog should cover millions of different kinds of people. Joke shapes are reused across identities. The example groups (dads, nurses, morticians) are not the topic and get no extra weight.
+
+A line that only describes the behavior, with no ironic twist, scores under 7.
+
+Judge like a tough crowd that also has $5 to spend on a sticker.
 
 ## The one test that matters most
 **Would a real member of this group read it, say "that's literally me" (or "that's my dad/wife/coworker"), and buy it?**
@@ -41,7 +47,7 @@ Dark humor is welcome. Darkness 0–3 doesn't add or subtract points by itself. 
 - "HOT TAKE HAIRSTYLISTS WITH NO THERAPY LICENSE": the true trait is buried under a weak mismatch word.
 
 ### 9/10 (keep, top tier)
-- "SIGMA RETIREES WHO GET TO THE AIRPORT FIVE HOURS EARLY": a real group with a true, hyper-specific habit, and an internet "sigma" voice on a grandpa. Every retiree's kid buys it.
+- "Calm through forty overdoses. Panics when the doorbell rings." is the ceiling for competence versus a tiny fear. Vague "sigma" with no vivid habit is only ok, not top tier.
 - "Calm through forty overdoses. Panics when the doorbell rings.": sharp situational irony and the dispatcher's own dark humor. Insiders feel seen.
 - "Hi! I'm everyone's emergency contact!": sarcasm via fake cheer about a heavy role. Oldest daughters and moms buy it instantly.
 - "Discharged against medical advice to go to Applebee's.": clinical jargon on a personal life, an ironic turn at the end, and every nurse knows it.
