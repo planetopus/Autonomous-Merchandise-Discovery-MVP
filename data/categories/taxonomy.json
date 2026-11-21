@@ -1,0 +1,3532 @@
+{
+ "version": 1,
+ "generated_by": "build_taxonomy.py",
+ "facets": [
+  "identity",
+  "occasion",
+  "humor",
+  "product",
+  "topic"
+ ],
+ "node_counts": {
+  "identity": 86,
+  "occasion": 13,
+  "humor": 10,
+  "product": 8,
+  "topic": 20
+ },
+ "total_nodes": 142,
+ "tree": [
+  {
+   "id": "identity",
+   "name": "Who It's For",
+   "slug": "who-it-s-for",
+   "path": "Who It's For",
+   "facet": "identity",
+   "short_tag": "who its for",
+   "search_phrases": [
+    "funny stickers",
+    "funny gifts for him",
+    "funny gifts for her",
+    "job stickers funny"
+   ],
+   "match_terms": [],
+   "children": [
+    {
+     "id": "identity/family-roles",
+     "name": "Family Roles",
+     "slug": "family-roles",
+     "path": "Who It's For > Family Roles",
+     "facet": "identity",
+     "short_tag": "family roles",
+     "search_phrases": [
+      "funny dad stickers",
+      "funny mom stickers",
+      "funny grandpa stickers",
+      "funny grandma stickers",
+      "funny divorced stickers",
+      "funny widower stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/family-roles/dads",
+       "name": "Dads",
+       "slug": "dads",
+       "path": "Who It's For > Family Roles > Dads",
+       "facet": "identity",
+       "short_tag": "dad sticker",
+       "search_phrases": [
+        "funny dad stickers",
+        "gifts for dads",
+        "fathers day stickers",
+        "dad joke sticker",
+        "dad life sticker",
+        "funny dad decal",
+        "dad bumper sticker"
+       ],
+       "match_terms": [
+        "dad",
+        "dads",
+        "father",
+        "fathers",
+        "daddy"
+       ],
+       "singular": "dad",
+       "plural": "dads",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/moms",
+       "name": "Moms",
+       "slug": "moms",
+       "path": "Who It's For > Family Roles > Moms",
+       "facet": "identity",
+       "short_tag": "mom sticker",
+       "search_phrases": [
+        "funny mom stickers",
+        "gifts for moms",
+        "mom life sticker",
+        "mothers day gift",
+        "funny mom decal",
+        "mom bumper sticker"
+       ],
+       "match_terms": [
+        "mom",
+        "moms",
+        "mother",
+        "mama",
+        "mommy"
+       ],
+       "singular": "mom",
+       "plural": "moms",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/grandpas",
+       "name": "Grandpas",
+       "slug": "grandpas",
+       "path": "Who It's For > Family Roles > Grandpas",
+       "facet": "identity",
+       "short_tag": "grandpa sticker",
+       "search_phrases": [
+        "funny grandpa stickers",
+        "gifts for grandpas",
+        "grandpa gifts",
+        "grandpa life sticker",
+        "funny grandpa decal",
+        "grandpa bumper sticker"
+       ],
+       "match_terms": [
+        "grandpa",
+        "grandpas",
+        "grandfather",
+        "papa"
+       ],
+       "singular": "grandpa",
+       "plural": "grandpas",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/grandmas",
+       "name": "Grandmas",
+       "slug": "grandmas",
+       "path": "Who It's For > Family Roles > Grandmas",
+       "facet": "identity",
+       "short_tag": "grandma sticker",
+       "search_phrases": [
+        "funny grandma stickers",
+        "gifts for grandmas",
+        "grandma gifts",
+        "grandma life sticker",
+        "funny grandma decal",
+        "grandma bumper sticker"
+       ],
+       "match_terms": [
+        "grandma",
+        "grandmas",
+        "grandmother",
+        "nana",
+        "granny"
+       ],
+       "singular": "grandma",
+       "plural": "grandmas",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/divorced",
+       "name": "Divorced",
+       "slug": "divorced",
+       "path": "Who It's For > Family Roles > Divorced",
+       "facet": "identity",
+       "short_tag": "divorced sticker",
+       "search_phrases": [
+        "funny divorced stickers",
+        "gifts for divorced people",
+        "divorce gifts",
+        "funny divorce sticker",
+        "divorced life sticker",
+        "funny divorced decal",
+        "divorced bumper sticker"
+       ],
+       "match_terms": [
+        "divorce",
+        "divorced",
+        "ex-wife",
+        "ex wife",
+        "ex-husband",
+        "my ex",
+        "custody"
+       ],
+       "singular": "divorced",
+       "plural": "divorced people",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/widowers",
+       "name": "Widowers",
+       "slug": "widowers",
+       "path": "Who It's For > Family Roles > Widowers",
+       "facet": "identity",
+       "short_tag": "widower sticker",
+       "search_phrases": [
+        "funny widower stickers",
+        "gifts for widowers",
+        "widower life sticker",
+        "funny widower decal",
+        "widower bumper sticker"
+       ],
+       "match_terms": [
+        "widow",
+        "widower",
+        "widowers"
+       ],
+       "singular": "widower",
+       "plural": "widowers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/oldest-daughters",
+       "name": "Oldest Daughters",
+       "slug": "oldest-daughters",
+       "path": "Who It's For > Family Roles > Oldest Daughters",
+       "facet": "identity",
+       "short_tag": "oldest daughter",
+       "search_phrases": [
+        "funny oldest daughter stickers",
+        "gifts for oldest daughters",
+        "eldest daughter sticker",
+        "oldest daughter life sticker",
+        "funny oldest daughter decal",
+        "oldest daughter bumper sticker"
+       ],
+       "match_terms": [
+        "oldest daughter",
+        "eldest daughter",
+        "oldest daughters"
+       ],
+       "singular": "oldest daughter",
+       "plural": "oldest daughters",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/boat-dads",
+       "name": "Boat Dads",
+       "slug": "boat-dads",
+       "path": "Who It's For > Family Roles > Boat Dads",
+       "facet": "identity",
+       "short_tag": "boat dad sticker",
+       "search_phrases": [
+        "funny boat dad stickers",
+        "gifts for boat dads",
+        "boat sticker funny",
+        "boat dad life sticker",
+        "funny boat dad decal",
+        "boat dad bumper sticker"
+       ],
+       "match_terms": [
+        "boat dad",
+        "boat dads",
+        "boat"
+       ],
+       "singular": "boat dad",
+       "plural": "boat dads",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/dog-moms",
+       "name": "Dog Moms",
+       "slug": "dog-moms",
+       "path": "Who It's For > Family Roles > Dog Moms",
+       "facet": "identity",
+       "short_tag": "dog mom sticker",
+       "search_phrases": [
+        "funny dog mom stickers",
+        "gifts for dog moms",
+        "dog mom gifts",
+        "dog mom life sticker",
+        "funny dog mom decal",
+        "dog mom bumper sticker"
+       ],
+       "match_terms": [
+        "dog mom",
+        "dog moms"
+       ],
+       "singular": "dog mom",
+       "plural": "dog moms",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/family-roles/toddler-parents",
+       "name": "Toddler Parents",
+       "slug": "toddler-parents",
+       "path": "Who It's For > Family Roles > Toddler Parents",
+       "facet": "identity",
+       "short_tag": "toddler parent",
+       "search_phrases": [
+        "funny toddler parent stickers",
+        "gifts for toddler parents",
+        "parenting humor sticker",
+        "toddler parent life sticker",
+        "funny toddler parent decal",
+        "toddler parent bumper sticker"
+       ],
+       "match_terms": [
+        "toddler",
+        "toddlers"
+       ],
+       "singular": "toddler parent",
+       "plural": "toddler parents",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/healthcare",
+     "name": "Healthcare",
+     "slug": "healthcare",
+     "path": "Who It's For > Healthcare",
+     "facet": "identity",
+     "short_tag": "healthcare",
+     "search_phrases": [
+      "funny nurse stickers",
+      "funny night shift stickers",
+      "funny hospice nurse stickers",
+      "funny paramedic stickers",
+      "funny pharmacist stickers",
+      "funny dental hygienist stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/healthcare/nurses",
+       "name": "Nurses",
+       "slug": "nurses",
+       "path": "Who It's For > Healthcare > Nurses",
+       "facet": "identity",
+       "short_tag": "nurse sticker",
+       "search_phrases": [
+        "funny nurse stickers",
+        "gifts for nurses",
+        "nurse life decal",
+        "nurses week gifts",
+        "nurse life sticker",
+        "funny nurse decal",
+        "nurse bumper sticker"
+       ],
+       "match_terms": [
+        "nurse",
+        "nurses",
+        "nursing",
+        "rn",
+        "icu",
+        "er nurse",
+        "charge nurse",
+        "scrubs"
+       ],
+       "singular": "nurse",
+       "plural": "nurses",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/er-night-shift",
+       "name": "ER & Night Shift",
+       "slug": "er-night-shift",
+       "path": "Who It's For > Healthcare > ER & Night Shift",
+       "facet": "identity",
+       "short_tag": "night shift sticker",
+       "search_phrases": [
+        "funny night shift stickers",
+        "gifts for night shift",
+        "night shift nurse sticker",
+        "night shift life sticker",
+        "funny night shift decal",
+        "night shift bumper sticker"
+       ],
+       "match_terms": [
+        "night shift",
+        "er",
+        "er techs",
+        "full moon",
+        "graveyard shift",
+        "4 am",
+        "3 am"
+       ],
+       "singular": "night shift",
+       "plural": "night shift",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/hospice-nurses",
+       "name": "Hospice Nurses",
+       "slug": "hospice-nurses",
+       "path": "Who It's For > Healthcare > Hospice Nurses",
+       "facet": "identity",
+       "short_tag": "hospice nurse",
+       "search_phrases": [
+        "funny hospice nurse stickers",
+        "gifts for hospice nurses",
+        "hospice nurse life sticker",
+        "funny hospice nurse decal",
+        "hospice nurse bumper sticker"
+       ],
+       "match_terms": [
+        "hospice"
+       ],
+       "singular": "hospice nurse",
+       "plural": "hospice nurses",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/paramedics-emts",
+       "name": "Paramedics & EMTs",
+       "slug": "paramedics-emts",
+       "path": "Who It's For > Healthcare > Paramedics & EMTs",
+       "facet": "identity",
+       "short_tag": "paramedic sticker",
+       "search_phrases": [
+        "funny paramedic stickers",
+        "gifts for paramedics",
+        "emt sticker",
+        "ems decal",
+        "paramedic life sticker",
+        "funny paramedic decal",
+        "paramedic bumper sticker"
+       ],
+       "match_terms": [
+        "paramedic",
+        "paramedics",
+        "emt",
+        "ambulance"
+       ],
+       "singular": "paramedic",
+       "plural": "paramedics",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/pharmacists",
+       "name": "Pharmacists",
+       "slug": "pharmacists",
+       "path": "Who It's For > Healthcare > Pharmacists",
+       "facet": "identity",
+       "short_tag": "pharmacist sticker",
+       "search_phrases": [
+        "funny pharmacist stickers",
+        "gifts for pharmacists",
+        "pharmacy tech sticker",
+        "pharmacist life sticker",
+        "funny pharmacist decal",
+        "pharmacist bumper sticker"
+       ],
+       "match_terms": [
+        "pharmacist",
+        "pharmacists",
+        "pharmacy"
+       ],
+       "singular": "pharmacist",
+       "plural": "pharmacists",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/dental-hygienists",
+       "name": "Dental Hygienists",
+       "slug": "dental-hygienists",
+       "path": "Who It's For > Healthcare > Dental Hygienists",
+       "facet": "identity",
+       "short_tag": "dental hygienist",
+       "search_phrases": [
+        "funny dental hygienist stickers",
+        "gifts for dental hygienists",
+        "dental hygienist gifts",
+        "dental hygienist life sticker",
+        "funny dental hygienist decal",
+        "dental hygienist bumper sticker"
+       ],
+       "match_terms": [
+        "dental",
+        "hygienist",
+        "dentist",
+        "floss"
+       ],
+       "singular": "dental hygienist",
+       "plural": "dental hygienists",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/vets-vet-techs",
+       "name": "Vets & Vet Techs",
+       "slug": "vets-vet-techs",
+       "path": "Who It's For > Healthcare > Vets & Vet Techs",
+       "facet": "identity",
+       "short_tag": "vet tech sticker",
+       "search_phrases": [
+        "funny vet tech stickers",
+        "gifts for vet techs",
+        "veterinarian gifts",
+        "vet tech life sticker",
+        "funny vet tech decal",
+        "vet tech bumper sticker"
+       ],
+       "match_terms": [
+        "vet",
+        "vets",
+        "veterinar",
+        "vet tech"
+       ],
+       "singular": "vet tech",
+       "plural": "vet techs",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/healthcare/morticians",
+       "name": "Morticians",
+       "slug": "morticians",
+       "path": "Who It's For > Healthcare > Morticians",
+       "facet": "identity",
+       "short_tag": "mortician sticker",
+       "search_phrases": [
+        "funny mortician stickers",
+        "gifts for morticians",
+        "funeral director gifts",
+        "mortician humor",
+        "mortician life sticker",
+        "funny mortician decal",
+        "mortician bumper sticker"
+       ],
+       "match_terms": [
+        "mortician",
+        "morticians",
+        "funeral director",
+        "casket",
+        "embalm"
+       ],
+       "singular": "mortician",
+       "plural": "morticians",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/first-responders",
+     "name": "First Responders",
+     "slug": "first-responders",
+     "path": "Who It's For > First Responders",
+     "facet": "identity",
+     "short_tag": "first responders",
+     "search_phrases": [
+      "funny firefighter stickers",
+      "funny dispatcher stickers",
+      "funny first responders stickers",
+      "first responders decals",
+      "first responders gifts"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/first-responders/firefighters",
+       "name": "Firefighters",
+       "slug": "firefighters",
+       "path": "Who It's For > First Responders > Firefighters",
+       "facet": "identity",
+       "short_tag": "firefighter sticker",
+       "search_phrases": [
+        "funny firefighter stickers",
+        "gifts for firefighters",
+        "firefighter decal",
+        "firefighter gifts",
+        "firefighter life sticker",
+        "funny firefighter decal",
+        "firefighter bumper sticker"
+       ],
+       "match_terms": [
+        "firefighter",
+        "firefighters",
+        "fireman",
+        "firehouse"
+       ],
+       "singular": "firefighter",
+       "plural": "firefighters",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/first-responders/911-dispatchers",
+       "name": "911 Dispatchers",
+       "slug": "911-dispatchers",
+       "path": "Who It's For > First Responders > 911 Dispatchers",
+       "facet": "identity",
+       "short_tag": "dispatcher sticker",
+       "search_phrases": [
+        "funny dispatcher stickers",
+        "gifts for dispatchers",
+        "911 dispatcher gifts",
+        "dispatcher life sticker",
+        "funny dispatcher decal",
+        "dispatcher bumper sticker"
+       ],
+       "match_terms": [
+        "dispatcher",
+        "dispatchers",
+        "911"
+       ],
+       "singular": "dispatcher",
+       "plural": "dispatchers",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/trades-blue-collar",
+     "name": "Trades & Blue Collar",
+     "slug": "trades-blue-collar",
+     "path": "Who It's For > Trades & Blue Collar",
+     "facet": "identity",
+     "short_tag": "trades and blue",
+     "search_phrases": [
+      "funny electrician stickers",
+      "funny plumber stickers",
+      "funny mechanic stickers",
+      "funny trucker stickers",
+      "funny farmer stickers",
+      "funny construction worker stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/trades-blue-collar/electricians",
+       "name": "Electricians",
+       "slug": "electricians",
+       "path": "Who It's For > Trades & Blue Collar > Electricians",
+       "facet": "identity",
+       "short_tag": "electrician sticker",
+       "search_phrases": [
+        "funny electrician stickers",
+        "gifts for electricians",
+        "electrician hard hat stickers",
+        "electrician life sticker",
+        "funny electrician decal",
+        "electrician bumper sticker"
+       ],
+       "match_terms": [
+        "electrician",
+        "electricians",
+        "shocked",
+        "volt"
+       ],
+       "singular": "electrician",
+       "plural": "electricians",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/trades-blue-collar/plumbers",
+       "name": "Plumbers",
+       "slug": "plumbers",
+       "path": "Who It's For > Trades & Blue Collar > Plumbers",
+       "facet": "identity",
+       "short_tag": "plumber sticker",
+       "search_phrases": [
+        "funny plumber stickers",
+        "gifts for plumbers",
+        "plumber hard hat stickers",
+        "plumber life sticker",
+        "funny plumber decal",
+        "plumber bumper sticker"
+       ],
+       "match_terms": [
+        "plumber",
+        "plumbers",
+        "plumbing",
+        "drain"
+       ],
+       "singular": "plumber",
+       "plural": "plumbers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/trades-blue-collar/mechanics",
+       "name": "Mechanics",
+       "slug": "mechanics",
+       "path": "Who It's For > Trades & Blue Collar > Mechanics",
+       "facet": "identity",
+       "short_tag": "mechanic sticker",
+       "search_phrases": [
+        "funny mechanic stickers",
+        "gifts for mechanics",
+        "mechanic toolbox stickers",
+        "mechanic life sticker",
+        "funny mechanic decal",
+        "mechanic bumper sticker"
+       ],
+       "match_terms": [
+        "mechanic",
+        "mechanics",
+        "check engine",
+        "wrench"
+       ],
+       "singular": "mechanic",
+       "plural": "mechanics",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/trades-blue-collar/truckers",
+       "name": "Truckers",
+       "slug": "truckers",
+       "path": "Who It's For > Trades & Blue Collar > Truckers",
+       "facet": "identity",
+       "short_tag": "trucker sticker",
+       "search_phrases": [
+        "funny trucker stickers",
+        "gifts for truckers",
+        "trucker decals",
+        "truck driver gifts",
+        "trucker life sticker",
+        "funny trucker decal",
+        "trucker bumper sticker"
+       ],
+       "match_terms": [
+        "trucker",
+        "truckers",
+        "four-wheeler",
+        "18 wheeler",
+        "cdl",
+        "semi"
+       ],
+       "singular": "trucker",
+       "plural": "truckers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/trades-blue-collar/farmers",
+       "name": "Farmers",
+       "slug": "farmers",
+       "path": "Who It's For > Trades & Blue Collar > Farmers",
+       "facet": "identity",
+       "short_tag": "farmer sticker",
+       "search_phrases": [
+        "funny farmer stickers",
+        "gifts for farmers",
+        "farm life sticker",
+        "farmer life sticker",
+        "funny farmer decal",
+        "farmer bumper sticker"
+       ],
+       "match_terms": [
+        "farmer",
+        "farmers",
+        "cows",
+        "tractor",
+        "farm"
+       ],
+       "singular": "farmer",
+       "plural": "farmers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/trades-blue-collar/construction-workers",
+       "name": "Construction Workers",
+       "slug": "construction-workers",
+       "path": "Who It's For > Trades & Blue Collar > Construction Workers",
+       "facet": "identity",
+       "short_tag": "construction worker",
+       "search_phrases": [
+        "funny construction worker stickers",
+        "gifts for construction workers",
+        "hard hat stickers funny",
+        "construction stickers",
+        "construction worker life sticker",
+        "funny construction worker decal",
+        "construction worker bumper sticker"
+       ],
+       "match_terms": [
+        "construction",
+        "hard hat",
+        "lineman",
+        "welder"
+       ],
+       "singular": "construction worker",
+       "plural": "construction workers",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/office-tech",
+     "name": "Office & Tech",
+     "slug": "office-tech",
+     "path": "Who It's For > Office & Tech",
+     "facet": "identity",
+     "short_tag": "office and tech",
+     "search_phrases": [
+      "funny it stickers",
+      "funny office stickers",
+      "funny accountant stickers",
+      "funny programmer stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/office-tech/it-tech-support",
+       "name": "IT & Tech Support",
+       "slug": "it-tech-support",
+       "path": "Who It's For > Office & Tech > IT & Tech Support",
+       "facet": "identity",
+       "short_tag": "it sticker",
+       "search_phrases": [
+        "funny it stickers",
+        "gifts for it",
+        "tech support sticker",
+        "it humor stickers",
+        "it life sticker",
+        "funny it decal",
+        "it bumper sticker"
+       ],
+       "match_terms": [
+        "it people",
+        "it guy",
+        "ticket",
+        "tech support",
+        "help desk",
+        "printer",
+        "turn it off"
+       ],
+       "singular": "IT",
+       "plural": "IT",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/office-tech/office-workers",
+       "name": "Office Workers",
+       "slug": "office-workers",
+       "path": "Who It's For > Office & Tech > Office Workers",
+       "facet": "identity",
+       "short_tag": "office sticker",
+       "search_phrases": [
+        "funny office stickers",
+        "gifts for office workers",
+        "coworker gifts",
+        "office humor stickers",
+        "office life sticker",
+        "funny office decal",
+        "office bumper sticker"
+       ],
+       "match_terms": [
+        "office",
+        "meeting",
+        "meetings",
+        "email",
+        "coworker",
+        "boss",
+        "zoom"
+       ],
+       "singular": "office",
+       "plural": "office workers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/office-tech/accountants",
+       "name": "Accountants",
+       "slug": "accountants",
+       "path": "Who It's For > Office & Tech > Accountants",
+       "facet": "identity",
+       "short_tag": "accountant sticker",
+       "search_phrases": [
+        "funny accountant stickers",
+        "gifts for accountants",
+        "accountant gifts",
+        "cpa gifts",
+        "accountant life sticker",
+        "funny accountant decal",
+        "accountant bumper sticker"
+       ],
+       "match_terms": [
+        "accountant",
+        "accountants",
+        "tax season",
+        "cpa",
+        "spreadsheet"
+       ],
+       "singular": "accountant",
+       "plural": "accountants",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/office-tech/programmers",
+       "name": "Programmers",
+       "slug": "programmers",
+       "path": "Who It's For > Office & Tech > Programmers",
+       "facet": "identity",
+       "short_tag": "programmer sticker",
+       "search_phrases": [
+        "funny programmer stickers",
+        "gifts for programmers",
+        "laptop stickers programmer",
+        "coding stickers",
+        "programmer life sticker",
+        "funny programmer decal",
+        "programmer bumper sticker"
+       ],
+       "match_terms": [
+        "programmer",
+        "coder",
+        "developer",
+        "code"
+       ],
+       "singular": "programmer",
+       "plural": "programmers",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/service-hospitality",
+     "name": "Service & Hospitality",
+     "slug": "service-hospitality",
+     "path": "Who It's For > Service & Hospitality",
+     "facet": "identity",
+     "short_tag": "service and",
+     "search_phrases": [
+      "funny teacher stickers",
+      "funny librarian stickers",
+      "funny server stickers",
+      "funny retail worker stickers",
+      "funny hairstylist stickers",
+      "funny nail tech stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/service-hospitality/teachers",
+       "name": "Teachers",
+       "slug": "teachers",
+       "path": "Who It's For > Service & Hospitality > Teachers",
+       "facet": "identity",
+       "short_tag": "teacher sticker",
+       "search_phrases": [
+        "funny teacher stickers",
+        "gifts for teachers",
+        "teacher life sticker",
+        "teacher appreciation gifts",
+        "teacher gifts",
+        "funny teacher decal",
+        "teacher bumper sticker"
+       ],
+       "match_terms": [
+        "teacher",
+        "teachers",
+        "classroom",
+        "hall duty",
+        "tenure",
+        "summer break",
+        "students"
+       ],
+       "singular": "teacher",
+       "plural": "teachers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/service-hospitality/librarians",
+       "name": "Librarians",
+       "slug": "librarians",
+       "path": "Who It's For > Service & Hospitality > Librarians",
+       "facet": "identity",
+       "short_tag": "librarian sticker",
+       "search_phrases": [
+        "funny librarian stickers",
+        "gifts for librarians",
+        "librarian gifts",
+        "book lover sticker",
+        "librarian life sticker",
+        "funny librarian decal",
+        "librarian bumper sticker"
+       ],
+       "match_terms": [
+        "librarian",
+        "librarians",
+        "library",
+        "overdue"
+       ],
+       "singular": "librarian",
+       "plural": "librarians",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/service-hospitality/servers-bartenders",
+       "name": "Servers & Bartenders",
+       "slug": "servers-bartenders",
+       "path": "Who It's For > Service & Hospitality > Servers & Bartenders",
+       "facet": "identity",
+       "short_tag": "server sticker",
+       "search_phrases": [
+        "funny server stickers",
+        "gifts for servers",
+        "waitress gifts",
+        "restaurant humor",
+        "server life sticker",
+        "funny server decal",
+        "server bumper sticker"
+       ],
+       "match_terms": [
+        "server",
+        "servers",
+        "tip",
+        "tippers",
+        "waitress",
+        "bartender"
+       ],
+       "singular": "server",
+       "plural": "servers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/service-hospitality/retail-workers",
+       "name": "Retail Workers",
+       "slug": "retail-workers",
+       "path": "Who It's For > Service & Hospitality > Retail Workers",
+       "facet": "identity",
+       "short_tag": "retail worker",
+       "search_phrases": [
+        "funny retail worker stickers",
+        "gifts for retail workers",
+        "retail worker gifts",
+        "retail worker life sticker",
+        "funny retail worker decal",
+        "retail worker bumper sticker"
+       ],
+       "match_terms": [
+        "retail",
+        "customer",
+        "customers",
+        "holiday shoppers",
+        "cashier"
+       ],
+       "singular": "retail worker",
+       "plural": "retail workers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/service-hospitality/hairstylists",
+       "name": "Hairstylists",
+       "slug": "hairstylists",
+       "path": "Who It's For > Service & Hospitality > Hairstylists",
+       "facet": "identity",
+       "short_tag": "hairstylist sticker",
+       "search_phrases": [
+        "funny hairstylist stickers",
+        "gifts for hairstylists",
+        "hair stylist gifts",
+        "salon stickers",
+        "hairstylist life sticker",
+        "funny hairstylist decal",
+        "hairstylist bumper sticker"
+       ],
+       "match_terms": [
+        "hairstylist",
+        "hairstylists",
+        "hair",
+        "salon"
+       ],
+       "singular": "hairstylist",
+       "plural": "hairstylists",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/service-hospitality/nail-techs",
+       "name": "Nail Techs",
+       "slug": "nail-techs",
+       "path": "Who It's For > Service & Hospitality > Nail Techs",
+       "facet": "identity",
+       "short_tag": "nail tech sticker",
+       "search_phrases": [
+        "funny nail tech stickers",
+        "gifts for nail techs",
+        "nail tech gifts",
+        "nail tech life sticker",
+        "funny nail tech decal",
+        "nail tech bumper sticker"
+       ],
+       "match_terms": [
+        "nail tech",
+        "nail techs",
+        "nails",
+        "acrylic"
+       ],
+       "singular": "nail tech",
+       "plural": "nail techs",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/faith-church",
+     "name": "Faith & Church",
+     "slug": "faith-church",
+     "path": "Who It's For > Faith & Church",
+     "facet": "identity",
+     "short_tag": "faith and church",
+     "search_phrases": [
+      "funny christian stickers",
+      "funny church mom stickers",
+      "funny pastor stickers",
+      "funny catholic stickers",
+      "funny homeschool mom stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/faith-church/christians",
+       "name": "Christians",
+       "slug": "christians",
+       "path": "Who It's For > Faith & Church > Christians",
+       "facet": "identity",
+       "short_tag": "christian sticker",
+       "search_phrases": [
+        "funny christian stickers",
+        "gifts for christians",
+        "christian stickers",
+        "jesus decal",
+        "christian life sticker",
+        "funny christian decal",
+        "christian bumper sticker"
+       ],
+       "match_terms": [
+        "christ",
+        "jesus",
+        "god",
+        "church",
+        "pray",
+        "prayer",
+        "bible",
+        "amen",
+        "blessed"
+       ],
+       "singular": "christian",
+       "plural": "christians",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/faith-church/church-moms",
+       "name": "Church Moms",
+       "slug": "church-moms",
+       "path": "Who It's For > Faith & Church > Church Moms",
+       "facet": "identity",
+       "short_tag": "church mom sticker",
+       "search_phrases": [
+        "funny church mom stickers",
+        "gifts for church moms",
+        "church lady gifts",
+        "church mom life sticker",
+        "funny church mom decal",
+        "church mom bumper sticker"
+       ],
+       "match_terms": [
+        "church mom",
+        "church moms",
+        "church lady",
+        "church ladies",
+        "casserole",
+        "choir"
+       ],
+       "singular": "church mom",
+       "plural": "church moms",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/faith-church/pastors-deacons",
+       "name": "Pastors & Deacons",
+       "slug": "pastors-deacons",
+       "path": "Who It's For > Faith & Church > Pastors & Deacons",
+       "facet": "identity",
+       "short_tag": "pastor sticker",
+       "search_phrases": [
+        "funny pastor stickers",
+        "gifts for pastors",
+        "pastor appreciation gifts",
+        "pastor life sticker",
+        "funny pastor decal",
+        "pastor bumper sticker"
+       ],
+       "match_terms": [
+        "pastor",
+        "pastors",
+        "deacon",
+        "deacons",
+        "youth pastor",
+        "sermon",
+        "offering plate"
+       ],
+       "singular": "pastor",
+       "plural": "pastors",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/faith-church/catholics",
+       "name": "Catholics",
+       "slug": "catholics",
+       "path": "Who It's For > Faith & Church > Catholics",
+       "facet": "identity",
+       "short_tag": "catholic sticker",
+       "search_phrases": [
+        "funny catholic stickers",
+        "gifts for catholics",
+        "catholic stickers",
+        "catholic life sticker",
+        "funny catholic decal",
+        "catholic bumper sticker"
+       ],
+       "match_terms": [
+        "catholic",
+        "catholics",
+        "rosary",
+        "mass"
+       ],
+       "singular": "catholic",
+       "plural": "catholics",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/faith-church/homeschool-moms",
+       "name": "Homeschool Moms",
+       "slug": "homeschool-moms",
+       "path": "Who It's For > Faith & Church > Homeschool Moms",
+       "facet": "identity",
+       "short_tag": "homeschool mom",
+       "search_phrases": [
+        "funny homeschool mom stickers",
+        "gifts for homeschool moms",
+        "homeschool mom gifts",
+        "homeschool mom life sticker",
+        "funny homeschool mom decal",
+        "homeschool mom bumper sticker"
+       ],
+       "match_terms": [
+        "homeschool",
+        "essential oil"
+       ],
+       "singular": "homeschool mom",
+       "plural": "homeschool moms",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/generations-life-stages",
+     "name": "Generations & Life Stages",
+     "slug": "generations-life-stages",
+     "path": "Who It's For > Generations & Life Stages",
+     "facet": "identity",
+     "short_tag": "generations and",
+     "search_phrases": [
+      "funny retiree stickers",
+      "funny boomer stickers",
+      "funny millennial stickers",
+      "funny gen z stickers",
+      "funny midlife stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/generations-life-stages/retirees",
+       "name": "Retirees",
+       "slug": "retirees",
+       "path": "Who It's For > Generations & Life Stages > Retirees",
+       "facet": "identity",
+       "short_tag": "retiree sticker",
+       "search_phrases": [
+        "funny retiree stickers",
+        "gifts for retirees",
+        "retirement gifts",
+        "funny retirement gifts",
+        "retiree life sticker",
+        "funny retiree decal",
+        "retiree bumper sticker"
+       ],
+       "match_terms": [
+        "retiree",
+        "retirees",
+        "retired",
+        "retirement",
+        "senior center",
+        "pickleball",
+        "4:30"
+       ],
+       "singular": "retiree",
+       "plural": "retirees",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/generations-life-stages/boomers",
+       "name": "Boomers",
+       "slug": "boomers",
+       "path": "Who It's For > Generations & Life Stages > Boomers",
+       "facet": "identity",
+       "short_tag": "boomer sticker",
+       "search_phrases": [
+        "funny boomer stickers",
+        "gifts for boomers",
+        "boomer stickers",
+        "boomer life sticker",
+        "funny boomer decal",
+        "boomer bumper sticker"
+       ],
+       "match_terms": [
+        "boomer",
+        "boomers",
+        "ok boomer"
+       ],
+       "singular": "boomer",
+       "plural": "boomers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/generations-life-stages/millennials",
+       "name": "Millennials",
+       "slug": "millennials",
+       "path": "Who It's For > Generations & Life Stages > Millennials",
+       "facet": "identity",
+       "short_tag": "millennial sticker",
+       "search_phrases": [
+        "funny millennial stickers",
+        "gifts for millennials",
+        "millennial humor",
+        "millennial life sticker",
+        "funny millennial decal",
+        "millennial bumper sticker"
+       ],
+       "match_terms": [
+        "millennial",
+        "millennials",
+        "back pain",
+        "aging",
+        "30s",
+        "my knees"
+       ],
+       "singular": "millennial",
+       "plural": "millennials",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/generations-life-stages/gen-z",
+       "name": "Gen Z",
+       "slug": "gen-z",
+       "path": "Who It's For > Generations & Life Stages > Gen Z",
+       "facet": "identity",
+       "short_tag": "gen z sticker",
+       "search_phrases": [
+        "funny gen z stickers",
+        "gifts for gen z",
+        "gen z stickers",
+        "brainrot stickers",
+        "gen z life sticker",
+        "funny gen z decal",
+        "gen z bumper sticker"
+       ],
+       "match_terms": [
+        "gen z",
+        "rizz",
+        "slay",
+        "delulu",
+        "bet",
+        "no cap",
+        "sigma",
+        "skibidi"
+       ],
+       "singular": "gen z",
+       "plural": "gen z",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/generations-life-stages/midlife",
+       "name": "Midlife",
+       "slug": "midlife",
+       "path": "Who It's For > Generations & Life Stages > Midlife",
+       "facet": "identity",
+       "short_tag": "midlife sticker",
+       "search_phrases": [
+        "funny midlife stickers",
+        "gifts for midlife",
+        "over the hill gifts",
+        "midlife life sticker",
+        "funny midlife decal",
+        "midlife bumper sticker"
+       ],
+       "match_terms": [
+        "midlife",
+        "over the hill",
+        "40",
+        "50",
+        "cycling"
+       ],
+       "singular": "midlife",
+       "plural": "midlife",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/mental-health-neurodivergent",
+     "name": "Mental Health & Neurodivergent",
+     "slug": "mental-health-neurodivergent",
+     "path": "Who It's For > Mental Health & Neurodivergent",
+     "facet": "identity",
+     "short_tag": "mental health and",
+     "search_phrases": [
+      "funny anxiety stickers",
+      "funny adhd stickers",
+      "funny therapy stickers",
+      "funny introvert stickers",
+      "funny chronic pain stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/mental-health-neurodivergent/anxiety",
+       "name": "Anxiety",
+       "slug": "anxiety",
+       "path": "Who It's For > Mental Health & Neurodivergent > Anxiety",
+       "facet": "identity",
+       "short_tag": "anxiety sticker",
+       "search_phrases": [
+        "funny anxiety stickers",
+        "gifts for anxiety",
+        "anxiety stickers",
+        "mental health stickers",
+        "anxiety life sticker",
+        "funny anxiety decal",
+        "anxiety bumper sticker"
+       ],
+       "match_terms": [
+        "anxiety",
+        "anxious",
+        "panic",
+        "panics",
+        "phone call",
+        "doorbell",
+        "overthink"
+       ],
+       "singular": "anxiety",
+       "plural": "anxiety",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/mental-health-neurodivergent/adhd",
+       "name": "ADHD",
+       "slug": "adhd",
+       "path": "Who It's For > Mental Health & Neurodivergent > ADHD",
+       "facet": "identity",
+       "short_tag": "adhd sticker",
+       "search_phrases": [
+        "funny adhd stickers",
+        "gifts for adhd",
+        "adhd stickers",
+        "neurodivergent stickers",
+        "adhd life sticker",
+        "funny adhd decal",
+        "adhd bumper sticker"
+       ],
+       "match_terms": [
+        "adhd",
+        "unmedicated",
+        "hyperfocus",
+        "neurodivergent"
+       ],
+       "singular": "adhd",
+       "plural": "adhd",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/mental-health-neurodivergent/depression-therapy",
+       "name": "Depression & Therapy",
+       "slug": "depression-therapy",
+       "path": "Who It's For > Mental Health & Neurodivergent > Depression & Therapy",
+       "facet": "identity",
+       "short_tag": "therapy sticker",
+       "search_phrases": [
+        "funny therapy stickers",
+        "gifts for therapy",
+        "therapy sticker",
+        "mental health humor",
+        "therapy life sticker",
+        "funny therapy decal",
+        "therapy bumper sticker"
+       ],
+       "match_terms": [
+        "depression",
+        "depressed",
+        "therapy",
+        "therapist",
+        "therapy-resistant",
+        "coping"
+       ],
+       "singular": "therapy",
+       "plural": "therapy",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/mental-health-neurodivergent/introverts",
+       "name": "Introverts",
+       "slug": "introverts",
+       "path": "Who It's For > Mental Health & Neurodivergent > Introverts",
+       "facet": "identity",
+       "short_tag": "introvert sticker",
+       "search_phrases": [
+        "funny introvert stickers",
+        "gifts for introverts",
+        "introvert stickers",
+        "antisocial sticker",
+        "introvert life sticker",
+        "funny introvert decal",
+        "introvert bumper sticker"
+       ],
+       "match_terms": [
+        "introvert",
+        "introverts",
+        "cancelled plans",
+        "canceled plans",
+        "stay home"
+       ],
+       "singular": "introvert",
+       "plural": "introverts",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/mental-health-neurodivergent/chronic-pain",
+       "name": "Chronic Pain",
+       "slug": "chronic-pain",
+       "path": "Who It's For > Mental Health & Neurodivergent > Chronic Pain",
+       "facet": "identity",
+       "short_tag": "chronic pain sticker",
+       "search_phrases": [
+        "funny chronic pain stickers",
+        "gifts for chronic pain",
+        "chronic illness stickers",
+        "spoonie stickers",
+        "chronic pain life sticker",
+        "funny chronic pain decal",
+        "chronic pain bumper sticker"
+       ],
+       "match_terms": [
+        "chronic pain",
+        "chronic illness",
+        "spoonie",
+        "back pain"
+       ],
+       "singular": "chronic pain",
+       "plural": "chronic pain",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/hobbies-outdoors",
+     "name": "Hobbies & Outdoors",
+     "slug": "hobbies-outdoors",
+     "path": "Who It's For > Hobbies & Outdoors",
+     "facet": "identity",
+     "short_tag": "hobbies and outdoors",
+     "search_phrases": [
+      "funny hunter stickers",
+      "funny fisherman stickers",
+      "funny gardener stickers",
+      "funny birder stickers",
+      "funny gamer stickers",
+      "funny true crime stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/hobbies-outdoors/hunters",
+       "name": "Hunters",
+       "slug": "hunters",
+       "path": "Who It's For > Hobbies & Outdoors > Hunters",
+       "facet": "identity",
+       "short_tag": "hunter sticker",
+       "search_phrases": [
+        "funny hunter stickers",
+        "gifts for hunters",
+        "hunting decals",
+        "deer hunting sticker",
+        "hunter life sticker",
+        "funny hunter decal",
+        "hunter bumper sticker"
+       ],
+       "match_terms": [
+        "hunter",
+        "hunters",
+        "hunting",
+        "deer",
+        "tree stand",
+        "buck"
+       ],
+       "singular": "hunter",
+       "plural": "hunters",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/fishermen",
+       "name": "Fishermen",
+       "slug": "fishermen",
+       "path": "Who It's For > Hobbies & Outdoors > Fishermen",
+       "facet": "identity",
+       "short_tag": "fisherman sticker",
+       "search_phrases": [
+        "funny fisherman stickers",
+        "gifts for fishermen",
+        "fishing decals",
+        "fishing gifts for men",
+        "fisherman life sticker",
+        "funny fisherman decal",
+        "fisherman bumper sticker"
+       ],
+       "match_terms": [
+        "fisherman",
+        "fishermen",
+        "fishing",
+        "fish",
+        "bass",
+        "bait"
+       ],
+       "singular": "fisherman",
+       "plural": "fishermen",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/gardeners",
+       "name": "Gardeners",
+       "slug": "gardeners",
+       "path": "Who It's For > Hobbies & Outdoors > Gardeners",
+       "facet": "identity",
+       "short_tag": "gardener sticker",
+       "search_phrases": [
+        "funny gardener stickers",
+        "gifts for gardeners",
+        "gardening gifts",
+        "plant lover sticker",
+        "gardener life sticker",
+        "funny gardener decal",
+        "gardener bumper sticker"
+       ],
+       "match_terms": [
+        "garden",
+        "gardener",
+        "gardeners",
+        "tomato",
+        "tomatoes",
+        "plant",
+        "plants"
+       ],
+       "singular": "gardener",
+       "plural": "gardeners",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/birdwatchers",
+       "name": "Birdwatchers",
+       "slug": "birdwatchers",
+       "path": "Who It's For > Hobbies & Outdoors > Birdwatchers",
+       "facet": "identity",
+       "short_tag": "birder sticker",
+       "search_phrases": [
+        "funny birder stickers",
+        "gifts for birders",
+        "bird lover gifts",
+        "crow stickers",
+        "birder life sticker",
+        "funny birder decal",
+        "birder bumper sticker"
+       ],
+       "match_terms": [
+        "bird",
+        "birds",
+        "birdwatch",
+        "birding",
+        "crow",
+        "crows"
+       ],
+       "singular": "birder",
+       "plural": "birders",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/gamers",
+       "name": "Gamers",
+       "slug": "gamers",
+       "path": "Who It's For > Hobbies & Outdoors > Gamers",
+       "facet": "identity",
+       "short_tag": "gamer sticker",
+       "search_phrases": [
+        "funny gamer stickers",
+        "gifts for gamers",
+        "gamer laptop stickers",
+        "video game stickers",
+        "gamer life sticker",
+        "funny gamer decal",
+        "gamer bumper sticker"
+       ],
+       "match_terms": [
+        "gamer",
+        "gamers",
+        "gaming",
+        "backlog",
+        "controller",
+        "respawn",
+        "xbox",
+        "playstation"
+       ],
+       "singular": "gamer",
+       "plural": "gamers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/true-crime-fans",
+       "name": "True Crime Fans",
+       "slug": "true-crime-fans",
+       "path": "Who It's For > Hobbies & Outdoors > True Crime Fans",
+       "facet": "identity",
+       "short_tag": "true crime sticker",
+       "search_phrases": [
+        "funny true crime stickers",
+        "gifts for true crime fans",
+        "true crime gifts",
+        "murderino sticker",
+        "true crime life sticker",
+        "funny true crime decal",
+        "true crime bumper sticker"
+       ],
+       "match_terms": [
+        "true crime",
+        "murder",
+        "dateline",
+        "podcast",
+        "podcasts",
+        "serial killer"
+       ],
+       "singular": "true crime",
+       "plural": "true crime fans",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/pickleball-players",
+       "name": "Pickleball Players",
+       "slug": "pickleball-players",
+       "path": "Who It's For > Hobbies & Outdoors > Pickleball Players",
+       "facet": "identity",
+       "short_tag": "pickleball sticker",
+       "search_phrases": [
+        "funny pickleball stickers",
+        "gifts for pickleball players",
+        "pickleball gifts",
+        "pickleball life sticker",
+        "funny pickleball decal",
+        "pickleball bumper sticker"
+       ],
+       "match_terms": [
+        "pickleball"
+       ],
+       "singular": "pickleball",
+       "plural": "pickleball players",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/lawn-care-dads",
+       "name": "Lawn Care Dads",
+       "slug": "lawn-care-dads",
+       "path": "Who It's For > Hobbies & Outdoors > Lawn Care Dads",
+       "facet": "identity",
+       "short_tag": "lawn sticker",
+       "search_phrases": [
+        "funny lawn stickers",
+        "gifts for lawn dads",
+        "lawn mower sticker",
+        "lawn life sticker",
+        "funny lawn decal",
+        "lawn bumper sticker"
+       ],
+       "match_terms": [
+        "lawn",
+        "mow",
+        "mowing",
+        "grass",
+        "yard"
+       ],
+       "singular": "lawn",
+       "plural": "lawn dads",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/jeep-owners",
+       "name": "Jeep Owners",
+       "slug": "jeep-owners",
+       "path": "Who It's For > Hobbies & Outdoors > Jeep Owners",
+       "facet": "identity",
+       "short_tag": "jeep sticker",
+       "search_phrases": [
+        "funny jeep stickers",
+        "gifts for jeep owners",
+        "jeep decals",
+        "jeep stickers funny",
+        "jeep life sticker",
+        "funny jeep decal",
+        "jeep bumper sticker"
+       ],
+       "match_terms": [
+        "jeep",
+        "jeep wave",
+        "duck duck jeep"
+       ],
+       "singular": "jeep",
+       "plural": "jeep owners",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/truck-owners",
+       "name": "Truck Owners",
+       "slug": "truck-owners",
+       "path": "Who It's For > Hobbies & Outdoors > Truck Owners",
+       "facet": "identity",
+       "short_tag": "truck sticker",
+       "search_phrases": [
+        "funny truck stickers",
+        "gifts for truck owners",
+        "truck decals funny",
+        "truck stickers",
+        "truck life sticker",
+        "funny truck decal",
+        "truck bumper sticker"
+       ],
+       "match_terms": [
+        "truck",
+        "trucks",
+        "diesel",
+        "lifted"
+       ],
+       "singular": "truck",
+       "plural": "truck owners",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/hobbies-outdoors/plant-parents",
+       "name": "Plant Parents",
+       "slug": "plant-parents",
+       "path": "Who It's For > Hobbies & Outdoors > Plant Parents",
+       "facet": "identity",
+       "short_tag": "plant mom sticker",
+       "search_phrases": [
+        "funny plant mom stickers",
+        "gifts for plant parents",
+        "plant mom sticker",
+        "plant mom life sticker",
+        "funny plant mom decal",
+        "plant mom bumper sticker"
+       ],
+       "match_terms": [
+        "plant parent",
+        "plant mom",
+        "overwater",
+        "houseplant"
+       ],
+       "singular": "plant mom",
+       "plural": "plant parents",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/lifestyles-subcultures",
+     "name": "Lifestyles & Subcultures",
+     "slug": "lifestyles-subcultures",
+     "path": "Who It's For > Lifestyles & Subcultures",
+     "facet": "identity",
+     "short_tag": "lifestyles and",
+     "search_phrases": [
+      "funny sober stickers",
+      "funny gym stickers",
+      "funny goth stickers",
+      "funny stoner stickers",
+      "funny redneck stickers",
+      "funny conservative stickers"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/lifestyles-subcultures/recovery-sobriety",
+       "name": "Recovery & Sobriety",
+       "slug": "recovery-sobriety",
+       "path": "Who It's For > Lifestyles & Subcultures > Recovery & Sobriety",
+       "facet": "identity",
+       "short_tag": "sober sticker",
+       "search_phrases": [
+        "funny sober stickers",
+        "gifts for sober people",
+        "sobriety stickers",
+        "recovery stickers",
+        "aa sticker",
+        "sober life sticker",
+        "funny sober decal",
+        "sober bumper sticker"
+       ],
+       "match_terms": [
+        "sober",
+        "sobriety",
+        "recovery",
+        "aa",
+        "relapse",
+        "one day at a time",
+        "rehab"
+       ],
+       "singular": "sober",
+       "plural": "sober people",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/gym-bros",
+       "name": "Gym Bros",
+       "slug": "gym-bros",
+       "path": "Who It's For > Lifestyles & Subcultures > Gym Bros",
+       "facet": "identity",
+       "short_tag": "gym sticker",
+       "search_phrases": [
+        "funny gym stickers",
+        "gifts for gym bros",
+        "gym stickers",
+        "gym bro gifts",
+        "gym life sticker",
+        "funny gym decal",
+        "gym bumper sticker"
+       ],
+       "match_terms": [
+        "gym",
+        "swole",
+        "deadlift",
+        "gains",
+        "protein",
+        "leg day",
+        "lift"
+       ],
+       "singular": "gym",
+       "plural": "gym bros",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/goths-emo",
+       "name": "Goths & Emo",
+       "slug": "goths-emo",
+       "path": "Who It's For > Lifestyles & Subcultures > Goths & Emo",
+       "facet": "identity",
+       "short_tag": "goth sticker",
+       "search_phrases": [
+        "funny goth stickers",
+        "gifts for goths",
+        "goth stickers",
+        "spooky goth decal",
+        "goth life sticker",
+        "funny goth decal",
+        "goth bumper sticker"
+       ],
+       "match_terms": [
+        "goth",
+        "goths",
+        "emo",
+        "black lipstick",
+        "spooky"
+       ],
+       "singular": "goth",
+       "plural": "goths",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/stoners",
+       "name": "Stoners",
+       "slug": "stoners",
+       "path": "Who It's For > Lifestyles & Subcultures > Stoners",
+       "facet": "identity",
+       "short_tag": "stoner sticker",
+       "search_phrases": [
+        "funny stoner stickers",
+        "gifts for stoners",
+        "stoner stickers",
+        "stoner life sticker",
+        "funny stoner decal",
+        "stoner bumper sticker"
+       ],
+       "match_terms": [
+        "stoner",
+        "weed",
+        "420",
+        "high"
+       ],
+       "singular": "stoner",
+       "plural": "stoners",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/country-rednecks",
+       "name": "Country & Rednecks",
+       "slug": "country-rednecks",
+       "path": "Who It's For > Lifestyles & Subcultures > Country & Rednecks",
+       "facet": "identity",
+       "short_tag": "redneck sticker",
+       "search_phrases": [
+        "funny redneck stickers",
+        "gifts for rednecks",
+        "redneck stickers",
+        "country girl decal",
+        "redneck life sticker",
+        "funny redneck decal",
+        "redneck bumper sticker"
+       ],
+       "match_terms": [
+        "redneck",
+        "country",
+        "hillbilly",
+        "small town",
+        "tractor"
+       ],
+       "singular": "redneck",
+       "plural": "rednecks",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/conservatives",
+       "name": "Conservatives",
+       "slug": "conservatives",
+       "path": "Who It's For > Lifestyles & Subcultures > Conservatives",
+       "facet": "identity",
+       "short_tag": "conservative sticker",
+       "search_phrases": [
+        "funny conservative stickers",
+        "gifts for conservatives",
+        "conservative stickers",
+        "political bumper stickers",
+        "conservative life sticker",
+        "funny conservative decal",
+        "conservative bumper sticker"
+       ],
+       "match_terms": [
+        "maga",
+        "conservative",
+        "republican",
+        "patriot"
+       ],
+       "singular": "conservative",
+       "plural": "conservatives",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/liberals",
+       "name": "Liberals",
+       "slug": "liberals",
+       "path": "Who It's For > Lifestyles & Subcultures > Liberals",
+       "facet": "identity",
+       "short_tag": "liberal sticker",
+       "search_phrases": [
+        "funny liberal stickers",
+        "gifts for liberals",
+        "liberal bumper stickers",
+        "political bumper stickers",
+        "liberal life sticker",
+        "funny liberal decal",
+        "liberal bumper sticker"
+       ],
+       "match_terms": [
+        "liberal",
+        "liberals",
+        "democrat",
+        "woke",
+        "progressive"
+       ],
+       "singular": "liberal",
+       "plural": "liberals",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/redditors-internet-people",
+       "name": "Redditors & Internet People",
+       "slug": "redditors-internet-people",
+       "path": "Who It's For > Lifestyles & Subcultures > Redditors & Internet People",
+       "facet": "identity",
+       "short_tag": "reddit sticker",
+       "search_phrases": [
+        "funny reddit stickers",
+        "gifts for redditors",
+        "meme stickers",
+        "chronically online sticker",
+        "reddit life sticker",
+        "funny reddit decal",
+        "reddit bumper sticker"
+       ],
+       "match_terms": [
+        "reddit",
+        "redditor",
+        "chronically online",
+        "internet",
+        "meme"
+       ],
+       "singular": "reddit",
+       "plural": "redditors",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/pretty-girls-baddies",
+       "name": "Pretty Girls & Baddies",
+       "slug": "pretty-girls-baddies",
+       "path": "Who It's For > Lifestyles & Subcultures > Pretty Girls & Baddies",
+       "facet": "identity",
+       "short_tag": "pretty girl sticker",
+       "search_phrases": [
+        "funny pretty girl stickers",
+        "gifts for pretty girls",
+        "hot girl stickers",
+        "baddie stickers",
+        "pretty girl life sticker",
+        "funny pretty girl decal",
+        "pretty girl bumper sticker"
+       ],
+       "match_terms": [
+        "pretty girl",
+        "hot girl",
+        "baddie",
+        "slay queen",
+        "queen"
+       ],
+       "singular": "pretty girl",
+       "plural": "pretty girls",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/lifestyles-subcultures/angry-petty-people",
+       "name": "Angry & Petty People",
+       "slug": "angry-petty-people",
+       "path": "Who It's For > Lifestyles & Subcultures > Angry & Petty People",
+       "facet": "identity",
+       "short_tag": "petty sticker",
+       "search_phrases": [
+        "funny petty stickers",
+        "gifts for petty people",
+        "grumpy stickers",
+        "petty sticker",
+        "i hate people sticker",
+        "petty life sticker",
+        "funny petty decal",
+        "petty bumper sticker"
+       ],
+       "match_terms": [
+        "petty",
+        "angry",
+        "rage",
+        "grumpy",
+        "hate people",
+        "gary"
+       ],
+       "singular": "petty",
+       "plural": "petty people",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "identity/pets-animals",
+     "name": "Pets & Animals",
+     "slug": "pets-animals",
+     "path": "Who It's For > Pets & Animals",
+     "facet": "identity",
+     "short_tag": "pets and animals",
+     "search_phrases": [
+      "funny dog stickers",
+      "funny cat stickers",
+      "funny pets animals stickers",
+      "pets animals decals",
+      "pets animals gifts"
+     ],
+     "match_terms": [],
+     "children": [
+      {
+       "id": "identity/pets-animals/dog-lovers",
+       "name": "Dog Lovers",
+       "slug": "dog-lovers",
+       "path": "Who It's For > Pets & Animals > Dog Lovers",
+       "facet": "identity",
+       "short_tag": "dog sticker",
+       "search_phrases": [
+        "funny dog stickers",
+        "gifts for dog lovers",
+        "dog lover gifts",
+        "dog life sticker",
+        "funny dog decal",
+        "dog bumper sticker"
+       ],
+       "match_terms": [
+        "dog",
+        "dogs",
+        "puppy"
+       ],
+       "singular": "dog",
+       "plural": "dog lovers",
+       "atlas_ids": [],
+       "children": []
+      },
+      {
+       "id": "identity/pets-animals/cat-lovers",
+       "name": "Cat Lovers",
+       "slug": "cat-lovers",
+       "path": "Who It's For > Pets & Animals > Cat Lovers",
+       "facet": "identity",
+       "short_tag": "cat sticker",
+       "search_phrases": [
+        "funny cat stickers",
+        "gifts for cat lovers",
+        "cat lover gifts",
+        "cat stickers funny",
+        "cat life sticker",
+        "funny cat decal",
+        "cat bumper sticker"
+       ],
+       "match_terms": [
+        "cat",
+        "cats",
+        "kitty"
+       ],
+       "singular": "cat",
+       "plural": "cat lovers",
+       "atlas_ids": [],
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "occasion",
+   "name": "Occasion & Gift",
+   "slug": "occasion-gift",
+   "path": "Occasion & Gift",
+   "facet": "occasion",
+   "short_tag": "funny gift stickers",
+   "search_phrases": [
+    "funny gift stickers",
+    "gag gifts",
+    "stocking stuffers for adults"
+   ],
+   "match_terms": [],
+   "children": [
+    {
+     "id": "occasion/father-s-day",
+     "name": "Father's Day",
+     "slug": "father-s-day",
+     "path": "Occasion & Gift > Father's Day",
+     "facet": "occasion",
+     "short_tag": "fathers day stickers",
+     "search_phrases": [
+      "fathers day stickers",
+      "fathers day gifts funny",
+      "funny gifts for dad",
+      "dad stocking stuffers"
+     ],
+     "match_terms": [
+      "fathers day",
+      "father's day"
+     ],
+     "identity_triggers": [
+      "dad",
+      "dads",
+      "father",
+      "grandpa"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/mother-s-day",
+     "name": "Mother's Day",
+     "slug": "mother-s-day",
+     "path": "Occasion & Gift > Mother's Day",
+     "facet": "occasion",
+     "short_tag": "funny gifts for mom",
+     "search_phrases": [
+      "mothers day gifts funny",
+      "funny gifts for mom",
+      "mom stickers"
+     ],
+     "match_terms": [
+      "mothers day"
+     ],
+     "identity_triggers": [
+      "mom",
+      "moms",
+      "mother",
+      "grandma",
+      "mama"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/nurses-week",
+     "name": "Nurses Week",
+     "slug": "nurses-week",
+     "path": "Occasion & Gift > Nurses Week",
+     "facet": "occasion",
+     "short_tag": "nurses week gifts",
+     "search_phrases": [
+      "nurses week gifts",
+      "nurse appreciation gifts",
+      "gifts for nurses",
+      "nurse week stickers"
+     ],
+     "match_terms": [
+      "nurses week"
+     ],
+     "identity_triggers": [
+      "nurse",
+      "nurses",
+      "nursing"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/teacher-appreciation",
+     "name": "Teacher Appreciation",
+     "slug": "teacher-appreciation",
+     "path": "Occasion & Gift > Teacher Appreciation",
+     "facet": "occasion",
+     "short_tag": "teacher gifts",
+     "search_phrases": [
+      "teacher appreciation gifts",
+      "teacher gifts",
+      "teacher stickers"
+     ],
+     "match_terms": [
+      "teacher appreciation"
+     ],
+     "identity_triggers": [
+      "teacher",
+      "teachers"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/christmas-stocking-stuffers",
+     "name": "Christmas & Stocking Stuffers",
+     "slug": "christmas-stocking-stuffers",
+     "path": "Occasion & Gift > Christmas & Stocking Stuffers",
+     "facet": "occasion",
+     "short_tag": "christmas stickers",
+     "search_phrases": [
+      "stocking stuffers for adults",
+      "funny stocking stuffers",
+      "christmas stickers",
+      "white elephant gifts"
+     ],
+     "match_terms": [
+      "christmas",
+      "santa",
+      "stocking"
+     ],
+     "identity_triggers": [],
+     "children": []
+    },
+    {
+     "id": "occasion/thanksgiving",
+     "name": "Thanksgiving",
+     "slug": "thanksgiving",
+     "path": "Occasion & Gift > Thanksgiving",
+     "facet": "occasion",
+     "short_tag": "turkey day sticker",
+     "search_phrases": [
+      "thanksgiving stickers",
+      "funny thanksgiving gifts",
+      "turkey day sticker"
+     ],
+     "match_terms": [
+      "thanksgiving",
+      "turkey"
+     ],
+     "identity_triggers": [
+      "thanksgiving",
+      "turkey"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/halloween",
+     "name": "Halloween",
+     "slug": "halloween",
+     "path": "Occasion & Gift > Halloween",
+     "facet": "occasion",
+     "short_tag": "halloween stickers",
+     "search_phrases": [
+      "halloween stickers",
+      "spooky stickers",
+      "funny halloween decals"
+     ],
+     "match_terms": [
+      "halloween",
+      "spooky"
+     ],
+     "identity_triggers": [
+      "halloween",
+      "spooky",
+      "casket",
+      "coffin"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/birthday",
+     "name": "Birthday",
+     "slug": "birthday",
+     "path": "Occasion & Gift > Birthday",
+     "facet": "occasion",
+     "short_tag": "funny birthday gifts",
+     "search_phrases": [
+      "funny birthday gifts",
+      "birthday gag gifts",
+      "gag gifts for adults"
+     ],
+     "match_terms": [
+      "birthday"
+     ],
+     "identity_triggers": [
+      "birthday"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/retirement",
+     "name": "Retirement",
+     "slug": "retirement",
+     "path": "Occasion & Gift > Retirement",
+     "facet": "occasion",
+     "short_tag": "retirement gifts",
+     "search_phrases": [
+      "retirement gifts",
+      "funny retirement gifts",
+      "retirement gag gifts"
+     ],
+     "match_terms": [
+      "retirement",
+      "retired"
+     ],
+     "identity_triggers": [
+      "retire",
+      "retired",
+      "retirees",
+      "retirement"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/divorce-party",
+     "name": "Divorce Party",
+     "slug": "divorce-party",
+     "path": "Occasion & Gift > Divorce Party",
+     "facet": "occasion",
+     "short_tag": "divorce gifts",
+     "search_phrases": [
+      "divorce gifts",
+      "divorce party gifts",
+      "funny divorce gifts"
+     ],
+     "match_terms": [
+      "divorce party"
+     ],
+     "identity_triggers": [
+      "divorce",
+      "divorced",
+      "my ex",
+      "ex-wife"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/white-elephant-gag-gifts",
+     "name": "White Elephant & Gag Gifts",
+     "slug": "white-elephant-gag-gifts",
+     "path": "Occasion & Gift > White Elephant & Gag Gifts",
+     "facet": "occasion",
+     "short_tag": "white elephant gifts",
+     "search_phrases": [
+      "white elephant gifts",
+      "gag gifts",
+      "funny gag gifts"
+     ],
+     "match_terms": [
+      "gag gift",
+      "white elephant"
+     ],
+     "identity_triggers": [],
+     "children": []
+    },
+    {
+     "id": "occasion/graduation-new-job",
+     "name": "Graduation & New Job",
+     "slug": "graduation-new-job",
+     "path": "Occasion & Gift > Graduation & New Job",
+     "facet": "occasion",
+     "short_tag": "new job gifts",
+     "search_phrases": [
+      "nursing school graduation gifts",
+      "new job gifts",
+      "graduation gifts funny"
+     ],
+     "match_terms": [
+      "graduation"
+     ],
+     "identity_triggers": [
+      "graduat"
+     ],
+     "children": []
+    },
+    {
+     "id": "occasion/sobriety-anniversary",
+     "name": "Sobriety Anniversary",
+     "slug": "sobriety-anniversary",
+     "path": "Occasion & Gift > Sobriety Anniversary",
+     "facet": "occasion",
+     "short_tag": "sobriety gifts",
+     "search_phrases": [
+      "sobriety gifts",
+      "recovery gifts",
+      "sober anniversary gift"
+     ],
+     "match_terms": [
+      "sobriety"
+     ],
+     "identity_triggers": [
+      "sober",
+      "sobriety",
+      "recovery"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "id": "humor",
+   "name": "Humor Style",
+   "slug": "humor-style",
+   "path": "Humor Style",
+   "facet": "humor",
+   "short_tag": "funny stickers",
+   "search_phrases": [
+    "funny stickers",
+    "funny decals",
+    "funny vinyl stickers"
+   ],
+   "match_terms": [],
+   "children": [
+    {
+     "id": "humor/dark-humor",
+     "name": "Dark Humor",
+     "slug": "dark-humor",
+     "path": "Humor Style > Dark Humor",
+     "facet": "humor",
+     "short_tag": "dark humor stickers",
+     "search_phrases": [
+      "dark humor stickers",
+      "dark humor decals",
+      "morbid stickers",
+      "gallows humor gifts",
+      "dark humor gifts"
+     ],
+     "match_terms": [],
+     "rule": {
+      "darkness_min": 2
+     },
+     "children": []
+    },
+    {
+     "id": "humor/sarcastic",
+     "name": "Sarcastic",
+     "slug": "sarcastic",
+     "path": "Humor Style > Sarcastic",
+     "facet": "humor",
+     "short_tag": "sarcastic stickers",
+     "search_phrases": [
+      "sarcastic stickers",
+      "sarcastic bumper stickers",
+      "sarcastic gifts",
+      "sarcasm decal"
+     ],
+     "match_terms": [],
+     "rule": {
+      "device": "sarcasm",
+      "patterns": [
+       "deadpan_sarcasm",
+       "cheerful_dark_label"
+      ]
+     },
+     "children": []
+    },
+    {
+     "id": "humor/ironic-absurd",
+     "name": "Ironic & Absurd",
+     "slug": "ironic-absurd",
+     "path": "Humor Style > Ironic & Absurd",
+     "facet": "humor",
+     "short_tag": "ironic stickers",
+     "search_phrases": [
+      "ironic stickers",
+      "absurd stickers",
+      "weird stickers",
+      "random funny stickers"
+     ],
+     "match_terms": [],
+     "rule": {
+      "device": "irony",
+      "patterns": [
+       "situational_irony",
+       "brand_new_sentence",
+       "oddly_specific_vibe"
+      ]
+     },
+     "children": []
+    },
+    {
+     "id": "humor/oddly-specific",
+     "name": "Oddly Specific",
+     "slug": "oddly-specific",
+     "path": "Humor Style > Oddly Specific",
+     "facet": "humor",
+     "short_tag": "oddly specific gifts",
+     "search_phrases": [
+      "oddly specific stickers",
+      "oddly specific gifts",
+      "weirdly specific sticker"
+     ],
+     "match_terms": [],
+     "rule": {
+      "patterns": [
+       "oddly_specific_vibe",
+       "true_identity_stack",
+       "club_roster"
+      ]
+     },
+     "children": []
+    },
+    {
+     "id": "humor/relatable-wholesome",
+     "name": "Relatable & Wholesome",
+     "slug": "relatable-wholesome",
+     "path": "Humor Style > Relatable & Wholesome",
+     "facet": "humor",
+     "short_tag": "relatable stickers",
+     "search_phrases": [
+      "relatable stickers",
+      "wholesome stickers",
+      "cute funny stickers"
+     ],
+     "match_terms": [],
+     "rule": {
+      "darkness_max": 0
+     },
+     "children": []
+    },
+    {
+     "id": "humor/adult-humor",
+     "name": "Adult Humor",
+     "slug": "adult-humor",
+     "path": "Humor Style > Adult Humor",
+     "facet": "humor",
+     "short_tag": "adult humor stickers",
+     "search_phrases": [
+      "adult humor stickers",
+      "inappropriate stickers",
+      "adult bumper stickers",
+      "naughty stickers"
+     ],
+     "match_terms": [
+      "naked",
+      "sex",
+      "thicc",
+      "milf",
+      "zaddy",
+      "erection",
+      "booty",
+      "big back",
+      "rizz"
+     ],
+     "rule": {},
+     "children": []
+    },
+    {
+     "id": "humor/meme-gen-z-slang",
+     "name": "Meme & Gen Z Slang",
+     "slug": "meme-gen-z-slang",
+     "path": "Humor Style > Meme & Gen Z Slang",
+     "facet": "humor",
+     "short_tag": "meme stickers",
+     "search_phrases": [
+      "meme stickers",
+      "gen z stickers",
+      "brainrot stickers",
+      "meme decals"
+     ],
+     "match_terms": [
+      "rizz",
+      "rizzless",
+      "sigma",
+      "delulu",
+      "slay",
+      "era",
+      "main character",
+      "bet",
+      "no cap",
+      "yapper",
+      "highly regarded",
+      "boujee",
+      "feral",
+      "unhinged"
+     ],
+     "rule": {},
+     "children": []
+    },
+    {
+     "id": "humor/fake-warning-signs",
+     "name": "Fake Warning Signs",
+     "slug": "fake-warning-signs",
+     "path": "Humor Style > Fake Warning Signs",
+     "facet": "humor",
+     "short_tag": "funny caution decal",
+     "search_phrases": [
+      "funny warning stickers",
+      "warning sign stickers",
+      "caution sticker funny",
+      "funny caution decal"
+     ],
+     "match_terms": [],
+     "rule": {
+      "patterns": [
+       "official_warning_sign",
+       "self_defeating_sign"
+      ]
+     },
+     "children": []
+    },
+    {
+     "id": "humor/self-deprecating",
+     "name": "Self-Deprecating",
+     "slug": "self-deprecating",
+     "path": "Humor Style > Self-Deprecating",
+     "facet": "humor",
+     "short_tag": "self roast sticker",
+     "search_phrases": [
+      "self deprecating stickers",
+      "self roast sticker",
+      "funny honest stickers"
+     ],
+     "match_terms": [],
+     "rule": {
+      "patterns": [
+       "insider_deadpan_confession",
+       "economy_downgrade",
+       "clinical_life_report",
+       "unfair_comparison_gripe"
+      ]
+     },
+     "children": []
+    },
+    {
+     "id": "humor/fake-credentials-awards",
+     "name": "Fake Credentials & Awards",
+     "slug": "fake-credentials-awards",
+     "path": "Humor Style > Fake Credentials & Awards",
+     "facet": "humor",
+     "short_tag": "funny award stickers",
+     "search_phrases": [
+      "funny award stickers",
+      "certified sticker funny",
+      "achievement stickers"
+     ],
+     "match_terms": [],
+     "rule": {
+      "patterns": [
+       "fake_credential"
+      ]
+     },
+     "children": []
+    }
+   ]
+  },
+  {
+   "id": "product",
+   "name": "Use It On",
+   "slug": "use-it-on",
+   "path": "Use It On",
+   "facet": "product",
+   "short_tag": "vinyl stickers",
+   "search_phrases": [
+    "vinyl stickers",
+    "waterproof stickers",
+    "vinyl decals"
+   ],
+   "match_terms": [],
+   "children": [
+    {
+     "id": "product/laptop-stickers",
+     "name": "Laptop Stickers",
+     "slug": "laptop-stickers",
+     "path": "Use It On > Laptop Stickers",
+     "facet": "product",
+     "short_tag": "laptop stickers",
+     "search_phrases": [
+      "laptop stickers",
+      "funny laptop stickers",
+      "laptop decals",
+      "vinyl laptop stickers"
+     ],
+     "match_terms": [
+      "laptop",
+      "code",
+      "email",
+      "office"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/bumper-stickers-car-decals",
+     "name": "Bumper Stickers & Car Decals",
+     "slug": "bumper-stickers-car-decals",
+     "path": "Use It On > Bumper Stickers & Car Decals",
+     "facet": "product",
+     "short_tag": "car decals funny",
+     "search_phrases": [
+      "funny bumper stickers",
+      "car decals funny",
+      "bumper sticker",
+      "funny car stickers",
+      "truck window decal"
+     ],
+     "match_terms": [
+      "truck",
+      "car",
+      "jeep",
+      "honk",
+      "drive",
+      "driver",
+      "gps",
+      "road",
+      "four-wheeler",
+      "recall"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/water-bottle-stickers",
+     "name": "Water Bottle Stickers",
+     "slug": "water-bottle-stickers",
+     "path": "Use It On > Water Bottle Stickers",
+     "facet": "product",
+     "short_tag": "hydro flask stickers",
+     "search_phrases": [
+      "water bottle stickers",
+      "funny water bottle stickers",
+      "hydro flask stickers",
+      "tumbler decal"
+     ],
+     "match_terms": [
+      "coffee",
+      "water",
+      "drink",
+      "hydrat",
+      "nurse",
+      "teacher",
+      "gym"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/hard-hat-stickers",
+     "name": "Hard Hat Stickers",
+     "slug": "hard-hat-stickers",
+     "path": "Use It On > Hard Hat Stickers",
+     "facet": "product",
+     "short_tag": "hard hat stickers",
+     "search_phrases": [
+      "hard hat stickers",
+      "funny hard hat stickers",
+      "hard hat decals",
+      "construction helmet sticker"
+     ],
+     "match_terms": [
+      "electrician",
+      "plumber",
+      "lineman",
+      "welder",
+      "construction",
+      "hard hat"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/toolbox-stickers",
+     "name": "Toolbox Stickers",
+     "slug": "toolbox-stickers",
+     "path": "Use It On > Toolbox Stickers",
+     "facet": "product",
+     "short_tag": "toolbox stickers",
+     "search_phrases": [
+      "toolbox stickers",
+      "mechanic stickers",
+      "tool box decals",
+      "garage stickers"
+     ],
+     "match_terms": [
+      "mechanic",
+      "garage",
+      "tool",
+      "wrench",
+      "home depot",
+      "check engine"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/badge-reel-scrubs-stickers",
+     "name": "Badge Reel & Scrubs Stickers",
+     "slug": "badge-reel-scrubs-stickers",
+     "path": "Use It On > Badge Reel & Scrubs Stickers",
+     "facet": "product",
+     "short_tag": "badge reel stickers",
+     "search_phrases": [
+      "badge reel stickers",
+      "nurse badge sticker",
+      "clipboard stickers"
+     ],
+     "match_terms": [
+      "nurse",
+      "nurses",
+      "er",
+      "hospital",
+      "shift",
+      "paramedic",
+      "pharmac"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/cooler-tackle-box-stickers",
+     "name": "Cooler & Tackle Box Stickers",
+     "slug": "cooler-tackle-box-stickers",
+     "path": "Use It On > Cooler & Tackle Box Stickers",
+     "facet": "product",
+     "short_tag": "cooler stickers",
+     "search_phrases": [
+      "cooler stickers",
+      "yeti stickers",
+      "tackle box stickers"
+     ],
+     "match_terms": [
+      "fishing",
+      "fisherman",
+      "hunting",
+      "hunter",
+      "boat",
+      "beer",
+      "camping"
+     ],
+     "children": []
+    },
+    {
+     "id": "product/phone-kindle-stickers",
+     "name": "Phone & Kindle Stickers",
+     "slug": "phone-kindle-stickers",
+     "path": "Use It On > Phone & Kindle Stickers",
+     "facet": "product",
+     "short_tag": "phone stickers",
+     "search_phrases": [
+      "phone stickers",
+      "kindle stickers",
+      "small funny stickers"
+     ],
+     "match_terms": [
+      "book",
+      "library",
+      "librarian",
+      "reading",
+      "kindle"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "id": "topic",
+   "name": "Topic",
+   "slug": "topic",
+   "path": "Topic",
+   "facet": "topic",
+   "short_tag": "novelty stickers",
+   "search_phrases": [
+    "novelty stickers",
+    "funny decals",
+    "funny sticker pack"
+   ],
+   "match_terms": [],
+   "children": [
+    {
+     "id": "topic/coffee",
+     "name": "Coffee",
+     "slug": "coffee",
+     "path": "Topic > Coffee",
+     "facet": "topic",
+     "short_tag": "coffee lover gifts",
+     "search_phrases": [
+      "funny coffee stickers",
+      "coffee lover gifts",
+      "coffee decal"
+     ],
+     "match_terms": [
+      "coffee",
+      "caffeine",
+      "espresso",
+      "latte",
+      "frappe"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/bbq-grilling",
+     "name": "BBQ & Grilling",
+     "slug": "bbq-grilling",
+     "path": "Topic > BBQ & Grilling",
+     "facet": "topic",
+     "short_tag": "bbq stickers",
+     "search_phrases": [
+      "bbq stickers",
+      "grilling gifts for men",
+      "bbq decal",
+      "smoker sticker"
+     ],
+     "match_terms": [
+      "bbq",
+      "brisket",
+      "smoker",
+      "grill",
+      "grilling",
+      "smoke"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/trucks-cars",
+     "name": "Trucks & Cars",
+     "slug": "trucks-cars",
+     "path": "Topic > Trucks & Cars",
+     "facet": "topic",
+     "short_tag": "truck decals funny",
+     "search_phrases": [
+      "truck decals funny",
+      "car guy gifts",
+      "funny car decals"
+     ],
+     "match_terms": [
+      "truck",
+      "trucks",
+      "car",
+      "cars",
+      "jeep",
+      "engine",
+      "recall",
+      "payment"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/fishing",
+     "name": "Fishing",
+     "slug": "fishing",
+     "path": "Topic > Fishing",
+     "facet": "topic",
+     "short_tag": "fishing stickers",
+     "search_phrases": [
+      "fishing stickers",
+      "fishing decals funny",
+      "fishing gifts"
+     ],
+     "match_terms": [
+      "fishing",
+      "fish",
+      "bass",
+      "fisherman",
+      "fishermen"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/hunting",
+     "name": "Hunting",
+     "slug": "hunting",
+     "path": "Topic > Hunting",
+     "facet": "topic",
+     "short_tag": "hunting stickers",
+     "search_phrases": [
+      "hunting stickers",
+      "deer hunting decals",
+      "funny hunting stickers",
+      "hunting decals",
+      "hunting gifts"
+     ],
+     "match_terms": [
+      "hunting",
+      "hunter",
+      "hunters",
+      "deer"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/anxiety-mental-health",
+     "name": "Anxiety & Mental Health",
+     "slug": "anxiety-mental-health",
+     "path": "Topic > Anxiety & Mental Health",
+     "facet": "topic",
+     "short_tag": "anxiety stickers",
+     "search_phrases": [
+      "anxiety stickers",
+      "mental health stickers",
+      "therapy stickers"
+     ],
+     "match_terms": [
+      "anxiety",
+      "panic",
+      "therapy",
+      "depression",
+      "mental"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/wine-drinking",
+     "name": "Wine & Drinking",
+     "slug": "wine-drinking",
+     "path": "Topic > Wine & Drinking",
+     "facet": "topic",
+     "short_tag": "wine stickers",
+     "search_phrases": [
+      "wine stickers",
+      "funny wine gifts",
+      "drinking stickers"
+     ],
+     "match_terms": [
+      "wine",
+      "beer",
+      "drink",
+      "drunk",
+      "margarita"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/sleep-exhaustion",
+     "name": "Sleep & Exhaustion",
+     "slug": "sleep-exhaustion",
+     "path": "Topic > Sleep & Exhaustion",
+     "facet": "topic",
+     "short_tag": "tired mom sticker",
+     "search_phrases": [
+      "tired mom sticker",
+      "sleep deprived gifts",
+      "funny sleep exhaustion stickers",
+      "sleep exhaustion decals",
+      "sleep exhaustion gifts"
+     ],
+     "match_terms": [
+      "sleep",
+      "tired",
+      "exhaust",
+      "nap",
+      "4 am",
+      "3 am",
+      "night shift"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/true-crime-murder-podcasts",
+     "name": "True Crime & Murder Podcasts",
+     "slug": "true-crime-murder-podcasts",
+     "path": "Topic > True Crime & Murder Podcasts",
+     "facet": "topic",
+     "short_tag": "true crime stickers",
+     "search_phrases": [
+      "true crime stickers",
+      "murder podcast gifts",
+      "true crime decals"
+     ],
+     "match_terms": [
+      "true crime",
+      "murder",
+      "dateline",
+      "podcast"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/death-funerals",
+     "name": "Death & Funerals",
+     "slug": "death-funerals",
+     "path": "Topic > Death & Funerals",
+     "facet": "topic",
+     "short_tag": "funeral humor",
+     "search_phrases": [
+      "funeral humor",
+      "death stickers funny",
+      "morbid gifts"
+     ],
+     "match_terms": [
+      "death",
+      "funeral",
+      "casket",
+      "dnr",
+      "die",
+      "grave",
+      "coffin",
+      "dead"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/money-debt",
+     "name": "Money & Debt",
+     "slug": "money-debt",
+     "path": "Topic > Money & Debt",
+     "facet": "topic",
+     "short_tag": "broke stickers",
+     "search_phrases": [
+      "broke stickers",
+      "funny money decal",
+      "funny money debt stickers",
+      "money debt decals",
+      "money debt gifts"
+     ],
+     "match_terms": [
+      "debt",
+      "bank",
+      "payment",
+      "broke",
+      "afford",
+      "paid off",
+      "tip",
+      "layaway",
+      "economy"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/food-snacks",
+     "name": "Food & Snacks",
+     "slug": "food-snacks",
+     "path": "Topic > Food & Snacks",
+     "facet": "topic",
+     "short_tag": "food stickers funny",
+     "search_phrases": [
+      "food stickers funny",
+      "snack stickers",
+      "funny food snacks stickers",
+      "food snacks decals",
+      "food snacks gifts"
+     ],
+     "match_terms": [
+      "food",
+      "chili",
+      "burrito",
+      "lunch",
+      "fast food",
+      "applebee",
+      "leftover",
+      "candy",
+      "casserole",
+      "snack"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/aging-back-pain",
+     "name": "Aging & Back Pain",
+     "slug": "aging-back-pain",
+     "path": "Topic > Aging & Back Pain",
+     "facet": "topic",
+     "short_tag": "getting old stickers",
+     "search_phrases": [
+      "getting old stickers",
+      "over the hill stickers",
+      "funny aging back pain stickers",
+      "aging back pain decals",
+      "aging back pain gifts"
+     ],
+     "match_terms": [
+      "aging",
+      "back pain",
+      "knees",
+      "old",
+      "senior",
+      "hip"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/work-jobs",
+     "name": "Work & Jobs",
+     "slug": "work-jobs",
+     "path": "Topic > Work & Jobs",
+     "facet": "topic",
+     "short_tag": "work humor stickers",
+     "search_phrases": [
+      "work humor stickers",
+      "coworker gifts funny",
+      "funny work jobs stickers",
+      "work jobs decals",
+      "work jobs gifts"
+     ],
+     "match_terms": [
+      "shift",
+      "work",
+      "job",
+      "boss",
+      "meeting",
+      "ticket",
+      "customer",
+      "clock in"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/family-drama-holidays",
+     "name": "Family Drama & Holidays",
+     "slug": "family-drama-holidays",
+     "path": "Topic > Family Drama & Holidays",
+     "facet": "topic",
+     "short_tag": "funny family gifts",
+     "search_phrases": [
+      "family humor stickers",
+      "funny family gifts",
+      "funny family drama holidays stickers",
+      "family drama holidays decals",
+      "family drama holidays gifts"
+     ],
+     "match_terms": [
+      "thanksgiving",
+      "family",
+      "holiday",
+      "christmas",
+      "in-laws",
+      "thermostat"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/church-faith",
+     "name": "Church & Faith",
+     "slug": "church-faith",
+     "path": "Topic > Church & Faith",
+     "facet": "topic",
+     "short_tag": "church humor",
+     "search_phrases": [
+      "christian stickers funny",
+      "church humor",
+      "funny church faith stickers",
+      "church faith decals",
+      "church faith gifts"
+     ],
+     "match_terms": [
+      "church",
+      "jesus",
+      "christ",
+      "pray",
+      "god",
+      "bible",
+      "sermon",
+      "deacon",
+      "choir"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/gardening-plants",
+     "name": "Gardening & Plants",
+     "slug": "gardening-plants",
+     "path": "Topic > Gardening & Plants",
+     "facet": "topic",
+     "short_tag": "gardening stickers",
+     "search_phrases": [
+      "gardening stickers",
+      "plant stickers funny",
+      "funny gardening plants stickers",
+      "gardening plants decals",
+      "gardening plants gifts"
+     ],
+     "match_terms": [
+      "garden",
+      "tomato",
+      "plant",
+      "plants",
+      "grass",
+      "lawn"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/birds-animals",
+     "name": "Birds & Animals",
+     "slug": "birds-animals",
+     "path": "Topic > Birds & Animals",
+     "facet": "topic",
+     "short_tag": "crow stickers",
+     "search_phrases": [
+      "animal stickers funny",
+      "crow stickers",
+      "funny birds animals stickers",
+      "birds animals decals",
+      "birds animals gifts"
+     ],
+     "match_terms": [
+      "bird",
+      "crow",
+      "cow",
+      "cows",
+      "dog",
+      "cat",
+      "animal",
+      "deer"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/gaming",
+     "name": "Gaming",
+     "slug": "gaming",
+     "path": "Topic > Gaming",
+     "facet": "topic",
+     "short_tag": "gaming stickers",
+     "search_phrases": [
+      "gaming stickers",
+      "gamer decals",
+      "funny gaming stickers",
+      "gaming decals",
+      "gaming gifts"
+     ],
+     "match_terms": [
+      "game",
+      "gaming",
+      "gamer",
+      "backlog",
+      "controller"
+     ],
+     "children": []
+    },
+    {
+     "id": "topic/shopping-online-orders",
+     "name": "Shopping & Online Orders",
+     "slug": "shopping-online-orders",
+     "path": "Topic > Shopping & Online Orders",
+     "facet": "topic",
+     "short_tag": "amazon prime humor",
+     "search_phrases": [
+      "shopping addict sticker",
+      "amazon prime humor",
+      "funny shopping online orders stickers",
+      "shopping online orders decals",
+      "shopping online orders gifts"
+     ],
+     "match_terms": [
+      "amazon",
+      "cart",
+      "online shopping",
+      "package",
+      "target"
+     ],
+     "children": []
+    }
+   ]
+  }
+ ]
+}
