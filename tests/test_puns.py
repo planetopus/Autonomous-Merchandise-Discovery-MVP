@@ -56,6 +56,17 @@ def test_best_seller_anchors_name_the_pattern_the_picture_and_the_format() -> No
         "THICK THIGHS SAVE LIVES",
         "GOLF CART",
         "patients, not patience",
+        "BOLDLY GOING NOWHERE",
+        "CAN WE FIX IT? NO. IT'S FUCKED.",
+        "BEN DRANKIN",
+        "ALDEEZ NUTS",
+        "D.A.M.M. DRUNKS AGAINST MAD MOTHERS",
+        "WARNING: DANGEROUS GASSES",
+        "MASTER BAITER - World Class",
+        "SEND NOODS",
+        "NOT MY PASTURE, NOT MY BULLSHIT",
+        "FIGHT CRIME, SHOOT BACK",
+        "DON'T FORGET THE VASOLINE WHEN YOU GET THE GASOLINE",
     ):
         assert line in block
     for pattern in (
@@ -66,9 +77,23 @@ def test_best_seller_anchors_name_the_pattern_the_picture_and_the_format() -> No
         "dark_twist_scene",
         "catchphrase_flip",
         "relatable_confession_action",
+        "pop_culture_quote_flip",
+        "historical_name_pun",
+        "fake_acronym_org",
+        "fake_warning_sign",
+        "slogan_twist",
+        "rhyme_innuendo",
     ):
         assert pattern in block
-    for layout in ("retro sunset badge", "logo spoof", "circle badge", "bold text stack"):
+    for layout in (
+        "retro sunset badge",
+        "logo spoof",
+        "circle badge",
+        "bold text stack",
+        "bumper sticker strip",
+        "warning sign",
+        "plaque",
+    ):
         assert layout in block
     assert "Do not reprint" in block
     assert "Do not generate an image" in block
@@ -87,6 +112,9 @@ def test_pun_shapes_survive_a_short_playbook_and_the_old_leaders_stay_first() ->
     ]
     assert "dark_twist_scene" in ids
     assert "catchphrase_flip" in ids
+    assert "pop_culture_quote_flip" in ids
+    assert "rhyme_innuendo" in ids
+    assert "slogan_twist" in ids
     crowded = [
         {"id": f"lab_{index}", "label": "Lab", "guidance": "Lab shape.", "priority": True, "examples": []}
         for index in range(12)
@@ -127,6 +155,8 @@ def test_spoof_patterns_count_toward_the_pun_share() -> None:
     assert not pun_share_is_thin(batch)
     assert pun_share_is_thin(other + other)
     assert line_is_pun(SimpleNamespace(pattern="image_pun", humor_mechanism=""))
+    assert line_is_pun(SimpleNamespace(pattern="fake_acronym_org", humor_mechanism=""))
+    assert line_is_pun(SimpleNamespace(pattern="slogan_twist", humor_mechanism=""))
     assert not line_is_pun(SimpleNamespace(pattern="confession", humor_mechanism="recognition"))
 
 

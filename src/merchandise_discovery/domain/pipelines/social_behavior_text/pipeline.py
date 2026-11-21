@@ -74,7 +74,10 @@ class SocialBehaviorTextCandidate(BaseModel):
     format: str = Field(
         default="",
         max_length=80,
-        description="Layout, such as retro sunset badge, logo spoof, circle badge, or bold text stack.",
+        description=(
+            "Layout, such as retro sunset badge, logo spoof, circle badge, "
+            "bold text stack, bumper sticker strip, warning sign, or plaque."
+        ),
     )
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the
     # durable source of truth for the visual direction instead of re-deriving it downstream.

@@ -48,10 +48,11 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "Set image_idea to that picture in one sentence. "
         "Set why_it_works to one sentence on how the words and the picture combine. "
         "Set format to the layout, such as retro sunset badge, logo spoof, circle badge, "
-        "or bold text stack. "
+        "bold text stack, bumper sticker strip, warning sign, or plaque. "
         "Use wordplay_pun, image_pun, celebrity_food_pun, brand_logo_spoof, "
         "innocent_image_innuendo, cute_but_menacing, dark_twist_scene, catchphrase_flip, "
-        "or relatable_confession_action. "
+        "relatable_confession_action, pop_culture_quote_flip, historical_name_pun, "
+        "fake_acronym_org, fake_warning_sign, slogan_twist, or rhyme_innuendo. "
         "A spoof of a famous logo, celebrity, or movie character is allowed. "
         "Mild crude or adult innuendo is allowed when the picture completes the joke. "
         "The wholesome bar applies to identity stacks, not to these pairs. "
@@ -135,7 +136,34 @@ def pun_examples_block() -> str:
         "the chase shows the confession instead of restating it.\n"
         "- wordplay_pun | bold text stack | I have patients, not patience | "
         "a waiting-room clock melting | the clock shows patience running out.\n"
-        "Formats to reuse: retro sunset badge, logo spoof, circle badge, bold text stack. "
+        "- pop_culture_quote_flip | bold text stack | BOLDLY GOING NOWHERE... | "
+        "the Star Trek phrase on a galaxy background | "
+        "the voyage slogan stalls, and the galaxy shows the trip that never starts.\n"
+        "- pop_culture_quote_flip | bold text stack | CAN WE FIX IT? NO. IT'S FUCKED. | "
+        "Bob the Builder waving | the catchphrase answers itself and the wave sells the no.\n"
+        "- historical_name_pun | bold text stack | BEN DRANKIN | "
+        "Ben Franklin in a flag headband and aviators, holding a shot | "
+        "the portrait turns the name into the drinking pun.\n"
+        "- brand_logo_spoof | logo spoof | ALDEEZ NUTS | "
+        "the Aldi logo layout | the store mark makes the snack pun look official.\n"
+        "- fake_acronym_org | plaque | D.A.M.M. DRUNKS AGAINST MAD MOTHERS | "
+        "a plain black plaque | the plaque parodies MADD and the letters spell the joke.\n"
+        "- fake_warning_sign | warning sign | WARNING: DANGEROUS GASSES | "
+        "a pictogram figure farting | the warning layout makes the pictogram the punchline.\n"
+        "- innocent_image_innuendo | circle badge | MASTER BAITER - World Class | "
+        "a fishing lure | the lure reveals the fishing title.\n"
+        "- innocent_image_innuendo | bold text stack | SEND NOODS | "
+        "a ramen bowl and chopsticks | the noodles take the phrase off the crude reading.\n"
+        "- innocent_image_innuendo | bold text stack | NOT MY PASTURE, NOT MY BULLSHIT | "
+        "a cow with a sunflower crown | the crowned cow makes the farm saying the joke.\n"
+        "- slogan_twist | bumper sticker strip | FIGHT CRIME, SHOOT BACK | "
+        "a pistol on a bumper-sticker strip | the strip flips a civic slogan.\n"
+        "- rhyme_innuendo | bold text stack | "
+        "DON'T FORGET THE VASOLINE WHEN YOU GET THE GASOLINE | "
+        "a gas nozzle and a Vaseline jar drawn into the letters | "
+        "the rhyme and the two icons are the same joke.\n"
+        "Formats to reuse: retro sunset badge, logo spoof, circle badge, bold text stack, "
+        "bumper sticker strip, warning sign, plaque. "
         "Parody of a famous logo, celebrity, or movie character is allowed. "
         "Mild adult innuendo is allowed when the picture completes it. "
         "About 30 to 40 percent of the batch uses these shapes. "
@@ -622,6 +650,12 @@ _PUN_PATTERNS = {
     "dark twist scene",
     "catchphrase flip",
     "relatable confession action",
+    "pop culture quote flip",
+    "historical name pun",
+    "fake acronym org",
+    "fake warning sign",
+    "slogan twist",
+    "rhyme innuendo",
 }
 
 

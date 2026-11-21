@@ -45,6 +45,12 @@ _PINNED_SHAPE_IDS = (
     "dark_twist_scene",
     "catchphrase_flip",
     "relatable_confession_action",
+    "pop_culture_quote_flip",
+    "historical_name_pun",
+    "fake_acronym_org",
+    "fake_warning_sign",
+    "slogan_twist",
+    "rhyme_innuendo",
 )
 
 PRIORITY_PATTERNS = [
@@ -150,6 +156,46 @@ PRIORITY_PATTERNS = [
         ),
     },
     {
+        "id": "pop_culture_quote_flip",
+        "label": "Pop culture quote flip",
+        "guidance": (
+            "A famous catchphrase that answers or stalls itself. The picture is the "
+            "character or the world the quote came from, and it has to finish the flip."
+        ),
+    },
+    {
+        "id": "historical_name_pun",
+        "label": "Historical name pun",
+        "guidance": (
+            "A historical name respelled as the joke. The portrait wears the pun: "
+            "costume, prop, and expression have to make the second reading obvious."
+        ),
+    },
+    {
+        "id": "fake_acronym_org",
+        "label": "Fake acronym organization",
+        "guidance": (
+            "A parody of a real organization's initials. Format is a plain plaque. "
+            "The letters spell the joke. The plaque makes it look official."
+        ),
+    },
+    {
+        "id": "slogan_twist",
+        "label": "Slogan twist",
+        "guidance": (
+            "A civic or product slogan turned to the opposite advice. "
+            "Format is often a bumper sticker strip. The picture shows the twist."
+        ),
+    },
+    {
+        "id": "rhyme_innuendo",
+        "label": "Rhyme innuendo",
+        "guidance": (
+            "Two rhyming objects, one of them rude. Draw both icons into the lettering. "
+            "The rhyme is not enough if the picture does not show both things."
+        ),
+    },
+    {
         "id": "cheerful_dark_label",
         "label": "Cheerful dark label",
         "guidance": (
@@ -238,8 +284,9 @@ PRIORITY_PATTERNS = [
         "id": "fake_warning_sign",
         "label": "Fake warning sign",
         "guidance": (
-            "An official caution sign about a type of person, written as if the "
-            "personality were a hazard."
+            "A fake official warning. Either a personality treated as a hazard, "
+            "or a standard warning pictogram whose picture is the punchline. "
+            "Format is warning sign."
         ),
     },
 ]
@@ -286,7 +333,8 @@ def playbook_prompt(playbook: dict, *, limit: int | None = None) -> str:
             "Never stack unrelated words just because they sound odd. "
             "About 30 to 40 percent of candidates are puns or spoofs. "
             "Each one is a word-and-image pair. Set format to the layout, such as "
-            "retro sunset badge, logo spoof, circle badge, or bold text stack."
+            "retro sunset badge, logo spoof, circle badge, bold text stack, "
+            "bumper sticker strip, warning sign, or plaque."
         )
     ]
     priority = [item for item in patterns if item.get("priority")]
