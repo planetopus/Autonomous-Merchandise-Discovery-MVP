@@ -23,6 +23,16 @@ STICKER_STYLE_DIRECTION = (
 )
 
 
+def style_label(style_direction: str) -> str:
+    """A short style name, such as 'flat vector', when the direction starts with one."""
+
+    raw = " ".join(str(style_direction or "").split())
+    label = raw.split(".", 1)[0].strip()
+    if not label or len(label) > 40:
+        return ""
+    return label
+
+
 def sticker_copy_rules() -> str:
     """Return the merchandise-text contract for a sticker, not a shirt paragraph."""
 

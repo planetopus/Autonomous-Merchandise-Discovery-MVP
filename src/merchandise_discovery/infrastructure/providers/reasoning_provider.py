@@ -144,8 +144,9 @@ class OpenAIReasoningProvider:
                 for url in pictures
             )
 
+        chosen_model = (model or self._model).strip() or self._model
         request_kwargs: dict[str, object] = {
-            "model": model or self._model,
+            "model": chosen_model,
             "input": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content},
@@ -153,9 +154,9 @@ class OpenAIReasoningProvider:
             "text_format": response_model,
         }
         if web_search_domains:
-            if not supports_web_search_filters(self._model):
+            if not supports_web_search_filters(chosen_model):
                 raise ReasoningProviderError(
-                    f"Model {self._model!r} does not support web_search filters "
+                    f"Model {chosen_model!r} does not support web_search filters "
                     "(the API reports Parameter 'filters' not supported). "
                     "Set OPENAI_REASONING_MODEL to gpt-5 or a newer reasoning model."
                 )
@@ -168,9 +169,11 @@ class OpenAIReasoningProvider:
             # This pipeline must inspect social sources; a text-only answer should not look like
             # successful source extraction when the provider did not search the requested domains.
             request_kwargs["tool_choice"] = "required"
-        if is_reasoning_model(self._model):
+        # The sticker text check calls a vision model on a provider whose default
+        # model is a reasoning model. Controls follow the model on this request.
+        if is_reasoning_model(chosen_model):
             request_kwargs["reasoning"] = {"effort": reasoning_effort or self._reasoning_effort}
-        if self._supports_temperature():
+        else:
             request_kwargs["temperature"] = temperature
 
         try:
@@ -181,7 +184,7 @@ class OpenAIReasoningProvider:
             detail = str(error).strip() or type(error).__name__
             if "filters" in detail.casefold() and "not supported" in detail.casefold():
                 detail = (
-                    f"Model {self._model!r} does not support web_search filters. "
+                    f"Model {chosen_model!r} does not support web_search filters. "
                     "Set OPENAI_REASONING_MODEL to gpt-5 or a newer reasoning model. "
                     f"Provider said: {detail}"
                 )
@@ -193,7 +196,7 @@ class OpenAIReasoningProvider:
         search_cost = self._web_search_price_per_call if web_search_domains else 0.0
         return StructuredResponse(
             output=response.output_parsed,
-            usage=self._usage_metrics(response.usage, search_cost),
+            usage=self._usage_metrics(response.usage, search_cost, chosen_model),
         )
 
     def search_web(self, query: str) -> tuple[list[dict[str, str]], UsageMetrics]:
@@ -230,14 +233,19 @@ class OpenAIReasoningProvider:
             self._web_search_price_per_call,
         )
 
-    def _usage_metrics(self, provider_usage: object, search_cost: float) -> UsageMetrics:
+    def _usage_metrics(
+        self,
+        provider_usage: object,
+        search_cost: float,
+        model: str | None = None,
+    ) -> UsageMetrics:
         """Convert one Responses usage block into the application cost contract."""
 
         input_tokens = _usage_count(provider_usage, "input_tokens", "prompt_tokens")
         output_tokens = _usage_count(provider_usage, "output_tokens", "completion_tokens")
         return UsageMetrics(
             provider="openai",
-            model=self._model,
+            model=model or self._model,
             request_count=1,
             input_tokens=input_tokens,
             output_tokens=output_tokens,

@@ -14,6 +14,7 @@ class PromptCompilation(BaseModel):
     prompt: str
     combination_name: str = ""
     audience_label: str = ""
+    style_label: str = ""
 
 
 class PromptCompilationInput(BaseModel):

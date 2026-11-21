@@ -39,6 +39,33 @@ def test_build_run_config_accepts_behavior_first_identity_variant() -> None:
     assert config.pipeline_variant is PipelineVariant.SOCIAL_BEHAVIOR_IDENTITY
 
 
+def test_build_run_config_persists_studio_mode_and_flat_art() -> None:
+    """Studio is selectable, and flat art stays an explicit option on the same config."""
+
+    config = build_run_config(
+        "Social behavior",
+        4,
+        2,
+        3,
+        1,
+        pipeline_variant=PipelineVariant.SOCIAL_IDENTITY_V2,
+        social_generation_mode="studio",
+        social_flat_art=True,
+        social_check_already_for_sale=True,
+        social_fast_mode=True,
+        social_image_model="grok-imagine-image",
+    )
+
+    assert config.social_generation_mode == "studio"
+    assert config.social_flat_art is True
+    assert config.social_check_already_for_sale is True
+    assert config.social_fast_mode is True
+    assert config.social_image_model == "grok-imagine-image"
+    classic = build_run_config("Social behavior", 4, 2, 3, 1)
+    assert classic.social_generation_mode == "classic"
+    assert classic.social_flat_art is False
+
+
 def test_build_run_config_persists_manual_social_artwork_review_choice() -> None:
     config = build_run_config(
         "Social behavior",

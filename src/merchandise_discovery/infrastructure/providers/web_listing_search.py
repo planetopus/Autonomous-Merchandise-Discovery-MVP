@@ -5,7 +5,9 @@ One search per final candidate, for the exact phrase in quotes plus
 network error skips that line. The eBay Browse API remains a separate extra.
 """
 
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from urllib.parse import unquote, urlparse
 
@@ -58,6 +60,7 @@ class WebListingSearch:
         self._clock = clock
         self._min_interval = min_interval_seconds
         self._last_at: float | None = None
+        self._lock = threading.Lock()
         self.usage = UsageMetrics()
 
     @property
@@ -72,9 +75,8 @@ class WebListingSearch:
             return None
         query = f'"{cleaned}" sticker OR shirt OR decal'
         try:
-            self._wait()
+            self._reserve()
             citations, usage = self._search(query)
-            self._last_at = self._clock()
         except (OSError, RuntimeError, TypeError, ValueError):
             return None
         self._add_usage(usage)
@@ -88,17 +90,32 @@ class WebListingSearch:
     def _add_usage(self, usage: UsageMetrics | None) -> None:
         if usage is None:
             return
-        if self.usage.request_count == 0 and self.usage.total_tokens == 0:
-            self.usage = usage
-            return
-        self.usage = combine_usage(self.usage, usage)
+        with self._lock:
+            if self.usage.request_count == 0 and self.usage.total_tokens == 0:
+                self.usage = usage
+                return
+            self.usage = combine_usage(self.usage, usage)
 
-    def _wait(self) -> None:
-        if self._last_at is None:
-            return
-        remaining = self._min_interval - (self._clock() - self._last_at)
-        if remaining > 0:
-            self._sleep(remaining)
+    def find_listings(self, phrases: list[str], *, workers: int = 4) -> list[SaleListing | None]:
+        """Search several exact phrases. Starts are staggered so the provider is not stampeded."""
+
+        if not phrases:
+            return []
+        if workers <= 1 or len(phrases) == 1:
+            return [self.find_listing(phrase) for phrase in phrases]
+        count = max(1, min(workers, len(phrases)))
+        with ThreadPoolExecutor(max_workers=count) as pool:
+            return list(pool.map(self.find_listing, phrases))
+
+    def _reserve(self) -> None:
+        """Leave a short gap between search starts, including across threads."""
+
+        with self._lock:
+            if self._last_at is not None:
+                remaining = self._min_interval - (self._clock() - self._last_at)
+                if remaining > 0:
+                    self._sleep(remaining)
+            self._last_at = self._clock()
 
 
 def _sold_as_merch(url: str, title: str) -> bool:

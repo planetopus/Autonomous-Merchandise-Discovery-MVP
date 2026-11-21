@@ -71,6 +71,10 @@ class RunConfig(BaseModel):
     social_generate_images: bool = True
     # Fast mode skips Reddit and web evidence and writes from the atlas, buyers, and anchors.
     social_fast_mode: bool = True
+    # classic keeps the current writer. studio is the crossover and proven-format pipeline.
+    social_generation_mode: str = Field(default="classic", max_length=20)
+    # Studio can rotate art styles. This keeps every sticker on the current flat vector look.
+    social_flat_art: bool = False
     # The web "already for sale" check is off unless the run asks for it.
     social_check_already_for_sale: bool = False
     # One cheap vision pass after the images. Off skips the spellcheck.
@@ -95,6 +99,10 @@ class RunConfig(BaseModel):
             raise ValueError("Saved artwork choices require manual artwork selection to be enabled.")
         self.social_niche_a = self.social_niche_a.strip()
         self.social_niche_b = self.social_niche_b.strip()
+        mode = self.social_generation_mode.strip().casefold()
+        if mode not in {"classic", "studio"}:
+            raise ValueError("social_generation_mode must be classic or studio.")
+        self.social_generation_mode = mode
         if any(index < 0 for index in self.social_selected_candidate_indices):
             raise ValueError("Selected candidate indices must be non-negative.")
         if len(set(self.social_selected_candidate_indices)) != len(
