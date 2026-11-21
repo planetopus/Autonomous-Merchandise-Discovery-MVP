@@ -75,6 +75,8 @@ class RunConfig(BaseModel):
     social_check_already_for_sale: bool = False
     # One cheap vision pass after the images. Off skips the spellcheck.
     social_image_qa: bool = True
+    # Empty keeps grok-imagine-image. Set this to try another xAI image model.
+    social_image_model: str = Field(default="", max_length=80)
     social_selected_candidate_indices: list[int] = Field(default_factory=list)
 
     @model_validator(mode="after")

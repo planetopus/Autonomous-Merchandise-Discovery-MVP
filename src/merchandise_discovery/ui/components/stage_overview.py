@@ -738,6 +738,18 @@ def _render_sticker_grid(artworks: list[dict[str, Any]]) -> None:
                 buyers = str(critique.get("who_its_for") or "")
             if buyers:
                 st.caption(f"Who it's for: {buyers}")
+            status = str(critique.get("text_check") or "") if isinstance(critique, dict) else ""
+            problem = str(critique.get("text_problem") or "") if isinstance(critique, dict) else ""
+            if status == "passed":
+                st.caption("Text check: passed")
+            elif status == "regenerated":
+                st.caption(f"Text check: regenerated. {problem}".strip())
+            elif status == "failed":
+                st.caption(f"Text check: failed. {problem}".strip())
+            elif status == "skipped":
+                st.caption("Text check: did not run")
+            with st.expander("Image prompt"):
+                st.code(_text(artwork, "prompt"), language="text")
             _render_artwork_image(artwork, text)
             source = _artwork_source(artwork)
             path = Path(source) if source else None
