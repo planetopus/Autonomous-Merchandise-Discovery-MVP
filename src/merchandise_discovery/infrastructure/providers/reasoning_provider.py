@@ -23,6 +23,18 @@ class ReasoningProviderError(RuntimeError):
     """Raised when a structured reasoning response cannot be produced or parsed."""
 
 
+def _usage_count(usage: object, *names: str) -> int:
+    """Read a token count from an SDK object or a dict, treating a missing usage block as zero."""
+
+    if usage is None:
+        return 0
+    for name in names:
+        value = usage.get(name) if isinstance(usage, dict) else getattr(usage, name, None)
+        if value:
+            return int(value)
+    return 0
+
+
 @dataclass(frozen=True)
 class StructuredResponse:
     """Typed model output plus the usage returned by the provider."""
@@ -44,6 +56,7 @@ class ReasoningProvider(Protocol):
         image_url: str | None = None,
         image_detail: str = "high",
         web_search_domains: tuple[str, ...] | None = None,
+        reasoning_effort: str | None = None,
     ) -> StructuredResponse:
         """Return a validated Pydantic response and measured usage for one request.
 
@@ -105,6 +118,7 @@ class OpenAIReasoningProvider:
         image_url: str | None = None,
         image_detail: str = "high",
         web_search_domains: tuple[str, ...] | None = None,
+        reasoning_effort: str | None = None,
     ) -> StructuredResponse:
         """Submit one typed request and convert provider usage into the application contract."""
 
@@ -149,7 +163,7 @@ class OpenAIReasoningProvider:
             # successful source extraction when the provider did not search the requested domains.
             request_kwargs["tool_choice"] = "required"
         if is_reasoning_model(self._model):
-            request_kwargs["reasoning"] = {"effort": self._reasoning_effort}
+            request_kwargs["reasoning"] = {"effort": reasoning_effort or self._reasoning_effort}
         if self._supports_temperature():
             request_kwargs["temperature"] = temperature
 
@@ -171,8 +185,8 @@ class OpenAIReasoningProvider:
         if response.output_parsed is None:
             raise ReasoningProviderError("Structured reasoning response was empty or invalid.")
         provider_usage = response.usage
-        input_tokens = int(getattr(provider_usage, "input_tokens", 0) or 0)
-        output_tokens = int(getattr(provider_usage, "output_tokens", 0) or 0)
+        input_tokens = _usage_count(provider_usage, "input_tokens", "prompt_tokens")
+        output_tokens = _usage_count(provider_usage, "output_tokens", "completion_tokens")
         search_cost = self._web_search_price_per_call if web_search_domains else 0.0
         return StructuredResponse(
             output=response.output_parsed,
@@ -182,10 +196,7 @@ class OpenAIReasoningProvider:
                 request_count=1,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
-                total_tokens=int(
-                    getattr(provider_usage, "total_tokens", input_tokens + output_tokens)
-                    or input_tokens + output_tokens
-                ),
+                total_tokens=_usage_count(provider_usage, "total_tokens") or input_tokens + output_tokens,
                 estimated_cost_usd=round(
                     input_tokens * self._input_price / 1_000_000
                     + output_tokens * self._output_price / 1_000_000

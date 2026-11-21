@@ -78,6 +78,8 @@ def execute_stage(
             active_execution,
             str(error),
             max_attempts=runtime.max_stage_attempts,
+            output_data=getattr(error, "stage_output", None),
+            usage=getattr(error, "stage_usage", None),
         )
         if runtime.stage_log_repository:
             try:

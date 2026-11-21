@@ -339,6 +339,109 @@ def test_live_stage_drops_source_quotes_and_always_runs_the_critic() -> None:
     )
 
 
+def test_missing_identity_stacks_do_not_fail_the_run() -> None:
+    """A short stack quota keeps the niche pair, every draft, and the token total."""
+
+    from types import SimpleNamespace
+
+    from merchandise_discovery.domain.humor import HumorCritiqueBatch, HumorCritiqueItem
+    from merchandise_discovery.domain.models.usage import UsageMetrics
+
+    run = WorkflowRun(
+        title="Short stacks",
+        config=RunConfig(
+            pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+            social_sources=[SocialSource.REDDIT],
+            social_query="shift podcasts",
+            social_candidate_count=2,
+            social_niche_a="night-shift nurses",
+            social_niche_b="true crime",
+        ),
+    )
+    stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")
+    base = pipeline.SocialBehaviorTextCandidate(
+        source_platform=SocialSource.REDDIT,
+        source_url="https://reddit.com/r/nursing/comments/abc/podcast",
+        source_title="Night podcast",
+        source_excerpt="Nurses talk through a case while a podcast plays.",
+        audience_context="Nurses who listen to cases on the drive home.",
+        behavior="Replaying a shift out loud.",
+        friction_or_pressure="The story is not over when the shift is.",
+        artwork_text="My commute files a second chart",
+        artwork_prompt="A die-cut sticker of a badge and headphones as one subject.",
+        visual_punchline="The badge is wearing headphones.",
+        main_visual_metaphor="A badge with headphones.",
+        audience_specific_cue="A nurse badge and a headphone cord.",
+        tone="deadpan",
+        style_direction="Flat vector die-cut sticker.",
+        things_to_avoid=["a scene"],
+        specificity_reason="Both lives are in the line.",
+        pattern="confession",
+    )
+    measured = UsageMetrics(
+        provider="openai",
+        model="gpt-5",
+        request_count=1,
+        input_tokens=100,
+        output_tokens=50,
+        total_tokens=150,
+        estimated_cost_usd=0.01,
+        cost_is_estimate=True,
+    )
+    provider = Mock()
+
+    def respond(**kwargs):
+        name = kwargs["response_model"].__name__
+        if name == "HumorCritiqueBatch":
+            return SimpleNamespace(
+                output=HumorCritiqueBatch(
+                    reviews=[
+                        HumorCritiqueItem(
+                            index=index,
+                            humor_landed=8,
+                            novelty=8,
+                            tone_match=8,
+                            giftability=6,
+                            reddit_upvote_score=8,
+                            sticker_buy_score=8,
+                        )
+                        for index in range(4)
+                    ]
+                ),
+                usage=measured,
+            )
+        return SimpleNamespace(
+            output=pipeline.SocialBehaviorTextOutput(
+                candidates=[base],
+                search_summary="One confession and no stacked club name.",
+                niche_pair_a="night-shift nurses",
+                niche_pair_b="true crime",
+                pairing_score=9,
+            ),
+            usage=measured,
+        )
+
+    provider.complete_structured.side_effect = respond
+    executor = _executor(Mock())
+    executor._reasoning_provider = provider
+
+    result = executor.execute(run, stage, executor.prepare(run, stage))
+
+    assert result.output_data["niche_pair_a"] == "night-shift nurses"
+    assert result.output_data["niche_pair_b"] == "true crime"
+    assert result.output_data["candidates"]
+    assert result.output_data["line_reviews"]
+    assert "absurd identity stack" in result.output_data["stage_warning"].casefold()
+    assert result.usage.total_tokens > 0
+    assert result.usage.request_count >= 2
+    # Draft, critic, one stack refill, and one critic for that refill. No second full rewrite.
+    assert provider.complete_structured.call_count == 4
+    assert all(
+        call.kwargs.get("reasoning_effort") == "low"
+        for call in provider.complete_structured.call_args_list
+    )
+
+
 def test_live_run_returns_two_absurd_identity_stacks() -> None:
     """A run that asks for more than one line keeps two stacked-club jokes from its niches."""
 

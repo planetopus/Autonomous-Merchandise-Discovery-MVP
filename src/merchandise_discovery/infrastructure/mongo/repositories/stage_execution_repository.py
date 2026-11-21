@@ -208,17 +208,25 @@ class StageExecutionRepository:
         execution_id: str,
         expected_version: int,
         error_message: str,
+        *,
+        output_data: dict | None = None,
+        usage: UsageMetrics | None = None,
     ) -> StageExecution:
-        """Persist a bounded, user-readable failure without discarding prior attempts."""
+        """Persist a bounded, user-readable failure without discarding drafts or token usage."""
 
+        set_values = {
+            "status": StageStatus.FAILED.value,
+            "error_message": error_message[:2_000],
+            "updated_at": utc_now(),
+        }
+        if output_data:
+            set_values["output_data"] = output_data
+        if usage is not None and (usage.total_tokens or usage.request_count or usage.estimated_cost_usd):
+            set_values["usage"] = usage.model_dump(mode="python")
         document = self._collection.find_one_and_update(
             {"execution_id": execution_id, "version": expected_version},
             {
-                "$set": {
-                    "status": StageStatus.FAILED.value,
-                    "error_message": error_message[:2_000],
-                    "updated_at": utc_now(),
-                },
+                "$set": set_values,
                 "$inc": {"version": 1},
             },
             return_document=ReturnDocument.AFTER,
