@@ -21,13 +21,18 @@ from merchandise_discovery.domain.humor import (
     apply_jargon_cap,
     apply_line_caps,
     apply_line_critic,
+    apply_pun_cap,
     apply_trope_cap,
     critic_average,
     keep_strong_pairs,
+    line_is_pun,
     member_would_not_buy,
     niche_pair_request,
     primary_wit_share,
+    pun_examples_block,
+    pun_share_is_thin,
     reading_failed,
+    synergy_failed,
     tired_trope_block,
 )
 from merchandise_discovery.domain.humor_playbook import build_playbook, playbook_prompt
@@ -318,7 +323,9 @@ class DiscoveryStageExecutor:
             load_ant_ratings(),
             rng=random.Random(getattr(run, "run_id", "style")),
         )
-        writer_block = style_block + market_signal_prompt(market) + humor_block
+        writer_block = (
+            style_block + pun_examples_block() + market_signal_prompt(market) + humor_block
+        )
         if self._reasoning_provider is None:
             return None, UsageMetrics(), selection, [], playbook, None
         supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
@@ -424,7 +431,7 @@ class DiscoveryStageExecutor:
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
-        if self._spread_is_thin(drafted) or self._wit_is_thin(drafted):
+        if self._spread_is_thin(drafted) or self._wit_is_thin(drafted) or pun_share_is_thin(drafted):
             spread, spread_usage, spread_reviews = self._rewrite_for_spread(
                 run,
                 input_model,
@@ -438,7 +445,14 @@ class DiscoveryStageExecutor:
             )
             usage = self._add_usage(usage, spread_usage)
             reviews.extend(spread_reviews)
-            if spread and not self._spread_is_thin(spread):
+            wider = bool(spread) and not self._spread_is_thin(spread)
+            puns_caught_up = (
+                bool(spread)
+                and pun_share_is_thin(drafted)
+                and not pun_share_is_thin(spread)
+                and not self._wit_is_thin(spread)
+            )
+            if wider or puns_caught_up:
                 candidates = spread
             else:
                 if spread:
@@ -907,9 +921,12 @@ class DiscoveryStageExecutor:
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
             user_prompt=(
                 "The previous lines all described one narrow policy or incident, "
-                "or too few of them were sarcastic, ironic, or witty. "
+                "or too few of them were sarcastic, ironic, witty, or puns. "
                 "At least 70% of the lines must be sarcastic understatement, "
                 "situational or dramatic irony, or a clever reversal. "
+                "About 30 to 40 percent must be puns or spoofs. "
+                "Each line is a word-and-image pair: set image_idea, why_it_works, and format. "
+                "The picture must complete the joke. Text only. Do not generate an image. "
                 f"Rewrite {input_model.candidate_count} lines for the broad life of "
                 f'"{niche_a}" and "{niche_b}". '
                 "Use at least 6 different pattern values and at least 4 different truth values. "
@@ -1076,8 +1093,11 @@ class DiscoveryStageExecutor:
 
         numbered = "\n".join(
             f"{index}. {getattr(candidate, 'artwork_text', '')} "
-            f"(mechanism: {getattr(candidate, 'humor_mechanism', '')}; "
-            f"detail: {getattr(candidate, 'concrete_detail', '')})"
+            f"(pattern: {getattr(candidate, 'pattern', '')}; "
+            f"format: {str(getattr(candidate, 'format', '') or '')[:40]}; "
+            f"image idea: {str(getattr(candidate, 'image_idea', '') or '')[:80]}; "
+            f"why: {str(getattr(candidate, 'why_it_works', '') or '')[:80]}; "
+            f"mechanism: {getattr(candidate, 'humor_mechanism', '')})"
             for index, candidate in enumerate(candidates)
         )
         calibration = ant_calibration_block(
@@ -1089,6 +1109,21 @@ class DiscoveryStageExecutor:
                 "You are a merchandise humor critic. "
                 "The top question is: is this genuinely witty, sarcastic, or ironic, "
                 "and does the target group get it in 2 seconds? "
+                "Set word_image_synergy from 1 to 10. The words and the picture are one joke. "
+                "A high score means the image completes, flips, or reveals a second meaning. "
+                "Score under 7 when the line is just as funny without the picture, or the "
+                "picture only illustrates the words. Set literal_image true for that. "
+                "Reward a clear pun or spoof the target group gets immediately, including "
+                "celebrity_food_pun, brand_logo_spoof, innocent_image_innuendo, "
+                "cute_but_menacing, dark_twist_scene, catchphrase_flip, "
+                "relatable_confession_action, pop_culture_quote_flip, historical_name_pun, "
+                "fake_acronym_org, fake_warning_sign, slogan_twist, rhyme_innuendo, "
+                "and holiday_pun. "
+                "Raise sticker_buy_score for that pair. "
+                "A forced groan or an obscure pun scores at most 4. Set pun_forced true "
+                "for a groan and pun_lands false when the group would not get it. "
+                "Parody of a famous logo, celebrity, or movie character is allowed. "
+                "Mild adult innuendo is allowed. Do not punish either for taste. "
                 "Before the scores, set plain_reading to one sentence a random adult would "
                 "think the line means. If you cannot, set can_explain false. "
                 "Does every word earn its place in the joke? Outside or common words are "
@@ -1157,9 +1192,15 @@ class DiscoveryStageExecutor:
                 plain_reading=review.plain_reading,
                 can_explain=review.can_explain,
                 words_earn_their_place=review.words_earn_their_place,
+                word_image_synergy=float(getattr(review, "word_image_synergy", 8) or 8),
+                pun_lands=getattr(review, "pun_lands", True) is not False,
+                pun_forced=bool(getattr(review, "pun_forced", False)),
+                literal_image=bool(getattr(review, "literal_image", False)),
             )
             apply_jargon_cap(row, text)
             apply_line_caps(row, text)
+            if 0 <= review.index < len(candidates):
+                apply_pun_cap(row, candidates[review.index])
             apply_trope_cap(row, text, load_humor_lab().tired_tropes)
             reviews.append(row)
         scored = []
@@ -1195,11 +1236,20 @@ class DiscoveryStageExecutor:
                 reason, kept_flag = "unclear", False
             elif review is not None and getattr(review, "filler_contrast", False):
                 reason, kept_flag = "filler contrast", False
+            elif line_is_pun(candidate) and getattr(review, "pun_forced", False):
+                reason, kept_flag = "forced pun", False
+            elif line_is_pun(candidate) and getattr(review, "pun_lands", True) is False:
+                reason, kept_flag = "obscure pun", False
+            elif review is not None and synergy_failed(review):
+                reason, kept_flag = "weak word-image pair", False
             elif review is not None and getattr(review, "tired_trope", False):
                 reason, kept_flag = "tired trope", False
             elif review is not None and getattr(review, "insider_jargon", False):
                 reason, kept_flag = "insider jargon", False
-            elif str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":
+            elif (
+                str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight"
+                and not line_is_pun(candidate)
+            ):
                 reason, kept_flag = "no ironic twist", False
             elif member_would_not_buy(review):
                 clear = getattr(review, "instantly_understandable", None)

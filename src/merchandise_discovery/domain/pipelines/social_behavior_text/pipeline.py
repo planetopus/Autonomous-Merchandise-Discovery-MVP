@@ -61,6 +61,24 @@ class SocialBehaviorTextCandidate(BaseModel):
     friction_or_pressure: str = Field(min_length=1, max_length=500)
     # Sticker lines are short labels. Empty text is an image-only sticker.
     artwork_text: str = Field(default="", max_length=160)
+    image_idea: str = Field(
+        default="",
+        max_length=280,
+        description="One sentence. The picture that completes, flips, or reveals the joke. Text only.",
+    )
+    why_it_works: str = Field(
+        default="",
+        max_length=280,
+        description="One sentence on how the words and the picture make one joke.",
+    )
+    format: str = Field(
+        default="",
+        max_length=80,
+        description=(
+            "Layout, such as retro sunset badge, logo spoof, circle badge, "
+            "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge."
+        ),
+    )
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the
     # durable source of truth for the visual direction instead of re-deriving it downstream.
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
@@ -186,7 +204,8 @@ def build_user_prompt(
         "for an image-only sticker. Use the real relationship, behavior, or object instead of a "
         "generic slogan, but do not write a sentence. For every candidate also provide an "
         "artwork_prompt that tells Grok how to render one isolated subject for this audience on "
-        "a plain white background. Also provide visual_punchline, main_visual_metaphor, "
+        "a plain white background. Also provide image_idea, why_it_works, format, "
+        "visual_punchline, main_visual_metaphor, "
         "audience_specific_cue, tone, style_direction, and a things_to_avoid list. The visual "
         "punchline must exaggerate the joke rather than literally illustrate a "
         "bedroom, clock, meal, couch, scene, or landscape. The style direction must describe a "

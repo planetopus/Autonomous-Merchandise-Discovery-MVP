@@ -84,6 +84,24 @@ class SocialIdentityTextCandidate(BaseModel):
     behavior: str = Field(min_length=1, max_length=500)
     friction_or_pressure: str = Field(min_length=1, max_length=500)
     artwork_text: str = Field(default="", max_length=160)
+    image_idea: str = Field(
+        default="",
+        max_length=280,
+        description="One sentence. The picture that completes, flips, or reveals the joke. Text only.",
+    )
+    why_it_works: str = Field(
+        default="",
+        max_length=280,
+        description="One sentence on how the words and the picture make one joke.",
+    )
+    format: str = Field(
+        default="",
+        max_length=80,
+        description=(
+            "Layout, such as retro sunset badge, logo spoof, circle badge, "
+            "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge."
+        ),
+    )
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
     visual_punchline: str = Field(min_length=1, max_length=500)
     main_visual_metaphor: str = Field(min_length=1, max_length=500)
@@ -237,7 +255,8 @@ def build_user_prompt(
         "self-explanatory joke-shaped sticker copy of about 4 to 14 words, or empty when the sticker "
         "is image-only. Preserve the identity in that short line without requiring the metadata. "
         "Avoid repeating the same identity behavior in different wording. Also provide an "
-        "artwork_prompt, visual_punchline, main_visual_metaphor, audience_specific_cue, tone, "
+        "artwork_prompt, image_idea, why_it_works, format, visual_punchline, "
+        "main_visual_metaphor, audience_specific_cue, tone, "
         "style_direction, and things_to_avoid. The visual cue must make the supplied identity "
         "recognizable without relying on a logo, institution, or invented uniform. Style direction "
         "must be a flat vector sticker: one centered subject, bold outlines, flat colors, plain "

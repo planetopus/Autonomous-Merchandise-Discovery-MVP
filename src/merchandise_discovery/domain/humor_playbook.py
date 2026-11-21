@@ -32,6 +32,28 @@ class HumorPlaybook(BaseModel):
     patterns: list[HumorPlaybookPattern]
 
 # Hand-authored shapes. Guidance only: do not store sample slogans here.
+# These stay in a trimmed prompt. The few-shot lines live in pun_examples_block.
+_PINNED_SHAPE_IDS = (
+    "clarity_beats_cleverness",
+    "absurd_identity_stack",
+    "wordplay_pun",
+    "image_pun",
+    "celebrity_food_pun",
+    "brand_logo_spoof",
+    "innocent_image_innuendo",
+    "cute_but_menacing",
+    "dark_twist_scene",
+    "catchphrase_flip",
+    "relatable_confession_action",
+    "pop_culture_quote_flip",
+    "historical_name_pun",
+    "fake_acronym_org",
+    "fake_warning_sign",
+    "slogan_twist",
+    "rhyme_innuendo",
+    "holiday_pun",
+)
+
 PRIORITY_PATTERNS = [
     {
         "id": "clarity_beats_cleverness",
@@ -58,6 +80,128 @@ PRIORITY_PATTERNS = [
         "guidance": (
             "A sign or notice whose instruction makes itself impossible to obey, "
             "said in a straight official voice."
+        ),
+    },
+    {
+        "id": "wordplay_pun",
+        "label": "Word pun",
+        "guidance": (
+            "A double meaning or sound-alike the target group gets in 2 seconds. "
+            "The picture completes the second meaning. About 30 to 40 percent of "
+            "the batch is a pun or spoof in this family."
+        ),
+    },
+    {
+        "id": "image_pun",
+        "label": "Image pun",
+        "guidance": (
+            "The picture carries the joke and the words only set it up. "
+            "A literal illustration of the words is not this shape."
+        ),
+    },
+    {
+        "id": "celebrity_food_pun",
+        "label": "Celebrity food pun",
+        "guidance": (
+            "A food renamed as a celebrity. The picture is that food wearing the "
+            "celebrity's look. Format is often a bold text stack."
+        ),
+    },
+    {
+        "id": "brand_logo_spoof",
+        "label": "Brand logo spoof",
+        "guidance": (
+            "A famous logo layout whose ring text flips the brand. Format is logo spoof. "
+            "Parody is allowed."
+        ),
+    },
+    {
+        "id": "innocent_image_innuendo",
+        "label": "Innocent image innuendo",
+        "guidance": (
+            "The words sound adult and the picture reveals the innocent object, or the "
+            "object makes the innuendo land. Mild crude humor is allowed. "
+            "Retro sunset badges are a common format."
+        ),
+    },
+    {
+        "id": "cute_but_menacing",
+        "label": "Cute but menacing",
+        "guidance": (
+            "A cute character doing something threatening. The picture flips the sweetness. "
+            "A circle badge is a common format."
+        ),
+    },
+    {
+        "id": "dark_twist_scene",
+        "label": "Dark twist scene",
+        "guidance": (
+            "A wholesome outdoor scene whose caption turns dark. "
+            "Often a retro sunset badge. The scene completes the threat."
+        ),
+    },
+    {
+        "id": "catchphrase_flip",
+        "label": "Catchphrase flip",
+        "guidance": (
+            "A known phrase, then a second line that overturns it. "
+            "Often a circle warning badge. The picture shows the flip."
+        ),
+    },
+    {
+        "id": "relatable_confession_action",
+        "label": "Relatable confession action",
+        "guidance": (
+            "A blunt confession. The picture shows the action in progress, "
+            "not a portrait that only restates the words."
+        ),
+    },
+    {
+        "id": "pop_culture_quote_flip",
+        "label": "Pop culture quote flip",
+        "guidance": (
+            "A famous catchphrase that answers or stalls itself. The picture is the "
+            "character or the world the quote came from, and it has to finish the flip."
+        ),
+    },
+    {
+        "id": "historical_name_pun",
+        "label": "Historical name pun",
+        "guidance": (
+            "A historical name respelled as the joke. The portrait wears the pun: "
+            "costume, prop, and expression have to make the second reading obvious."
+        ),
+    },
+    {
+        "id": "fake_acronym_org",
+        "label": "Fake acronym organization",
+        "guidance": (
+            "A parody of a real organization's initials. Format is a plain plaque. "
+            "The letters spell the joke. The plaque makes it look official."
+        ),
+    },
+    {
+        "id": "slogan_twist",
+        "label": "Slogan twist",
+        "guidance": (
+            "A civic or product slogan turned to the opposite advice. "
+            "Format is often a bumper sticker strip. The picture shows the twist."
+        ),
+    },
+    {
+        "id": "rhyme_innuendo",
+        "label": "Rhyme innuendo",
+        "guidance": (
+            "Two rhyming objects, one of them rude. Draw both icons into the lettering. "
+            "The rhyme is not enough if the picture does not show both things."
+        ),
+    },
+    {
+        "id": "holiday_pun",
+        "label": "Holiday pun",
+        "guidance": (
+            "A holiday word with a second everyday meaning. The costume or prop "
+            "has to make that second reading obvious. A cute seasonal character is enough."
         ),
     },
     {
@@ -149,8 +293,9 @@ PRIORITY_PATTERNS = [
         "id": "fake_warning_sign",
         "label": "Fake warning sign",
         "guidance": (
-            "An official caution sign about a type of person, written as if the "
-            "personality were a hazard."
+            "A fake official warning. Either a personality treated as a hazard, "
+            "or a standard warning pictogram whose picture is the punchline. "
+            "Format is warning sign."
         ),
     },
 ]
@@ -194,13 +339,23 @@ def playbook_prompt(playbook: dict, *, limit: int | None = None) -> str:
             "An identity stack names a real group whose traits co-occur, in a register "
             "that group would not use about themselves, and stays wholesome enough to buy. "
             "A generational or register mismatch is a key comedy lever. "
-            "Never stack unrelated words just because they sound odd."
+            "Never stack unrelated words just because they sound odd. "
+            "About 30 to 40 percent of candidates are puns or spoofs. "
+            "Each one is a word-and-image pair. Set format to the layout, such as "
+            "retro sunset badge, logo spoof, circle badge, bold text stack, "
+            "bumper sticker strip, warning sign, plaque, or oval outdoor badge."
         )
     ]
     priority = [item for item in patterns if item.get("priority")]
     learned = [item for item in patterns if not item.get("priority")]
     if limit is not None:
-        priority = priority[:limit]
+        by_id: dict = {}
+        for item in priority:
+            by_id.setdefault(item.get("id"), item)
+        pinned = [by_id[name] for name in _PINNED_SHAPE_IDS if name in by_id]
+        pinned_ids = {item.get("id") for item in pinned}
+        others = [item for item in priority if item.get("id") not in pinned_ids]
+        priority = pinned + others[:limit]
         learned = learned[: max(0, limit - len(priority))]
     if priority:
         lines.append("High-priority shapes. There is no sample line; invent the shape:")

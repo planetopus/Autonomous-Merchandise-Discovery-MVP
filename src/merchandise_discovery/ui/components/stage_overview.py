@@ -246,6 +246,9 @@ def _render_social_behavior_text(
                     "candidates": [
                         {
                             "artwork_text": candidate.get("artwork_text", ""),
+                            "image_idea": candidate.get("image_idea", ""),
+                            "why_it_works": candidate.get("why_it_works", ""),
+                            "format": candidate.get("format", ""),
                             "who_its_for": candidate.get("who_its_for") or [],
                             "pattern": candidate.get("pattern", ""),
                             "truth": candidate.get("truth", ""),
@@ -273,6 +276,15 @@ def _render_social_behavior_text(
         st.markdown(
             f"### {index}. {_text(candidate, 'artwork_text', default='Image only')}"
         )
+        image_idea = str(candidate.get("image_idea") or "").strip()
+        if image_idea:
+            st.caption(f"Image idea: {image_idea}")
+        why_it_works = str(candidate.get("why_it_works") or "").strip()
+        if why_it_works:
+            st.caption(f"Why it works: {why_it_works}")
+        sticker_format = str(candidate.get("format") or "").strip()
+        if sticker_format:
+            st.caption(f"Format: {sticker_format}")
         if candidate.get("source_quote"):
             st.caption(f"Quote: {_text(candidate, 'source_quote')}")
         funny_score = candidate.get("funny_score")
