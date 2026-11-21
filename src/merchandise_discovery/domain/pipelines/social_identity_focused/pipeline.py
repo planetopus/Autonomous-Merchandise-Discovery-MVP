@@ -102,6 +102,11 @@ class SocialIdentityTextCandidate(BaseModel):
             "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge."
         ),
     )
+    spoof_brand: str = Field(
+        default="",
+        max_length=80,
+        description="Major brand whose logo layout and colors this spoof recreates. Empty otherwise.",
+    )
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
     visual_punchline: str = Field(min_length=1, max_length=500)
     main_visual_metaphor: str = Field(min_length=1, max_length=500)

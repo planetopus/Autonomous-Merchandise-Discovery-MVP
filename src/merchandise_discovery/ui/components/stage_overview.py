@@ -710,6 +710,8 @@ def _render_prompts(payload: dict[str, Any]) -> None:
 def _render_artwork_generation(payload: dict[str, Any]) -> None:
     """Render the finished stickers in one row, then any extras as cards."""
 
+    if payload.get("warning"):
+        st.warning(str(payload["warning"]))
     artworks = _records(payload, "artworks")
     _metric_row([("Artwork candidates", str(len(artworks)))])
     if artworks:

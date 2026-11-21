@@ -52,6 +52,7 @@ from merchandise_discovery.infrastructure.mongo.repositories.stage_log_repositor
 )
 from merchandise_discovery.infrastructure.providers.ebay_browse import EbayStickerSearch
 from merchandise_discovery.infrastructure.providers.image_provider import (
+    FallbackImageProvider,
     FixtureImageProvider,
     OpenAIImageProvider,
     XAIImageProvider,
@@ -173,17 +174,27 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             settings.xai_api_key,
             live=live_mode,
         )
-        if image_name.startswith("openai") and settings.openai_api_key:
-            image_provider = OpenAIImageProvider(settings.openai_api_key)
-        elif image_name.startswith("xAI") and settings.xai_api_key:
-            image_provider = XAIImageProvider(
-                settings.xai_api_key,
-                settings.xai_image_model,
-                settings.xai_image_price,
-                settings.xai_image_edit_price,
+        image_chain: list[tuple[str, object]] = []
+        if live_mode and settings.openai_api_key:
+            image_chain.append(("OpenAI gpt-image-1", OpenAIImageProvider(settings.openai_api_key)))
+        if live_mode and settings.xai_api_key:
+            image_chain.append(
+                (
+                    f"xAI {settings.xai_image_model}",
+                    XAIImageProvider(
+                        settings.xai_api_key,
+                        settings.xai_image_model,
+                        settings.xai_image_price,
+                        settings.xai_image_edit_price,
+                    ),
+                )
             )
-        else:
-            image_provider = FixtureImageProvider()
+        image_chain.append(("fixture", FixtureImageProvider()))
+        image_provider = (
+            image_chain[0][1]
+            if len(image_chain) == 1
+            else FallbackImageProvider(image_chain)
+        )
         artwork_storage = LocalArtworkStorage(settings.artwork_storage_dir) if live_mode else None
         stage_executor = DiscoveryStageExecutor(
             seed_repository,

@@ -79,6 +79,11 @@ class SocialBehaviorTextCandidate(BaseModel):
             "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge."
         ),
     )
+    spoof_brand: str = Field(
+        default="",
+        max_length=80,
+        description="Major brand whose logo layout and colors this spoof recreates. Empty otherwise.",
+    )
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the
     # durable source of truth for the visual direction instead of re-deriving it downstream.
     artwork_prompt: str = Field(min_length=20, max_length=4_000)

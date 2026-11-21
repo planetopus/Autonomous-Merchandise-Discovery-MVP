@@ -6,6 +6,7 @@ changing the stage or worker protocol.
 """
 
 import base64
+import logging
 import re
 from dataclasses import dataclass, field
 from typing import Protocol
@@ -14,6 +15,8 @@ import httpx
 from openai import OpenAI, OpenAIError
 
 from merchandise_discovery.domain.models.usage import UsageMetrics
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -63,6 +66,35 @@ def image_backend_name(openai_key: str | None, xai_key: str | None, *, live: boo
     return "fixture"
 
 
+def gpt_image_generate_kwargs(prompt: str, *, model: str = OPENAI_IMAGE_MODEL) -> dict:
+    """Parameters gpt-image-1 accepts. It always returns base64 and rejects response_format."""
+
+    return {
+        "model": model,
+        "prompt": prompt,
+        "size": "1024x1024",
+        "quality": "medium",
+        "output_format": "png",
+    }
+
+
+def public_image_error(provider_name: str, error: BaseException) -> str:
+    """Status and message safe to show on the run page. Secrets are stripped."""
+
+    cause = getattr(error, "__cause__", None) or error
+    status = getattr(cause, "status_code", None)
+    message = getattr(cause, "message", None) or str(cause)
+    message = _redact_secrets(message)
+    status_text = f" HTTP {status}" if status else ""
+    return f"{provider_name} image generation failed{status_text}: {message}"[:500]
+
+
+def _redact_secrets(text: str) -> str:
+    cleaned = re.sub(r"sk-[A-Za-z0-9_\-]{8,}", "[redacted]", text or "")
+    cleaned = re.sub(r"Bearer\s+\S+", "Bearer [redacted]", cleaned, flags=re.IGNORECASE)
+    return " ".join(cleaned.split())
+
+
 def estimate_image_cost(backend: str, count: int = 5) -> float:
     """Rough dollars for one run's sticker images. Text tokens are separate."""
 
@@ -84,6 +116,49 @@ class ImageProvider(Protocol):
 
     def edit(self, request: ImageEditRequest) -> GeneratedImage:
         """Edit one existing candidate and return metadata for durable storage."""
+
+
+class FallbackImageProvider:
+    """Try OpenAI, then xAI, then the fixture provider. A failed provider is not retried."""
+
+    def __init__(self, providers: list[tuple[str, ImageProvider]]):
+        self._providers = list(providers)
+        self._disabled: set[str] = set()
+        self.fallback_note = ""
+
+    def generate(self, request: ImageGenerationRequest) -> GeneratedImage:
+        """Return the first provider image. Record the real error when a later one is used."""
+
+        last = "Image generation failed."
+        for name, provider in self._providers:
+            if name in self._disabled:
+                continue
+            try:
+                image = provider.generate(request)
+            except (OSError, RuntimeError, TypeError, ValueError, OpenAIError) as error:
+                self._disabled.add(name)
+                cause = error.__cause__ or error
+                last = _redact_secrets(str(error))[:500]
+                if "HTTP" not in last:
+                    last = public_image_error(name, cause)
+                self.fallback_note = last
+                logger.warning("%s", last)
+                continue
+            if self.fallback_note:
+                self.fallback_note = f"{self.fallback_note} Used {name} instead."
+            return image
+        raise RuntimeError(self.fallback_note or last)
+
+    def edit(self, request: ImageEditRequest) -> GeneratedImage:
+        """Edit with the first provider that accepts the call."""
+
+        last = "Image edit failed."
+        for name, provider in self._providers:
+            try:
+                return provider.edit(request)
+            except (OSError, RuntimeError, TypeError, ValueError, OpenAIError) as error:
+                last = public_image_error(name, error)
+        raise RuntimeError(last)
 
 
 class FixtureImageProvider:
@@ -134,13 +209,10 @@ class OpenAIImageProvider:
 
         try:
             response = self._client.images.generate(
-                model=self._model,
-                prompt=request.prompt,
-                size="1024x1024",
-                quality="medium",
+                **gpt_image_generate_kwargs(request.prompt, model=self._model)
             )
         except (OpenAIError, TypeError, ValueError) as error:
-            raise RuntimeError("OpenAI image generation request failed.") from error
+            raise RuntimeError(public_image_error("OpenAI gpt-image-1", error)) from error
         if not response.data:
             raise RuntimeError("OpenAI image generation returned no image.")
         record = response.data[0]
@@ -197,7 +269,7 @@ class XAIImageProvider:
         try:
             response = self._client.images.generate(model=self._model, prompt=request.prompt)
         except (OpenAIError, TypeError, ValueError) as error:
-            raise RuntimeError("xAI image generation request failed.") from error
+            raise RuntimeError(public_image_error(f"xAI {self._model}", error)) from error
         if not response.data or not getattr(response.data[0], "url", None):
             raise RuntimeError("xAI image generation returned no image URL.")
         source_url = response.data[0].url

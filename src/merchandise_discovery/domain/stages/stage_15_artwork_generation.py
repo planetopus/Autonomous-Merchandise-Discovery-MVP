@@ -27,6 +27,7 @@ class ArtworkGenerationOutput(BaseModel):
 
     artworks: list[Artwork]
     usage: UsageMetrics = Field(default_factory=UsageMetrics)
+    warning: str = ""
 
 
 def execute(
