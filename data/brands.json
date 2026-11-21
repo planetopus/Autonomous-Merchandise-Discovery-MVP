@@ -1,0 +1,779 @@
+{
+  "brands": [
+    {
+      "name": "McDonald's",
+      "category": "fast food",
+      "style": "yellow golden arches on red, bold red wordmark"
+    },
+    {
+      "name": "Burger King",
+      "category": "fast food",
+      "style": "bun-shaped red and yellow logo, red condensed wordmark between buns"
+    },
+    {
+      "name": "Wendy's",
+      "category": "fast food",
+      "style": "red wordmark under a freckled girl cameo, red and white"
+    },
+    {
+      "name": "Taco Bell",
+      "category": "fast food",
+      "style": "purple bell icon, bold purple wordmark"
+    },
+    {
+      "name": "KFC",
+      "category": "fast food",
+      "style": "red stripes and the colonel portrait, white bucket red lettering"
+    },
+    {
+      "name": "Chick-fil-A",
+      "category": "fast food",
+      "style": "red script wordmark, black cow or red square"
+    },
+    {
+      "name": "Subway",
+      "category": "fast food",
+      "style": "green and yellow arrows, white wordmark on green"
+    },
+    {
+      "name": "Domino's",
+      "category": "fast food",
+      "style": "red and blue domino tile, bold white wordmark"
+    },
+    {
+      "name": "Pizza Hut",
+      "category": "fast food",
+      "style": "red roof triangle, white lettering on red"
+    },
+    {
+      "name": "Chipotle",
+      "category": "fast food",
+      "style": "maroon wordmark, simple pepper mark, brown paper vibe"
+    },
+    {
+      "name": "Popeyes",
+      "category": "fast food",
+      "style": "orange and red script, Louisiana fleur"
+    },
+    {
+      "name": "Five Guys",
+      "category": "fast food",
+      "style": "red checkered tile and red stencil lettering"
+    },
+    {
+      "name": "In-N-Out",
+      "category": "fast food",
+      "style": "yellow arrow and red palm, yellow and red wordmark"
+    },
+    {
+      "name": "Sonic",
+      "category": "fast food",
+      "style": "blue and yellow retro script, drive-in speaker"
+    },
+    {
+      "name": "Arby's",
+      "category": "fast food",
+      "style": "brown cowboy hat over red wordmark"
+    },
+    {
+      "name": "Dairy Queen",
+      "category": "fast food",
+      "style": "red soft-serve swirl, red script"
+    },
+    {
+      "name": "Panera",
+      "category": "fast food",
+      "style": "green and gold wordmark, artisan bread loaf"
+    },
+    {
+      "name": "Dunkin'",
+      "category": "coffee",
+      "style": "hot pink and orange wordmark, rounded letters"
+    },
+    {
+      "name": "Starbucks",
+      "category": "coffee",
+      "style": "green circular siren, white ring text, green and white"
+    },
+    {
+      "name": "Krispy Kreme",
+      "category": "coffee",
+      "style": "green script and red bowtie, green and red"
+    },
+    {
+      "name": "Dutch Bros",
+      "category": "coffee",
+      "style": "blue windmill, blue and white wordmark"
+    },
+    {
+      "name": "Peet's",
+      "category": "coffee",
+      "style": "brown wordmark, dark coffee bag"
+    },
+    {
+      "name": "Tim Hortons",
+      "category": "coffee",
+      "style": "red wordmark and maple leaf, red and brown"
+    },
+    {
+      "name": "Walmart",
+      "category": "retail",
+      "style": "blue spark and blue wordmark, yellow spark accent"
+    },
+    {
+      "name": "Target",
+      "category": "retail",
+      "style": "red bullseye, red and white"
+    },
+    {
+      "name": "Costco",
+      "category": "retail",
+      "style": "red wordmark, red and blue wholesale block"
+    },
+    {
+      "name": "Amazon",
+      "category": "retail",
+      "style": "black wordmark with an orange smile arrow"
+    },
+    {
+      "name": "Best Buy",
+      "category": "retail",
+      "style": "yellow price tag, black bold letters"
+    },
+    {
+      "name": "Home Depot",
+      "category": "retail",
+      "style": "orange square, white stencil letters"
+    },
+    {
+      "name": "Lowe's",
+      "category": "retail",
+      "style": "blue wordmark on a blue house shape"
+    },
+    {
+      "name": "IKEA",
+      "category": "retail",
+      "style": "blue and yellow oval, bold blue letters"
+    },
+    {
+      "name": "Macy's",
+      "category": "retail",
+      "style": "red star, black script wordmark"
+    },
+    {
+      "name": "Nordstrom",
+      "category": "retail",
+      "style": "black serif wordmark, white space"
+    },
+    {
+      "name": "Kohl's",
+      "category": "retail",
+      "style": "black wordmark with a teal square"
+    },
+    {
+      "name": "TJ Maxx",
+      "category": "retail",
+      "style": "red block letters, black and red"
+    },
+    {
+      "name": "Dollar General",
+      "category": "retail",
+      "style": "black and yellow sign, bold black letters"
+    },
+    {
+      "name": "Dollar Tree",
+      "category": "retail",
+      "style": "green tree and green wordmark"
+    },
+    {
+      "name": "CVS",
+      "category": "retail",
+      "style": "red heart, red wordmark"
+    },
+    {
+      "name": "Walgreens",
+      "category": "retail",
+      "style": "red script W, red and white"
+    },
+    {
+      "name": "Sephora",
+      "category": "retail",
+      "style": "black and white stripes, bold black wordmark"
+    },
+    {
+      "name": "Nike",
+      "category": "retail",
+      "style": "black swoosh, bold italic wordmark"
+    },
+    {
+      "name": "Adidas",
+      "category": "retail",
+      "style": "three black stripes, black wordmark"
+    },
+    {
+      "name": "Lululemon",
+      "category": "retail",
+      "style": "red omega-like mark, black wordmark"
+    },
+    {
+      "name": "Kroger",
+      "category": "grocery",
+      "style": "blue wordmark, blue oval"
+    },
+    {
+      "name": "Albertsons",
+      "category": "grocery",
+      "style": "blue script and teal banner"
+    },
+    {
+      "name": "Publix",
+      "category": "grocery",
+      "style": "green lettering, green and white"
+    },
+    {
+      "name": "Aldi",
+      "category": "grocery",
+      "style": "blue A mark, orange and blue wordmark"
+    },
+    {
+      "name": "Trader Joe's",
+      "category": "grocery",
+      "style": "red handwritten wordmark, nautical font"
+    },
+    {
+      "name": "Whole Foods",
+      "category": "grocery",
+      "style": "green leaf wordmark, dark green"
+    },
+    {
+      "name": "Safeway",
+      "category": "grocery",
+      "style": "red wordmark and red S"
+    },
+    {
+      "name": "H-E-B",
+      "category": "grocery",
+      "style": "red block letters, red and white"
+    },
+    {
+      "name": "Coca-Cola",
+      "category": "beverages",
+      "style": "red Spencerian script, white on red"
+    },
+    {
+      "name": "Pepsi",
+      "category": "beverages",
+      "style": "red white and blue globe, bold white wordmark"
+    },
+    {
+      "name": "Dr Pepper",
+      "category": "beverages",
+      "style": "red oval medallion, white script"
+    },
+    {
+      "name": "Sprite",
+      "category": "beverages",
+      "style": "green and yellow wordmark, lemon burst"
+    },
+    {
+      "name": "Mountain Dew",
+      "category": "beverages",
+      "style": "green jagged wordmark, green and white"
+    },
+    {
+      "name": "Gatorade",
+      "category": "beverages",
+      "style": "orange lightning G, orange and white"
+    },
+    {
+      "name": "Red Bull",
+      "category": "beverages",
+      "style": "two red bulls and a yellow sun, blue and silver"
+    },
+    {
+      "name": "Monster",
+      "category": "beverages",
+      "style": "green claw marks, black and neon green"
+    },
+    {
+      "name": "Arizona",
+      "category": "beverages",
+      "style": "teal can, southwestern sun, tall lettering"
+    },
+    {
+      "name": "Liquid Death",
+      "category": "beverages",
+      "style": "tall black can, heavy metal white letters"
+    },
+    {
+      "name": "LaCroix",
+      "category": "beverages",
+      "style": "script wordmark on a pastel can"
+    },
+    {
+      "name": "Snapple",
+      "category": "beverages",
+      "style": "red apple and yellow label, bold red letters"
+    },
+    {
+      "name": "Budweiser",
+      "category": "beer",
+      "style": "red bowtie script, red white and gold"
+    },
+    {
+      "name": "Bud Light",
+      "category": "beer",
+      "style": "blue wordmark, silver and blue"
+    },
+    {
+      "name": "Miller Lite",
+      "category": "beer",
+      "style": "blue and silver shield, bold white letters"
+    },
+    {
+      "name": "Coors",
+      "category": "beer",
+      "style": "red script and gold mountain, red and gold"
+    },
+    {
+      "name": "Corona",
+      "category": "beer",
+      "style": "gold crown, yellow and blue label"
+    },
+    {
+      "name": "Modelo",
+      "category": "beer",
+      "style": "gold crest, black and gold"
+    },
+    {
+      "name": "Heineken",
+      "category": "beer",
+      "style": "red star and green label, white letters"
+    },
+    {
+      "name": "White Claw",
+      "category": "beer",
+      "style": "black wave on a white slim can"
+    },
+    {
+      "name": "Jack Daniel's",
+      "category": "liquor",
+      "style": "black label, white arched Old No. 7 lettering"
+    },
+    {
+      "name": "Jim Beam",
+      "category": "liquor",
+      "style": "red wax seal, white script on red"
+    },
+    {
+      "name": "Tito's",
+      "category": "liquor",
+      "style": "copper pot still, black handwritten wordmark"
+    },
+    {
+      "name": "Patron",
+      "category": "liquor",
+      "style": "bee on a clear bottle, silver and white"
+    },
+    {
+      "name": "Hennessy",
+      "category": "liquor",
+      "style": "gold arm and axe, black and gold"
+    },
+    {
+      "name": "Fireball",
+      "category": "liquor",
+      "style": "red dragon, yellow and red label"
+    },
+    {
+      "name": "Ford",
+      "category": "cars",
+      "style": "blue oval, white script"
+    },
+    {
+      "name": "Chevrolet",
+      "category": "cars",
+      "style": "gold bowtie, gold and black"
+    },
+    {
+      "name": "Toyota",
+      "category": "cars",
+      "style": "three overlapping ovals, red and silver"
+    },
+    {
+      "name": "Honda",
+      "category": "cars",
+      "style": "silver H in a square, bold silver wordmark"
+    },
+    {
+      "name": "Tesla",
+      "category": "cars",
+      "style": "red T wordmark, minimal chrome"
+    },
+    {
+      "name": "Jeep",
+      "category": "cars",
+      "style": "green seven-slot grille letters, green and black"
+    },
+    {
+      "name": "Ram",
+      "category": "cars",
+      "style": "silver ram head, chrome wordmark"
+    },
+    {
+      "name": "BMW",
+      "category": "cars",
+      "style": "blue and white roundel, black wordmark"
+    },
+    {
+      "name": "Mercedes-Benz",
+      "category": "cars",
+      "style": "three-point star in a circle, silver"
+    },
+    {
+      "name": "Harley-Davidson",
+      "category": "cars",
+      "style": "orange bar and shield, black script"
+    },
+    {
+      "name": "Subaru",
+      "category": "cars",
+      "style": "blue oval of stars, blue wordmark"
+    },
+    {
+      "name": "Dodge",
+      "category": "cars",
+      "style": "red ram or red crosshair, bold red letters"
+    },
+    {
+      "name": "DeWalt",
+      "category": "tools",
+      "style": "yellow and black, bold yellow wordmark"
+    },
+    {
+      "name": "Milwaukee",
+      "category": "tools",
+      "style": "red block, white lightning letters"
+    },
+    {
+      "name": "Craftsman",
+      "category": "tools",
+      "style": "red wordmark, gray and red badge"
+    },
+    {
+      "name": "Stanley",
+      "category": "tools",
+      "style": "yellow and black, bold black letters"
+    },
+    {
+      "name": "Black and Decker",
+      "category": "tools",
+      "style": "orange and black, bold orange wordmark"
+    },
+    {
+      "name": "Ryobi",
+      "category": "tools",
+      "style": "lime green, black wordmark"
+    },
+    {
+      "name": "Snap-on",
+      "category": "tools",
+      "style": "red rectangle, white letters"
+    },
+    {
+      "name": "Husky",
+      "category": "tools",
+      "style": "black dog head, orange and black"
+    },
+    {
+      "name": "ESPN",
+      "category": "sports",
+      "style": "red block letters, red and black"
+    },
+    {
+      "name": "Under Armour",
+      "category": "sports",
+      "style": "black interlocking mark, bold black wordmark"
+    },
+    {
+      "name": "Yeti",
+      "category": "sports",
+      "style": "black badge, heavy black letters"
+    },
+    {
+      "name": "Dick's",
+      "category": "sports",
+      "style": "green script, green and white"
+    },
+    {
+      "name": "Academy",
+      "category": "sports",
+      "style": "blue and red wordmark, sports badge"
+    },
+    {
+      "name": "Cabela's",
+      "category": "sports",
+      "style": "green and gold outdoor badge"
+    },
+    {
+      "name": "Bass Pro",
+      "category": "sports",
+      "style": "green fish and red wordmark"
+    },
+    {
+      "name": "REI",
+      "category": "sports",
+      "style": "green coop wordmark, green and black"
+    },
+    {
+      "name": "Peloton",
+      "category": "sports",
+      "style": "red wordmark, red P"
+    },
+    {
+      "name": "GoPro",
+      "category": "sports",
+      "style": "black square, white bevel letters"
+    },
+    {
+      "name": "Apple",
+      "category": "tech",
+      "style": "silver apple with a bite, thin gray wordmark"
+    },
+    {
+      "name": "Google",
+      "category": "tech",
+      "style": "multicolor letters, simple sans"
+    },
+    {
+      "name": "Microsoft",
+      "category": "tech",
+      "style": "four colored squares, gray wordmark"
+    },
+    {
+      "name": "Meta",
+      "category": "tech",
+      "style": "blue infinity loop, blue wordmark"
+    },
+    {
+      "name": "Samsung",
+      "category": "tech",
+      "style": "blue oval wordmark, blue and white"
+    },
+    {
+      "name": "Sony",
+      "category": "tech",
+      "style": "white letters on black, simple caps"
+    },
+    {
+      "name": "Dell",
+      "category": "tech",
+      "style": "blue circle E, blue wordmark"
+    },
+    {
+      "name": "HP",
+      "category": "tech",
+      "style": "blue circle, white letters"
+    },
+    {
+      "name": "Intel",
+      "category": "tech",
+      "style": "blue swoosh wordmark, blue and white"
+    },
+    {
+      "name": "Nvidia",
+      "category": "tech",
+      "style": "green eye, black and green"
+    },
+    {
+      "name": "Lay's",
+      "category": "snacks",
+      "style": "red banner, yellow sun, red script"
+    },
+    {
+      "name": "Doritos",
+      "category": "snacks",
+      "style": "red and black triangle chip, bold black letters"
+    },
+    {
+      "name": "Cheetos",
+      "category": "snacks",
+      "style": "orange cheetah, orange wordmark"
+    },
+    {
+      "name": "Oreo",
+      "category": "snacks",
+      "style": "blue wordmark, white cream cookie"
+    },
+    {
+      "name": "Snickers",
+      "category": "snacks",
+      "style": "red and brown bar, bold white letters"
+    },
+    {
+      "name": "M&M's",
+      "category": "snacks",
+      "style": "brown characters, white m, colorful shells"
+    },
+    {
+      "name": "Pringles",
+      "category": "snacks",
+      "style": "mustache face, red tube, black wordmark"
+    },
+    {
+      "name": "Hershey's",
+      "category": "snacks",
+      "style": "silver and brown, brown script"
+    },
+    {
+      "name": "Reese's",
+      "category": "snacks",
+      "style": "orange pack, yellow letters, peanut butter cup"
+    },
+    {
+      "name": "Takis",
+      "category": "snacks",
+      "style": "purple bag, lime green letters, rolled chip"
+    },
+    {
+      "name": "Goldfish",
+      "category": "snacks",
+      "style": "orange fish, orange and blue wordmark"
+    },
+    {
+      "name": "Cheez-It",
+      "category": "snacks",
+      "style": "red box, yellow cheese cracker, bold red letters"
+    },
+    {
+      "name": "Netflix",
+      "category": "streaming",
+      "style": "red wordmark, black and red"
+    },
+    {
+      "name": "Disney Plus",
+      "category": "streaming",
+      "style": "blue arc wordmark, blue and white"
+    },
+    {
+      "name": "Hulu",
+      "category": "streaming",
+      "style": "green wordmark, black and green"
+    },
+    {
+      "name": "Max",
+      "category": "streaming",
+      "style": "blue gradient wordmark, bold blue"
+    },
+    {
+      "name": "Prime Video",
+      "category": "streaming",
+      "style": "blue smile arrow, blue and white"
+    },
+    {
+      "name": "Spotify",
+      "category": "streaming",
+      "style": "green circle, black sound waves"
+    },
+    {
+      "name": "YouTube",
+      "category": "streaming",
+      "style": "red play button, black wordmark"
+    },
+    {
+      "name": "Paramount Plus",
+      "category": "streaming",
+      "style": "blue mountain, blue wordmark"
+    },
+    {
+      "name": "Peacock",
+      "category": "streaming",
+      "style": "colorful peacock, white wordmark"
+    },
+    {
+      "name": "Twitch",
+      "category": "streaming",
+      "style": "purple wordmark, purple chat bubble"
+    },
+    {
+      "name": "UPS",
+      "category": "shipping",
+      "style": "brown shield, gold letters"
+    },
+    {
+      "name": "FedEx",
+      "category": "shipping",
+      "style": "purple and orange wordmark, hidden arrow"
+    },
+    {
+      "name": "USPS",
+      "category": "shipping",
+      "style": "blue eagle, blue and red"
+    },
+    {
+      "name": "Uber",
+      "category": "shipping",
+      "style": "black wordmark, black and white"
+    },
+    {
+      "name": "Lyft",
+      "category": "shipping",
+      "style": "pink wordmark, pink and black"
+    },
+    {
+      "name": "Airbnb",
+      "category": "shipping",
+      "style": "coral Belo mark, coral wordmark"
+    },
+    {
+      "name": "DoorDash",
+      "category": "shipping",
+      "style": "red wordmark, red dash"
+    },
+    {
+      "name": "Instacart",
+      "category": "shipping",
+      "style": "green carrot, green wordmark"
+    },
+    {
+      "name": "Tide",
+      "category": "household",
+      "style": "orange bullseye, orange and yellow"
+    },
+    {
+      "name": "Charmin",
+      "category": "household",
+      "style": "blue bear, blue script"
+    },
+    {
+      "name": "Bounty",
+      "category": "household",
+      "style": "green leaf, green and white"
+    },
+    {
+      "name": "Clorox",
+      "category": "household",
+      "style": "blue diamond, white letters"
+    },
+    {
+      "name": "Lysol",
+      "category": "household",
+      "style": "yellow and red badge, bold red letters"
+    },
+    {
+      "name": "Febreze",
+      "category": "household",
+      "style": "blue swirl, blue and green"
+    },
+    {
+      "name": "Dawn",
+      "category": "household",
+      "style": "blue duck, blue and yellow"
+    },
+    {
+      "name": "Gain",
+      "category": "household",
+      "style": "green sunburst, green and orange"
+    }
+  ]
+}

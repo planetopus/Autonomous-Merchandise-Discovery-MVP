@@ -54,6 +54,8 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "innocent_image_innuendo, cute_but_menacing, dark_twist_scene, catchphrase_flip, "
         "relatable_confession_action, pop_culture_quote_flip, historical_name_pun, "
         "fake_acronym_org, fake_warning_sign, slogan_twist, rhyme_innuendo, or holiday_pun. "
+        "At least 2 of every 5 lines must be brand_logo_spoof: a major brand's logo "
+        "layout and colors with new pun text for this buyer. Set spoof_brand to that brand. "
         "A spoof of a famous logo, celebrity, or movie character is allowed. "
         "Mild crude or adult innuendo is allowed when the picture completes the joke. "
         "The wholesome bar applies to identity stacks, not to these pairs. "
@@ -282,6 +284,22 @@ def is_anchor_echo(text: str) -> bool:
         if overlap >= 0.72:
             return True
     return False
+
+
+def is_brand_spoof(candidate) -> bool:
+    """A major-brand logo layout with new pun text."""
+
+    if pattern_key(candidate) == "brand logo spoof":
+        return True
+    return bool(str(getattr(candidate, "spoof_brand", "") or "").strip())
+
+
+def brand_spoofs_needed(keep_count: int, spoof_count: int) -> int:
+    """A final batch of five must include two major-brand logo spoofs."""
+
+    if keep_count < 5:
+        return 0
+    return max(0, 2 - spoof_count)
 
 
 def puns_still_needed(keep_count: int, pun_count: int) -> int:

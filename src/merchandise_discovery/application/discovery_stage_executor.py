@@ -23,9 +23,11 @@ from merchandise_discovery.domain.humor import (
     apply_line_critic,
     apply_pun_cap,
     apply_trope_cap,
+    brand_spoofs_needed,
     critic_average,
     finished_sticker_examples_block,
     is_anchor_echo,
+    is_brand_spoof,
     keep_strong_pairs,
     line_is_pun,
     member_would_not_buy,
@@ -95,6 +97,11 @@ from merchandise_discovery.infrastructure.ant_ratings_loader import (
     load_ant_ratings,
     sample_ant_ratings,
     style_examples_block,
+)
+from merchandise_discovery.infrastructure.brand_catalog import (
+    brand_prompt,
+    load_brands,
+    rotate_brands,
 )
 from merchandise_discovery.infrastructure.humor_lab_loader import (
     gold_lines_block,
@@ -176,6 +183,12 @@ def _pair_in_bank(niche_a: str, niche_b: str, bank: list[dict]) -> bool:
         if sides == {left, right}:
             return True
     return False
+
+
+def needs_extra_line_round(kept: int, requested: int) -> bool:
+    """A five-line run that cleared fewer than five gets one more batch, not the dropped lines."""
+
+    return requested >= 5 and kept < 5
 
 
 def _social_artwork_candidates(run: WorkflowRun, candidates: list) -> list:
@@ -326,10 +339,13 @@ class DiscoveryStageExecutor:
             load_ant_ratings(),
             rng=random.Random(getattr(run, "run_id", "style")),
         )
+        offered = rotate_brands(load_brands(), str(getattr(run, "run_id", "brands")), 8)
+        self._offer_brands = offered
         writer_block = (
             style_block
             + finished_sticker_examples_block()
             + pun_examples_block()
+            + brand_prompt(offered)
             + market_signal_prompt(market)
             + humor_block
         )
@@ -510,9 +526,51 @@ class DiscoveryStageExecutor:
                 warnings.append(
                     "Fewer than three puns or spoofs survived. Showing the best lines anyway."
                 )
+        spoof_count = sum(1 for item in candidates if is_brand_spoof(item))
+        missing_spoofs = brand_spoofs_needed(input_model.candidate_count, spoof_count)
+        if missing_spoofs:
+            filled, fill_usage, fill_reviews = self._fill_brand_spoofs(
+                run,
+                output_model,
+                pipeline_module,
+                missing_spoofs,
+            )
+            usage = self._add_usage(usage, fill_usage)
+            reviews.extend(fill_reviews)
+            candidates = self._merge_by_text(
+                candidates,
+                [item for item in filled if is_brand_spoof(item)],
+            )
+            if brand_spoofs_needed(
+                input_model.candidate_count,
+                sum(1 for item in candidates if is_brand_spoof(item)),
+            ):
+                warnings.append(
+                    "Fewer than two major-brand logo spoofs survived. "
+                    "Showing the best lines anyway."
+                )
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
-        if len(candidates) < input_model.candidate_count:
+        if needs_extra_line_round(len(candidates), input_model.candidate_count):
+            extra, extra_usage, extra_reviews = self._draft_extra_survivors(
+                run,
+                pipeline_module,
+                output_model,
+                user_prompt,
+                references,
+                lab.gold_lines,
+                humor_block,
+                critic_rubric,
+                [str(getattr(item, "artwork_text", "") or "") for item in candidates],
+            )
+            usage = self._add_usage(usage, extra_usage)
+            reviews.extend(extra_reviews)
+            candidates = self._merge_by_text(candidates, extra)
+            warnings.append(
+                "Fewer than 5 lines cleared the critic. One extra batch was written. "
+                "Dropped lines were not added back."
+            )
+        elif len(candidates) < input_model.candidate_count:
             warnings.append(
                 "Fewer lines cleared the critic than requested. Showing the best lines anyway."
             )
@@ -992,6 +1050,72 @@ class DiscoveryStageExecutor:
             return False
         return sum(1 for candidate in candidates if self._is_absurd_stack(candidate)) < 2
 
+    def _note_image_fallback(self, output, summary: str):
+        """Keep a failed provider's status and message on the artwork stage."""
+
+        note = str(getattr(self._image_provider, "fallback_note", "") or "").strip()
+        if not note:
+            return output, summary
+        if hasattr(output, "model_copy"):
+            output = output.model_copy(update={"warning": note})
+        return output, f"{summary} {note}"
+
+    def _draft_extra_survivors(
+        self,
+        run,
+        pipeline_module,
+        output_model,
+        user_prompt: str,
+        references: list,
+        gold_lines: list[str] | None,
+        humor_block: str,
+        rubric: str,
+        already: list[str],
+    ):
+        """One more draft-and-critic pass. Only lines that clear are returned."""
+
+        skipped = "; ".join(text for text in already if text)[:400]
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                f"{user_prompt}\n"
+                "The previous batch did not clear 5 lines. Write 12 new lines. "
+                "Do not repeat these: "
+                f"{skipped or 'none'}.\n"
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        usage = response.usage
+        drafted = list(getattr(response.output, "candidates", []))
+        fresh, reviews = self._drop_unoriginal(drafted, references, gold_lines)
+        if fresh:
+            fresh, critic_usage, critic_rows = self._critic_pass(
+                run,
+                fresh,
+                len(fresh),
+                humor_block,
+                rubric,
+            )
+            usage = self._add_usage(usage, critic_usage)
+            reviews.extend(critic_rows)
+        return fresh, usage, reviews
+
+    def _merge_by_text(self, candidates: list, extra: list) -> list:
+        """Append new survivor lines. Critic-dropped lines are not in either list."""
+
+        seen = {
+            str(getattr(candidate, "artwork_text", "") or "").casefold()
+            for candidate in candidates
+        }
+        merged = list(candidates)
+        for candidate in extra:
+            text = str(getattr(candidate, "artwork_text", "") or "").casefold()
+            if text and text not in seen:
+                merged.append(candidate)
+                seen.add(text)
+        return merged
+
     def _fill_puns(self, run, input_model, output_model, pipeline_module, missing: int):
         """One short call for the missing puns. It does not search the web again."""
 
@@ -1037,15 +1161,58 @@ class DiscoveryStageExecutor:
         return merged
 
     def _order_with_pun_quota(self, candidates: list, keep_count: int) -> list:
-        """Keep at least three puns in a final batch of five, then the other lines."""
+        """Keep two brand spoofs and three puns in a final batch of five."""
 
-        if puns_still_needed(keep_count, 0) == 0:
+        if keep_count < 5:
             return candidates[:keep_count]
-        puns = [candidate for candidate in candidates if line_is_pun(candidate)]
-        others = [candidate for candidate in candidates if not line_is_pun(candidate)]
-        if len(puns) < 3:
+        spoofs = [candidate for candidate in candidates if is_brand_spoof(candidate)]
+        puns = [
+            candidate
+            for candidate in candidates
+            if line_is_pun(candidate) and not is_brand_spoof(candidate)
+        ]
+        others = [
+            candidate
+            for candidate in candidates
+            if not line_is_pun(candidate) and not is_brand_spoof(candidate)
+        ]
+        if len(spoofs) < 2 and len(puns) + len(spoofs) < 3:
             return candidates[:keep_count]
-        return (puns[:3] + others + puns[3:])[:keep_count]
+        head = (spoofs[:2] + puns)[:3]
+        used = {id(candidate) for candidate in head}
+        tail = [
+            candidate
+            for candidate in spoofs + puns + others
+            if id(candidate) not in used
+        ]
+        return (head + tail)[:keep_count]
+
+    def _fill_brand_spoofs(self, run, output_model, pipeline_module, missing: int):
+        """One short call that writes the missing major-brand logo spoofs."""
+
+        offered = list(getattr(self, "_offer_brands", []) or [])
+        count = max(1, min(2, missing))
+        picks = offered[:count] or [{"name": "a major US brand", "style": "its real logo colors and shape"}]
+        brief = "; ".join(f"{item['name']}: {item['style']}" for item in picks)
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                f"Write exactly {count} brand_logo_spoof lines, 2 to 8 words. "
+                "Each line is a new pun for this buyer on one of these logos. "
+                f"{brief}. "
+                "Set pattern to brand_logo_spoof, format to logo spoof, and spoof_brand "
+                "to the brand name. image_idea must describe that logo's shape and colors "
+                "with the new text. Do not reprint an anchor line.\n"
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        fresh, reviews = self._drop_unoriginal(
+            list(getattr(response.output, "candidates", [])),
+            [],
+            None,
+        )
+        return fresh, response.usage, reviews
 
     def _order_with_stacks(self, candidates: list, keep_count: int) -> list:
         """Keep two absurd identity stacks in the returned batch, then the other lines."""
@@ -1865,7 +2032,10 @@ class DiscoveryStageExecutor:
                 )
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
-                summary = f"Generated {len(output.artworks)} Identity V2 artwork candidates with Grok."
+                output, summary = self._note_image_fallback(
+                    output,
+                    f"Generated {len(output.artworks)} Identity V2 artwork candidates with Grok.",
+                )
                 return StageResult(
                     input_data=identity_input.model_dump(mode="python"),
                     output_data=output.model_dump(mode="python"),
@@ -1908,9 +2078,12 @@ class DiscoveryStageExecutor:
                 )
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
-                summary = (
-                    f"Generated {len(output.artworks)} behavior-first, identity-grounded "
-                    "merchandise artworks with Grok."
+                output, summary = self._note_image_fallback(
+                    output,
+                    (
+                        f"Generated {len(output.artworks)} behavior-first, identity-grounded "
+                        "merchandise artworks with Grok."
+                    ),
                 )
                 return StageResult(
                     input_data=social_input.model_dump(mode="python"),
@@ -1951,9 +2124,12 @@ class DiscoveryStageExecutor:
                 )
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
-                summary = (
-                    f"Generated {len(output.artworks)} identity-focused merchandise artwork "
-                    "candidates with Grok."
+                output, summary = self._note_image_fallback(
+                    output,
+                    (
+                        f"Generated {len(output.artworks)} identity-focused merchandise artwork "
+                        "candidates with Grok."
+                    ),
                 )
                 return StageResult(
                     input_data=identity_input.model_dump(mode="python"),
@@ -1994,7 +2170,10 @@ class DiscoveryStageExecutor:
                 )
                 usage = output.usage
                 self._artworks.replace_for_run(run.run_id, output.artworks)
-                summary = f"Generated {len(output.artworks)} targeted merchandise artwork candidates with Grok."
+                output, summary = self._note_image_fallback(
+                    output,
+                    f"Generated {len(output.artworks)} targeted merchandise artwork candidates with Grok.",
+                )
                 return StageResult(
                     input_data=social_input.model_dump(mode="python"),
                     output_data=output.model_dump(mode="python"),

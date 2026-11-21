@@ -74,7 +74,32 @@ def finished_sticker_direction(candidate) -> str:
         f"Subject: {idea or 'one cute or iconic character that makes the joke land'}. "
         f"{lettering} "
         f"The picture completes the joke: {why or 'the character is the second meaning'}. "
+        f"{_brand_logo_clause(candidate)}"
         "No product mockup, no photo, no extra caption."
+    )
+
+
+def _brand_logo_clause(candidate) -> str:
+    """Tell the image model to rebuild a major logo when this line is a brand spoof."""
+
+    from merchandise_discovery.domain.humor import is_brand_spoof
+    from merchandise_discovery.infrastructure.brand_catalog import style_for
+
+    if not is_brand_spoof(candidate):
+        return ""
+    note = style_for(
+        str(getattr(candidate, "spoof_brand", "") or ""),
+        str(getattr(candidate, "artwork_text", "") or ""),
+        str(getattr(candidate, "image_idea", "") or ""),
+    )
+    if not note:
+        return (
+            "Logo spoof: recreate that major brand's logo shape, colors, and lettering. "
+            "The only words are the new pun. "
+        )
+    return (
+        f"Logo spoof of {note['name']}: {note['style']}. "
+        "Recreate that layout and those colors. The only words are the new pun. "
     )
 
 
