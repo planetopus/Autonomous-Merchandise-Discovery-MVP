@@ -4,7 +4,11 @@ from pathlib import Path
 from unittest.mock import Mock
 
 from merchandise_discovery.application.discovery_stage_executor import DiscoveryStageExecutor
-from merchandise_discovery.domain.humor import LineReview, apply_line_critic
+from merchandise_discovery.domain.humor import (
+    LineReview,
+    apply_jargon_cap,
+    apply_line_critic,
+)
 from merchandise_discovery.domain.models.common import HumorTone, PipelineVariant, SocialSource
 from merchandise_discovery.domain.models.workflow import RunConfig, StageExecution, WorkflowRun
 from merchandise_discovery.domain.pipelines.social_behavior_text import pipeline
@@ -34,6 +38,14 @@ def test_committed_ratings_match_ants_scores() -> None:
     assert "no twist" in ratings["Hands on hips, auditing the beer fridge again."].reason
     assert ratings["BIG BACK DADS WHO 'TEST' THE BRISKET"].verdict == "very funny"
     assert ratings["BIG BACK DADS WHO 'TEST' THE BRISKET"].score == 9
+    jargon = "too techy/inside-baseball"
+    assert ratings["Patch Tuesday ate my raid night again."].score == 2
+    assert ratings["Patch Tuesday ate my raid night again."].verdict == "not funny"
+    assert jargon in ratings["Please open a ticket with HR about Steam."].reason
+    assert ratings["Power-cycle has a 30-second cooldown, Karen."].verdict == "kind of funny"
+    assert ratings["Power-cycle has a 30-second cooldown, Karen."].score == 6
+    assert ratings["ALT-TAB PALADINS OF PRINTER HELL"].score == 6
+    assert "printer hell" in ratings["ALT-TAB PALADINS OF PRINTER HELL"].reason
     assert ratings["GRANDMA HAS RIZZ (SHE GOT YOUR GRANDPA, DIDN'T SHE)"].score == 7
     assert "parenthetical" in ratings[
         "ELDEST DAUGHTER: THIRD PARENT SINCE AGE 6. BUILT DIFFERENT (DAMAGED)."
@@ -57,6 +69,25 @@ def test_ratings_csv_accepts_an_appended_row(tmp_path: Path) -> None:
     assert ratings[-1].line == "New line, still a joke."
     assert ratings[-1].score == 9
     assert ratings[-1].verdict == "funny"
+
+
+def test_insider_jargon_is_capped_and_a_universal_hook_is_not() -> None:
+    """Patch Tuesday needs the jargon. Karen and printer hell can still score a 6."""
+
+    jargon = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=9)
+    apply_jargon_cap(jargon, "Patch Tuesday ate my raid night again.")
+    assert jargon.sticker_buy_score == 5
+    assert jargon.insider_jargon is True
+
+    hook = LineReview(0, 6, 6, 6, sticker_buy_score=6, instantly_understandable=6)
+    apply_jargon_cap(hook, "Power-cycle has a 30-second cooldown, Karen.")
+    assert hook.sticker_buy_score == 6
+    assert hook.insider_jargon is False
+
+    flagged = LineReview(0, 8, 8, 8, sticker_buy_score=8, instantly_understandable=8)
+    flagged.insider_jargon = True
+    apply_jargon_cap(flagged, "Please open a ticket with HR about Steam.")
+    assert flagged.sticker_buy_score == 5
 
 
 def test_unclear_lines_are_dropped_even_when_the_buy_score_is_high() -> None:
@@ -134,3 +165,4 @@ def test_critic_prompt_opens_with_the_owner_ratings() -> None:
     assert "My coffee gets tenure" in critic
     assert "Laminator Survivors" in critic
     assert "instantly_understandable" in critic
+    assert "at most 5" in critic

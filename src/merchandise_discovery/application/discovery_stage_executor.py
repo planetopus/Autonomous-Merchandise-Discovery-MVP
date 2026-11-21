@@ -18,6 +18,7 @@ from merchandise_discovery.domain.humor import (
     NichePairBatch,
     NichePairRecord,
     PlaybookPatternRecord,
+    apply_jargon_cap,
     apply_line_critic,
     critic_average,
     keep_strong_pairs,
@@ -131,6 +132,21 @@ def _saturation_findings(checker, items: list[tuple[str, str]]) -> list:
         )
         for finding in checker.check(items)
     ]
+
+
+def _pair_in_bank(niche_a: str, niche_b: str, bank: list[dict]) -> bool:
+    """True when the model stayed on a pair the atlas sample already offered."""
+
+    left = niche_a.strip().casefold()
+    right = niche_b.strip().casefold()
+    for item in bank:
+        sides = {
+            str(item.get("niche_a", "")).strip().casefold(),
+            str(item.get("niche_b", "")).strip().casefold(),
+        }
+        if sides == {left, right}:
+            return True
+    return False
 
 
 def _social_artwork_candidates(run: WorkflowRun, candidates: list) -> list:
@@ -252,6 +268,7 @@ class DiscoveryStageExecutor:
             elif supplied_a and supplied_b:
                 pair_update["niche_pair_a"] = supplied_a
                 pair_update["niche_pair_b"] = supplied_b
+            pair_update["atlas_subgroups_loaded"] = len(load_identity_atlas().subgroups)
             return output.model_copy(update=pair_update), usage
         except Exception as error:
             if getattr(error, "stage_usage", None) is None:
@@ -281,7 +298,6 @@ class DiscoveryStageExecutor:
         atlas = load_identity_atlas()
         pair_bank = self._atlas_pair_bank(
             atlas,
-            lab.niche_pairs,
             supplied_names[0] if len(supplied_names) == 1 else "",
             self._recent_catalog_terms(run),
         )
@@ -443,7 +459,12 @@ class DiscoveryStageExecutor:
         by_text: dict[str, list[str]] = {}
         for candidate in candidates:
             text = str(getattr(candidate, "artwork_text", "") or "")
-            labels = infer_who_its_for(list(getattr(candidate, "who_its_for", []) or []), names, groups)
+            labels = infer_who_its_for(
+                list(getattr(candidate, "who_its_for", []) or []),
+                names,
+                groups,
+                atlas,
+            )
             by_text[text] = labels
             if hasattr(candidate, "model_copy"):
                 updated.append(candidate.model_copy(update={"who_its_for": labels}))
@@ -451,7 +472,7 @@ class DiscoveryStageExecutor:
                 updated.append(candidate)
         stamped = []
         for review in reviews:
-            labels = by_text.get(review.artwork_text) or infer_who_its_for([], names, groups)
+            labels = by_text.get(review.artwork_text) or infer_who_its_for([], names, groups, atlas)
             stamped.append(review.model_copy(update={"who_its_for": labels}))
         return updated, stamped
 
@@ -623,24 +644,16 @@ class DiscoveryStageExecutor:
     def _atlas_pair_bank(
         self,
         atlas,
-        lab_pairs: list[dict],
         anchor: str,
         avoid: list[str] | None = None,
     ) -> list[dict]:
-        """Prefer unused atlas overlaps, then any humor-lab pairs, when the model must pick."""
+        """Sample broad atlas identities. The old occupation-and-hobby list is not a source."""
 
         sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10, avoid=avoid)
-        bank = [
+        return [
             {"niche_a": item["niche_a"], "niche_b": item["niche_b"]}
             for item in sampled
-        ]
-        seen = {(item["niche_a"].casefold(), item["niche_b"].casefold()) for item in bank}
-        for item in lab_pairs:
-            key = (str(item.get("niche_a", "")).casefold(), str(item.get("niche_b", "")).casefold())
-            if key[0] and key[1] and key not in seen:
-                bank.append({"niche_a": item["niche_a"], "niche_b": item["niche_b"]})
-                seen.add(key)
-        return bank[:12]
+        ][:12]
 
     def _score_niche_pairs(self, input_model, bank: list[dict] | None = None, anchor: list[str] | None = None):
         """Score about ten pairs once and keep the best, even when it is under 7."""
@@ -648,9 +661,10 @@ class DiscoveryStageExecutor:
         identity = (anchor[0] if anchor else "") or str(getattr(input_model, "identity", "") or "")
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
-                "You pair two niches that share a life. Score shared lived experience and "
-                "instant recognizability from 1 to 10. Nurses plus true crime, and dads plus "
-                "grilling, are the kind of pair that should score 7 or higher. "
+                "You pair two broad identities a buyer is proud of: body, age, family, faith, "
+                "region, vice, or personality. Score shared lived experience and instant "
+                "recognizability from 1 to 10. A narrow occupation crossed with a hobby scores "
+                "under 7. Use only pairs from the supplied bank when one is provided. "
                 "Reject a random combo whose traits do not co-occur."
             ),
             user_prompt=niche_pair_request(identity, bank),
@@ -665,17 +679,26 @@ class DiscoveryStageExecutor:
         )
         best = strong[0] if strong else ranked[0]
         warning = ""
-        if not strong:
+        chosen_a = best.niche_a.strip()
+        chosen_b = best.niche_b.strip()
+        chosen_reason = best.reason
+        chosen_score = round((best.shared_life_score + best.recognizability_score) / 2, 2)
+        if bank and not _pair_in_bank(chosen_a, chosen_b, bank):
+            chosen_a = str(bank[0]["niche_a"]).strip()
+            chosen_b = str(bank[0]["niche_b"]).strip()
+            chosen_reason = "Chosen from the identity atlas by buyer pride and broad appeal."
+            chosen_score = None
+        elif not strong:
             warning = (
                 "The best niche pair scored under 7 on shared life or recognizability. "
                 "Using it anyway."
             )
         return (
             {
-                "niche_pair_a": best.niche_a.strip(),
-                "niche_pair_b": best.niche_b.strip(),
-                "pairing_score": round((best.shared_life_score + best.recognizability_score) / 2, 2),
-                "pairing_reason": best.reason,
+                "niche_pair_a": chosen_a,
+                "niche_pair_b": chosen_b,
+                "pairing_score": chosen_score,
+                "pairing_reason": chosen_reason,
                 "niche_pair_candidates": [
                     NichePairRecord(
                         niche_a=pair.niche_a,
@@ -1019,6 +1042,9 @@ class DiscoveryStageExecutor:
                 "Raise sticker_buy_score when comic_turn is ironic or sarcastic and the turn "
                 "is clear. Lower it for a straight observation of a policy or rule. "
                 "A line that only describes the behavior, with no ironic twist, scores under 7. "
+                "If a line needs insider vocabulary a random adult would not know, set "
+                "insider_jargon true and cap instantly_understandable and sticker_buy_score "
+                "at 5. A universal hook, such as Karen or printer hell, is not insider jargon. "
                 "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
                 "but must not decide the cut when the tone is dark. reddit_upvote_score is "
                 "1 to 10 for a generic Reddit upvote. novelty is originality. "
@@ -1037,8 +1063,12 @@ class DiscoveryStageExecutor:
             response_model=HumorCritiqueBatch,
             reasoning_effort="low",
         )
-        reviews = [
-            LineReview(
+        reviews = []
+        for review in response.output.reviews:
+            text = ""
+            if 0 <= review.index < len(candidates):
+                text = str(getattr(candidates[review.index], "artwork_text", "") or "")
+            row = LineReview(
                 index=review.index,
                 humor_landed=review.humor_landed,
                 novelty=review.novelty,
@@ -1047,9 +1077,10 @@ class DiscoveryStageExecutor:
                 reddit_upvote_score=review.reddit_upvote_score,
                 sticker_buy_score=review.sticker_buy_score,
                 instantly_understandable=review.instantly_understandable,
+                insider_jargon=review.insider_jargon,
             )
-            for review in response.output.reviews
-        ]
+            apply_jargon_cap(row, text)
+            reviews.append(row)
         scored = []
         by_index = {review.index: review for review in reviews}
         for index, candidate in enumerate(candidates):
@@ -1077,6 +1108,8 @@ class DiscoveryStageExecutor:
             buy = review.sticker_buy_score if review is not None else None
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
+            elif review is not None and getattr(review, "insider_jargon", False):
+                reason, kept_flag = "insider jargon", False
             elif str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":
                 reason, kept_flag = "no ironic twist", False
             elif member_would_not_buy(review):

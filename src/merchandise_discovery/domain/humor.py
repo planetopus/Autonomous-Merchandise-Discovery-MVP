@@ -1,5 +1,7 @@
 """Humor tone, quote handoff, and the critic that cuts a large line batch."""
 
+import re
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from merchandise_discovery.domain.models.common import HumorTone
@@ -106,15 +108,16 @@ def niche_pair_block(niche_a: str = "", niche_b: str = "", identity: str = "") -
         )
     if named:
         return (
-            f'The user named "{named}" as one side. Choose a second niche whose audience '
-            "genuinely shares a life with that one: a job and a hobby, an identity and a life "
-            "situation, or two communities. Do not stop at a single niche. "
+            f'The user named "{named}" as one side. Choose a second niche from a broad identity '
+            "a buyer is proud of: body, age, family, faith, region, vice, or personality. "
+            "Do not pair it with a narrow occupation or hobby. Do not stop at a single niche. "
             + shared
         )
     return (
         "The user did not name two niches. Before writing jokes, choose two different niches "
-        "whose audiences genuinely share one life experience: a job and a hobby, an identity "
-        "and a life situation, or two communities. Do not pick a single niche or a single topic. "
+        "from broad identities a buyer is proud of: body, age, family, faith, region, vice, "
+        "or personality. Do not cross a narrow occupation with a hobby, and do not pick a "
+        "single niche or a single topic. "
         + shared
     )
 
@@ -237,6 +240,13 @@ class HumorCritiqueItem(BaseModel):
         le=10,
         description="Can a stranger understand the line in under 2 seconds?",
     )
+    insider_jargon: bool = Field(
+        default=False,
+        description=(
+            "True when the joke needs vocabulary a random adult would not know. "
+            "A universal hook such as Karen or printer hell is not insider jargon."
+        ),
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -280,6 +290,7 @@ class LineReview:
         reddit_upvote_score: float | None = None,
         sticker_buy_score: float | None = None,
         instantly_understandable: float | None = None,
+        insider_jargon: bool = False,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -289,6 +300,7 @@ class LineReview:
         self.reddit_upvote_score = reddit_upvote_score
         self.sticker_buy_score = sticker_buy_score
         self.instantly_understandable = instantly_understandable
+        self.insider_jargon = insider_jargon
 
 
 def critic_average(review) -> float | None:
@@ -323,6 +335,43 @@ def member_would_not_buy(review) -> bool:
     if sticker is not None:
         return float(sticker) < 7
     return reddit is not None and float(reddit) < 7
+
+
+_INSIDER_JARGON = ("patch tuesday", "boss pull", "raid night", "nerfed", "rmm", "vpn")
+
+
+def needs_insider_vocabulary(text: str) -> bool:
+    """A line whose joke requires words a random adult would not know.
+
+    A universal hook such as Karen or printer hell can land inside a niche, so those
+    lines are not capped as jargon.
+    """
+
+    lowered = " ".join(str(text or "").casefold().split())
+    if re.search(r"\bkaren\b", lowered) or re.search(r"\bprinter\b", lowered):
+        return False
+    return any(re.search(rf"\b{re.escape(term)}\b", lowered) for term in _INSIDER_JARGON)
+
+
+def apply_jargon_cap(review, text: str):
+    """Cap a jargon line at 5. Universal hooks keep the score the critic gave them."""
+
+    if review is None:
+        return review
+    jargon = bool(getattr(review, "insider_jargon", False)) or needs_insider_vocabulary(text)
+    if not jargon:
+        return review
+    review.insider_jargon = True
+    for name in (
+        "humor_landed",
+        "sticker_buy_score",
+        "instantly_understandable",
+        "reddit_upvote_score",
+    ):
+        value = getattr(review, name, None)
+        if value is not None and float(value) > 5:
+            setattr(review, name, 5.0)
+    return review
 
 
 def keep_strong_pairs(pairs: list) -> list:
@@ -362,16 +411,24 @@ def niche_pair_request(identity: str = "", bank: list[dict] | None = None) -> st
         )
         if rendered:
             bank_lines = (
-                "Score pairs from this bank first. Use one when its audiences really "
-                "co-occur. Add a new pair only when none of these fit, and only if the "
-                "traits genuinely co-occur.\n"
+                "Score only pairs from this bank. The bank is already weighted by buyer pride "
+                "and broad appeal. Do not add a pair that is not listed, and do not cross a "
+                "narrow occupation with a hobby.\n"
                 f"{rendered}\n"
             )
+    else:
+        bank_lines = (
+            "No identity-atlas bank was loaded. Choose broad identities only: body, age, "
+            "family, faith, region, vice, or personality. Do not cross a narrow occupation "
+            "with a hobby.\n"
+        )
     return (
         "Propose about 10 niche pairs for die-cut stickers. "
-        "A good pair is two audiences that genuinely share a life, recognizable in one line. "
+        "A good pair is two broad identities that genuinely share a life: body, age, family, "
+        "faith, region, vice, or personality. "
         "The traits must co-occur in a real group. Never propose a random combo. "
         "Do not prefer dads, nurses, or morticians. Cover identities that have not been used. "
+        "Do not propose a narrow occupation crossed with a hobby.\n"
         "Score each pair from 1 to 10 on shared_life_score (one person really lives both) "
         "and recognizability_score (a stranger gets the collision immediately). "
         "Do not propose a pair you would score under 7 on either axis.\n"
@@ -393,6 +450,7 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
     seen: set[str] = set()
     for index, candidate in enumerate(candidates):
         review = by_index.get(index)
+        apply_jargon_cap(review, str(getattr(candidate, "artwork_text", "") or ""))
         humor = review.humor_landed if review is not None else 5.0
         novelty = review.novelty if review is not None else 5.0
         tone_match = review.tone_match if review is not None else 5.0

@@ -16,9 +16,33 @@ from merchandise_discovery.infrastructure.humor_reference_loader import humor_cs
 _NAME_KEYS = ("name", "label", "subgroup", "identity", "id", "title")
 _LIST_KEYS = {
     "traits": ("traits", "true_traits", "trueTraits"),
-    "self_words": ("self_words", "selfWords", "insider_words", "words_they_use"),
-    "outsider_words": ("outsider_words", "outsiderWords", "words_outsiders_use"),
+    "self_words": ("self_words", "selfWords", "insider_words", "words_they_use", "self_terms"),
+    "outsider_words": ("outsider_words", "outsiderWords", "words_outsiders_use", "outsider_terms"),
     "overlaps": ("overlaps", "co_occurrences", "cooccurrences", "co_occurring", "overlaps_with"),
+}
+# Auto niche picks stay on identities a buyer is proud of, not a job crossed with a hobby.
+BROAD_APPEAL_PARENTS = {
+    "body & looks": "body",
+    "life stages": "age",
+    "generations": "age",
+    "family roles": "family",
+    "religion & church": "faith",
+    "us regions": "region",
+    "small town & rural": "region",
+    "vices & habits": "vice",
+    "personality & temperament": "personality",
+}
+_BROAD_DIMENSIONS = set(BROAD_APPEAL_PARENTS.values())
+_ACRONYMS = {
+    "it": "IT",
+    "hr": "HR",
+    "er": "ER",
+    "icu": "ICU",
+    "adhd": "ADHD",
+    "ocd": "OCD",
+    "rv": "RV",
+    "dnd": "D&D",
+    "usa": "USA",
 }
 
 
@@ -27,6 +51,7 @@ class IdentitySubgroup:
     """One atlas subgroup, with only the fields the prompts actually use."""
 
     name: str
+    subgroup_id: str = ""
     parent: str = ""
     dimension: str = ""
     traits: list[str] = field(default_factory=list)
@@ -67,20 +92,32 @@ class IdentityAtlas:
     combos: list[OverlapCombo] = field(default_factory=list)
 
     def lookup(self, name: str) -> IdentitySubgroup | None:
-        """Match a user or model name to one subgroup, ignoring case and extra words."""
+        """Match a display name or a raw id, ignoring case and extra words."""
 
         key = name.casefold().strip()
         if not key:
             return None
-        exact = [item for item in self.subgroups if item.name.casefold() == key]
-        if exact:
-            return exact[0]
+        indexed = self._index().get(key)
+        if indexed is not None:
+            return indexed
         partial = [
             item
             for item in self.subgroups
             if item.name.casefold() in key or key in item.name.casefold()
         ]
         return partial[0] if partial else None
+
+    def _index(self) -> dict[str, IdentitySubgroup]:
+        cached = getattr(self, "_lookup_index", None)
+        if cached is not None:
+            return cached
+        index: dict[str, IdentitySubgroup] = {}
+        for item in self.subgroups:
+            index.setdefault(item.name.casefold(), item)
+            if item.subgroup_id:
+                index.setdefault(item.subgroup_id.casefold(), item)
+        self._lookup_index = index
+        return index
 
 
 def find_identity_atlas_dir(starts: list[Path] | None = None) -> Path | None:
@@ -158,10 +195,20 @@ def sample_overlap_pairs(
     anchor_key = anchor.casefold().strip()
 
     def add(weight: float, names: list[str], detail: str = "", hook: str = "") -> None:
-        cleaned = [name.strip() for name in names if name and name.strip()]
-        if len(cleaned) < 2:
+        raw = [name.strip() for name in names if name and name.strip()]
+        if len(raw) < 2:
             return
-        if anchor_key and not any(anchor_key in name.casefold() or name.casefold() in anchor_key for name in cleaned):
+        groups = [atlas.lookup(name) for name in raw]
+        if any(is_narrow_identity(group) for group in groups):
+            return
+        cleaned = [
+            group.name if group is not None else humanize_label(name)
+            for name, group in zip(raw, groups, strict=True)
+        ]
+        if anchor_key and not any(
+            anchor_key in name.casefold() or name.casefold() in anchor_key
+            for name in cleaned + raw
+        ):
             return
         key = tuple(sorted(name.casefold() for name in cleaned))
         if key in seen:
@@ -210,34 +257,108 @@ def sample_overlap_pairs(
     return chosen
 
 
+def appeal_of(group: IdentitySubgroup | None) -> str:
+    """Return body, age, family, faith, region, vice, or personality when the group is one."""
+
+    if group is None:
+        return ""
+    for raw in (group.parent, group.dimension):
+        key = raw.casefold().strip()
+        if key in BROAD_APPEAL_PARENTS:
+            return BROAD_APPEAL_PARENTS[key]
+        if key in _BROAD_DIMENSIONS:
+            return key
+    return ""
+
+
+def is_narrow_identity(group: IdentitySubgroup | None) -> bool:
+    """A known job, hobby, or fandom. Unknown fixtures are not treated as narrow."""
+
+    if group is None or appeal_of(group):
+        return False
+    return bool((group.parent or group.dimension).strip())
+
+
+def humanize_label(value: str) -> str:
+    """Turn a raw id into words. Display names that already have spaces stay as written."""
+
+    text = " ".join(str(value or "").split())
+    if not text or " " in text or "_" not in text:
+        return text
+    words = []
+    for part in text.split("_"):
+        words.append(_ACRONYMS.get(part.casefold(), part.capitalize()))
+    return " ".join(word for word in words if word)
+
+
+def display_name(value: str, atlas: IdentityAtlas | None = None) -> str:
+    """Use the atlas name for an id, otherwise readable words."""
+
+    text = " ".join(str(value or "").split())
+    if not text:
+        return ""
+    if atlas is not None:
+        found = atlas.lookup(text)
+        if found is not None and (
+            text.casefold() == found.subgroup_id.casefold() or ("_" in text and " " not in text)
+        ):
+            return found.name
+        if found is not None and text.casefold() == found.name.casefold():
+            return found.name
+    return humanize_label(text)
+
+
 def infer_who_its_for(
     labels: list[str] | None,
     names: list[str],
     groups: list[IdentitySubgroup] | None = None,
+    atlas: IdentityAtlas | None = None,
 ) -> list[str]:
-    """Return 2 to 4 plain buyer categories from the model, the atlas, or the niche names."""
+    """Return 2 to 4 readable buyer categories for the line's real audience."""
 
     collected: list[str] = []
+    chosen: set[str] = set()
+    for name in names:
+        for part in re.split(r"\s+\+\s+|,\s*", name):
+            found = atlas.lookup(part) if atlas is not None else None
+            if found is not None:
+                chosen.add(found.name.casefold())
+                if found.subgroup_id:
+                    chosen.add(found.subgroup_id.casefold())
+            elif part.strip():
+                chosen.add(part.casefold())
 
     def add(value: object) -> None:
-        text = " ".join(str(value or "").split())
-        if not text or len(text) > 40:
+        text = display_name(str(value or ""), atlas)
+        if not text or len(text) > 40 or "_" in text:
             return
         if text.casefold() in {item.casefold() for item in collected}:
             return
         collected.append(text)
 
+    def extra_overlap(value: str) -> bool:
+        if atlas is None:
+            return "_" in value and " " not in value
+        found = atlas.lookup(value)
+        if found is None:
+            return "_" in value and " " not in value
+        key = value.casefold().strip()
+        id_like = key == found.subgroup_id.casefold() or ("_" in value and " " not in value)
+        if not id_like:
+            return False
+        return found.name.casefold() not in chosen and found.subgroup_id.casefold() not in chosen
+
     for label in labels or []:
+        if extra_overlap(str(label)):
+            continue
         add(label)
-    for group in groups or []:
-        add(group.name)
-        if group.parent:
-            add(group.parent)
-        for overlap in group.overlaps[:2]:
-            add(overlap)
     for name in names:
         for part in re.split(r"\s+\+\s+|,\s*", name):
             add(part)
+    for group in groups or []:
+        add(group.name)
+        if group.parent and appeal_of(group):
+            add(group.parent)
     if len(collected) == 1:
         add("people who know them")
     if len(collected) < 2:
@@ -329,7 +450,8 @@ def _read_subgroups(path: Path) -> list[IdentitySubgroup]:
         groups.append(
             IdentitySubgroup(
                 name=name,
-                parent=_text(item, "parent", "group", "category"),
+                subgroup_id=_text(item, "id"),
+                parent=_text(item, "parent", "group", "category", "parent_group"),
                 dimension=_text(item, "dimension", "axis", "type"),
                 traits=_texts(item, *_LIST_KEYS["traits"]),
                 self_words=_texts(item, *_LIST_KEYS["self_words"]),
@@ -365,7 +487,9 @@ def _read_combos(path: Path) -> list[OverlapCombo]:
     rows = _rows(path, "combos", "overlaps", "pairs", "items")
     combos = []
     for item in rows:
-        names = _texts(item, "names", "subgroups", "identities", "combo", "groups")
+        names = _texts(item, "subgroup_names", "names", "identities")
+        if len(names) < 2:
+            names = _texts(item, "subgroups", "combo", "groups")
         if len(names) < 2:
             first = _text(item, "niche_a", "a", "name")
             second = _text(item, "niche_b", "b")
@@ -376,9 +500,16 @@ def _read_combos(path: Path) -> list[OverlapCombo]:
         combos.append(
             OverlapCombo(
                 names=names[:3],
-                shared_detail=_text(item, "shared_detail", "detail", "shared"),
+                shared_detail=_text(item, "shared_detail", "detail", "shared", "shared_truth"),
                 slang_hook=_text(item, "slang_hook", "hook", "slang"),
-                buyer_pride=_number(item, 0.0, "buyer_pride", "buyerPride", "buyer_pride_score"),
+                buyer_pride=_number(
+                    item,
+                    0.0,
+                    "buyer_pride",
+                    "buyerPride",
+                    "buyer_pride_score",
+                    "min_buyer_pride",
+                ),
             )
         )
     return combos

@@ -4,7 +4,9 @@ import random
 from unittest.mock import Mock
 
 from merchandise_discovery.application.discovery_stage_executor import DiscoveryStageExecutor
+from merchandise_discovery.domain.humor import NichePairBatch, NichePairCandidate
 from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource
+from merchandise_discovery.domain.models.usage import UsageMetrics
 from merchandise_discovery.domain.models.workflow import RunConfig, StageExecution, WorkflowRun
 from merchandise_discovery.domain.pipelines.social_behavior_text import pipeline
 from merchandise_discovery.infrastructure.identity_atlas_loader import (
@@ -14,6 +16,7 @@ from merchandise_discovery.infrastructure.identity_atlas_loader import (
     SlangTerm,
     diversity_factor,
     infer_who_its_for,
+    is_narrow_identity,
     load_identity_atlas,
     sample_overlap_pairs,
     split_identity_names,
@@ -207,7 +210,8 @@ def test_live_run_feeds_atlas_traits_slang_and_self_ownable_notes(monkeypatch) -
     executor = DiscoveryStageExecutor(*(Mock() for _ in range(10)))
     executor._reasoning_provider = provider
 
-    executor.execute(run, stage, executor.prepare(run, stage))
+    result = executor.execute(run, stage, executor.prepare(run, stage))
+    assert result.output_data["atlas_subgroups_loaded"] == 1
 
     writer = next(
         call.kwargs["user_prompt"]
@@ -223,3 +227,58 @@ def test_live_run_feeds_atlas_traits_slang_and_self_ownable_notes(monkeypatch) -
     assert "delulu" in writer
     assert "Do not mock the faith" in critic
     assert provider.complete_structured.call_count == 2
+
+
+def test_published_atlas_loads_and_the_auto_pick_stays_broad() -> None:
+    """Runtime loads the published atlas, and occupation-by-hobby pairs are not sampled."""
+
+    from types import SimpleNamespace
+
+    atlas = load_identity_atlas()
+    assert len(atlas.subgroups) >= 500
+    support = atlas.lookup("it_support")
+    assert support is not None
+    assert support.name == "IT support"
+    assert is_narrow_identity(support)
+    picked = sample_overlap_pairs(atlas, limit=10, rng=random.Random(0))
+    assert picked
+    for item in picked:
+        for side in [item["niche_a"], *item["niche_b"].split(" + ")]:
+            group = atlas.lookup(side)
+            assert group is None or not is_narrow_identity(group)
+            assert "_" not in side
+
+    buyers = infer_who_its_for(
+        ["Gamers", "energy_drink_people", "introverts", "it_support"],
+        ["it_support", "gamers"],
+        None,
+        atlas,
+    )
+    assert buyers[0] == "Gamers"
+    assert "IT support" in buyers
+    assert "Energy drink addicts" not in buyers
+    assert all("_" not in label for label in buyers)
+
+    executor = DiscoveryStageExecutor(*(Mock() for _ in range(10)))
+    provider = Mock()
+    provider.complete_structured.return_value = SimpleNamespace(
+        output=NichePairBatch(
+            pairs=[
+                NichePairCandidate(
+                    niche_a="IT support",
+                    niche_b="Gamers",
+                    shared_life_score=9,
+                    recognizability_score=9,
+                    reason="Both sit at a computer.",
+                )
+            ]
+        ),
+        usage=UsageMetrics(),
+    )
+    executor._reasoning_provider = provider
+    bank = [{"niche_a": "Church dads", "niche_b": "Vapers"}]
+    meta, _usage, warning = executor._score_niche_pairs(SimpleNamespace(identity=""), bank, [])
+    assert meta["niche_pair_a"] == "Church dads"
+    assert meta["niche_pair_b"] == "Vapers"
+    assert warning == ""
+    assert "identity atlas" in meta["pairing_reason"]

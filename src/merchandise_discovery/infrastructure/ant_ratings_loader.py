@@ -95,7 +95,10 @@ def ant_calibration_block(ratings: list[AntRating]) -> str:
             "a parenthetical twist at the end. "
             "Disliked: vague sigma with no vivid detail, tired ex jokes, weak comparisons, "
             "and a line that only describes the behavior with no ironic twist. "
-            "A behavior description with no twist scores under 7."
+            "A behavior description with no twist scores under 7. "
+            "Insider jargon a random adult would not know scores at most 5. "
+            "A universal hook, such as Karen or printer hell, can still be kind of funny "
+            "inside a niche."
         )
     ]
     for rating in ratings:

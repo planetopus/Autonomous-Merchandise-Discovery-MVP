@@ -110,7 +110,8 @@ def test_live_run_uses_the_lab_bank_gold_lines_and_rubric(monkeypatch) -> None:
 
     prompts = [call.kwargs.get("user_prompt", "") for call in provider.complete_structured.call_args_list]
     systems = [call.kwargs.get("system_prompt", "") for call in provider.complete_structured.call_args_list]
-    assert any("church dads" in prompt for prompt in prompts)
+    assert any("broad appeal" in prompt.casefold() for prompt in prompts)
+    assert not any("weekend grilling" in prompt.casefold() for prompt in prompts)
     assert any("the lab example line stays off the sticker" in prompt for prompt in prompts)
     assert any("Never output these lines" in prompt for prompt in prompts)
     assert any("LAB RUBRIC" in prompt for prompt in systems)
