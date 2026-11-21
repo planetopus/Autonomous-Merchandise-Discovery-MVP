@@ -5,8 +5,10 @@ from merchandise_discovery.domain.humor_references import (
     HumorReference,
     HumorReferenceLoadError,
     copied_from_source,
+    extract_market_signal,
     humor_reference_id,
     is_too_similar_to_references,
+    market_signal_prompt,
     select_humor_references,
 )
 from merchandise_discovery.domain.models.common import HumorTone
@@ -143,6 +145,33 @@ def test_bundled_humor_csv_matches_the_synced_file_shape() -> None:
     selection = select_humor_references(parsed, tone=HumorTone.DRY, niches=["mechanics"])
     assert all(not item.is_theme for item in selection.examples)
     assert len(selection.themes) == 3
+
+
+def test_selling_rows_are_market_signal_and_not_joke_examples() -> None:
+    """New columns are kept. The prompt names the trend and does not quote the product line."""
+
+    body = (
+        "sticker_text_or_idea,sales,identity,theme,hook,marketplace,notes\n"
+        "Do not show me your rash,1200,nurses,shift life,badge reel,etsy,ignore me\n"
+        "AI slop (theme),40,office workers,ai slop,,redbubble,\n"
+    )
+    parsed = parse_humor_reference_csv(body)
+
+    assert parsed[0].niche == "nurses"
+    assert parsed[0].demand == 1200
+    assert parsed[0].hook == "badge reel"
+    assert parsed[0].theme == "shift life"
+    assert parsed[0].upvotes == 0
+    assert parsed[1].is_theme is True
+    signal = extract_market_signal(parsed)
+    prompt = market_signal_prompt(signal)
+    assert "nurses" in signal.identities
+    assert "badge reel" in signal.hooks
+    assert any("slop" in theme for theme in signal.themes)
+    assert "Do not show me your rash" not in prompt
+    assert "Market signal" in prompt
+    assert is_too_similar_to_references("Do not show me your rash", parsed)
+    assert signal.token_weights["nurses"] > signal.token_weights.get("office", 0)
 
 
 def test_csv_marks_theme_rows_and_hashes_text() -> None:

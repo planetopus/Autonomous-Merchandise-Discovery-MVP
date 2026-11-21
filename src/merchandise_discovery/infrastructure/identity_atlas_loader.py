@@ -184,8 +184,9 @@ def sample_overlap_pairs(
     limit: int = 10,
     rng: random.Random | None = None,
     avoid: list[str] | None = None,
+    trend: dict[str, float] | None = None,
 ) -> list[dict]:
-    """Sample real overlaps, weighted by buyer-pride, for the niche-pair call."""
+    """Sample real overlaps, weighted by buyer-pride and what is selling."""
 
     if not atlas.subgroups and not atlas.combos:
         return []
@@ -216,7 +217,7 @@ def sample_overlap_pairs(
         seen.add(key)
         weighted.append(
             (
-                max(weight, 0.1),
+                max(weight, 0.1) * _trend_factor(cleaned + raw, trend),
                 {
                     "niche_a": cleaned[0],
                     "niche_b": " + ".join(cleaned[1:]),
@@ -255,6 +256,21 @@ def sample_overlap_pairs(
         for token in _identity_tokens([pick["niche_a"], pick["niche_b"]]):
             counts[token] = counts.get(token, 0) + 1
     return chosen
+
+
+def _trend_factor(names: list[str], trend: dict[str, float] | None) -> float:
+    """Boost a pair whose identity tokens are in the selling signal. Unlisted pairs stay at 1."""
+
+    if not trend:
+        return 1.0
+    factor = 1.0
+    seen: set[str] = set()
+    for token in _identity_tokens(names):
+        boost = trend.get(token)
+        if boost and token not in seen:
+            seen.add(token)
+            factor *= boost
+    return min(factor, 4.0)
 
 
 def appeal_of(group: IdentitySubgroup | None) -> str:

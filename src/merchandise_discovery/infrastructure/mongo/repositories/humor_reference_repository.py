@@ -35,16 +35,26 @@ def _from_document(document: dict) -> HumorReference:
     mongo_id = payload.pop("_id", None)
     text = str(payload.get("text") or payload.get("sticker_text_or_idea") or "").strip()
     flagged = bool(payload.get("is_theme"))
+    niche = str(payload.get("niche") or payload.get("identity") or payload.get("identities") or "")
+    sales = _as_int(
+        payload.get("demand")
+        or payload.get("sales")
+        or payload.get("units_sold")
+        or payload.get("upvotes")
+    )
     reference = HumorReference(
         text=text or "untitled",
         upvotes=_as_int(payload.get("upvotes")),
         humor_type=str(payload.get("humor_type") or ""),
-        niche=str(payload.get("niche") or ""),
-        subreddit=str(payload.get("subreddit") or ""),
-        post_url=str(payload.get("post_url") or ""),
+        niche=niche,
+        subreddit=str(payload.get("subreddit") or payload.get("source") or ""),
+        post_url=str(payload.get("post_url") or payload.get("url") or ""),
         date_found=str(payload.get("date_found") or ""),
         is_theme=text_is_theme(text, flagged),
-        reference_id=str(payload.get("reference_id") or mongo_id or humor_reference_id(text)),
+        reference_id=str(payload.get("reference_id") or mongo_id or humor_reference_id(text or "untitled")),
+        hook=str(payload.get("hook") or payload.get("hooks") or ""),
+        theme=str(payload.get("theme") or payload.get("topic") or ""),
+        demand=sales,
     )
     return reference
 

@@ -1,8 +1,7 @@
-"""Regenerate data/humor_playbook.json from data/humor_references.csv.
+"""Regenerate data/humor_playbook.json from the hand-authored shapes.
 
+The sales CSV is not a joke sample, so this snapshot no longer copies its lines.
 A nightly job can run `python scripts/regenerate_humor_playbook.py`.
-The Streamlit run does not write this file; it rebuilds the same patterns
-from the rows it loaded for that run.
 """
 
 from pathlib import Path

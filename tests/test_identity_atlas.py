@@ -78,6 +78,28 @@ def test_loader_accepts_wrapped_objects_and_alternate_keys(tmp_path) -> None:
     assert load_identity_atlas(tmp_path / "missing").subgroups == []
 
 
+def test_selling_identities_are_sampled_ahead_of_equal_pride() -> None:
+    """A trending atlas identity outranks an equal-pride pair the market is not selling."""
+
+    atlas = IdentityAtlas(
+        combos=[
+            OverlapCombo(names=["Church dads", "Vaping"], buyer_pride=5),
+            OverlapCombo(names=["ADHD folks", "Coffee"], buyer_pride=5),
+        ]
+    )
+    hits = 0
+    for seed in range(30):
+        picked = sample_overlap_pairs(
+            atlas,
+            limit=1,
+            rng=random.Random(seed),
+            trend={"adhd": 4.0},
+        )
+        if picked and picked[0]["niche_a"] == "ADHD folks":
+            hits += 1
+    assert hits >= 22
+
+
 def test_overlap_sampling_prefers_buyer_pride() -> None:
     """A high buyer-pride combo is chosen far more often than a low-pride one."""
 

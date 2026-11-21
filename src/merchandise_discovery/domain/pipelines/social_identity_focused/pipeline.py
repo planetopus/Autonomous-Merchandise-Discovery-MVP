@@ -132,6 +132,9 @@ class SocialIdentityTextOutput(BaseModel):
     humor_playbook_used: list[PlaybookPatternRecord] = Field(default_factory=list)
     stage_warning: str = ""
     atlas_subgroups_loaded: int = 0
+    market_identities: list[str] = Field(default_factory=list)
+    market_themes: list[str] = Field(default_factory=list)
+    market_hooks: list[str] = Field(default_factory=list)
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
