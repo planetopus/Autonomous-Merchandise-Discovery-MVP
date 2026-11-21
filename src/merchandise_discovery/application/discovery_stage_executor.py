@@ -95,6 +95,7 @@ from merchandise_discovery.infrastructure.identity_atlas_loader import (
     split_identity_names,
     subgroup_context,
 )
+from merchandise_discovery.infrastructure.line_categorizer import attach_categories
 from merchandise_discovery.infrastructure.mongo.repositories.artwork_repository import (
     ArtworkRepository,
 )
@@ -134,6 +135,12 @@ def _saturation_findings(checker, items: list[tuple[str, str]]) -> list:
         )
         for finding in checker.check(items)
     ]
+
+
+def _social_output_data(output) -> dict:
+    """Persist the stage and the shop categories for every final line."""
+
+    return attach_categories(output.model_dump(mode="python"))
 
 
 def _pair_in_bank(niche_a: str, niche_b: str, bank: list[dict]) -> bool:
@@ -1637,7 +1644,7 @@ class DiscoveryStageExecutor:
                 )
                 return StageResult(
                     input_data=input_data,
-                    output_data=output.model_dump(mode="python"),
+                    output_data=_social_output_data(output),
                     output_summary=summary,
                     usage=usage,
                 )
@@ -1682,7 +1689,7 @@ class DiscoveryStageExecutor:
                 )
                 return StageResult(
                     input_data=input_data,
-                    output_data=output.model_dump(mode="python"),
+                    output_data=_social_output_data(output),
                     output_summary=summary,
                     usage=usage,
                 )
@@ -1725,7 +1732,7 @@ class DiscoveryStageExecutor:
                 )
                 return StageResult(
                     input_data=input_data,
-                    output_data=output.model_dump(mode="python"),
+                    output_data=_social_output_data(output),
                     output_summary=summary,
                     usage=usage,
                 )
@@ -1768,7 +1775,7 @@ class DiscoveryStageExecutor:
                 )
                 return StageResult(
                     input_data=input_data,
-                    output_data=output.model_dump(mode="python"),
+                    output_data=_social_output_data(output),
                     output_summary=summary,
                     usage=usage,
                 )

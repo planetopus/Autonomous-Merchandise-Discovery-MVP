@@ -57,6 +57,20 @@ def _render_manual_artwork_selection(
                     identity_type = candidate.get("identity_type", "other")
                     identity_type = getattr(identity_type, "value", identity_type)
                     st.caption(f"Audience: {candidate['identity']} · {identity_type}")
+                if candidate.get("main_category"):
+                    st.caption(f"Category: {candidate['main_category']}")
+                secondary = candidate.get("secondary_categories") or []
+                if secondary:
+                    st.caption("Also: " + " · ".join(str(item) for item in secondary))
+                tags = candidate.get("tags") or []
+                if tags:
+                    st.caption("Tags: " + ", ".join(str(item) for item in tags))
+                if candidate.get("website_title"):
+                    st.caption(f"Website title: {candidate['website_title']}")
+                if candidate.get("ebay_title"):
+                    st.caption(f"eBay title: {candidate['ebay_title']}")
+                if candidate.get("slug"):
+                    st.caption(f"Slug: {candidate['slug']}")
                 if candidate.get("behavior"):
                     st.write(f"**Behavior:** {candidate['behavior']}")
                 if candidate.get("friction_or_pressure"):
