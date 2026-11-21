@@ -162,6 +162,12 @@ def _render_social_behavior_text(
     niche_b = str(request.get("niche_b") or "").strip()
     pair_a = str(payload.get("niche_pair_a") or niche_a).strip()
     pair_b = str(payload.get("niche_pair_b") or niche_b).strip()
+    loaded = payload.get("atlas_subgroups_loaded")
+    if loaded is None:
+        from merchandise_discovery.infrastructure.identity_atlas_loader import load_identity_atlas
+
+        loaded = len(load_identity_atlas().subgroups)
+    st.caption(f"atlas: {int(loaded)} subgroups loaded")
     if pair_a and pair_b:
         score = payload.get("pairing_score")
         score_text = f" (pairing score {score}/10)" if score is not None else ""

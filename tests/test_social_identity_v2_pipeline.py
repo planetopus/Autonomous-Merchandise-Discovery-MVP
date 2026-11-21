@@ -196,7 +196,9 @@ def test_identity_v2_uses_one_prompt_focused_provider_call() -> None:
     assert "two unmistakable contextual cues" in call["system_prompt"]
     assert "Target identity: bedside nurses" in call["user_prompt"]
     assert "absurd_identity_stack" in call["user_prompt"]
-    assert "nurses" in call["user_prompt"] and "true crime" in call["user_prompt"]
+    assert result.output_data["niche_pair_a"].casefold() in call["user_prompt"].casefold()
+    assert result.output_data["niche_pair_b"].casefold() in call["user_prompt"].casefold()
+    assert result.output_data["niche_pair_a"].casefold() != "nurses"
     assert result.usage.request_count >= 2
     assert result.output_data["candidates"][0]["artwork_text"].startswith("I'm Not Being Rude")
 

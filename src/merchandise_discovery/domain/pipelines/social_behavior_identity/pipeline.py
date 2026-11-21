@@ -74,6 +74,7 @@ class BehaviorIdentityOutput(BaseModel):
     niche_pair_candidates: list[NichePairRecord] = Field(default_factory=list)
     humor_playbook_used: list[PlaybookPatternRecord] = Field(default_factory=list)
     stage_warning: str = ""
+    atlas_subgroups_loaded: int = 0
 
     @model_validator(mode="before")
     @classmethod

@@ -6,6 +6,8 @@ These scores mean whether the **target group and most people** would find the li
 
 A line that only describes the behavior, with no ironic twist, scores under 7.
 
+Insider jargon a random adult would not know scores at most 5. A universal hook, such as Karen or printer hell, can still be kind of funny inside a niche.
+
 Reusable shapes, not topics: Gen Z slang on a group that does not talk that way; quotation marks around a polite excuse; a parenthetical twist at the end. Fill each shape with whatever identity is in front of you.
 
 Judge like a tough crowd that also has $5 to spend on a sticker.

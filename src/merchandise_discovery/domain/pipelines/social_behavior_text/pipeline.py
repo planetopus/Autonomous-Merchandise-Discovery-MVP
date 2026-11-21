@@ -108,6 +108,7 @@ class SocialBehaviorTextOutput(BaseModel):
     niche_pair_candidates: list[NichePairRecord] = Field(default_factory=list)
     humor_playbook_used: list[PlaybookPatternRecord] = Field(default_factory=list)
     stage_warning: str = ""
+    atlas_subgroups_loaded: int = 0
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
