@@ -14,6 +14,7 @@ from typing import Any
 import streamlit as st
 
 from merchandise_discovery.domain.models.common import IdentityType, StageStatus
+from merchandise_discovery.domain.sticker_direction import sticker_download_name
 from merchandise_discovery.ui.fixtures import StageFixture
 
 PayloadRenderer = Callable[[dict[str, Any]], None]
@@ -726,6 +727,7 @@ def _render_sticker_grid(artworks: list[dict[str, Any]]) -> None:
     """Show up to five finished stickers with the line, the buyer, and a download."""
 
     columns = st.columns(len(artworks))
+    used_names: set[str] = set()
     for column, artwork in zip(columns, artworks):
         with column:
             text = _text(artwork, "combination_name", default="Sticker")
@@ -743,7 +745,7 @@ def _render_sticker_grid(artworks: list[dict[str, Any]]) -> None:
                 st.download_button(
                     "Download",
                     data=path.read_bytes(),
-                    file_name=f"{path.stem}.png",
+                    file_name=sticker_download_name(text, used_names),
                     mime="image/png",
                     key=f"download-{artwork.get('artwork_id', path.name)}",
                 )

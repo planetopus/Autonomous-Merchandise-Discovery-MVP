@@ -294,6 +294,43 @@ def is_brand_spoof(candidate) -> bool:
     return bool(str(getattr(candidate, "spoof_brand", "") or "").strip())
 
 
+def _kept_score(candidate) -> float:
+    value = getattr(candidate, "funny_score", None)
+    try:
+        return float(value) if value is not None else 0.0
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def order_kept_lines(candidates: list, keep_count: int) -> list:
+    """Highest scores first, after two brand spoofs and three puns are seated."""
+
+    if keep_count < 5:
+        return candidates[:keep_count]
+    ranked = sorted(candidates, key=_kept_score, reverse=True)
+    spoofs = [item for item in ranked if is_brand_spoof(item)]
+    puns = [item for item in ranked if line_is_pun(item) and not is_brand_spoof(item)]
+    chosen: list = []
+    chosen_ids: set[int] = set()
+
+    def take(pool: list, count: int) -> None:
+        left = count
+        for item in pool:
+            if left <= 0 or len(chosen) >= keep_count:
+                return
+            if id(item) in chosen_ids:
+                continue
+            chosen.append(item)
+            chosen_ids.add(id(item))
+            left -= 1
+
+    take(spoofs, 2)
+    pun_have = sum(1 for item in chosen if line_is_pun(item) or is_brand_spoof(item))
+    take(puns, max(0, 3 - pun_have))
+    take(ranked, keep_count - len(chosen))
+    return chosen
+
+
 def brand_spoofs_needed(keep_count: int, spoof_count: int) -> int:
     """A final batch of five must include two major-brand logo spoofs."""
 

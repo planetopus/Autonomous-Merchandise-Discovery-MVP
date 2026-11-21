@@ -32,6 +32,7 @@ from merchandise_discovery.domain.humor import (
     line_is_pun,
     member_would_not_buy,
     niche_pair_request,
+    order_kept_lines,
     primary_wit_share,
     pun_examples_block,
     pun_share_is_thin,
@@ -578,8 +579,10 @@ class DiscoveryStageExecutor:
         if not candidates and usable:
             warnings.append("No line cleared the critic. Showing the drafted lines anyway.")
             candidates = usable[: input_model.candidate_count]
-        ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
-        ordered = self._order_with_pun_quota(ordered, input_model.candidate_count) or ordered
+        if input_model.candidate_count >= 5:
+            ordered = order_kept_lines(candidates, input_model.candidate_count) or candidates[:1]
+        else:
+            ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
         ordered, reviews = self._apply_who_its_for(ordered, reviews, atlas, chosen_names)
         ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
         if sale_note:

@@ -56,13 +56,25 @@ OPENAI_IMAGE_MODEL = "gpt-image-1"
 OPENAI_IMAGE_PRICE = 0.04
 
 
-def image_backend_name(openai_key: str | None, xai_key: str | None, *, live: bool) -> str:
-    """Prefer OpenAI gpt-image-1, then xAI, then the fixture provider."""
+def image_backend_name(
+    openai_key: str | None,
+    xai_key: str | None,
+    *,
+    live: bool,
+    prefer: str | None = None,
+    xai_model: str = "grok-imagine-image",
+) -> str:
+    """xAI is the default when its key is set. OpenAI images run only when the env asks."""
 
-    if live and (openai_key or "").strip():
+    choice = (prefer or "").strip().casefold()
+    if not live:
+        return "fixture"
+    if choice == "openai" and (openai_key or "").strip():
         return f"openai {OPENAI_IMAGE_MODEL}"
-    if live and (xai_key or "").strip():
-        return "xAI image generation"
+    if (xai_key or "").strip():
+        return f"xAI {xai_model}"
+    if (openai_key or "").strip():
+        return f"openai {OPENAI_IMAGE_MODEL}"
     return "fixture"
 
 
@@ -125,6 +137,8 @@ class FallbackImageProvider:
         self._providers = list(providers)
         self._disabled: set[str] = set()
         self.fallback_note = ""
+        self._note_sent = False
+        self.label_store: dict[str, str] | None = None
 
     def generate(self, request: ImageGenerationRequest) -> GeneratedImage:
         """Return the first provider image. Record the real error when a later one is used."""
@@ -144,8 +158,11 @@ class FallbackImageProvider:
                 self.fallback_note = last
                 logger.warning("%s", last)
                 continue
-            if self.fallback_note:
+            if self.fallback_note and not self._note_sent:
                 self.fallback_note = f"{self.fallback_note} Used {name} instead."
+                self._note_sent = True
+            if self.label_store is not None:
+                self.label_store["image"] = name
             return image
         raise RuntimeError(self.fallback_note or last)
 

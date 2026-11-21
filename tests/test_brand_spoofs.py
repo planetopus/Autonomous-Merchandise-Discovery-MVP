@@ -2,7 +2,11 @@
 
 from types import SimpleNamespace
 
-from merchandise_discovery.domain.humor import brand_spoofs_needed, is_brand_spoof
+from merchandise_discovery.domain.humor import (
+    brand_spoofs_needed,
+    is_brand_spoof,
+    order_kept_lines,
+)
 from merchandise_discovery.domain.models.common import SocialSource
 from merchandise_discovery.domain.pipelines.social_behavior_text.artwork import (
     build_targeted_artwork_prompt,
@@ -10,6 +14,7 @@ from merchandise_discovery.domain.pipelines.social_behavior_text.artwork import 
 from merchandise_discovery.domain.pipelines.social_behavior_text.pipeline import (
     SocialBehaviorTextCandidate,
 )
+from merchandise_discovery.domain.sticker_direction import sticker_download_name
 from merchandise_discovery.infrastructure.brand_catalog import (
     load_brands,
     rotate_brands,
@@ -67,3 +72,36 @@ def test_five_finals_need_two_logo_spoofs_and_the_prompt_names_the_logo() -> Non
     assert "green" in prompt.casefold()
     assert "SHIFT SIP" in prompt
     assert "BACK & BODY HURTS" not in prompt
+
+
+def test_the_final_five_keep_the_higher_scores_inside_the_quotas() -> None:
+    """A 7.6 pun is not pushed out by an earlier lower line."""
+
+    def line(text: str, score: float, pattern: str) -> SimpleNamespace:
+        return SimpleNamespace(
+            artwork_text=text,
+            funny_score=score,
+            pattern=pattern,
+            spoof_brand="Aldi" if pattern == "brand_logo_spoof" else "",
+            humor_mechanism="pun" if "pun" in pattern or pattern == "brand_logo_spoof" else "",
+        )
+
+    kept = order_kept_lines(
+        [
+            line("LOW SPOOF", 4.0, "brand_logo_spoof"),
+            line("OTHER SPOOF", 4.2, "brand_logo_spoof"),
+            line("WEAK LINE", 4.1, "confession"),
+            line("KENTUCKY FRIED COUCH", 7.6, "wordplay_pun"),
+            line("TACO ZZZ", 7.4, "wordplay_pun"),
+            line("MID STACK", 5.0, "absurd_identity_stack"),
+        ],
+        5,
+    )
+    names = [item.artwork_text for item in kept]
+    assert names[:2] == ["OTHER SPOOF", "LOW SPOOF"]
+    assert "KENTUCKY FRIED COUCH" in names
+    assert "TACO ZZZ" in names
+    assert "WEAK LINE" not in names
+    used: set[str] = set()
+    assert sticker_download_name("KENTUCKY FRIED COUCH", used) == "kentucky-fried-couch.png"
+    assert sticker_download_name("KENTUCKY FRIED COUCH", used) == "kentucky-fried-couch-2.png"

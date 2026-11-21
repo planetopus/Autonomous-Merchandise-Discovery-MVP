@@ -18,14 +18,21 @@ from merchandise_discovery.infrastructure.providers.image_provider import (
 )
 
 
-def test_openai_images_are_preferred_and_five_cost_about_twenty_cents() -> None:
-    """A live OpenAI key wins over xAI. Five medium images are about $0.20."""
+def test_xai_is_the_default_image_provider_when_its_key_is_set() -> None:
+    """OpenAI images run only when MVP_IMAGE_PROVIDER=openai. Five xAI images are about $0.10."""
 
-    assert image_backend_name("sk-openai", "sk-xai", live=True) == "openai gpt-image-1"
-    assert image_backend_name("", "sk-xai", live=True) == "xAI image generation"
+    assert image_backend_name("sk-openai", "sk-xai", live=True) == "xAI grok-imagine-image"
+    assert (
+        image_backend_name("sk-openai", "sk-xai", live=True, prefer="openai")
+        == "openai gpt-image-1"
+    )
+    assert image_backend_name("", "sk-xai", live=True, xai_model="grok-imagine-image") == (
+        "xAI grok-imagine-image"
+    )
+    assert image_backend_name("sk-openai", "", live=True) == "openai gpt-image-1"
     assert image_backend_name("sk-openai", "sk-xai", live=False) == "fixture"
     assert estimate_image_cost("openai gpt-image-1", 5) == 0.20
-    assert estimate_image_cost("xAI image generation", 5) == 0.10
+    assert estimate_image_cost("xAI grok-imagine-image", 5) == 0.10
     assert estimate_image_cost("fixture", 5) == 0.0
 
 
