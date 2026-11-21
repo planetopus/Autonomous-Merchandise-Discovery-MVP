@@ -1,5 +1,5 @@
 {
-  "source": "data/humor_references.csv",
+  "source": "hand-authored shapes",
   "patterns": [
     {
       "id": "clarity_beats_cleverness",
@@ -112,61 +112,6 @@
       "weight": null,
       "priority": true,
       "examples": []
-    },
-    {
-      "id": "confession",
-      "label": "Confession",
-      "guidance": "A first-person admission that is the joke, not an explanation of the joke.",
-      "weight": 123663,
-      "priority": false,
-      "examples": [
-        "I bet tigers would feel so dumb if they knew they were orange to us",
-        "I'm gonna solve all my problems using mucus"
-      ]
-    },
-    {
-      "id": "insider",
-      "label": "Insider",
-      "guidance": "A line only people inside the niche recognize, with no glossary for outsiders.",
-      "weight": 77607,
-      "priority": false,
-      "examples": [
-        "Teach STEM majors the importance of not making things",
-        "Due to inflation I'm downgrading from ADHD to AD720p with ads"
-      ]
-    },
-    {
-      "id": "deadpan_absurd",
-      "label": "Deadpan absurd",
-      "guidance": "A flat statement of something impossible, said as if it were a normal fact.",
-      "weight": 45233,
-      "priority": false,
-      "examples": [
-        "This is not a beginner hat",
-        "Grass goes in, fast comes out"
-      ]
-    },
-    {
-      "id": "setup_turn",
-      "label": "Setup then a turn",
-      "guidance": "An ordinary premise that snaps to an unexpected conclusion in the same line.",
-      "weight": 29395,
-      "priority": false,
-      "examples": [
-        "The stock market is just astrology for men who can't lift bags of concrete",
-        "CLEARLY WE TOOK THIS ANYONE CAN BE PRESIDENT THING WAY TOO FAR"
-      ]
-    },
-    {
-      "id": "dark_turn",
-      "label": "Dark turn",
-      "guidance": "A bleak or gallows turn that stays a joke. Dark humor is welcome.",
-      "weight": 15471,
-      "priority": false,
-      "examples": [
-        "Microdosing hell by being aware and literate",
-        "Repair estimate declined. They're back on the streets"
-      ]
     }
   ]
 }

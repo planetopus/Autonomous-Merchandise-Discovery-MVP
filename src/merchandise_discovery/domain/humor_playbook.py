@@ -1,17 +1,13 @@
-"""Turn the humor CSV into weighted joke patterns.
+"""Hand-authored joke shapes for the writer.
 
-The patterns are structure guidance for the writer. Example lines show the shape
-and are not text to copy. `data/humor_playbook.json` is the snapshot a nightly
-job can regenerate; a run builds the same object from the rows it just loaded
-and does not cache it.
+Selling lines in the market CSV are not examples and do not set these weights.
+`data/humor_playbook.json` is a snapshot a nightly job can regenerate.
 """
 
 import json
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
-
-from merchandise_discovery.domain.humor_references import HumorReference
 
 
 class HumorPlaybookPattern(BaseModel):
@@ -160,74 +156,11 @@ PRIORITY_PATTERNS = [
 ]
 
 
-PATTERN_GUIDANCE = {
-    "setup_turn": (
-        "Setup then a turn",
-        "An ordinary premise that snaps to an unexpected conclusion in the same line.",
-    ),
-    "confession": (
-        "Confession",
-        "A first-person admission that is the joke, not an explanation of the joke.",
-    ),
-    "deadpan_absurd": (
-        "Deadpan absurd",
-        "A flat statement of something impossible, said as if it were a normal fact.",
-    ),
-    "dark_turn": (
-        "Dark turn",
-        "A bleak or gallows turn that stays a joke. Dark humor is welcome.",
-    ),
-    "insider": (
-        "Insider",
-        "A line only people inside the niche recognize, with no glossary for outsiders.",
-    ),
-}
+def build_playbook(references: list | None = None) -> dict:
+    """Hand-authored joke shapes. Selling lines are not examples and do not set weights."""
 
-
-def classify_pattern(reference: HumorReference) -> str:
-    """Map one upvoted line onto a single joke shape."""
-
-    types = {part.strip().casefold() for part in reference.humor_type.split("/") if part.strip()}
-    text = reference.text.strip()
-    lowered = text.casefold()
-    niche = reference.niche.strip().casefold()
-    specific_niche = niche not in {"", "general"}
-    if lowered.startswith(("i ", "i'", "i’m", "we ")):
-        return "confession"
-    if "dark" in types or "unhinged" in types:
-        return "dark_turn"
-    if specific_niche:
-        return "insider"
-    if "absurd" in types:
-        return "deadpan_absurd"
-    if "," in text or " is " in lowered:
-        return "setup_turn"
-    return "setup_turn"
-
-
-def build_playbook(references: list[HumorReference]) -> dict:
-    """Weight each pattern by the upvotes of the lines that use it."""
-
-    grouped: dict[str, list[HumorReference]] = {key: [] for key in PATTERN_GUIDANCE}
-    for reference in references:
-        if reference.is_theme:
-            continue
-        grouped[classify_pattern(reference)].append(reference)
-    patterns = []
-    for key, (label, guidance) in PATTERN_GUIDANCE.items():
-        rows = sorted(grouped[key], key=lambda item: (-item.upvotes, item.text.casefold()))
-        if not rows:
-            continue
-        patterns.append(
-            {
-                "id": key,
-                "label": label,
-                "guidance": guidance,
-                "weight": sum(item.upvotes for item in rows),
-                "examples": [item.text for item in rows[:2]],
-            }
-        )
-    patterns.sort(key=lambda item: (-item["weight"], item["id"]))
+    # The sales CSV used to weight these shapes. Funniness now comes from the humor lab.
+    _ = references
     priority = [
         {
             "id": item["id"],
@@ -240,7 +173,7 @@ def build_playbook(references: list[HumorReference]) -> dict:
         for item in PRIORITY_PATTERNS
     ]
     return HumorPlaybook.model_validate(
-        {"source": "data/humor_references.csv", "patterns": priority + patterns}
+        {"source": "hand-authored shapes", "patterns": priority}
     ).model_dump()
 
 
@@ -281,7 +214,7 @@ def playbook_prompt(playbook: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def write_playbook(references: list[HumorReference], path: Path) -> dict:
+def write_playbook(references: list | None, path: Path) -> dict:
     """Write the nightly snapshot. The run itself does not call this."""
 
     playbook = build_playbook(references)

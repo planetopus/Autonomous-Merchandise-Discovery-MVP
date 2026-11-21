@@ -59,28 +59,21 @@ def _section(title: str) -> None:
 
 
 def _render_humor_references(payload: dict[str, Any]) -> None:
-    """Show the reference jokes this run's copy was measured against."""
+    """Show what is selling. Product wording is not presented as a joke to imitate."""
 
-    examples = payload.get("humor_examples_used") or []
-    themes = payload.get("humor_themes_used") or []
-    if not examples and not themes:
-        if payload.get("line_reviews"):
-            _section("Humor references used")
-            st.caption("No humor references were loaded for this run.")
+    identities = payload.get("market_identities") or []
+    themes = payload.get("market_themes") or payload.get("humor_themes_used") or []
+    hooks = payload.get("market_hooks") or []
+    if not identities and not themes and not hooks:
         return
-    _section("Humor references used")
-    if examples:
-        st.caption("Top upvoted exact lines. The writer was told to learn the mechanics, not copy them.")
-        for item in examples[:10]:
-            if not isinstance(item, dict):
-                st.write(str(item))
-                continue
-            votes = item.get("upvotes", 0)
-            kind = item.get("humor_type") or "unspecified"
-            st.write(f"- ({votes} upvotes, {kind}) {item.get('text', '')}")
+    _section("What's selling")
+    st.caption("Market and trend signal. Funniness comes from the owner ratings and the humor lab.")
+    if identities:
+        st.write("Identities: " + " · ".join(str(item) for item in identities[:12]))
     if themes:
-        st.caption("Currently funny topics")
-        st.write(" · ".join(str(theme) for theme in themes))
+        st.write("Themes: " + " · ".join(str(item) for item in themes[:12]))
+    if hooks:
+        st.write("Hooks: " + " · ".join(str(item) for item in hooks[:12]))
 
 
 def _render_playbook(payload: dict[str, Any]) -> None:

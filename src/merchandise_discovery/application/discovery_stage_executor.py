@@ -12,7 +12,6 @@ from concurrent.futures import ThreadPoolExecutor
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
 from merchandise_discovery.domain.humor import (
     HumorCritiqueBatch,
-    HumorExampleRecord,
     LineReview,
     LineReviewRecord,
     NichePairBatch,
@@ -32,8 +31,9 @@ from merchandise_discovery.domain.humor_references import (
     HumorReference,
     HumorReferenceLoadError,
     copied_from_source,
-    humor_reference_prompt,
+    extract_market_signal,
     is_too_similar_to_references,
+    market_signal_prompt,
     select_humor_references,
 )
 from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource, StageStatus
@@ -261,7 +261,12 @@ class DiscoveryStageExecutor:
                 reasoning_output=reasoning_output,
                 model=usage.model if usage.provider != "fixture" else "deterministic",
             )
-            output = self._stamp_humor_context(output, selection, playbook)
+            output = self._stamp_humor_context(
+                output,
+                selection,
+                playbook,
+                getattr(self, "_market_signal", None),
+            )
             pair_update = {"line_reviews": line_reviews}
             supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
             supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
@@ -285,13 +290,12 @@ class DiscoveryStageExecutor:
         """Collect comments, draft joke-shaped lines, then let a critic cut them."""
 
         selection, references = self._humor_selection(run, input_model)
+        market = extract_market_signal(references)
+        self._market_signal = market
         lab = load_humor_lab()
-        playbook = merge_lab_playbook(build_playbook(references), lab.playbook)
-        reference_block = (
-            humor_reference_prompt(selection)
-            + playbook_prompt(playbook)
-            + gold_lines_block(lab.gold_lines)
-        )
+        playbook = merge_lab_playbook(build_playbook([]), lab.playbook)
+        humor_block = playbook_prompt(playbook) + gold_lines_block(lab.gold_lines)
+        writer_block = market_signal_prompt(market) + humor_block
         if self._reasoning_provider is None:
             return None, UsageMetrics(), selection, [], playbook, None
         supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
@@ -302,6 +306,7 @@ class DiscoveryStageExecutor:
             atlas,
             supplied_names[0] if len(supplied_names) == 1 else "",
             self._recent_catalog_terms(run),
+            market.token_weights,
         )
         need_pair = len(supplied_names) < 2
         pair_meta = None
@@ -361,7 +366,7 @@ class DiscoveryStageExecutor:
             input_model,
             draft_count=12,
             quotes=quotes,
-            humor_reference_block=reference_block + atlas_block,
+            humor_reference_block=writer_block + atlas_block,
         )
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
@@ -372,13 +377,13 @@ class DiscoveryStageExecutor:
         )
         usage = self._add_usage(usage, response.usage)
         drafted = list(getattr(response.output, "candidates", []))
-        candidates, reviews = self._drop_unoriginal(drafted, selection.examples, lab.gold_lines)
+        candidates, reviews = self._drop_unoriginal(drafted, references, lab.gold_lines)
         if candidates:
             candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
                 candidates,
                 len(candidates),
-                reference_block,
+                humor_block,
                 critic_rubric,
             )
             usage = self._add_usage(usage, critic_usage)
@@ -389,10 +394,11 @@ class DiscoveryStageExecutor:
                 input_model,
                 output_model,
                 pipeline_module,
-                reference_block + atlas_block,
-                selection.examples,
+                writer_block + atlas_block,
+                references,
                 lab.gold_lines,
                 critic_rubric,
+                humor_block,
             )
             usage = self._add_usage(usage, spread_usage)
             reviews.extend(spread_reviews)
@@ -412,10 +418,11 @@ class DiscoveryStageExecutor:
                 input_model,
                 output_model,
                 pipeline_module,
-                reference_block + atlas_block,
-                selection.examples,
+                writer_block + atlas_block,
+                references,
                 lab.gold_lines,
                 critic_rubric,
+                humor_block,
             )
             usage = self._add_usage(usage, fill_usage)
             reviews.extend(fill_reviews)
@@ -593,7 +600,7 @@ class DiscoveryStageExecutor:
         references = list(self._humor_reference_loader() or [])
         if not references:
             raise HumorReferenceLoadError(
-                "Humor references loaded 0 rows. This run stopped instead of skipping the critic."
+                "Market references loaded 0 rows. This run stopped instead of inventing demand."
             )
         niches = [
             str(getattr(input_model, "niche_a", "") or ""),
@@ -648,10 +655,11 @@ class DiscoveryStageExecutor:
         atlas,
         anchor: str,
         avoid: list[str] | None = None,
+        trend: dict[str, float] | None = None,
     ) -> list[dict]:
-        """Sample broad atlas identities. The old occupation-and-hobby list is not a source."""
+        """Sample broad atlas identities, boosted when they match what is selling."""
 
-        sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10, avoid=avoid)
+        sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10, avoid=avoid, trend=trend)
         return [
             {"niche_a": item["niche_a"], "niche_b": item["niche_b"]}
             for item in sampled
@@ -727,6 +735,7 @@ class DiscoveryStageExecutor:
         examples: list,
         gold_lines: list[str] | None = None,
         rubric: str = "",
+        critic_block: str = "",
     ):
         """One short call for identity-stack lines only. It does not search the web again."""
 
@@ -759,7 +768,7 @@ class DiscoveryStageExecutor:
                 run,
                 fresh,
                 len(fresh),
-                reference_block,
+                critic_block or reference_block,
                 rubric,
             )
             usage = self._add_usage(usage, critic_usage)
@@ -848,6 +857,7 @@ class DiscoveryStageExecutor:
         examples: list,
         gold_lines: list[str] | None,
         rubric: str,
+        critic_block: str = "",
     ):
         """One short rewrite when every line described the same narrow situation."""
 
@@ -879,7 +889,7 @@ class DiscoveryStageExecutor:
                 run,
                 fresh,
                 len(fresh),
-                reference_block,
+                critic_block or reference_block,
                 rubric,
             )
             usage = self._add_usage(usage, critic_usage)
@@ -978,10 +988,19 @@ class DiscoveryStageExecutor:
             kept.append(candidate)
         return kept, dropped
 
-    def _stamp_humor_context(self, output, selection, playbook=None):
-        """Record the top examples, themes, and playbook shapes this run was judged against."""
+    def _stamp_humor_context(self, output, selection, playbook=None, market=None):
+        """Record playbook shapes and the selling signal. Joke lines are not the examples."""
 
         patterns = (playbook or {}).get("patterns") or []
+        identities = list(getattr(market, "identities", []) or [])
+        themes = list(getattr(market, "themes", []) or [])
+        hooks = list(getattr(market, "hooks", []) or [])
+        if not themes and selection is not None:
+            themes = [
+                " ".join(item.text.replace("(theme)", " ").split())
+                for item in getattr(selection, "themes", [])[:10]
+                if getattr(item, "is_theme", False)
+            ]
         return output.model_copy(
             update={
                 "humor_playbook_used": [
@@ -992,18 +1011,11 @@ class DiscoveryStageExecutor:
                     )
                     for item in patterns
                 ],
-                "humor_examples_used": [
-                    HumorExampleRecord(
-                        text=item.text,
-                        upvotes=item.upvotes,
-                        humor_type=item.humor_type,
-                        niche=item.niche,
-                        subreddit=item.subreddit,
-                        post_url=item.post_url,
-                    )
-                    for item in selection.display_examples
-                ],
-                "humor_themes_used": [item.text for item in selection.themes[:10]],
+                "humor_examples_used": [],
+                "humor_themes_used": themes[:10],
+                "market_identities": identities[:12],
+                "market_themes": themes[:12],
+                "market_hooks": hooks[:12],
             }
         )
 

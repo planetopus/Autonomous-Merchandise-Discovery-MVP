@@ -97,8 +97,8 @@ def load_fresh_humor_references(
         rows = _read_bundled_csv(bundled_path)
     if not rows:
         raise HumorReferenceLoadError(
-            "Humor references loaded 0 rows. "
-            f"The fetch of {url} returned no joke lines, and data/humor_references.csv "
+            "Market references loaded 0 rows. "
+            f"The fetch of {url} returned no selling concepts, and data/humor_references.csv "
             f"was not found above the working directory ({Path.cwd()}). "
             "This run stopped instead of skipping the critic."
         )
@@ -119,29 +119,58 @@ def load_humor_references_csv(url: str, *, http_get=None) -> list[HumorReference
     return parse_humor_reference_csv(getter(url))
 
 
+_TEXT_KEYS = ("sticker_text_or_idea", "text", "concept", "line", "title", "wording")
+_NICHE_KEYS = ("niche", "identity", "identities", "audience")
+_THEME_KEYS = ("theme", "themes", "topic")
+_HOOK_KEYS = ("hook", "hooks")
+_DEMAND_KEYS = ("demand", "sales", "units_sold", "units", "sold", "trend_score", "trend", "popularity")
+_UPVOTE_KEYS = ("upvotes", "score", "votes")
+
+
 def parse_humor_reference_csv(body: str) -> list[HumorReference]:
-    """Parse CSV text. A `(theme)` marker in the sticker text marks a theme row."""
+    """Parse CSV text. Unknown columns are ignored. A `(theme)` marker marks a theme row."""
 
     reader = csv.DictReader(io.StringIO(body.lstrip("\ufeff")))
     references: list[HumorReference] = []
-    for row in reader:
-        text = str(row.get("sticker_text_or_idea") or row.get("text") or "").strip()
+    for raw in reader:
+        row = {
+            str(key).strip().casefold(): value
+            for key, value in raw.items()
+            if key is not None
+        }
+        text = _cell(row, _TEXT_KEYS)
+        hook = _cell(row, _HOOK_KEYS)
+        theme = _cell(row, _THEME_KEYS)
+        if not text:
+            text = hook or theme
         if not text:
             continue
+        kind = _cell(row, ("row_type", "kind", "type")).casefold()
         references.append(
             HumorReference(
                 text=text,
-                upvotes=_csv_int(row.get("upvotes")),
-                humor_type=str(row.get("humor_type") or "").strip(),
-                niche=str(row.get("niche") or "").strip(),
-                subreddit=str(row.get("subreddit") or "").strip(),
-                post_url=str(row.get("post_url") or "").strip(),
-                date_found=str(row.get("date_found") or "").strip(),
-                is_theme=text_is_theme(text),
+                upvotes=_csv_int(_cell(row, _UPVOTE_KEYS)),
+                humor_type=_cell(row, ("humor_type",)),
+                niche=_cell(row, _NICHE_KEYS),
+                subreddit=_cell(row, ("subreddit", "source", "marketplace")),
+                post_url=_cell(row, ("post_url", "url")),
+                date_found=_cell(row, ("date_found", "date")),
+                is_theme=text_is_theme(text, kind in {"theme", "topic"}),
                 reference_id=humor_reference_id(text),
+                hook=hook,
+                theme=theme,
+                demand=_csv_int(_cell(row, _DEMAND_KEYS)) or _csv_int(_cell(row, _UPVOTE_KEYS)),
             )
         )
     return references
+
+
+def _cell(row: dict, keys: tuple[str, ...]) -> str:
+    for key in keys:
+        value = row.get(key)
+        if value is not None and str(value).strip():
+            return " ".join(str(value).split())
+    return ""
 
 
 def _read_bundled_csv(bundled_path: Path | None) -> list[HumorReference]:
@@ -182,6 +211,6 @@ def _csv_int(value: object) -> int:
     """Accept blank or non-numeric upvote cells as zero."""
 
     try:
-        return int(str(value or "0").replace(",", "").strip() or "0")
+        return int(float(str(value or "0").replace(",", "").strip() or "0"))
     except ValueError:
         return 0
