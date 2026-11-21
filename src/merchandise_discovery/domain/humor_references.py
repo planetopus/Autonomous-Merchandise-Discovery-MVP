@@ -14,6 +14,10 @@ from pydantic import BaseModel, ConfigDict, Field
 from merchandise_discovery.domain.models.common import HumorTone
 
 
+class HumorReferenceLoadError(RuntimeError):
+    """The humor CSV produced no rows. The run stops instead of skipping the critic."""
+
+
 class HumorReference(BaseModel):
     """One upvoted sticker line or theme stored for the copywriter."""
 

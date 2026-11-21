@@ -1,0 +1,111 @@
+{
+  "source": "data/humor_references.csv",
+  "patterns": [
+    {
+      "id": "absurd_identity_stack",
+      "label": "Absurd identity stack",
+      "guidance": "Three unrelated identity or niche descriptors stacked into a sincere club or bumper-sticker name. Build every stack from this run's two niches. This is the top pattern. At least two lines in the batch use it.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "self_defeating_sign",
+      "label": "Self-defeating sign",
+      "guidance": "A sign or notice whose instruction makes itself impossible to obey, said in a straight official voice.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "cheerful_dark_label",
+      "label": "Cheerful dark label",
+      "guidance": "A bright, enthusiastic label for something bleak. Dark humor is welcome. The cheer is the joke.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "seasonal_character_trash_talk",
+      "label": "Seasonal character trash talk",
+      "guidance": "A holiday or seasonal character is told off, as if they were crowding someone else's month or job.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "sensory_insult",
+      "label": "Oddly specific sensory insult",
+      "guidance": "An insult that names one strangely precise smell, sound, or texture instead of a generic slur.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "dark_comparison",
+      "label": "Relatable observation with a dark comparison",
+      "guidance": "A mundane observation, then a comparison that makes it suddenly bleak. The everyday half has to be recognizable.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "fake_warning_sign",
+      "label": "Fake warning sign",
+      "guidance": "An official caution sign about a type of person, written as if the personality were a hazard.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
+      "id": "confession",
+      "label": "Confession",
+      "guidance": "A first-person admission that is the joke, not an explanation of the joke.",
+      "weight": 123663,
+      "examples": [
+        "I bet tigers would feel so dumb if they knew they were orange to us",
+        "I'm gonna solve all my problems using mucus"
+      ]
+    },
+    {
+      "id": "insider",
+      "label": "Insider",
+      "guidance": "A line only people inside the niche recognize, with no glossary for outsiders.",
+      "weight": 64447,
+      "examples": [
+        "Teach STEM majors the importance of not making things",
+        "Due to inflation I'm downgrading from ADHD to AD720p with ads"
+      ]
+    },
+    {
+      "id": "deadpan_absurd",
+      "label": "Deadpan absurd",
+      "guidance": "A flat statement of something impossible, said as if it were a normal fact.",
+      "weight": 40972,
+      "examples": [
+        "This is not a beginner hat",
+        "Grass goes in, fast comes out"
+      ]
+    },
+    {
+      "id": "setup_turn",
+      "label": "Setup then a turn",
+      "guidance": "An ordinary premise that snaps to an unexpected conclusion in the same line.",
+      "weight": 28887,
+      "examples": [
+        "The stock market is just astrology for men who can't lift bags of concrete",
+        "CLEARLY WE TOOK THIS ANYONE CAN BE PRESIDENT THING WAY TOO FAR"
+      ]
+    },
+    {
+      "id": "dark_turn",
+      "label": "Dark turn",
+      "guidance": "A bleak or gallows turn that stays a joke. Dark humor is welcome.",
+      "weight": 14878,
+      "examples": [
+        "Microdosing hell by being aware and literate",
+        "Repair estimate declined. They're back on the streets"
+      ]
+    }
+  ]
+}

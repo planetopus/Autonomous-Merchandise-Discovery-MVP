@@ -186,6 +186,7 @@ def test_identity_v2_uses_one_prompt_focused_provider_call() -> None:
     executor = _executor(Mock())
     executor._reasoning_provider = provider
 
+    run.config.social_candidate_count = 1
     result = executor.execute(run, stage, executor.prepare(run, stage))
 
     call = first_writer_call(provider).kwargs
@@ -194,7 +195,8 @@ def test_identity_v2_uses_one_prompt_focused_provider_call() -> None:
     assert "IDENTITY: slogan" in call["system_prompt"]
     assert "two unmistakable contextual cues" in call["system_prompt"]
     assert "Target identity: bedside nurses" in call["user_prompt"]
-    assert "second niche" in call["user_prompt"]
+    assert "absurd_identity_stack" in call["user_prompt"]
+    assert "nurses" in call["user_prompt"] and "true crime" in call["user_prompt"]
     assert result.usage.request_count >= 2
     assert result.output_data["candidates"][0]["artwork_text"].startswith("I'm Not Being Rude")
 

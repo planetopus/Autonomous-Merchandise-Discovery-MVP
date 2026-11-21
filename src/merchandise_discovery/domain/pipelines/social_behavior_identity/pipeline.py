@@ -52,7 +52,7 @@ class BehaviorIdentityCandidate(SocialBehaviorTextCandidate):
 class BehaviorIdentityOutput(BaseModel):
     """Behavior-led candidates, each independently mapped to an evidence-backed identity."""
 
-    candidates: list[BehaviorIdentityCandidate] = Field(min_length=1, max_length=25)
+    candidates: list[BehaviorIdentityCandidate] = Field(min_length=1, max_length=30)
     search_summary: str = Field(min_length=1, max_length=2_000)
     topic_explored: str = Field(default="", max_length=500)
     model: str = "deterministic"
@@ -63,6 +63,8 @@ class BehaviorIdentityOutput(BaseModel):
     pairing_score: float | None = Field(default=None, ge=0, le=10)
     pairing_reason: str = Field(default="", max_length=500)
     line_reviews: list[dict] = Field(default_factory=list)
+    niche_pair_candidates: list[dict] = Field(default_factory=list)
+    humor_playbook_used: list[dict] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod

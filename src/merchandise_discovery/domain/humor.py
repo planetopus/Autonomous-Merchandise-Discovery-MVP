@@ -28,6 +28,8 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "Set source_quote to a verbatim sentence from a supplied comment or from the "
         "source you searched. That quote is evidence only. artwork_text must be an original "
         "joke, never the source sentence, a close paraphrase, or a title pun. "
+        "Write in the insider voice of someone who lives the niche, about 4 to 14 words. "
+        "Dark humor is welcome. "
     )
     if selected == HumorTone.DARK:
         return (
@@ -122,12 +124,34 @@ class HumorCritiqueItem(BaseModel):
         le=10,
         description="Would this line get upvoted on Reddit, judged against the reference jokes.",
     )
+    sticker_buy_score: float = Field(
+        default=8,
+        ge=1,
+        le=10,
+        description="Would someone buy this exact line on a die-cut sticker.",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
-    """Separate critic pass over a batch of drafted lines."""
+    """Separate critic pass over one batch of drafted lines."""
 
-    reviews: list[HumorCritiqueItem] = Field(min_length=1, max_length=25)
+    reviews: list[HumorCritiqueItem] = Field(min_length=1, max_length=30)
+
+
+class NichePairCandidate(BaseModel):
+    """One proposed niche collision and the two scores that decide whether it stays."""
+
+    niche_a: str = Field(min_length=2, max_length=80)
+    niche_b: str = Field(min_length=2, max_length=80)
+    shared_life_score: int = Field(ge=1, le=10)
+    recognizability_score: int = Field(ge=1, le=10)
+    reason: str = Field(default="", max_length=300)
+
+
+class NichePairBatch(BaseModel):
+    """About ten niche pairs, each scored before any sticker line is written."""
+
+    pairs: list[NichePairCandidate] = Field(min_length=1, max_length=12)
 
 
 class LineReview:
@@ -141,6 +165,7 @@ class LineReview:
         tone_match: float,
         giftability: float = 5.0,
         reddit_upvote_score: float | None = None,
+        sticker_buy_score: float | None = None,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -148,6 +173,57 @@ class LineReview:
         self.tone_match = tone_match
         self.giftability = giftability
         self.reddit_upvote_score = reddit_upvote_score
+        self.sticker_buy_score = sticker_buy_score
+
+
+def critic_average(review) -> float | None:
+    """Average of Reddit-upvote, sticker-buy, and originality. Missing scores do not invent one."""
+
+    reddit = getattr(review, "reddit_upvote_score", None)
+    sticker = getattr(review, "sticker_buy_score", None)
+    originality = getattr(review, "novelty", None)
+    if reddit is None or sticker is None or originality is None:
+        return None
+    return (float(reddit) + float(sticker) + float(originality)) / 3
+
+
+def keep_strong_pairs(pairs: list) -> list:
+    """Keep pairs that score at least 7 on both shared life and instant recognition."""
+
+    strong = [
+        pair
+        for pair in pairs
+        if pair.shared_life_score >= 7
+        and pair.recognizability_score >= 7
+        and pair.niche_a.strip().casefold() != pair.niche_b.strip().casefold()
+    ]
+    strong.sort(
+        key=lambda pair: (
+            -(pair.shared_life_score + pair.recognizability_score),
+            pair.niche_a.casefold(),
+        )
+    )
+    return strong
+
+
+def niche_pair_request(identity: str = "") -> str:
+    """Ask for about ten collisions and a score for each, before any joke is written."""
+
+    named = identity.strip()
+    anchor = (
+        f'One side can be "{named}". The other side must be a different niche.\n'
+        if named
+        else ""
+    )
+    return (
+        "Propose about 10 niche pairs for die-cut stickers. "
+        "A good pair is two audiences that genuinely share a life, recognizable in one line. "
+        "Examples of good pairs: nurses + true crime, dads + grilling. "
+        "Score each pair from 1 to 10 on shared_life_score (one person really lives both) "
+        "and recognizability_score (a stranger gets the collision immediately). "
+        "Do not propose a pair you would score under 7 on either axis.\n"
+        f"{anchor}"
+    )
 
 
 def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone: HumorTone | str) -> list:
@@ -171,7 +247,15 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
             score = humor + novelty + tone_match
         else:
             score = humor + novelty + tone_match + (0.25 * giftability)
-        if review is not None and review.reddit_upvote_score is not None and review.reddit_upvote_score < 7:
+        average = critic_average(review) if review is not None else None
+        if average is not None and average < 7:
+            continue
+        if (
+            review is not None
+            and average is None
+            and review.reddit_upvote_score is not None
+            and review.reddit_upvote_score < 7
+        ):
             continue
         key = joke_key(str(getattr(candidate, "artwork_text", "") or getattr(candidate, "phrase", "")))
         if key and key in seen:

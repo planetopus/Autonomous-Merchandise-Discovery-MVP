@@ -82,6 +82,22 @@ def _render_humor_references(payload: dict[str, Any]) -> None:
         st.write(" · ".join(str(theme) for theme in themes))
 
 
+def _render_playbook(payload: dict[str, Any]) -> None:
+    """Show the shapes the writer was told to use, highest priority first."""
+
+    patterns = payload.get("humor_playbook_used") or []
+    if not patterns:
+        return
+    _section("Humor playbook")
+    st.caption("Structures for this run. The writer was told not to copy sample wording.")
+    for item in patterns:
+        if not isinstance(item, dict):
+            continue
+        weight = item.get("weight")
+        weight_text = f", weight {weight}" if weight else ""
+        st.write(f"- {item.get('label') or item.get('id')}{weight_text}")
+
+
 def _render_line_reviews(payload: dict[str, Any]) -> None:
     """Show the Reddit-upvote critic: kept lines, dropped lines, and why."""
 
@@ -138,6 +154,7 @@ def _render_social_behavior_text(
         if payload.get("pairing_reason"):
             st.caption(str(payload["pairing_reason"]))
     _render_humor_references(payload)
+    _render_playbook(payload)
     _render_line_reviews(payload)
     if request.get("auto_topic"):
         st.write(f"**Behavior or topic selected by AI:** {query}")
@@ -189,6 +206,8 @@ def _render_social_behavior_text(
         funny_score = candidate.get("funny_score")
         if funny_score is not None:
             st.caption(f"Funny score: {funny_score} / 10")
+        if candidate.get("pattern"):
+            st.caption(f"Pattern: {_text(candidate, 'pattern')}")
         if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
             st.caption(
                 "Humor: "

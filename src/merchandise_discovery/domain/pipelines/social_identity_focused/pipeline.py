@@ -86,6 +86,7 @@ class SocialIdentityTextCandidate(BaseModel):
     source_quote: str = Field(default="", max_length=500)
     humor_mechanism: str = Field(default="", max_length=200)
     concrete_detail: str = Field(default="", max_length=200)
+    pattern: str = Field(default="", max_length=80)
     funny_score: float | None = Field(default=None, ge=0, le=10)
 
     @field_validator("source_url")
@@ -104,7 +105,7 @@ class SocialIdentityTextOutput(BaseModel):
 
     identity_selected: str = Field(default="", max_length=300)
     identity_type_selected: IdentityType | None = None
-    candidates: list[SocialIdentityTextCandidate] = Field(min_length=1, max_length=25)
+    candidates: list[SocialIdentityTextCandidate] = Field(min_length=1, max_length=30)
     search_summary: str = Field(min_length=1, max_length=2_000)
     topic_explored: str = Field(default="", max_length=500)
     model: str = "deterministic"
@@ -115,6 +116,8 @@ class SocialIdentityTextOutput(BaseModel):
     pairing_score: float | None = Field(default=None, ge=0, le=10)
     pairing_reason: str = Field(default="", max_length=500)
     line_reviews: list[dict] = Field(default_factory=list)
+    niche_pair_candidates: list[dict] = Field(default_factory=list)
+    humor_playbook_used: list[dict] = Field(default_factory=list)
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:

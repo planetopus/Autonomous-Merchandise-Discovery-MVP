@@ -3,6 +3,7 @@
 from merchandise_discovery.domain.humor import niche_pair_block
 from merchandise_discovery.domain.humor_references import (
     HumorReference,
+    HumorReferenceLoadError,
     copied_from_source,
     humor_reference_id,
     is_too_similar_to_references,
@@ -11,6 +12,7 @@ from merchandise_discovery.domain.humor_references import (
 from merchandise_discovery.domain.models.common import HumorTone
 from merchandise_discovery.infrastructure.humor_reference_loader import (
     DEFAULT_HUMOR_REFERENCE_CSV_URL,
+    find_humor_reference_csv,
     load_fresh_humor_references,
     parse_humor_reference_csv,
 )
@@ -189,6 +191,47 @@ def test_blank_niches_ask_the_model_to_choose_two() -> None:
     assert "second niche" in named
     supplied = niche_pair_block("nurses", "3D printing")
     assert 'Cross these two niches exactly: "nurses" and "3D printing"' in supplied
+
+
+def test_empty_fetch_uses_the_file_above_the_working_directory(tmp_path) -> None:
+    """A zero-row download falls back by walking up from the process directory."""
+
+    repo = tmp_path / "repo"
+    nested = repo / "src" / "merchandise_discovery" / "entrypoints"
+    nested.mkdir(parents=True)
+    header = "date_found,subreddit,sticker_text_or_idea,upvotes,humor_type,niche,post_url\n"
+    row = "2026-11-21,nursing,the lake filed my overtime,10,dry,nurses,https://reddit.com/a\n"
+    (repo / "data").mkdir()
+    (repo / "data" / "humor_references.csv").write_text(header + row, encoding="utf-8")
+
+    found = find_humor_reference_csv([nested])
+    assert found == repo / "data" / "humor_references.csv"
+
+    loaded = load_fresh_humor_references(
+        None,
+        "https://example.com/empty.csv",
+        http_get=lambda _url: header,
+        bundled_path=found,
+    )
+    assert [item.text for item in loaded] == ["the lake filed my overtime"]
+
+
+def test_zero_rows_fail_instead_of_returning_an_empty_list(tmp_path) -> None:
+    """A fetch and a missing file must stop the run with a clear error."""
+
+    header = "date_found,subreddit,sticker_text_or_idea,upvotes,humor_type,niche,post_url\n"
+    missing = tmp_path / "missing.csv"
+    try:
+        load_fresh_humor_references(
+            None,
+            "https://example.com/empty.csv",
+            http_get=lambda _url: header,
+            bundled_path=missing,
+        )
+    except HumorReferenceLoadError as error:
+        assert "0 rows" in str(error)
+    else:
+        raise AssertionError("expected a loud failure")
 
 
 def _write_csv(directory, body: str):

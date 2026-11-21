@@ -279,3 +279,72 @@ def test_live_stage_drops_source_quotes_and_always_runs_the_critic() -> None:
         call.kwargs["response_model"].__name__ == "HumorCritiqueBatch"
         for call in provider.complete_structured.call_args_list
     )
+
+
+def test_live_run_returns_two_absurd_identity_stacks() -> None:
+    """A run that asks for more than one line keeps two stacked-club jokes from its niches."""
+
+    run = WorkflowRun(
+        title="Stacks",
+        config=RunConfig(
+            pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+            social_sources=[SocialSource.REDDIT],
+            social_query="shift podcasts",
+            social_candidate_count=2,
+            social_niche_a="night-shift nurses",
+            social_niche_b="true crime",
+        ),
+    )
+    stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")
+    base = pipeline.SocialBehaviorTextCandidate(
+        source_platform=SocialSource.REDDIT,
+        source_url="https://reddit.com/r/nursing/comments/abc/podcast",
+        source_title="Night podcast",
+        source_excerpt="Nurses talk through a case while a podcast plays.",
+        audience_context="Nurses who listen to cases on the drive home.",
+        behavior="Replaying a shift out loud.",
+        friction_or_pressure="The story is not over when the shift is.",
+        artwork_text="My commute files a second chart",
+        artwork_prompt="A die-cut sticker of a badge and headphones as one subject.",
+        visual_punchline="The badge is wearing headphones.",
+        main_visual_metaphor="A badge with headphones.",
+        audience_specific_cue="A nurse badge and a headphone cord.",
+        tone="deadpan",
+        style_direction="Flat vector die-cut sticker.",
+        things_to_avoid=["a scene"],
+        specificity_reason="Both lives are in the line.",
+        pattern="confession",
+    )
+    stacks = [
+        base.model_copy(
+            update={
+                "artwork_text": "Night Shift True Crime Club",
+                "pattern": "absurd_identity_stack",
+            }
+        ),
+        base.model_copy(
+            update={
+                "artwork_text": "Charting And Chill Podcast",
+                "pattern": "ABSURD IDENTITY STACK",
+                "source_url": "https://reddit.com/r/nursing/comments/abc/club",
+            }
+        ),
+    ]
+    provider = scripted_social_provider(
+        pipeline.SocialBehaviorTextOutput(
+            candidates=[base, *stacks],
+            search_summary="Nurses and true-crime listeners overlap on the drive home.",
+        )
+    )
+    executor = _executor(Mock())
+    executor._reasoning_provider = provider
+
+    result = executor.execute(run, stage, executor.prepare(run, stage))
+
+    returned = result.output_data["candidates"]
+    assert len(returned) == 2
+    assert all(
+        "absurd identity stack" in item["pattern"].casefold().replace("_", " ")
+        for item in returned
+    )
+    assert any(item["id"] == "absurd_identity_stack" for item in result.output_data["humor_playbook_used"])

@@ -12,9 +12,15 @@ from merchandise_discovery.application.stage_executor import StageNotImplemented
 from merchandise_discovery.domain.humor import (
     HumorCritiqueBatch,
     LineReview,
+    NichePairBatch,
     apply_line_critic,
+    critic_average,
+    keep_strong_pairs,
+    niche_pair_request,
 )
+from merchandise_discovery.domain.humor_playbook import build_playbook, playbook_prompt
 from merchandise_discovery.domain.humor_references import (
+    HumorReferenceLoadError,
     copied_from_source,
     humor_reference_prompt,
     is_too_similar_to_references,
@@ -195,7 +201,7 @@ class DiscoveryStageExecutor:
     def _finish_social_text(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Validate the drafted lines, then record which humor references the run used."""
 
-        reasoning_output, usage, selection, line_reviews = self._social_reasoning(
+        reasoning_output, usage, selection, line_reviews, playbook, pair_meta = self._social_reasoning(
             run,
             input_model,
             pipeline_module,
@@ -206,24 +212,37 @@ class DiscoveryStageExecutor:
             reasoning_output=reasoning_output,
             model=usage.model if usage.provider != "fixture" else "deterministic",
         )
-        output = self._stamp_humor_context(output, selection)
+        output = self._stamp_humor_context(output, selection, playbook)
         pair_update = {"line_reviews": line_reviews}
-        user_a = str(getattr(input_model, "niche_a", "") or "").strip()
-        user_b = str(getattr(input_model, "niche_b", "") or "").strip()
-        if user_a and user_b:
-            pair_update["niche_pair_a"] = user_a
-            pair_update["niche_pair_b"] = user_b
+        supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
+        supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
+        if pair_meta:
+            pair_update.update(pair_meta)
+        elif supplied_a and supplied_b:
+            pair_update["niche_pair_a"] = supplied_a
+            pair_update["niche_pair_b"] = supplied_b
         return output.model_copy(update=pair_update), usage
 
     def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Collect comments, draft joke-shaped lines, then let a critic cut them."""
 
-        selection = self._humor_selection(run, input_model)
-        reference_block = humor_reference_prompt(selection)
+        selection, references = self._humor_selection(run, input_model)
+        playbook = build_playbook(references)
+        reference_block = humor_reference_prompt(selection) + playbook_prompt(playbook)
         if self._reasoning_provider is None:
-            return None, UsageMetrics(), selection, []
+            return None, UsageMetrics(), selection, [], playbook, None
         quotes = self._collect_reddit_quotes(input_model)
-        draft_count = min(25, max(input_model.candidate_count, input_model.candidate_count * 3))
+        draft_count = 30
+        pair_meta = None
+        usage = UsageMetrics()
+        supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
+        supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
+        if not (supplied_a and supplied_b):
+            pair_meta, pair_usage = self._score_niche_pairs(input_model)
+            usage = pair_usage
+            input_model = input_model.model_copy(
+                update={"niche_a": pair_meta["niche_pair_a"], "niche_b": pair_meta["niche_pair_b"]}
+            )
         domains = None
         if not quotes:
             domains = tuple(
@@ -241,7 +260,7 @@ class DiscoveryStageExecutor:
             response_model=output_model,
             web_search_domains=domains,
         )
-        usage = response.usage
+        usage = combine_usage(usage, response.usage) if usage.request_count else response.usage
         candidates, reviews = self._drop_unoriginal(
             list(getattr(response.output, "candidates", [])),
             selection.examples,
@@ -250,7 +269,7 @@ class DiscoveryStageExecutor:
             candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
                 candidates,
-                input_model.candidate_count,
+                len(candidates),
                 reference_block,
             )
             usage = combine_usage(usage, critic_usage)
@@ -258,18 +277,26 @@ class DiscoveryStageExecutor:
         chosen = response.output
         short = len(candidates) < input_model.candidate_count
         weak_pair = self._pair_is_weak(chosen, input_model)
-        if short or weak_pair:
+        need_stacks = self._needs_absurd_stacks(candidates, input_model.candidate_count)
+        if short or weak_pair or need_stacks:
             reasons = []
             if short:
                 reasons.append(
                     "too few lines survived. Dropped lines copied the source, copied a "
-                    "reference, or scored under 7 on 'would this get upvoted on Reddit'"
+                    "reference, or the average of reddit, sticker-buy, and originality "
+                    "was under 7"
                 )
             if weak_pair:
                 reasons.append(
                     "niche_pair_a and niche_pair_b were missing, identical, or pairing_score "
                     "was under 7. Choose two niches whose audiences share a life and score "
                     "that pairing at 7 or higher"
+                )
+            if need_stacks:
+                reasons.append(
+                    "at least two kept lines must use pattern absurd_identity_stack: "
+                    "a sincere club or bumper-sticker name that stacks three descriptors "
+                    "from the two niches. Do not copy any existing slogan"
                 )
             retry = self._reasoning_provider.complete_structured(
                 system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
@@ -290,7 +317,7 @@ class DiscoveryStageExecutor:
                 retried, critic_usage, critic_rows = self._critic_pass(
                     run,
                     retried,
-                    input_model.candidate_count,
+                    len(retried),
                     reference_block,
                 )
                 usage = combine_usage(usage, critic_usage)
@@ -311,13 +338,20 @@ class DiscoveryStageExecutor:
         if not candidates:
             raise RuntimeError(
                 "Every line was dropped. Each one copied its source, copied a reference joke, "
-                "or scored under 7 on 'would this get upvoted on Reddit'."
+                "or averaged under 7 on reddit upvote, sticker buy, and originality."
+            )
+        if self._needs_absurd_stacks(candidates, input_model.candidate_count):
+            raise RuntimeError(
+                "This run needs at least two absurd identity stack lines built from its "
+                "two niches. Fewer than two surviving lines used pattern absurd_identity_stack."
             )
         output = chosen.model_copy(
-            update={"candidates": candidates[: input_model.candidate_count]}
+            update={
+                "candidates": self._order_with_stacks(candidates, input_model.candidate_count)
+            }
         )
         output = self._drop_crowded_lines(output)
-        return output, usage, selection, reviews
+        return output, usage, selection, reviews, playbook, pair_meta
 
     def _collect_reddit_quotes(self, input_model) -> list:
         """Pull top comments when Reddit is selected. A failure leaves the writer on web search."""
@@ -340,23 +374,104 @@ class DiscoveryStageExecutor:
             return []
 
     def _humor_selection(self, run: WorkflowRun, input_model):
-        """Load references for this run only. The loader itself does not cache."""
+        """Load references for this run only. The loader itself does not cache rows."""
 
         from merchandise_discovery.domain.humor_references import HumorReferenceSelection
 
         if self._humor_reference_loader is None:
-            return HumorReferenceSelection(examples=[], themes=[])
-        try:
-            references = self._humor_reference_loader() or []
-        except Exception as error:  # noqa: BLE001 - references are optional context.
-            logger.warning("Humor references were not loaded (%s).", type(error).__name__)
-            references = []
+            return HumorReferenceSelection(examples=[], themes=[]), []
+        references = list(self._humor_reference_loader() or [])
+        if not references:
+            raise HumorReferenceLoadError(
+                "Humor references loaded 0 rows. This run stopped instead of skipping the critic."
+            )
         niches = [
             str(getattr(input_model, "niche_a", "") or ""),
             str(getattr(input_model, "niche_b", "") or ""),
             str(getattr(input_model, "identity", "") or ""),
         ]
-        return select_humor_references(references, tone=run.config.humor_tone, niches=niches)
+        return select_humor_references(references, tone=run.config.humor_tone, niches=niches), references
+
+    def _score_niche_pairs(self, input_model):
+        """Ask for about ten pairs and keep the best one that scores 7 or higher on both axes."""
+
+        identity = str(getattr(input_model, "identity", "") or "")
+        prompt = niche_pair_request(identity)
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=(
+                "You pair two niches that share a life. Score shared lived experience and "
+                "instant recognizability from 1 to 10. Nurses plus true crime, and dads plus "
+                "grilling, are the kind of pair that should score 7 or higher."
+            ),
+            user_prompt=prompt,
+            response_model=NichePairBatch,
+        )
+        usage = response.usage
+        strong = keep_strong_pairs(response.output.pairs)
+        recorded = list(response.output.pairs)
+        if not strong:
+            retry = self._reasoning_provider.complete_structured(
+                system_prompt=(
+                    "Every pair you just scored was under 7. Propose about 10 new pairs. "
+                    "Keep only collisions as recognizable as nurses + true crime or dads + grilling."
+                ),
+                user_prompt=prompt,
+                response_model=NichePairBatch,
+            )
+            usage = combine_usage(usage, retry.usage)
+            strong = keep_strong_pairs(retry.output.pairs)
+            recorded = list(retry.output.pairs)
+        if not strong:
+            raise RuntimeError(
+                "No niche pair scored 7 or higher on both shared lived experience and "
+                "instant recognizability."
+            )
+        best = strong[0]
+        return (
+            {
+                "niche_pair_a": best.niche_a.strip(),
+                "niche_pair_b": best.niche_b.strip(),
+                "pairing_score": round((best.shared_life_score + best.recognizability_score) / 2, 2),
+                "pairing_reason": best.reason,
+                "niche_pair_candidates": [
+                    {
+                        "niche_a": pair.niche_a,
+                        "niche_b": pair.niche_b,
+                        "shared_life_score": pair.shared_life_score,
+                        "recognizability_score": pair.recognizability_score,
+                        "reason": pair.reason,
+                        "kept": pair.shared_life_score >= 7 and pair.recognizability_score >= 7,
+                    }
+                    for pair in recorded
+                ],
+            },
+            usage,
+        )
+
+    def _is_absurd_stack(self, candidate) -> bool:
+        """True when the line is marked as the stacked-club pattern."""
+
+        raw = str(getattr(candidate, "pattern", "") or "")
+        normalized = " ".join(raw.casefold().replace("_", " ").replace("-", " ").split())
+        return normalized == "absurd identity stack"
+
+    def _needs_absurd_stacks(self, candidates: list, keep_count: int) -> bool:
+        """Runs that ask for two or more lines must keep two stacked-identity jokes."""
+
+        if keep_count < 2:
+            return False
+        return sum(1 for candidate in candidates if self._is_absurd_stack(candidate)) < 2
+
+    def _order_with_stacks(self, candidates: list, keep_count: int) -> list:
+        """Keep two absurd identity stacks in the returned batch, then the other lines."""
+
+        if keep_count < 2:
+            return candidates[:keep_count]
+        stacks = [candidate for candidate in candidates if self._is_absurd_stack(candidate)]
+        others = [candidate for candidate in candidates if not self._is_absurd_stack(candidate)]
+        if len(stacks) < 2:
+            return candidates[:keep_count]
+        return (stacks[:2] + others + stacks[2:])[:keep_count]
 
     def _pair_is_weak(self, output, input_model) -> bool:
         """A user-supplied pair is trusted. An AI pair must name two lives and score at least 7."""
@@ -410,11 +525,16 @@ class DiscoveryStageExecutor:
             kept.append(candidate)
         return kept, dropped
 
-    def _stamp_humor_context(self, output, selection):
-        """Record the top examples and themes that this run's copy was judged against."""
+    def _stamp_humor_context(self, output, selection, playbook=None):
+        """Record the top examples, themes, and playbook shapes this run was judged against."""
 
+        patterns = (playbook or {}).get("patterns") or []
         return output.model_copy(
             update={
+                "humor_playbook_used": [
+                    {"id": item["id"], "label": item["label"], "weight": item["weight"]}
+                    for item in patterns[:12]
+                ],
                 "humor_examples_used": [
                     {
                         "text": item.text,
@@ -453,14 +573,19 @@ class DiscoveryStageExecutor:
                 "1 to 10 for 'would this get upvoted on Reddit' compared with the reference "
                 "jokes. Score title puns and clever names at 4 or below. Score a real setup "
                 "and turn, confession, or deadpan absurdity at 7 or above only when it would "
-                "actually get a laugh. Score a line that quotes or closely paraphrases its "
-                "source at 4 or below. Do not reward a line that copies a reference."
+                "actually get a laugh. Also score sticker_buy_score from 1 to 10 for "
+                "'would someone buy this exact line on a sticker' and use novelty as "
+                "originality. A line is dropped when the average of reddit_upvote_score, "
+                "sticker_buy_score, and novelty is under 7. Score a line that quotes or "
+                "closely paraphrases its source at 4 or below on all three. Do not reward "
+                "a line that copies a reference."
             ),
             user_prompt=(
                 f"Requested tone: {run.config.humor_tone.value}.\n"
                 f"{reference_block}"
-                f"Score every index. Lines under 7 on reddit_upvote_score will be dropped.\n"
-                f"{numbered}"
+                "Score every index once, in this single batch. "
+                "Drop guidance: average of reddit_upvote_score, sticker_buy_score, and "
+                f"novelty under 7.\n{numbered}"
             ),
             response_model=HumorCritiqueBatch,
         )
@@ -472,6 +597,7 @@ class DiscoveryStageExecutor:
                 tone_match=review.tone_match,
                 giftability=review.giftability,
                 reddit_upvote_score=review.reddit_upvote_score,
+                sticker_buy_score=review.sticker_buy_score,
             )
             for review in response.output.reviews
         ]
@@ -480,10 +606,12 @@ class DiscoveryStageExecutor:
         for index, candidate in enumerate(candidates):
             review = by_index.get(index)
             score = review.reddit_upvote_score if review is not None else None
-            if score is None or not hasattr(candidate, "model_copy"):
+            average = critic_average(review) if review is not None else None
+            if (score is None and average is None) or not hasattr(candidate, "model_copy"):
                 scored.append(candidate)
                 continue
-            scored.append(candidate.model_copy(update={"funny_score": score}))
+            shown = round(average, 2) if average is not None else score
+            scored.append(candidate.model_copy(update={"funny_score": shown}))
         kept = apply_line_critic(
             scored,
             reviews,
@@ -495,16 +623,18 @@ class DiscoveryStageExecutor:
         for index, candidate in enumerate(scored):
             review = by_index.get(index)
             score = review.reddit_upvote_score if review is not None else None
+            average = critic_average(review) if review is not None else None
+            below = (average is not None and average < 7) or (score is not None and score < 7)
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
-            elif score is not None and score < 7:
+            elif below:
                 reason, kept_flag = "below 7", False
             else:
                 reason, kept_flag = "cut by critic", False
             rows.append(
                 {
                     "artwork_text": str(getattr(candidate, "artwork_text", "") or ""),
-                    "funny_score": score,
+                    "funny_score": round(average, 2) if average is not None else score,
                     "kept": kept_flag,
                     "reason": reason,
                 }
