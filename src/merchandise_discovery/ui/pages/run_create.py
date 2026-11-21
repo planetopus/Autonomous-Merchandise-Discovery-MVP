@@ -17,6 +17,7 @@ from merchandise_discovery.domain.models.common import (
     identity_type_guidance,
 )
 from merchandise_discovery.domain.models.workflow import RunConfig
+from merchandise_discovery.shared.configuration import default_trending_share
 from merchandise_discovery.shared.errors import RepositoryError
 from merchandise_discovery.ui.adapters import pipeline_display_name
 from merchandise_discovery.ui.components.layout import PAGE_RUN_DETAIL, navigate_to
@@ -41,6 +42,7 @@ def build_run_config(
     social_niche_a: str = "",
     social_niche_b: str = "",
     humor_tone: HumorTone = HumorTone.DRY,
+    social_trending_share: float = 0.6,
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -63,6 +65,7 @@ def build_run_config(
         social_niche_a=social_niche_a.strip(),
         social_niche_b=social_niche_b.strip(),
         humor_tone=humor_tone,
+        social_trending_share=min(1.0, max(0.0, social_trending_share)),
     )
 
 
@@ -201,6 +204,7 @@ def render_run_create(
         social_identity_type: IdentityType | None = None
         social_niche_a = ""
         social_niche_b = ""
+        trending_share = default_trending_share()
         if is_social_pipeline:
             st.markdown("### Social behavior search")
             if is_identity_pipeline:
@@ -254,6 +258,18 @@ def render_run_create(
             social_niche_b = st.text_input(
                 "Niche / identity B",
                 placeholder="Optional. For example: pit bull owners",
+            )
+            trending_share = st.slider(
+                "Trending buyer share",
+                min_value=0.0,
+                max_value=1.0,
+                value=default_trending_share(),
+                step=0.05,
+                help=(
+                    "When the AI picks the person, this share of runs follows who is buying "
+                    "merch right now. The rest explore unused atlas identities. "
+                    "Set the default with MVP_TRENDING_SHARE."
+                ),
             )
             social_candidate_count = st.slider(
                 "Text candidates",
@@ -325,6 +341,7 @@ def render_run_create(
                 social_niche_a=social_niche_a,
                 social_niche_b=social_niche_b,
                 humor_tone=humor_tone,
+                social_trending_share=trending_share,
             ),
             triggered_by="manual",
         )

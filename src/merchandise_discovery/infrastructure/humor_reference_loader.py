@@ -159,6 +159,7 @@ def parse_humor_reference_csv(body: str) -> list[HumorReference]:
                 reference_id=humor_reference_id(text),
                 hook=hook,
                 theme=theme,
+                sales=_csv_int(_cell(row, ("sales", "units_sold", "units", "sold"))),
                 demand=_csv_int(_cell(row, _DEMAND_KEYS)) or _csv_int(_cell(row, _UPVOTE_KEYS)),
             )
         )

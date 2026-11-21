@@ -36,6 +36,7 @@ from merchandise_discovery.domain.humor_references import (
     HumorReferenceLoadError,
     copied_from_source,
     extract_market_signal,
+    identity_pick_bucket,
     is_too_similar_to_references,
     market_signal_prompt,
     select_humor_references,
@@ -144,9 +145,14 @@ def _saturation_findings(checker, items: list[tuple[str, str]]) -> list:
 
 
 def _social_output_data(output) -> dict:
-    """Persist the stage and the shop categories for every final line."""
+    """Persist the stage, the shop categories, and which identity bucket the run used."""
 
-    return attach_categories(output.model_dump(mode="python"))
+    data = attach_categories(output.model_dump(mode="python"))
+    bucket = str(data.get("identity_bucket") or "")
+    for candidate in data.get("candidates") or []:
+        if isinstance(candidate, dict):
+            candidate["identity_bucket"] = bucket
+    return data
 
 
 def _pair_in_bank(niche_a: str, niche_b: str, bank: list[dict]) -> bool:
@@ -319,11 +325,22 @@ class DiscoveryStageExecutor:
         supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
         supplied_names = split_identity_names(supplied_a, supplied_b)
         atlas = load_identity_atlas()
+        share = min(1.0, max(0.0, float(getattr(run.config, "social_trending_share", 0.6))))
+        if len(supplied_names) >= 2:
+            bucket = "supplied"
+        else:
+            bucket = identity_pick_bucket(
+                share,
+                random.Random(run.run_id),
+                has_buyers=bool(market.identities),
+            )
+        self._identity_bucket = bucket
+        self._trending_share = share
         pair_bank = self._atlas_pair_bank(
             atlas,
             supplied_names[0] if len(supplied_names) == 1 else "",
             self._recent_catalog_terms(run),
-            market.token_weights,
+            market.token_weights if bucket == "trending" else None,
         )
         need_pair = len(supplied_names) < 2
         pair_meta = None
@@ -1042,6 +1059,8 @@ class DiscoveryStageExecutor:
                 "market_identities": identities[:12],
                 "market_themes": themes[:12],
                 "market_hooks": hooks[:12],
+                "identity_bucket": getattr(self, "_identity_bucket", "") or "",
+                "trending_share": getattr(self, "_trending_share", None),
             }
         )
 
