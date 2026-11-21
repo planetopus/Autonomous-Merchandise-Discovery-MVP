@@ -132,6 +132,14 @@ def _render_social_behavior_text(
         st.markdown(
             f"### {index}. {_text(candidate, 'artwork_text', default='Image only')}"
         )
+        if candidate.get("source_quote"):
+            st.caption(f"Quote: {_text(candidate, 'source_quote')}")
+        if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
+            st.caption(
+                "Humor: "
+                f"{_text(candidate, 'humor_mechanism', default='unspecified')} · "
+                f"{_text(candidate, 'concrete_detail', default='no detail')}"
+            )
         if candidate.get("identity"):
             identity_type = _text(candidate, "identity_type", default="other")
             try:

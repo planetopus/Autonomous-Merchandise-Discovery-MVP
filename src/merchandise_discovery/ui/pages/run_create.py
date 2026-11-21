@@ -10,6 +10,7 @@ from pymongo.errors import PyMongoError
 from merchandise_discovery.application.discovery_service import DiscoveryService
 from merchandise_discovery.application.runtime import ApplicationRuntime
 from merchandise_discovery.domain.models.common import (
+    HumorTone,
     IdentityType,
     PipelineVariant,
     SocialSource,
@@ -39,6 +40,7 @@ def build_run_config(
     social_manual_artwork_selection: bool = False,
     social_niche_a: str = "",
     social_niche_b: str = "",
+    humor_tone: HumorTone = HumorTone.DRY,
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -60,6 +62,7 @@ def build_run_config(
         social_manual_artwork_selection=social_manual_artwork_selection,
         social_niche_a=social_niche_a.strip(),
         social_niche_b=social_niche_b.strip(),
+        humor_tone=humor_tone,
     )
 
 
@@ -172,6 +175,16 @@ def render_run_create(
             "Run name",
             value="New merchandise discovery run",
             help="A human-readable name used in run history and review screens.",
+        )
+        humor_tone = st.selectbox(
+            "Humor tone",
+            options=list(HumorTone),
+            index=list(HumorTone).index(HumorTone.DRY),
+            format_func=lambda value: value.display_name,
+            help=(
+                "Warm, dry, self-deprecating, dark, or edgy. Dark allows bleak jokes and "
+                "does not get vetoed for being a poor gift."
+            ),
         )
 
         # Social runs do not consume seed libraries or the long funnel's intersection count.
@@ -316,6 +329,7 @@ def render_run_create(
                 social_manual_artwork_selection=manual_artwork_selection,
                 social_niche_a=social_niche_a,
                 social_niche_b=social_niche_b,
+                humor_tone=humor_tone,
             ),
             triggered_by="manual",
         )

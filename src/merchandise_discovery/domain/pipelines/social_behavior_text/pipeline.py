@@ -10,7 +10,8 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from merchandise_discovery.domain.models.common import SocialSource
+from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
+from merchandise_discovery.domain.models.common import HumorTone, SocialSource
 from merchandise_discovery.domain.sticker_direction import (
     STICKER_AVOID,
     STICKER_STYLE_DIRECTION,
@@ -29,6 +30,7 @@ class SocialBehaviorTextInput(BaseModel):
     candidate_count: int = Field(ge=1, le=25)
     niche_a: str = Field(default="", max_length=200)
     niche_b: str = Field(default="", max_length=200)
+    humor_tone: HumorTone = HumorTone.DRY
 
     @model_validator(mode="after")
     def validate_topic_source(self) -> "SocialBehaviorTextInput":
@@ -61,6 +63,9 @@ class SocialBehaviorTextCandidate(BaseModel):
     style_direction: str = Field(min_length=1, max_length=500)
     things_to_avoid: list[str] = Field(min_length=1, max_length=10)
     specificity_reason: str = Field(min_length=1, max_length=700)
+    source_quote: str = Field(default="", max_length=500)
+    humor_mechanism: str = Field(default="", max_length=200)
+    concrete_detail: str = Field(default="", max_length=200)
 
     @field_validator("source_url")
     @classmethod
@@ -82,7 +87,7 @@ class SocialBehaviorTextOutput(BaseModel):
     model: str = "deterministic"
 
 
-def reasoning_instructions() -> str:
+def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
     """Return the provider contract for standalone, concrete, audience-recognizable copy."""
 
     return (
@@ -105,11 +110,17 @@ def reasoning_instructions() -> str:
         "when artwork_text is empty, and preserve the audience and behavior with one isolated "
         f"subject. {sticker_visual_rules()} The artwork prompt is not a replacement for the "
         "merchandise line: it is the visual execution brief for that exact line. Preserve source "
-        "URLs and provide a source-specific excerpt. Return only the requested structured output."
+        "URLs and provide a source-specific excerpt. Return only the requested structured output. "
+        f"{humor_prompt_suffix(tone)}"
     )
 
 
-def build_user_prompt(input_model: SocialBehaviorTextInput) -> str:
+def build_user_prompt(
+    input_model: SocialBehaviorTextInput,
+    *,
+    draft_count: int | None = None,
+    quotes: list | None = None,
+) -> str:
     """Build the single-call request from user scope and source-domain instructions."""
 
     platforms = ", ".join(source.value for source in input_model.sources)
@@ -122,11 +133,20 @@ def build_user_prompt(input_model: SocialBehaviorTextInput) -> str:
         if input_model.auto_topic
         else f"Behavior/topic to investigate: {input_model.query}"
     )
+    limit = draft_count or input_model.candidate_count
+    draft_note = ""
+    if draft_count and draft_count > input_model.candidate_count:
+        draft_note = (
+            f"Generate {draft_count} distinct lines so a separate critic can cut most of them.\n"
+        )
     return (
+        f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{quote_block(quotes)}"
+        f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"Search these public platforms: {platforms}.\n"
         f"{topic_instruction}\n"
-        f"Return up to {input_model.candidate_count} distinct behavior-based merchandise text "
+        f"Return up to {limit} distinct behavior-based merchandise text "
         "candidates. Avoid repeating the same audience pressure or behavior in different wording. "
         "Before returning each line, check that a reader can understand the joke without any other "
         "field. Write die-cut sticker copy of roughly 2 to 5 words, or leave artwork_text empty "
@@ -143,6 +163,14 @@ def build_user_prompt(input_model: SocialBehaviorTextInput) -> str:
         "candidate must cite one directly relevant source URL. Also return the final behavior or "
         "topic you actually explored in `topic_explored` from the searched platforms."
     )
+
+
+def _remember_quote(candidate: SocialBehaviorTextCandidate) -> SocialBehaviorTextCandidate:
+    """Keep a verbatim quote on the candidate even when the model only filled the excerpt."""
+
+    if candidate.source_quote.strip():
+        return candidate
+    return candidate.model_copy(update={"source_quote": candidate.source_excerpt[:500]})
 
 
 def execute(
@@ -186,6 +214,7 @@ def execute(
             update={
                 "model": model,
                 "topic_explored": reasoning_output.topic_explored or input_model.query,
+                "candidates": [_remember_quote(candidate) for candidate in reasoning_output.candidates],
             }
         )
 
@@ -227,6 +256,9 @@ def execute(
                 *STICKER_AVOID,
             ],
             specificity_reason="Fixture output only; replace with live source-backed behavior in live mode.",
+            source_quote=f"Fixture comment about the routine of {effective_query}.",
+            humor_mechanism="recognition",
+            concrete_detail=effective_query[:200],
         )
         for index in range(1, input_model.candidate_count + 1)
     ]

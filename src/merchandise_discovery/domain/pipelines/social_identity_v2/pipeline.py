@@ -7,7 +7,8 @@ Keeping the contract shared makes output quality attributable to prompting rathe
 research pass, new persistence model, or extra provider call.
 """
 
-from merchandise_discovery.domain.models.common import identity_type_guidance
+from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
+from merchandise_discovery.domain.models.common import HumorTone, identity_type_guidance
 from merchandise_discovery.domain.pipelines.social_identity_focused.pipeline import (
     SocialIdentityTextCandidate as SocialIdentityV2Candidate,
 )
@@ -36,7 +37,7 @@ __all__ = [
 ]
 
 
-def reasoning_instructions() -> str:
+def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
     """Return the prompt-only identity strategy for the controlled A/B variant."""
 
     return (
@@ -67,11 +68,16 @@ def reasoning_instructions() -> str:
         "preserves the same identity-specific behavior and visual joke. "
         f"{sticker_visual_rules()} Do not invent logos, brands, institutions, uniforms, or extra "
         "text. Preserve source URLs and source-specific excerpts. Return only the requested "
-        "structured output."
+        f"structured output. {humor_prompt_suffix(tone)}"
     )
 
 
-def build_user_prompt(input_model: SocialIdentityV2Input) -> str:
+def build_user_prompt(
+    input_model: SocialIdentityV2Input,
+    *,
+    draft_count: int | None = None,
+    quotes: list | None = None,
+) -> str:
     """Build the V2 request while reusing the original identity pipeline's input contract."""
 
     platforms = ", ".join(source.value for source in input_model.sources)
@@ -119,14 +125,23 @@ def build_user_prompt(input_model: SocialIdentityV2Input) -> str:
             f"Identity type: {input_model.identity_type.value}\n"
         )
     )
+    limit = draft_count or input_model.candidate_count
+    draft_note = ""
+    if draft_count and draft_count > input_model.candidate_count:
+        draft_note = (
+            f"Generate {draft_count} distinct lines so a separate critic can cut most of them.\n"
+        )
     return (
+        f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{quote_block(quotes)}"
+        f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"{identity_instruction}\n"
         f"{identity_context}"
         f"Search these public platforms: {platforms}.\n"
         f"{diversity_instruction}"
         f"{topic_instruction}\n"
-        f"Return up to {input_model.candidate_count} distinct candidates. Each candidate must be "
+        f"Return up to {limit} distinct candidates. Each candidate must be "
         "source-backed and identity-recognizable without the reader seeing any metadata. The actual "
         "merchandise text must be roughly 2 to 5 words, or empty for an image-only sticker, and "
         "contain at least one natural identity cue, or two strong contextual cues working together. "

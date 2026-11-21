@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from merchandise_discovery.domain.models.common import (
     ApprovalDecision,
+    HumorTone,
     IdentityType,
     PipelineVariant,
     RunStatus,
@@ -60,6 +61,7 @@ class RunConfig(BaseModel):
     # Optional pair. Both must be set for research, copy, and artwork to target the intersection.
     social_niche_a: str = Field(default="", max_length=200)
     social_niche_b: str = Field(default="", max_length=200)
+    humor_tone: HumorTone = HumorTone.DRY
     social_auto_identity: bool = False
     social_manual_artwork_selection: bool = False
     social_selected_candidate_indices: list[int] = Field(default_factory=list)

@@ -35,6 +35,7 @@ class Settings:
     openai_web_search_price_per_call: float = 0.01
     xai_image_price: float = 0.02
     xai_image_edit_price: float = 0.022
+    etsy_api_key: str | None = None
     provider_mode: str = "fixture"
     # The current MVP intentionally evaluates only Stage 1 until the client approves expanding
     # the funnel. This is a demo boundary, not a claim that later stages are complete.
@@ -77,6 +78,7 @@ def load_settings() -> Settings:
         ),
         xai_image_price=float(os.getenv("XAI_IMAGE_PRICE", "0.02")),
         xai_image_edit_price=float(os.getenv("XAI_IMAGE_EDIT_PRICE", "0.022")),
+        etsy_api_key=(os.getenv("ETSY_API_KEY") or "").strip() or None,
         provider_mode=os.getenv("MVP_PROVIDER_MODE", "fixture").strip().lower(),
         stop_after_stage=max(1, min(18, int(os.getenv("MVP_STOP_AFTER_STAGE", "1")))),
     )

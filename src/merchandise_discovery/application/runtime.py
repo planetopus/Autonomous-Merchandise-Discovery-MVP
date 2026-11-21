@@ -48,9 +48,11 @@ from merchandise_discovery.infrastructure.providers.image_provider import (
     FixtureImageProvider,
     XAIImageProvider,
 )
+from merchandise_discovery.infrastructure.providers.marketplace_saturation import MarketplaceChecker
 from merchandise_discovery.infrastructure.providers.reasoning_provider import (
     OpenAIReasoningProvider,
 )
+from merchandise_discovery.infrastructure.providers.reddit_reader import RedditReader
 from merchandise_discovery.infrastructure.providers.research_provider import (
     FixtureResearchProvider,
     OpenAIWebResearchProvider,
@@ -182,6 +184,11 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             reasoning_provider=reasoning_provider,
             openai_image_detail=settings.openai_image_detail,
             run_repository=run_repository,
+            saturation_checker=MarketplaceChecker(
+                etsy_api_key=settings.etsy_api_key,
+                live=live_mode,
+            ),
+            reddit_reader=RedditReader() if live_mode else None,
         )
         runtime = ApplicationRuntime(
             client=client,

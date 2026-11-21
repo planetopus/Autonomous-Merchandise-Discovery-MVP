@@ -4,7 +4,9 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, model_validator
 
+from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
 from merchandise_discovery.domain.models.common import (
+    HumorTone,
     IdentityType,
     SocialSource,
     identity_type_guidance,
@@ -30,6 +32,7 @@ class BehaviorIdentityInput(BaseModel):
     candidate_count: int = Field(ge=1, le=25)
     niche_a: str = Field(default="", max_length=200)
     niche_b: str = Field(default="", max_length=200)
+    humor_tone: HumorTone = HumorTone.DRY
 
     @model_validator(mode="after")
     def validate_topic_source(self) -> "BehaviorIdentityInput":
@@ -73,7 +76,7 @@ class BehaviorIdentityOutput(BaseModel):
         return value
 
 
-def reasoning_instructions() -> str:
+def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
     """Define the behavior-first, per-candidate identity and copy requirements."""
 
     return (
@@ -97,11 +100,17 @@ def reasoning_instructions() -> str:
         "prompt that renders the exact merchandise line when text is present and turns that "
         f"identity-specific behavior into one sticker subject. {sticker_visual_rules()} Avoid soft "
         "lifestyle imagery, generic category props, logos, brands, and extra text. Preserve source "
-        "URLs and source-specific excerpts. Return only the requested structured output."
+        "URLs and source-specific excerpts. Return only the requested structured output. "
+        f"{humor_prompt_suffix(tone)}"
     )
 
 
-def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
+def build_user_prompt(
+    input_model: BehaviorIdentityInput,
+    *,
+    draft_count: int | None = None,
+    quotes: list | None = None,
+) -> str:
     """Ask the provider to map each discovered behavior to its own best-supported audience."""
 
     platforms = ", ".join(source.value for source in input_model.sources)
@@ -113,11 +122,20 @@ def build_user_prompt(input_model: BehaviorIdentityInput) -> str:
         if input_model.auto_topic
         else f"Behavior/topic to investigate: {input_model.query}"
     )
+    limit = draft_count or input_model.candidate_count
+    draft_note = ""
+    if draft_count and draft_count > input_model.candidate_count:
+        draft_note = (
+            f"Generate {draft_count} distinct lines so a separate critic can cut most of them.\n"
+        )
     return (
+        f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{quote_block(quotes)}"
+        f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"Search these public platforms: {platforms}.\n"
         f"{behavior_instruction}\n"
-        f"Return up to {input_model.candidate_count} distinct behavior-led candidates. For each "
+        f"Return up to {limit} distinct behavior-led candidates. For each "
         "candidate, first describe one behavior supported by a specific discussion, then assign "
         "the identity group that best fits that behavior's evidence. Do this independently for "
         "each candidate; there is no single run-level target identity. Include candidate-level "
@@ -175,6 +193,9 @@ def execute(
                     *STICKER_AVOID,
                 ],
                 specificity_reason="Fixture output only; replace with source-backed live research.",
+                source_quote=f"Fixture comment about {topic}.",
+                humor_mechanism="recognition",
+                concrete_detail=topic[:200],
             )
             for index in range(1, input_model.candidate_count + 1)
         ]
@@ -206,9 +227,16 @@ def execute(
                 "expected the selected platform domain."
             )
 
+    quoted = []
+    for candidate in reasoning_output.candidates:
+        if candidate.source_quote.strip():
+            quoted.append(candidate)
+        else:
+            quoted.append(candidate.model_copy(update={"source_quote": candidate.source_excerpt[:500]}))
     return reasoning_output.model_copy(
         update={
             "topic_explored": reasoning_output.topic_explored or input_model.query,
             "model": model,
+            "candidates": quoted,
         }
     )

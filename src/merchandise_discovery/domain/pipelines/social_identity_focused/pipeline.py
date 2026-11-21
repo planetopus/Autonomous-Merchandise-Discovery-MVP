@@ -10,7 +10,9 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
 from merchandise_discovery.domain.models.common import (
+    HumorTone,
     IdentityType,
     SocialSource,
     identity_type_guidance,
@@ -36,6 +38,7 @@ class SocialIdentityTextInput(BaseModel):
     candidate_count: int = Field(ge=1, le=25)
     niche_a: str = Field(default="", max_length=200)
     niche_b: str = Field(default="", max_length=200)
+    humor_tone: HumorTone = HumorTone.DRY
     recent_identity_selections: list[str] = Field(default_factory=list, max_length=12)
 
     @field_validator("identity")
@@ -80,6 +83,9 @@ class SocialIdentityTextCandidate(BaseModel):
     style_direction: str = Field(min_length=1, max_length=500)
     things_to_avoid: list[str] = Field(min_length=1, max_length=10)
     specificity_reason: str = Field(min_length=1, max_length=700)
+    source_quote: str = Field(default="", max_length=500)
+    humor_mechanism: str = Field(default="", max_length=200)
+    concrete_detail: str = Field(default="", max_length=200)
 
     @field_validator("source_url")
     @classmethod
@@ -103,7 +109,7 @@ class SocialIdentityTextOutput(BaseModel):
     model: str = "deterministic"
 
 
-def reasoning_instructions() -> str:
+def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
     """Return the provider contract that makes identity preservation non-optional."""
 
     return (
@@ -127,11 +133,16 @@ def reasoning_instructions() -> str:
         "artwork prompt that renders the exact line when text is present and visibly identifies "
         "the supplied identity through one identity-specific cue and one visual joke. "
         f"{sticker_visual_rules()} Preserve source URLs and source-specific excerpts. Return only "
-        "the requested structured output."
+        f"the requested structured output. {humor_prompt_suffix(tone)}"
     )
 
 
-def build_user_prompt(input_model: SocialIdentityTextInput) -> str:
+def build_user_prompt(
+    input_model: SocialIdentityTextInput,
+    *,
+    draft_count: int | None = None,
+    quotes: list | None = None,
+) -> str:
     """Build a provider request that repeats the identity anchor at every important decision."""
 
     platforms = ", ".join(source.value for source in input_model.sources)
@@ -177,14 +188,23 @@ def build_user_prompt(input_model: SocialIdentityTextInput) -> str:
             f"Identity type: {input_model.identity_type.value}\n"
         )
     )
+    limit = draft_count or input_model.candidate_count
+    draft_note = ""
+    if draft_count and draft_count > input_model.candidate_count:
+        draft_note = (
+            f"Generate {draft_count} distinct lines so a separate critic can cut most of them.\n"
+        )
     return (
+        f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{quote_block(quotes)}"
+        f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"{identity_instruction}\n"
         f"{identity_context}"
         f"Search these public platforms: {platforms}.\n"
         f"{diversity_instruction}"
         f"{topic_instruction}\n"
-        f"Return up to {input_model.candidate_count} distinct candidates. Each candidate must include "
+        f"Return up to {limit} distinct candidates. Each candidate must include "
         "identity evidence explaining why the source actually supports this identity, then one "
         "specific behavior and friction grounded in that identity. The merchandise text must be "
         "self-explanatory die-cut sticker copy of roughly 2 to 5 words, or empty when the sticker "
@@ -244,8 +264,11 @@ def execute(
                 )
             # Persist one canonical identity label so downstream artwork and UI records do not
             # alternate between harmless provider typography variants.
+            quoted = candidate
+            if not candidate.source_quote.strip():
+                quoted = candidate.model_copy(update={"source_quote": candidate.source_excerpt[:500]})
             normalized_candidates.append(
-                candidate.model_copy(
+                quoted.model_copy(
                     update={
                         "identity": selected_identity,
                         "identity_type": selected_identity_type,
@@ -294,6 +317,9 @@ def execute(
             style_direction=STICKER_STYLE_DIRECTION,
             things_to_avoid=["generic lifestyle imagery", "invented logos", "extra text", *STICKER_AVOID],
             specificity_reason="Fixture output only; replace with live source-backed identity evidence.",
+            source_quote=f"Fixture comment about {effective_identity}.",
+            humor_mechanism="recognition",
+            concrete_detail=effective_identity[:200],
         )
         for index in range(1, input_model.candidate_count + 1)
     ]
