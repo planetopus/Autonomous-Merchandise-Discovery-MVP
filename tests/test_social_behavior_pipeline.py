@@ -1,6 +1,5 @@
 """Tests for the one-stage social behavior to text pipeline."""
 
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 from merchandise_discovery.application.discovery_stage_executor import DiscoveryStageExecutor
@@ -10,6 +9,7 @@ from merchandise_discovery.domain.models.workflow import RunConfig, StageExecuti
 from merchandise_discovery.domain.pipelines.social_behavior_text import pipeline
 from merchandise_discovery.domain.stages.registry import stage_definitions_for
 from merchandise_discovery.infrastructure.providers.image_provider import FixtureImageProvider
+from tests.live_reasoning import first_writer_call, scripted_social_provider
 
 
 def _executor(stage_repository: Mock) -> DiscoveryStageExecutor:
@@ -165,13 +165,12 @@ def test_social_behavior_pipeline_passes_live_source_scope_to_provider() -> None
         things_to_avoid=["generic clock art", "soft bedroom scene", "extra text"],
         specificity_reason="The line reflects a recognizable shift-work tension.",
     )
-    provider = Mock()
-    provider.complete_structured.return_value = SimpleNamespace(
-        output=pipeline.SocialBehaviorTextOutput(
+    provider = scripted_social_provider(
+        pipeline.SocialBehaviorTextOutput(
             candidates=[candidate],
             search_summary="One source-backed behavior.",
         ),
-        usage=UsageMetrics(provider="openai", model="gpt-4o-mini", request_count=1),
+        UsageMetrics(provider="openai", model="gpt-4o-mini", request_count=1),
     )
     executor = _executor(Mock())
     executor._reasoning_provider = provider
@@ -179,8 +178,7 @@ def test_social_behavior_pipeline_passes_live_source_scope_to_provider() -> None
     input_data = executor.prepare(run, stage)
     result = executor.execute(run, stage, input_data)
 
-    provider.complete_structured.assert_called_once()
-    call = provider.complete_structured.call_args.kwargs
+    call = first_writer_call(provider).kwargs
     assert call["web_search_domains"] == ("reddit.com", "x.com")
     assert result.output_data["candidates"][0]["artwork_text"] == (
         "My sleep schedule is a group project"
@@ -205,10 +203,79 @@ def test_social_behavior_prompt_requires_standalone_personal_copy() -> None:
     assert "Avoid generic achievement statements" in instructions
     assert "artwork_prompt" in instructions
     assert "exact merchandise line" in instructions
-    assert "visual_punchline" in pipeline.build_user_prompt(
+    blank_prompt = pipeline.build_user_prompt(
         pipeline.SocialBehaviorTextInput(
             sources=[SocialSource.REDDIT],
             query="night workers trying to stay sane",
             candidate_count=1,
         )
+    )
+    assert "visual_punchline" in blank_prompt
+    assert "two different niches" in blank_prompt
+    assert "original joke" in blank_prompt
+
+
+def test_live_stage_drops_source_quotes_and_always_runs_the_critic() -> None:
+    """A blank reference set still scores every line and rejects a copied source sentence."""
+
+    run = WorkflowRun(
+        title="Source copy",
+        config=RunConfig(
+            pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+            social_sources=[SocialSource.REDDIT],
+            social_query="first layer problems",
+            social_candidate_count=1,
+            social_niche_a="night-shift nurses",
+            social_niche_b="3D printer people",
+        ),
+    )
+    stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")
+    copied = "This is with a 0.4 mm nozzle."
+    joke = pipeline.SocialBehaviorTextCandidate(
+        source_platform=SocialSource.REDDIT,
+        source_url="https://reddit.com/r/3Dprinting/comments/abc/nozzle",
+        source_title="Nozzle note",
+        source_excerpt=copied,
+        source_quote=copied,
+        audience_context="Nurses who also print",
+        behavior="Blaming the nozzle for a shift-change print.",
+        friction_or_pressure="The print fails at the same minute the shift ends.",
+        artwork_text="My first layer clocks out early",
+        artwork_prompt="A die-cut sticker of a nozzle punching a time clock.",
+        visual_punchline="The nozzle leaves mid-layer.",
+        main_visual_metaphor="A nozzle wearing a nurse's badge clocking out.",
+        audience_specific_cue="A badge and a 0.4 mm nozzle on one subject.",
+        tone="deadpan",
+        style_direction="Flat vector die-cut sticker.",
+        things_to_avoid=["a scene"],
+        specificity_reason="Both lives are in the line.",
+        humor_mechanism="deadpan absurd",
+        concrete_detail="0.4 mm nozzle",
+    )
+    quoted = joke.model_copy(update={"artwork_text": copied})
+    provider = scripted_social_provider(
+        pipeline.SocialBehaviorTextOutput(
+            candidates=[quoted, joke],
+            search_summary="Printer comments from people who also work nights.",
+            niche_pair_a="night-shift nurses",
+            niche_pair_b="3D printer people",
+            pairing_score=8,
+            pairing_reason="The same person prints between shifts.",
+        )
+    )
+    executor = _executor(Mock())
+    executor._reasoning_provider = provider
+
+    result = executor.execute(run, stage, executor.prepare(run, stage))
+
+    assert result.output_data["candidates"][0]["artwork_text"] == "My first layer clocks out early"
+    assert result.output_data["candidates"][0]["funny_score"] == 8
+    assert result.output_data["niche_pair_a"] == "night-shift nurses"
+    assert result.output_data["niche_pair_b"] == "3D printer people"
+    reasons = {item["reason"] for item in result.output_data["line_reviews"]}
+    assert "copied source" in reasons
+    assert "kept" in reasons
+    assert any(
+        call.kwargs["response_model"].__name__ == "HumorCritiqueBatch"
+        for call in provider.complete_structured.call_args_list
     )

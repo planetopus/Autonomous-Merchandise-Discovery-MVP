@@ -1,7 +1,9 @@
 """Loader, upvote weighting, and anti-copy checks for the humor reference set."""
 
+from merchandise_discovery.domain.humor import niche_pair_block
 from merchandise_discovery.domain.humor_references import (
     HumorReference,
+    copied_from_source,
     humor_reference_id,
     is_too_similar_to_references,
     select_humor_references,
@@ -152,6 +154,41 @@ def test_csv_marks_theme_rows_and_hashes_text() -> None:
 
     assert parsed[0].is_theme is True
     assert parsed[0].reference_id == humor_reference_id(parsed[0].text)
+
+
+def test_source_sentences_are_not_treated_as_jokes() -> None:
+    """A merchandise line that is the source sentence, or mostly its words, is rejected."""
+
+    quote = "I also noticed I was getting elephants foot and adhesion issues in places."
+    nozzle = "This is with a 0.4 mm nozzle."
+    corners = "One corner can give you info about the other corners too."
+
+    assert copied_from_source(quote, quote, "something else")
+    assert copied_from_source(nozzle, nozzle)
+    assert copied_from_source(corners, corners)
+    assert copied_from_source(
+        "I was getting elephants foot and adhesion issues",
+        quote,
+    )
+    assert not copied_from_source(
+        "My first layer files a complaint",
+        quote,
+        nozzle,
+    )
+    assert not copied_from_source("", quote)
+
+
+def test_blank_niches_ask_the_model_to_choose_two() -> None:
+    """A run with no Niche A/B still has to cross two lives, and score that pairing."""
+
+    blank = niche_pair_block()
+    assert "two different niches" in blank
+    assert "pairing_score" in blank
+    named = niche_pair_block(identity="night-shift nurses")
+    assert "night-shift nurses" in named
+    assert "second niche" in named
+    supplied = niche_pair_block("nurses", "3D printing")
+    assert 'Cross these two niches exactly: "nurses" and "3D printing"' in supplied
 
 
 def _write_csv(directory, body: str):

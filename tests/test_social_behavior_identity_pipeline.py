@@ -1,6 +1,5 @@
 """Tests for the behavior-first, candidate-level identity pipeline."""
 
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
@@ -17,6 +16,7 @@ from merchandise_discovery.domain.models.workflow import RunConfig, StageExecuti
 from merchandise_discovery.domain.pipelines.social_behavior_identity import pipeline
 from merchandise_discovery.domain.stages.registry import stage_definitions_for
 from merchandise_discovery.infrastructure.providers.image_provider import FixtureImageProvider
+from tests.live_reasoning import first_writer_call, scripted_social_provider
 
 
 def _executor(stage_repository: Mock) -> DiscoveryStageExecutor:
@@ -110,24 +110,23 @@ def test_fixture_stage_one_returns_identity_on_each_candidate() -> None:
 def test_live_stage_one_makes_one_structured_search_request() -> None:
     run = _run(auto_topic=True)
     stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Behavior first")
-    provider = Mock()
     executor = _executor(Mock())
-    executor._reasoning_provider = provider
     input_model = pipeline.BehaviorIdentityInput.model_validate(executor.prepare(run, stage))
-    provider.complete_structured.return_value = SimpleNamespace(
-        output=_live_output(input_model),
-        usage=UsageMetrics(provider="openai", model="gpt-6-luna", request_count=1),
+    provider = scripted_social_provider(
+        _live_output(input_model),
+        UsageMetrics(provider="openai", model="gpt-6-luna", request_count=1),
     )
+    executor._reasoning_provider = provider
 
     result = executor.execute(run, stage, input_model.model_dump(mode="python"))
 
-    provider.complete_structured.assert_called_once()
-    call = provider.complete_structured.call_args.kwargs
+    call = first_writer_call(provider).kwargs
     assert call["response_model"] is pipeline.BehaviorIdentityOutput
     assert call["web_search_domains"] == ("reddit.com",)
     assert "independently for each behavior" in call["system_prompt"]
+    assert "two different niches" in call["user_prompt"]
     assert result.output_data["candidates"][0]["identity"] == "Bedside nurses"
-    assert result.usage.request_count == 1
+    assert result.usage.request_count >= 2
 
 
 def test_provider_can_map_different_behaviors_to_different_identities() -> None:

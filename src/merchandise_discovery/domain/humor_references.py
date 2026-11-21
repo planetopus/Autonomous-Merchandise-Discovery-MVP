@@ -163,6 +163,54 @@ def humor_reference_prompt(selection: HumorReferenceSelection) -> str:
     return "\n".join(lines) + "\n"
 
 
+_SOURCE_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "the",
+    "to",
+    "of",
+    "in",
+    "on",
+    "for",
+    "with",
+    "is",
+    "it",
+    "this",
+    "that",
+    "i",
+    "my",
+    "was",
+    "were",
+    "be",
+    "at",
+}
+
+
+def copied_from_source(line: str, *sources: str) -> bool:
+    """Reject a merchandise line that is mostly the source quote or excerpt."""
+
+    line_norm = _comparison_text(line)
+    if not line_norm:
+        return False
+    line_tokens = [token for token in line_norm.split() if token not in _SOURCE_STOPWORDS]
+    for source in sources:
+        source_norm = _comparison_text(source)
+        if not source_norm:
+            continue
+        if line_norm == source_norm or (len(line_norm) >= 12 and line_norm in source_norm):
+            return True
+        if len(line_tokens) < 4:
+            continue
+        source_tokens = {token for token in source_norm.split() if token not in _SOURCE_STOPWORDS}
+        if not source_tokens:
+            continue
+        overlap = len(set(line_tokens) & source_tokens) / len(line_tokens)
+        if overlap >= 0.75:
+            return True
+    return False
+
+
 def is_too_similar_to_references(candidate: str, references: list[HumorReference]) -> bool:
     """Reject a line that copies or lightly rewords an exact-text reference."""
 

@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
+from merchandise_discovery.domain.humor import humor_prompt_suffix, niche_pair_block, quote_block
 from merchandise_discovery.domain.models.common import (
     HumorTone,
     IdentityType,
@@ -110,6 +110,11 @@ class SocialIdentityTextOutput(BaseModel):
     model: str = "deterministic"
     humor_examples_used: list[dict] = Field(default_factory=list)
     humor_themes_used: list[str] = Field(default_factory=list)
+    niche_pair_a: str = Field(default="", max_length=200)
+    niche_pair_b: str = Field(default="", max_length=200)
+    pairing_score: float | None = Field(default=None, ge=0, le=10)
+    pairing_reason: str = Field(default="", max_length=500)
+    line_reviews: list[dict] = Field(default_factory=list)
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
@@ -151,10 +156,12 @@ def build_user_prompt(
 
     platforms = ", ".join(source.value for source in input_model.sources)
     identity_instruction = (
-        "Choose one concrete, non-sensitive identity represented in the discussions before choosing "
-        "the behavior. Compare several source-backed identities across different identity types and "
-        "name the chosen audience naturally, as a person would describe themselves rather than as a "
-        "bureaucratic research segment. Return it in `identity_selected` and classify it in "
+        "The niche pair in this prompt is the audience. If the user did not name two niches, "
+        "choose two different niches that share a life before choosing the behavior, and set "
+        "`identity_selected` to niche_pair_a. Compare several source-backed identities across "
+        "different identity types and name the chosen audience naturally, as a person would "
+        "describe themselves rather than as a bureaucratic research segment. Return it in "
+        "`identity_selected` and classify it in "
         f"`identity_type_selected` using this taxonomy: {identity_type_guidance()}. "
         "Use only the allowed identity types; do not infer sensitive personal traits."
         if input_model.auto_identity
@@ -203,6 +210,7 @@ def build_user_prompt(
         f"{humor_reference_block}"
         f"{quote_block(quotes)}"
         f"{draft_note}"
+        f"{niche_pair_block(input_model.niche_a, input_model.niche_b, input_model.identity)}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"{identity_instruction}\n"
         f"{identity_context}"

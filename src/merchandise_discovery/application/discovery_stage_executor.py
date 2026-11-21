@@ -15,6 +15,7 @@ from merchandise_discovery.domain.humor import (
     apply_line_critic,
 )
 from merchandise_discovery.domain.humor_references import (
+    copied_from_source,
     humor_reference_prompt,
     is_too_similar_to_references,
     select_humor_references,
@@ -194,7 +195,7 @@ class DiscoveryStageExecutor:
     def _finish_social_text(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Validate the drafted lines, then record which humor references the run used."""
 
-        reasoning_output, usage, selection = self._social_reasoning(
+        reasoning_output, usage, selection, line_reviews = self._social_reasoning(
             run,
             input_model,
             pipeline_module,
@@ -205,9 +206,14 @@ class DiscoveryStageExecutor:
             reasoning_output=reasoning_output,
             model=usage.model if usage.provider != "fixture" else "deterministic",
         )
-        if selection.examples or selection.themes:
-            output = self._stamp_humor_context(output, selection)
-        return output, usage
+        output = self._stamp_humor_context(output, selection)
+        pair_update = {"line_reviews": line_reviews}
+        user_a = str(getattr(input_model, "niche_a", "") or "").strip()
+        user_b = str(getattr(input_model, "niche_b", "") or "").strip()
+        if user_a and user_b:
+            pair_update["niche_pair_a"] = user_a
+            pair_update["niche_pair_b"] = user_b
+        return output.model_copy(update=pair_update), usage
 
     def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Collect comments, draft joke-shaped lines, then let a critic cut them."""
@@ -215,7 +221,7 @@ class DiscoveryStageExecutor:
         selection = self._humor_selection(run, input_model)
         reference_block = humor_reference_prompt(selection)
         if self._reasoning_provider is None:
-            return None, UsageMetrics(), selection
+            return None, UsageMetrics(), selection, []
         quotes = self._collect_reddit_quotes(input_model)
         draft_count = min(25, max(input_model.candidate_count, input_model.candidate_count * 3))
         domains = None
@@ -236,58 +242,82 @@ class DiscoveryStageExecutor:
             web_search_domains=domains,
         )
         usage = response.usage
-        candidates = self._without_copied_references(
+        candidates, reviews = self._drop_unoriginal(
             list(getattr(response.output, "candidates", [])),
             selection.examples,
         )
-        needs_upvote_bar = bool(selection.examples)
-        if needs_upvote_bar or len(candidates) > input_model.candidate_count:
-            candidates, critic_usage = self._critic_pass(
+        if candidates:
+            candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
                 candidates,
                 input_model.candidate_count,
                 reference_block,
             )
             usage = combine_usage(usage, critic_usage)
-        if needs_upvote_bar and len(candidates) < input_model.candidate_count:
-            retry_prompt = (
-                f"{user_prompt}\nThe previous lines were title puns or scored under 7 on "
-                "'would this get upvoted on Reddit'. Write new joke-shaped lines. Do not "
-                "paraphrase the reference examples."
-            )
+            reviews.extend(critic_rows)
+        chosen = response.output
+        short = len(candidates) < input_model.candidate_count
+        weak_pair = self._pair_is_weak(chosen, input_model)
+        if short or weak_pair:
+            reasons = []
+            if short:
+                reasons.append(
+                    "too few lines survived. Dropped lines copied the source, copied a "
+                    "reference, or scored under 7 on 'would this get upvoted on Reddit'"
+                )
+            if weak_pair:
+                reasons.append(
+                    "niche_pair_a and niche_pair_b were missing, identical, or pairing_score "
+                    "was under 7. Choose two niches whose audiences share a life and score "
+                    "that pairing at 7 or higher"
+                )
             retry = self._reasoning_provider.complete_structured(
                 system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
-                user_prompt=retry_prompt,
+                user_prompt=(
+                    f"{user_prompt}\nRewrite. {'. '.join(reasons)}. "
+                    "artwork_text must be an original joke, never the source sentence or a "
+                    "close paraphrase."
+                ),
                 response_model=output_model,
                 web_search_domains=domains,
             )
             usage = combine_usage(usage, retry.usage)
-            retried = self._without_copied_references(
+            retried, retry_reviews = self._drop_unoriginal(
                 list(getattr(retry.output, "candidates", [])),
                 selection.examples,
             )
             if retried:
-                retried, critic_usage = self._critic_pass(
+                retried, critic_usage, critic_rows = self._critic_pass(
                     run,
                     retried,
                     input_model.candidate_count,
                     reference_block,
                 )
                 usage = combine_usage(usage, critic_usage)
+                retry_reviews.extend(critic_rows)
             if len(retried) >= len(candidates):
                 candidates = retried
-        if needs_upvote_bar and not candidates:
-            raise RuntimeError(
-                "Humor critic rejected every line. None scored 7 or higher against the "
-                "upvoted reference jokes, or each line copied a reference."
-            )
+                chosen = retry.output
+                reviews = retry_reviews
+            elif self._pair_rank(retry.output) > self._pair_rank(chosen):
+                chosen = chosen.model_copy(
+                    update={
+                        "niche_pair_a": retry.output.niche_pair_a,
+                        "niche_pair_b": retry.output.niche_pair_b,
+                        "pairing_score": retry.output.pairing_score,
+                        "pairing_reason": retry.output.pairing_reason,
+                    }
+                )
         if not candidates:
-            candidates = list(getattr(response.output, "candidates", []))
-        output = response.output.model_copy(
+            raise RuntimeError(
+                "Every line was dropped. Each one copied its source, copied a reference joke, "
+                "or scored under 7 on 'would this get upvoted on Reddit'."
+            )
+        output = chosen.model_copy(
             update={"candidates": candidates[: input_model.candidate_count]}
         )
         output = self._drop_crowded_lines(output)
-        return output, usage, selection
+        return output, usage, selection, reviews
 
     def _collect_reddit_quotes(self, input_model) -> list:
         """Pull top comments when Reddit is selected. A failure leaves the writer on web search."""
@@ -328,14 +358,57 @@ class DiscoveryStageExecutor:
         ]
         return select_humor_references(references, tone=run.config.humor_tone, niches=niches)
 
-    def _without_copied_references(self, candidates: list, examples: list) -> list:
-        """Drop lines that reuse an upvoted reference instead of making a new joke."""
+    def _pair_is_weak(self, output, input_model) -> bool:
+        """A user-supplied pair is trusted. An AI pair must name two lives and score at least 7."""
 
-        return [
-            candidate
-            for candidate in candidates
-            if not is_too_similar_to_references(str(getattr(candidate, "artwork_text", "")), examples)
-        ]
+        user_a = str(getattr(input_model, "niche_a", "") or "").strip()
+        user_b = str(getattr(input_model, "niche_b", "") or "").strip()
+        if user_a and user_b:
+            return False
+        return self._pair_rank(output) < (1, 7)
+
+    def _pair_rank(self, output) -> tuple[int, float]:
+        """Rank a returned pair so a real overlap outranks a missing or low score."""
+
+        first = str(getattr(output, "niche_pair_a", "") or "").strip()
+        second = str(getattr(output, "niche_pair_b", "") or "").strip()
+        distinct = bool(first and second and first.casefold() != second.casefold())
+        score = getattr(output, "pairing_score", None)
+        return (1 if distinct else 0, float(score) if score is not None else 0.0)
+
+    def _drop_unoriginal(self, candidates: list, examples: list) -> tuple[list, list]:
+        """Drop lines that quote the source or an upvoted reference instead of joking."""
+
+        kept: list = []
+        dropped: list = []
+        for candidate in candidates:
+            text = str(getattr(candidate, "artwork_text", "") or "")
+            if copied_from_source(
+                text,
+                str(getattr(candidate, "source_quote", "") or ""),
+                str(getattr(candidate, "source_excerpt", "") or ""),
+            ):
+                dropped.append(
+                    {
+                        "artwork_text": text,
+                        "funny_score": None,
+                        "kept": False,
+                        "reason": "copied source",
+                    }
+                )
+                continue
+            if is_too_similar_to_references(text, examples):
+                dropped.append(
+                    {
+                        "artwork_text": text,
+                        "funny_score": None,
+                        "kept": False,
+                        "reason": "copied reference",
+                    }
+                )
+                continue
+            kept.append(candidate)
+        return kept, dropped
 
     def _stamp_humor_context(self, output, selection):
         """Record the top examples and themes that this run's copy was judged against."""
@@ -380,7 +453,8 @@ class DiscoveryStageExecutor:
                 "1 to 10 for 'would this get upvoted on Reddit' compared with the reference "
                 "jokes. Score title puns and clever names at 4 or below. Score a real setup "
                 "and turn, confession, or deadpan absurdity at 7 or above only when it would "
-                "actually get a laugh. Do not reward a line that copies a reference."
+                "actually get a laugh. Score a line that quotes or closely paraphrases its "
+                "source at 4 or below. Do not reward a line that copies a reference."
             ),
             user_prompt=(
                 f"Requested tone: {run.config.humor_tone.value}.\n"
@@ -416,7 +490,26 @@ class DiscoveryStageExecutor:
             keep_count=keep_count,
             tone=run.config.humor_tone,
         )
-        return kept, response.usage
+        kept_ids = {id(item) for item in kept}
+        rows = []
+        for index, candidate in enumerate(scored):
+            review = by_index.get(index)
+            score = review.reddit_upvote_score if review is not None else None
+            if id(candidate) in kept_ids:
+                reason, kept_flag = "kept", True
+            elif score is not None and score < 7:
+                reason, kept_flag = "below 7", False
+            else:
+                reason, kept_flag = "cut by critic", False
+            rows.append(
+                {
+                    "artwork_text": str(getattr(candidate, "artwork_text", "") or ""),
+                    "funny_score": score,
+                    "kept": kept_flag,
+                    "reason": reason,
+                }
+            )
+        return kept, response.usage, rows
 
     def _drop_crowded_lines(self, output):
         """Remove sticker lines that already have a crowded marketplace, when a check is configured."""

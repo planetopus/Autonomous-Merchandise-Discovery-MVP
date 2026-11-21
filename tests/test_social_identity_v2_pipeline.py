@@ -1,6 +1,5 @@
 """Tests for the prompt-focused Identity V2 A/B pipeline."""
 
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
@@ -17,6 +16,7 @@ from merchandise_discovery.domain.models.workflow import RunConfig, StageExecuti
 from merchandise_discovery.domain.pipelines.social_identity_v2 import pipeline
 from merchandise_discovery.domain.stages.registry import stage_definitions_for
 from merchandise_discovery.infrastructure.providers.image_provider import FixtureImageProvider
+from tests.live_reasoning import first_writer_call, scripted_social_provider
 
 
 def _executor(stage_repository: Mock) -> DiscoveryStageExecutor:
@@ -179,24 +179,23 @@ def test_identity_v2_uses_one_prompt_focused_provider_call() -> None:
         search_summary="Source-backed nursing language.",
         topic_explored=run.config.social_query,
     )
-    provider = Mock()
-    provider.complete_structured.return_value = SimpleNamespace(
-        output=provider_output,
-        usage=UsageMetrics(provider="openai", model="gpt-5.6-luna", request_count=1),
+    provider = scripted_social_provider(
+        provider_output,
+        UsageMetrics(provider="openai", model="gpt-5.6-luna", request_count=1),
     )
     executor = _executor(Mock())
     executor._reasoning_provider = provider
 
     result = executor.execute(run, stage, executor.prepare(run, stage))
 
-    assert provider.complete_structured.call_count == 1
-    call = provider.complete_structured.call_args.kwargs
+    call = first_writer_call(provider).kwargs
     assert call["web_search_domains"] == ("reddit.com",)
     assert "self-explanatory" in call["system_prompt"]
     assert "IDENTITY: slogan" in call["system_prompt"]
     assert "two unmistakable contextual cues" in call["system_prompt"]
     assert "Target identity: bedside nurses" in call["user_prompt"]
-    assert result.usage.request_count == 1
+    assert "second niche" in call["user_prompt"]
+    assert result.usage.request_count >= 2
     assert result.output_data["candidates"][0]["artwork_text"].startswith("I'm Not Being Rude")
 
 

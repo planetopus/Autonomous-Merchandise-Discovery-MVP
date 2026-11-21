@@ -7,7 +7,7 @@ Keeping the contract shared makes output quality attributable to prompting rathe
 research pass, new persistence model, or extra provider call.
 """
 
-from merchandise_discovery.domain.humor import humor_prompt_suffix, quote_block
+from merchandise_discovery.domain.humor import humor_prompt_suffix, niche_pair_block, quote_block
 from merchandise_discovery.domain.models.common import HumorTone, identity_type_guidance
 from merchandise_discovery.domain.pipelines.social_identity_focused.pipeline import (
     SocialIdentityTextCandidate as SocialIdentityV2Candidate,
@@ -83,9 +83,10 @@ def build_user_prompt(
 
     platforms = ", ".join(source.value for source in input_model.sources)
     identity_instruction = (
-        "Choose one concrete, non-sensitive identity represented in the discussions before choosing "
-        "the behavior. Internally compare several concrete identities across the available identity "
-        "types, then choose the most distinctive one with repeated "
+        "The niche pair in this prompt is the audience. If the user did not name two niches, "
+        "choose two different niches that share a life before choosing the behavior, and set "
+        "`identity_selected` to niche_pair_a. Internally compare several concrete identities across "
+        "the available identity types, then choose the most distinctive one with repeated "
         "source evidence rather than the most familiar profession. Name it as a natural human "
         "identity label that a person would actually use for themselves, not as a bureaucratic "
         "industry description or research segment. Return it in `identity_selected` "
@@ -137,6 +138,7 @@ def build_user_prompt(
         f"{humor_reference_block}"
         f"{quote_block(quotes)}"
         f"{draft_note}"
+        f"{niche_pair_block(input_model.niche_a, input_model.niche_b, input_model.identity)}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"{identity_instruction}\n"
         f"{identity_context}"

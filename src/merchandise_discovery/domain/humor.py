@@ -26,7 +26,8 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "(recognition, reversal, understatement, exaggeration, or gallows), and "
         "concrete_detail, one object, time, or action taken from the source. "
         "Set source_quote to a verbatim sentence from a supplied comment or from the "
-        "source you searched. The merchandise line must point at that quote. "
+        "source you searched. That quote is evidence only. artwork_text must be an original "
+        "joke, never the source sentence, a close paraphrase, or a title pun. "
     )
     if selected == HumorTone.DARK:
         return (
@@ -52,8 +53,8 @@ def quote_block(quotes: list | None) -> str:
 
     if not quotes:
         return (
-            "No comments were prefetched. Use the search results, copy one verbatim sentence "
-            "into source_quote, and point the merchandise line at that sentence.\n"
+            "No comments were prefetched. Use the search results and copy one verbatim sentence "
+            "into source_quote as evidence. Do not use that sentence as artwork_text.\n"
         )
     lines = ["Use only these real comments. Do not invent a quote."]
     for index, quote in enumerate(quotes, start=1):
@@ -62,10 +63,43 @@ def quote_block(quotes: list | None) -> str:
         score = getattr(quote, "score", 0)
         lines.append(f"{index}. (score {score}) {body} — {url}")
     lines.append(
-        "Each candidate's source_quote must copy one of these comments verbatim, and the "
-        "line must point at the friction in that comment."
+        "Each candidate's source_quote must copy one of these comments verbatim as evidence. "
+        "The merchandise line must be a new joke about that friction, not the comment itself."
     )
     return "\n".join(lines) + "\n"
+
+
+def niche_pair_block(niche_a: str = "", niche_b: str = "", identity: str = "") -> str:
+    """Require every run to cross two niches that share a real life."""
+
+    first = niche_a.strip()
+    second = niche_b.strip()
+    named = identity.strip()
+    shared = (
+        "Return niche_pair_a, niche_pair_b, pairing_score from 0 to 10, and pairing_reason. "
+        "pairing_score is how genuinely one person lives both and a stranger still gets the "
+        "collision. Reject a pair you would score under 7 and choose another. "
+        "Every merchandise line must carry both lives. Do not write a line that fits only one.\n"
+    )
+    if first and second:
+        return (
+            f'Cross these two niches exactly: "{first}" and "{second}". '
+            "They must share a life, not sit side by side as unrelated subjects. "
+            + shared
+        )
+    if named:
+        return (
+            f'The user named "{named}" as one side. Choose a second niche whose audience '
+            "genuinely shares a life with that one: a job and a hobby, an identity and a life "
+            "situation, or two communities. Do not stop at a single niche. "
+            + shared
+        )
+    return (
+        "The user did not name two niches. Before writing jokes, choose two different niches "
+        "whose audiences genuinely share one life experience: a job and a hobby, an identity "
+        "and a life situation, or two communities. Do not pick a single niche or a single topic. "
+        + shared
+    )
 
 
 def joke_key(text: str) -> str:
