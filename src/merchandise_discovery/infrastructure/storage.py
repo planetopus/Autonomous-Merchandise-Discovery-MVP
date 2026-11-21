@@ -36,6 +36,7 @@ class ArtworkStorage(Protocol):
         source_url: str,
         storage_key: str,
         reported_size_bytes: int,
+        content: bytes | None = None,
     ) -> StoredArtwork:
         """Persist the provider object and return its stable key and measured size."""
 
@@ -49,9 +50,11 @@ class ReferenceArtworkStorage:
         source_url: str,
         storage_key: str,
         reported_size_bytes: int,
+        content: bytes | None = None,
     ) -> StoredArtwork:
         """Return the fixture reference unchanged and perform no network operation."""
 
+        _ = content
         return StoredArtwork(storage_key=storage_key, file_size_bytes=reported_size_bytes)
 
 
@@ -67,21 +70,23 @@ class LocalArtworkStorage:
         source_url: str,
         storage_key: str,
         reported_size_bytes: int,
+        content: bytes | None = None,
     ) -> StoredArtwork:
-        """Download one provider URL using a traversal-safe key and atomically publish the file."""
+        """Save provider bytes, or download a URL, then publish the die-cut PNG."""
 
         relative_key = Path(storage_key)
         if relative_key.is_absolute() or ".." in relative_key.parts:
             raise ValueError("Artwork storage key must be a relative path without parent traversal.")
-        if source_url.startswith("https://fixture.local/"):
+        if content is None and source_url.startswith("https://fixture.local/"):
             return StoredArtwork(storage_key=storage_key, file_size_bytes=reported_size_bytes)
 
-        request = Request(source_url, headers={"User-Agent": "autonomous-merchandise-discovery/0.1"})
-        try:
-            with urlopen(request, timeout=30) as response:  # URL is provider output.
-                content = response.read()
-        except (OSError, ValueError) as error:
-            raise RuntimeError("Artwork object storage download failed.") from error
+        if content is None:
+            request = Request(source_url, headers={"User-Agent": "autonomous-merchandise-discovery/0.1"})
+            try:
+                with urlopen(request, timeout=30) as response:  # URL is provider output.
+                    content = response.read()
+            except (OSError, ValueError) as error:
+                raise RuntimeError("Artwork object storage download failed.") from error
         if not content:
             raise RuntimeError("Artwork object storage received an empty file.")
 

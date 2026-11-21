@@ -28,6 +28,8 @@ def sticker_copy_rules() -> str:
         "Write die-cut vinyl sticker copy, not T-shirt or poster copy. Each merchandise "
         "line must be joke-shaped: a setup plus a turn, a one-line confession, or a deadpan "
         "absurd statement, about 4 to 14 words. A clever title or pun alone is rejected. "
+        "A pun, spoof, or name swap of 2 to 8 words is the product when the picture "
+        "completes the second meaning. "
         "artwork_text may be an empty string when the joke should be visual only. "
         "Empty artwork_text is valid and means the sticker has no text. "
         "The line must still make sense when read alone. Avoid generic achievement "
@@ -47,6 +49,32 @@ def sticker_visual_rules() -> str:
         "a T-shirt graphic. The white die-cut border is added later, so do not draw a "
         "rectangular frame, sticker sheet, or fake white outline. "
         f"Always include these in things_to_avoid: {avoid}."
+    )
+
+
+def finished_sticker_direction(candidate) -> str:
+    """Ask the image model for one finished die-cut sticker, text included."""
+
+    text = " ".join(str(getattr(candidate, "artwork_text", "") or "").split())
+    idea = " ".join(str(getattr(candidate, "image_idea", "") or "").split())
+    layout = " ".join(str(getattr(candidate, "format", "") or "").split()) or "die-cut cartoon"
+    why = " ".join(str(getattr(candidate, "why_it_works", "") or "").split())
+    lettering = (
+        "Merchandise text: none. Do not render any words."
+        if not text
+        else (
+            f'Render this exact text in the image, once, in bold legible lettering: "{text}". '
+            "Do not add any other words."
+        )
+    )
+    return (
+        "Finished sticker, this overrides any note that says not to draw an outline. "
+        "Die-cut vinyl sticker, thick white outline, flat vector, plain white background. "
+        f"Layout: {layout}. "
+        f"Subject: {idea or 'one cute or iconic character that makes the joke land'}. "
+        f"{lettering} "
+        f"The picture completes the joke: {why or 'the character is the second meaning'}. "
+        "No product mockup, no photo, no extra caption."
     )
 
 

@@ -17,6 +17,7 @@ from merchandise_discovery.domain.models.common import (
     identity_type_guidance,
 )
 from merchandise_discovery.domain.models.workflow import RunConfig
+from merchandise_discovery.infrastructure.providers.image_provider import estimate_image_cost
 from merchandise_discovery.shared.configuration import default_trending_share
 from merchandise_discovery.shared.errors import RepositoryError
 from merchandise_discovery.ui.adapters import pipeline_display_name
@@ -43,6 +44,7 @@ def build_run_config(
     social_niche_b: str = "",
     humor_tone: HumorTone = HumorTone.DRY,
     social_trending_share: float = 0.6,
+    social_generate_images: bool = True,
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -66,6 +68,7 @@ def build_run_config(
         social_niche_b=social_niche_b.strip(),
         humor_tone=humor_tone,
         social_trending_share=min(1.0, max(0.0, social_trending_share)),
+        social_generate_images=social_generate_images,
     )
 
 
@@ -144,18 +147,32 @@ def render_run_create(
     is_identity_pipeline = pipeline_variant in {
         PipelineVariant.SOCIAL_IDENTITY_V2,
     }
-    if (
-        is_social_pipeline
-        and runtime is not None
-        and runtime.stop_after_stage < 2
-    ):
-        st.warning(
-            "This environment is configured to stop after Stage 1. Set "
-            "MVP_STOP_AFTER_STAGE=2 to also generate the Grok artwork."
-        )
     auto_topic = False
     auto_identity = False
     manual_artwork_selection = False
+    generate_images = True
+    if is_social_pipeline:
+        generate_images = st.checkbox(
+            "Text + images",
+            value=True,
+            help=(
+                "One click writes the lines and generates one finished sticker image for each. "
+                "Uncheck for text only. Images still run when MVP_STOP_AFTER_STAGE is 1."
+            ),
+        )
+        backend = "fixture"
+        if runtime is not None:
+            backend = runtime.provider_modes.get("image", "fixture")
+        image_cost = estimate_image_cost(backend, 5)
+        if generate_images:
+            st.caption(
+                f"Image provider: {backend}. About ${image_cost:.2f} for 5 stickers, "
+                "plus the text-model tokens."
+            )
+        elif runtime is not None and runtime.stop_after_stage < 2:
+            st.warning(
+                "Text only. This environment stops after Stage 1 unless Text + images is on."
+            )
     if is_social_pipeline:
         auto_topic = st.checkbox(
             "Let AI choose the behavior or topic",
@@ -342,6 +359,7 @@ def render_run_create(
                 social_niche_b=social_niche_b,
                 humor_tone=humor_tone,
                 social_trending_share=trending_share,
+                social_generate_images=generate_images,
             ),
             triggered_by="manual",
         )

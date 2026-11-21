@@ -67,6 +67,8 @@ class RunConfig(BaseModel):
     social_manual_artwork_selection: bool = False
     # Share of auto identity picks that follow who is buying. The rest explore unused identities.
     social_trending_share: float = Field(default_factory=default_trending_share, ge=0, le=1)
+    # One click writes the lines and generates a finished sticker for each. Off keeps text only.
+    social_generate_images: bool = True
     social_selected_candidate_indices: list[int] = Field(default_factory=list)
 
     @model_validator(mode="after")

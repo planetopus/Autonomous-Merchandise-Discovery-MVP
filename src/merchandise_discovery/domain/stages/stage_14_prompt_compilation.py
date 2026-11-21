@@ -13,6 +13,7 @@ class PromptCompilation(BaseModel):
     brief_id: str
     prompt: str
     combination_name: str = ""
+    audience_label: str = ""
 
 
 class PromptCompilationInput(BaseModel):

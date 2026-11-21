@@ -53,6 +53,7 @@ def execute(
                 source_url=generated.source_url,
                 storage_key=generated.storage_key,
                 reported_size_bytes=generated.file_size_bytes,
+                content=generated.content,
             )
             usages.append(generated.usage)
             artworks.append(
@@ -63,6 +64,7 @@ def execute(
                     prompt=prompt.prompt,
                     combination_name=prompt.combination_name,
                     storage_key=stored.storage_key,
+                    critique={"who_its_for": prompt.audience_label} if prompt.audience_label else {},
                     raw_storage_key=stored.raw_storage_key,
                     source_url=generated.source_url,
                     width=stored.width or generated.width,

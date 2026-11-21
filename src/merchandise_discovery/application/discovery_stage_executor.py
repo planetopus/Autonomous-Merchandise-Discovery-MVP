@@ -24,6 +24,8 @@ from merchandise_discovery.domain.humor import (
     apply_pun_cap,
     apply_trope_cap,
     critic_average,
+    finished_sticker_examples_block,
+    is_anchor_echo,
     keep_strong_pairs,
     line_is_pun,
     member_would_not_buy,
@@ -31,6 +33,7 @@ from merchandise_discovery.domain.humor import (
     primary_wit_share,
     pun_examples_block,
     pun_share_is_thin,
+    puns_still_needed,
     reading_failed,
     synergy_failed,
     tired_trope_block,
@@ -324,7 +327,11 @@ class DiscoveryStageExecutor:
             rng=random.Random(getattr(run, "run_id", "style")),
         )
         writer_block = (
-            style_block + pun_examples_block() + market_signal_prompt(market) + humor_block
+            style_block
+            + finished_sticker_examples_block()
+            + pun_examples_block()
+            + market_signal_prompt(market)
+            + humor_block
         )
         if self._reasoning_provider is None:
             return None, UsageMetrics(), selection, [], playbook, None
@@ -482,6 +489,27 @@ class DiscoveryStageExecutor:
                     "Fewer than two absurd identity stack lines survived. "
                     "Showing the best lines anyway."
                 )
+        if puns_still_needed(input_model.candidate_count, sum(1 for item in candidates if line_is_pun(item))):
+            filled, fill_usage, fill_reviews = self._fill_puns(
+                run,
+                input_model,
+                output_model,
+                pipeline_module,
+                puns_still_needed(
+                    input_model.candidate_count,
+                    sum(1 for item in candidates if line_is_pun(item)),
+                ),
+            )
+            usage = self._add_usage(usage, fill_usage)
+            reviews.extend(fill_reviews)
+            candidates = self._merge_puns(candidates, filled)
+            if puns_still_needed(
+                input_model.candidate_count,
+                sum(1 for item in candidates if line_is_pun(item)),
+            ):
+                warnings.append(
+                    "Fewer than three puns or spoofs survived. Showing the best lines anyway."
+                )
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
         if len(candidates) < input_model.candidate_count:
@@ -493,6 +521,7 @@ class DiscoveryStageExecutor:
             warnings.append("No line cleared the critic. Showing the drafted lines anyway.")
             candidates = usable[: input_model.candidate_count]
         ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
+        ordered = self._order_with_pun_quota(ordered, input_model.candidate_count) or ordered
         ordered, reviews = self._apply_who_its_for(ordered, reviews, atlas, chosen_names)
         ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
         if sale_note:
@@ -963,6 +992,61 @@ class DiscoveryStageExecutor:
             return False
         return sum(1 for candidate in candidates if self._is_absurd_stack(candidate)) < 2
 
+    def _fill_puns(self, run, input_model, output_model, pipeline_module, missing: int):
+        """One short call for the missing puns. It does not search the web again."""
+
+        count = max(1, min(3, missing))
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                f"Write exactly {count} new sticker lines. "
+                "Each one is a pun, spoof, or name swap of 2 to 8 words. "
+                "Set pattern to wordplay_pun, image_pun, celebrity_food_pun, "
+                "brand_logo_spoof, innocent_image_innuendo, holiday_pun, or name_swap. "
+                "Set image_idea to the character that makes the second meaning land, "
+                "why_it_works to one sentence, and format to a layout such as "
+                "die-cut cartoon, retro sunset badge, logo spoof, or bold text stack. "
+                "Do not reprint an anchor line. "
+                "Use a real reddit.com or x.com source_url you already know.\n"
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        fresh, reviews = self._drop_unoriginal(
+            list(getattr(response.output, "candidates", [])),
+            [],
+            None,
+        )
+        return fresh, response.usage, reviews
+
+    def _merge_puns(self, candidates: list, filled: list) -> list:
+        """Append new pun lines without duplicating text already kept."""
+
+        seen = {
+            str(getattr(candidate, "artwork_text", "") or "").casefold()
+            for candidate in candidates
+        }
+        merged = list(candidates)
+        for candidate in filled:
+            if not line_is_pun(candidate):
+                continue
+            text = str(getattr(candidate, "artwork_text", "") or "").casefold()
+            if text and text not in seen:
+                merged.append(candidate)
+                seen.add(text)
+        return merged
+
+    def _order_with_pun_quota(self, candidates: list, keep_count: int) -> list:
+        """Keep at least three puns in a final batch of five, then the other lines."""
+
+        if puns_still_needed(keep_count, 0) == 0:
+            return candidates[:keep_count]
+        puns = [candidate for candidate in candidates if line_is_pun(candidate)]
+        others = [candidate for candidate in candidates if not line_is_pun(candidate)]
+        if len(puns) < 3:
+            return candidates[:keep_count]
+        return (puns[:3] + others + puns[3:])[:keep_count]
+
     def _order_with_stacks(self, candidates: list, keep_count: int) -> list:
         """Keep two absurd identity stacks in the returned batch, then the other lines."""
 
@@ -1031,6 +1115,17 @@ class DiscoveryStageExecutor:
                         funny_score=None,
                         kept=False,
                         reason="copied source",
+                    )
+                )
+                continue
+            if is_anchor_echo(text):
+                dropped.append(
+                    LineReviewRecord(
+                        artwork_text=text,
+                        pattern=str(getattr(candidate, "pattern", "") or ""),
+                        funny_score=None,
+                        kept=False,
+                        reason="copied anchor",
                     )
                 )
                 continue

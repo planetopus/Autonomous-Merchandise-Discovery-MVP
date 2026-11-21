@@ -9,6 +9,7 @@ import logging
 from merchandise_discovery.application.runtime import ApplicationRuntime
 from merchandise_discovery.application.stage_executor import StageResult
 from merchandise_discovery.application.stage_quality_gate import validate_stage_result
+from merchandise_discovery.domain.models.common import PipelineVariant
 from merchandise_discovery.domain.models.workflow import StageExecution, StageLog, WorkflowRun
 from merchandise_discovery.shared.logging import (
     stage_ended,
@@ -18,6 +19,24 @@ from merchandise_discovery.shared.logging import (
 )
 
 logger = logging.getLogger(__name__)
+
+_SOCIAL_PIPELINES = {
+    PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+    PipelineVariant.SOCIAL_BEHAVIOR_IDENTITY,
+    PipelineVariant.SOCIAL_IDENTITY_FOCUSED,
+    PipelineVariant.SOCIAL_IDENTITY_V2,
+}
+
+
+def stop_after_for_run(run: WorkflowRun, configured: int) -> int:
+    """Let a text-and-images social run reach Stage 2 even when the env stop is 1."""
+
+    if (
+        run.config.pipeline_variant in _SOCIAL_PIPELINES
+        and run.config.social_generate_images
+    ):
+        return max(configured, 2)
+    return configured
 
 
 def execute_stage(
@@ -68,7 +87,7 @@ def execute_stage(
         updated_run = runtime.workflow_orchestrator.complete_stage_and_run(
             run,
             active_execution,
-            stop_after_stage=runtime.stop_after_stage,
+            stop_after_stage=stop_after_for_run(run, runtime.stop_after_stage),
         )
         stage_ended(active_execution, result.output_summary)
         return updated_run, active_execution, result

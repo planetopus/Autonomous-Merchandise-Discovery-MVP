@@ -31,7 +31,8 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "source you searched. That quote is evidence only. artwork_text must be an original "
         "joke, never the source sentence or a close paraphrase. "
         "Write in the insider voice of someone who lives the niche, about 4 to 14 words. "
-        "A pun or spoof may be shorter when the picture finishes the joke. "
+        "A pun, spoof, or name swap is 2 to 8 words. "
+        "At least 3 of every 5 final lines must be one of those. "
         "Dark humor is welcome. "
         "Identity stacks must name a real group whose traits genuinely co-occur, never a "
         "random combo. A generational or register mismatch is a key comedy lever: use words "
@@ -56,7 +57,8 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "A spoof of a famous logo, celebrity, or movie character is allowed. "
         "Mild crude or adult innuendo is allowed when the picture completes the joke. "
         "The wholesome bar applies to identity stacks, not to these pairs. "
-        "Text only. Do not generate an image. "
+        "Text only in this step. Do not generate an image. "
+        "Do not reprint an anchor line or a close swap of one. "
         "Set comic_turn to ironic, sarcastic, or straight. Irony and sarcasm are core "
         "mechanics: reward a clear turn, not a straight description of a rule. "
         "The turn may live in the picture. "
@@ -186,6 +188,112 @@ def pun_examples_block() -> str:
         "Every concept sets image_idea, why_it_works, and format. "
         "Text only. Do not generate an image.\n"
     )
+
+
+_ANCHOR_TEXTS = (
+    "TOAST MALONE",
+    "THIS MIGHT BE VODKA",
+    "BACK & BODY HURTS",
+    "WHY DON'T YOU BLOW ME",
+    "SOMETIMES I WET MY PLANTS",
+    "SUC MY CAC",
+    "DON'T BE A CUNTASAURUS",
+    "JUST THE TIP",
+    "SHOW ME YOUR KITTIES",
+    "PEACE WAS NEVER AN OPTION",
+    "BRING A COMPASS, IT'S AWKWARD WHEN YOU HAVE TO EAT YOUR FRIENDS",
+    "THICK THIGHS SAVE LIVES",
+    "I'M JUST HERE TO GET DRUNK AND DRIVE THE GOLF CART",
+    "I HAVE PATIENTS, NOT PATIENCE",
+    "BOLDLY GOING NOWHERE",
+    "CAN WE FIX IT? NO. IT'S FUCKED.",
+    "BEN DRANKIN",
+    "ALDEEZ NUTS",
+    "D.A.M.M. DRUNKS AGAINST MAD MOTHERS",
+    "WARNING: DANGEROUS GASSES",
+    "MASTER BAITER",
+    "SEND NOODS",
+    "NOT MY PASTURE, NOT MY BULLSHIT",
+    "FIGHT CRIME, SHOOT BACK",
+    "DON'T FORGET THE VASOLINE WHEN YOU GET THE GASOLINE",
+    "ONLY YOU CAN PREVENT DRAMA",
+    "THIS IS A TASTY BEVERAGE",
+    "BEST BUTT",
+    "THAT'S SOME BOO SHEET",
+    "SUCK MY BALLS",
+    "LET'S GET WET",
+    "NACHO AVERAGE NURSE",
+    "I KNEAD COFFEE",
+    "GRILL SERGEANT",
+    "PICKLEBALL IS MY CARDIO",
+    "GUAC IS EXTRA",
+    "I DO STEP CLASS EVERY OTHER WEEKEND",
+    "WINTER IS NOT COMING",
+    "BE KIND, REWIND MY BACK",
+    "I WAS GIFTED, NOW I'M RE-GIFTED",
+    "CODE BREW",
+)
+
+
+def finished_sticker_examples_block() -> str:
+    """The finished-sticker look. Short pun, character, layout. Do not reprint the lines."""
+
+    return (
+        "Finished sticker style. 2 to 8 words. A cute or iconic character makes the "
+        "second meaning. At least 3 of 5 final lines are a pun, spoof, or name swap. "
+        "Learn the pairing. Do not reprint these lines.\n"
+        "- NACHO AVERAGE NURSE | tortilla chip in scrubs, cap, stethoscope, clipboard | "
+        "bold text top and bottom\n"
+        "- I KNEAD COFFEE | grumpy cat kneading a steaming mug | arched bold text\n"
+        "- GRILL SERGEANT | burger in a drill hat and aviators with a spatula | "
+        "circular retro sunset badge\n"
+        "- PICKLEBALL IS MY CARDIO (AND MY GOSSIP) | pickle in a visor with a paddle | "
+        "retro stripes\n"
+        "- GUAC IS EXTRA / SO IS RENT | sad avocado in a cart with an overdue bill | "
+        "bold text stack\n"
+        "- I DO STEP CLASS EVERY OTHER WEEKEND | stepmom on a stair-stepper with kids' bags\n"
+        "- WINTER IS NOT COMING | snowbird in a Hawaiian shirt, parka on the ground | "
+        "retro sunset palm badge\n"
+        "- BE KIND, REWIND MY BACK | VHS tape in a back brace | 90s rental ticket spoof\n"
+        "- I WAS GIFTED, NOW I'M RE-GIFTED | tired gift box, droopy bow\n"
+        "- CODE BREW | coffee mug on a crash cart | medical badge\n"
+    )
+
+
+def is_anchor_echo(text: str) -> bool:
+    """True when a line repeats an anchor or a near-duplicate of one."""
+
+    candidate = _anchor_norm(text)
+    if not candidate:
+        return False
+    candidate_tokens = set(candidate.split())
+    for anchor in _ANCHOR_TEXTS:
+        source = _anchor_norm(anchor)
+        if not source:
+            continue
+        if candidate == source:
+            return True
+        if len(source) >= 12 and (source in candidate or candidate in source):
+            return True
+        source_tokens = set(source.split())
+        if not candidate_tokens or not source_tokens:
+            continue
+        overlap = len(candidate_tokens & source_tokens) / len(candidate_tokens | source_tokens)
+        if overlap >= 0.72:
+            return True
+    return False
+
+
+def puns_still_needed(keep_count: int, pun_count: int) -> int:
+    """How many more puns a final batch of five still needs. Smaller batches are not forced."""
+
+    if keep_count < 5:
+        return 0
+    return max(0, 3 - pun_count)
+
+
+def _anchor_norm(text: str) -> str:
+    return " ".join(re.findall(r"[a-z0-9]+", str(text or "").casefold()))
 
 
 def quote_block(quotes: list | None) -> str:
@@ -673,6 +781,7 @@ _PUN_PATTERNS = {
     "slogan twist",
     "rhyme innuendo",
     "holiday pun",
+    "name swap",
 }
 
 

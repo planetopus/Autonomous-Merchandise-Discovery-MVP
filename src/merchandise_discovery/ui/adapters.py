@@ -112,6 +112,7 @@ def _stage_metrics(stage: StageExecution) -> dict[str, str]:
                 "Provider": stage.usage.provider,
                 "Model": stage.usage.model,
                 "Tokens": f"{stage.usage.total_tokens:,}",
+                "Images": str(stage.usage.image_count),
                 "Est. cost": f"${stage.usage.estimated_cost_usd:.6f}"
                 + (" · estimated" if stage.usage.cost_is_estimate else ""),
             }
