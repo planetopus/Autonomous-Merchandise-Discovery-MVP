@@ -98,6 +98,7 @@ class SocialIdentityTextCandidate(BaseModel):
     pattern: str = Field(default="", max_length=80)
     truth: str = Field(default="", max_length=160)
     comic_turn: str = Field(default="straight", max_length=20)
+    who_its_for: list[str] = Field(default_factory=list, max_length=4)
     funny_score: float | None = Field(default=None, ge=0, le=10)
 
     @field_validator("source_url")

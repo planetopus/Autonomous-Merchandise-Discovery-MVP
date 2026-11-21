@@ -114,6 +114,7 @@ Set these in the environment or in `.streamlit/secrets.toml` (flat keys). Enviro
 | `REDDIT_CLIENT_SECRET` | Optional | Reddit app-only OAuth client secret |
 | `REDDIT_USER_AGENT` | Optional | Descriptive User-Agent sent with every Reddit request |
 | `ETSY_API_KEY` | Optional | Etsy listing counts for the crowded-line check |
+| `EBAY_APP_TOKEN` | Optional | eBay Browse API token. When set, kept lines are checked for sticker listings already for sale |
 | `HUMOR_REFERENCE_CSV_URL` | Optional | Fresh humor-reference CSV. Blank uses the raw GitHub URL of `data/humor_references.csv` on `main`, then the committed file |
 
 Reddit uses the client-credentials flow against `oauth.reddit.com` when both `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` are set. The reader backs off when `X-Ratelimit-Remaining` is exhausted. If those credentials are absent, live runs fall back to Reddit's public JSON endpoints. Create the script app at `https://www.reddit.com/prefs/apps`. `ETSY_API_KEY` is optional; without it, live mode counts public web results for the phrase plus "sticker", and fixture mode skips the check.

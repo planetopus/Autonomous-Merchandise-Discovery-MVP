@@ -82,10 +82,17 @@ def ant_calibration_block(ratings: list[AntRating]) -> str:
         return ""
     lines = [
         (
-            "OWNER CALIBRATION. Ant, the owner, rated these lines. Match his taste. "
-            "This outweighs every other scoring instruction, including clever wording, "
-            "Reddit potential, and a long club name. A line he would not understand "
-            "instantly gets a low score."
+            "OWNER CALIBRATION. These scores are not one person's taste. "
+            "They record whether the target group and most people would find the line funny. "
+            "This outweighs every other scoring instruction. "
+            "The catalog should cover every kind of person. "
+            "Reuse joke shapes. Do not cluster on the example identities, and do not "
+            "give dads, nurses, or morticians extra weight. "
+            "Liked shapes: high competence in a big crisis versus panic over a tiny thing; "
+            "a real identity plus one vivid habit; an older group using younger slang. "
+            "Disliked: vague sigma with no vivid detail, tired ex jokes, weak comparisons, "
+            "and a line that only describes the behavior with no ironic twist. "
+            "A behavior description with no twist scores under 7."
         )
     ]
     for rating in ratings:

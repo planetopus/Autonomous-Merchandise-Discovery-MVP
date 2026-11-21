@@ -85,6 +85,7 @@ from merchandise_discovery.infrastructure.humor_lab_loader import (
 )
 from merchandise_discovery.infrastructure.identity_atlas_loader import (
     atlas_prompt,
+    infer_who_its_for,
     load_identity_atlas,
     sample_overlap_pairs,
     self_ownable_block,
@@ -167,6 +168,7 @@ class DiscoveryStageExecutor:
         saturation_checker=None,
         reddit_reader=None,
         humor_reference_loader=None,
+        ebay_checker=None,
     ):
         self._seeds = seed_repository
         self._intersections = intersection_repository
@@ -185,6 +187,7 @@ class DiscoveryStageExecutor:
         self._saturation_checker = saturation_checker
         self._reddit_reader = reddit_reader
         self._humor_reference_loader = humor_reference_loader
+        self._ebay_checker = ebay_checker
 
     def _recent_identity_selections(self, run: WorkflowRun, limit: int = 12) -> list[str]:
         """Return bounded identity history for diversity-aware auto-selection prompts.
@@ -278,6 +281,7 @@ class DiscoveryStageExecutor:
             atlas,
             lab.niche_pairs,
             supplied_names[0] if len(supplied_names) == 1 else "",
+            self._recent_catalog_terms(run),
         )
         need_pair = len(supplied_names) < 2
         pair_meta = None
@@ -402,15 +406,20 @@ class DiscoveryStageExecutor:
                     "Showing the best lines anyway."
                 )
         chosen = response.output
+        usable = self._without_copied_lines(drafted, reviews)
         if len(candidates) < input_model.candidate_count:
             warnings.append(
                 "Fewer lines cleared the critic than requested. Showing the best lines anyway."
             )
-            candidates = self._best_available(drafted, candidates, input_model.candidate_count)
-        if not candidates and drafted:
+            candidates = self._best_available(usable, candidates, input_model.candidate_count)
+        if not candidates and usable:
             warnings.append("No line cleared the critic. Showing the drafted lines anyway.")
-            candidates = drafted[: input_model.candidate_count]
+            candidates = usable[: input_model.candidate_count]
         ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
+        ordered, reviews = self._apply_who_its_for(ordered, reviews, atlas, chosen_names)
+        ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
+        if sale_note:
+            warnings.append(sale_note)
         output = chosen.model_copy(
             update={
                 "candidates": ordered,
@@ -420,6 +429,57 @@ class DiscoveryStageExecutor:
         output = self._drop_crowded_lines(output)
         self._note_social_progress(usage, pair_meta, output.candidates, reviews, warnings)
         return output, usage, selection, reviews, playbook, pair_meta
+
+    def _apply_who_its_for(self, candidates, reviews, atlas, names: list[str]):
+        """Fill 2 to 4 buyer categories on every surviving line and critic row."""
+
+        groups, _slang = subgroup_context(atlas, *names)
+        updated = []
+        by_text: dict[str, list[str]] = {}
+        for candidate in candidates:
+            text = str(getattr(candidate, "artwork_text", "") or "")
+            labels = infer_who_its_for(list(getattr(candidate, "who_its_for", []) or []), names, groups)
+            by_text[text] = labels
+            if hasattr(candidate, "model_copy"):
+                updated.append(candidate.model_copy(update={"who_its_for": labels}))
+            else:
+                updated.append(candidate)
+        stamped = []
+        for review in reviews:
+            labels = by_text.get(review.artwork_text) or infer_who_its_for([], names, groups)
+            stamped.append(review.model_copy(update={"who_its_for": labels}))
+        return updated, stamped
+
+    def _drop_already_for_sale(self, candidates, reviews):
+        """Flag eBay sticker duplicates. Skip the check when no app token is configured."""
+
+        checker = self._ebay_checker
+        if checker is None or not getattr(checker, "enabled", False):
+            return candidates, reviews, ""
+        clean = []
+        flagged = False
+        for candidate in candidates:
+            text = str(getattr(candidate, "artwork_text", "") or "")
+            try:
+                hit = checker.already_for_sale(text)
+            except (OSError, RuntimeError, TypeError, ValueError):
+                hit = None
+            if hit:
+                flagged = True
+                reviews.append(
+                    LineReviewRecord(
+                        artwork_text=text,
+                        pattern=str(getattr(candidate, "pattern", "") or ""),
+                        who_its_for=list(getattr(candidate, "who_its_for", []) or []),
+                        kept=False,
+                        reason="already for sale",
+                    )
+                )
+                continue
+            clean.append(candidate)
+        if clean and flagged:
+            return clean, reviews, "Some lines were already for sale as stickers and were dropped."
+        return candidates, reviews, ""
 
     def _note_social_progress(self, usage, pair_meta, candidates, reviews, warnings) -> None:
         """Keep the latest drafts and token total so a later error can still fill the page."""
@@ -495,10 +555,50 @@ class DiscoveryStageExecutor:
             return extra
         return combine_usage(current, extra)
 
-    def _atlas_pair_bank(self, atlas, lab_pairs: list[dict], anchor: str) -> list[dict]:
-        """Prefer real atlas overlaps, then any humor-lab pairs, when the model must pick."""
+    def _recent_catalog_terms(self, run: WorkflowRun, limit: int = 40) -> list[str]:
+        """Identities and topics from recent runs, so the next sample can avoid a cluster."""
 
-        sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10)
+        if self._runs is None:
+            return []
+        terms: list[str] = []
+        for previous_run in self._runs.list_recent(limit=limit):
+            if previous_run.run_id == run.run_id:
+                continue
+            config = previous_run.config
+            terms.extend(
+                split_identity_names(
+                    getattr(config, "social_niche_a", ""),
+                    getattr(config, "social_niche_b", ""),
+                    getattr(config, "social_identity", ""),
+                    getattr(config, "social_query", ""),
+                )
+            )
+            if self._stage_repository is None:
+                continue
+            previous_stage = self._stage_repository.get_latest(previous_run.run_id, 1)
+            output = previous_stage.output_data if previous_stage is not None else {}
+            if not isinstance(output, dict):
+                continue
+            terms.extend(
+                split_identity_names(
+                    str(output.get("identity_selected") or ""),
+                    str(output.get("niche_pair_a") or ""),
+                    str(output.get("niche_pair_b") or ""),
+                    str(output.get("topic_explored") or ""),
+                )
+            )
+        return terms
+
+    def _atlas_pair_bank(
+        self,
+        atlas,
+        lab_pairs: list[dict],
+        anchor: str,
+        avoid: list[str] | None = None,
+    ) -> list[dict]:
+        """Prefer unused atlas overlaps, then any humor-lab pairs, when the model must pick."""
+
+        sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10, avoid=avoid)
         bank = [
             {"niche_a": item["niche_a"], "niche_b": item["niche_b"]}
             for item in sampled
@@ -626,6 +726,20 @@ class DiscoveryStageExecutor:
                 merged.append(candidate)
                 seen.add(text)
         return merged
+
+    def _without_copied_lines(self, drafted: list, reviews: list) -> list:
+        """Do not bring a copied source, reference, or gold line back after the critic."""
+
+        blocked = {
+            review.artwork_text
+            for review in reviews
+            if str(review.reason).startswith("copied")
+        }
+        return [
+            candidate
+            for candidate in drafted
+            if str(getattr(candidate, "artwork_text", "") or "") not in blocked
+        ]
 
     def _best_available(self, drafted: list, survivors: list, keep_count: int) -> list:
         """Prefer critic survivors, then fill from the original draft so the page is not empty."""
@@ -820,7 +934,7 @@ class DiscoveryStageExecutor:
                         label=item["label"],
                         weight=item["weight"],
                     )
-                    for item in patterns[:12]
+                    for item in patterns
                 ],
                 "humor_examples_used": [
                     HumorExampleRecord(
@@ -873,6 +987,7 @@ class DiscoveryStageExecutor:
                 "or not in ALL CAPS, at 4 or below on sticker_buy_score. "
                 "Raise sticker_buy_score when comic_turn is ironic or sarcastic and the turn "
                 "is clear. Lower it for a straight observation of a policy or rule. "
+                "A line that only describes the behavior, with no ironic twist, scores under 7. "
                 "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
                 "but must not decide the cut when the tone is dark. reddit_upvote_score is "
                 "1 to 10 for a generic Reddit upvote. novelty is originality. "
@@ -931,6 +1046,8 @@ class DiscoveryStageExecutor:
             buy = review.sticker_buy_score if review is not None else None
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
+            elif str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":
+                reason, kept_flag = "no ironic twist", False
             elif member_would_not_buy(review):
                 clear = getattr(review, "instantly_understandable", None)
                 if clear is not None and float(clear) < 7:

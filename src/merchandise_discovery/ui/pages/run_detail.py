@@ -50,6 +50,9 @@ def _render_manual_artwork_selection(
                 st.write(f"**Text:** {sticker_text or 'Image only'}")
                 if candidate.get("funny_score") is not None:
                     st.caption(f"Funny score: {candidate['funny_score']} / 10")
+                buyers = candidate.get("who_its_for") or []
+                if buyers:
+                    st.caption("Who it's for: " + " · ".join(str(item) for item in buyers))
                 if candidate.get("identity"):
                     identity_type = candidate.get("identity_type", "other")
                     identity_type = getattr(identity_type, "value", identity_type)

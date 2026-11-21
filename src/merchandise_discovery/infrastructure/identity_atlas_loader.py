@@ -131,12 +131,22 @@ def split_identity_names(*fields: str) -> list[str]:
     return names
 
 
+def diversity_factor(names: list[str], recent_counts: dict[str, int]) -> float:
+    """Downweight identities already used. Familiar groups get no extra boost."""
+
+    factor = 1.0
+    for token in _identity_tokens(names):
+        factor *= 1.0 / (1 + recent_counts.get(token, 0))
+    return factor
+
+
 def sample_overlap_pairs(
     atlas: IdentityAtlas,
     *,
     anchor: str = "",
     limit: int = 10,
     rng: random.Random | None = None,
+    avoid: list[str] | None = None,
 ) -> list[dict]:
     """Sample real overlaps, weighted by buyer-pride, for the niche-pair call."""
 
@@ -181,8 +191,65 @@ def sample_overlap_pairs(
             add(pride, [subgroup.name, other])
     if not weighted:
         return []
-    picked = _weighted_sample(weighted, limit, chooser)
-    return [item for _, item in picked]
+    counts = _token_counts(avoid or [])
+    pool = list(weighted)
+    chosen: list[dict] = []
+    while pool and len(chosen) < limit:
+        scored = [
+            (
+                pride * diversity_factor([item["niche_a"], item["niche_b"]], counts),
+                item,
+            )
+            for pride, item in pool
+        ]
+        _, pick = _pick_weighted(scored, chooser)
+        chosen.append(pick)
+        pool = [(pride, item) for pride, item in pool if item is not pick]
+        for token in _identity_tokens([pick["niche_a"], pick["niche_b"]]):
+            counts[token] = counts.get(token, 0) + 1
+    return chosen
+
+
+def infer_who_its_for(
+    labels: list[str] | None,
+    names: list[str],
+    groups: list[IdentitySubgroup] | None = None,
+) -> list[str]:
+    """Return 2 to 4 plain buyer categories from the model, the atlas, or the niche names."""
+
+    collected: list[str] = []
+
+    def add(value: object) -> None:
+        text = " ".join(str(value or "").split())
+        if not text or len(text) > 40:
+            return
+        if text.casefold() in {item.casefold() for item in collected}:
+            return
+        collected.append(text)
+
+    for label in labels or []:
+        add(label)
+    for group in groups or []:
+        add(group.name)
+        if group.parent:
+            add(group.parent)
+        for overlap in group.overlaps[:2]:
+            add(overlap)
+    for name in names:
+        for part in re.split(r"\s+\+\s+|,\s*", name):
+            add(part)
+    if len(collected) == 1:
+        add("people who know them")
+    if len(collected) < 2:
+        add("this group")
+        add("people who recognize it")
+    return collected[:4]
+
+
+def format_who_its_for(labels: list[str]) -> str:
+    """Render buyer categories the way the run page and exports show them."""
+
+    return " · ".join(labels[:4])
 
 
 def subgroup_context(atlas: IdentityAtlas, *names: str) -> tuple[list[IdentitySubgroup], list[SlangTerm]]:
@@ -372,6 +439,35 @@ def _average_pride(atlas: IdentityAtlas, names: list[str]) -> float:
     found = [atlas.lookup(name) for name in names]
     scores = [item.buyer_pride for item in found if item is not None]
     return sum(scores) / len(scores) if scores else 1.0
+
+
+def _identity_tokens(names: list[str]) -> list[str]:
+    tokens: list[str] = []
+    for name in names:
+        for token in re.findall(r"[a-z0-9]+", name.casefold()):
+            if len(token) < 3 or token in {"the", "and", "who", "for", "with", "from"}:
+                continue
+            if token not in tokens:
+                tokens.append(token)
+    return tokens
+
+
+def _token_counts(names: list[str]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for token in _identity_tokens(names):
+        counts[token] = counts.get(token, 0) + 1
+    return counts
+
+
+def _pick_weighted(scored: list[tuple[float, dict]], rng: random.Random) -> tuple[float, dict]:
+    total = sum(max(weight, 0.0) for weight, _ in scored) or 1.0
+    ticket = rng.random() * total
+    upto = 0.0
+    for weight, item in scored:
+        upto += max(weight, 0.0)
+        if upto >= ticket:
+            return weight, item
+    return scored[-1]
 
 
 def _weighted_sample(

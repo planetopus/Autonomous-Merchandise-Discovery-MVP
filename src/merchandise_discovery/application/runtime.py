@@ -50,6 +50,7 @@ from merchandise_discovery.infrastructure.mongo.repositories.stage_execution_rep
 from merchandise_discovery.infrastructure.mongo.repositories.stage_log_repository import (
     StageLogRepository,
 )
+from merchandise_discovery.infrastructure.providers.ebay_browse import EbayStickerSearch
 from merchandise_discovery.infrastructure.providers.image_provider import (
     FixtureImageProvider,
     XAIImageProvider,
@@ -194,6 +195,7 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
                 etsy_api_key=settings.etsy_api_key,
                 live=live_mode,
             ),
+            ebay_checker=EbayStickerSearch(app_token=settings.ebay_app_token),
             reddit_reader=(
                 RedditReader(
                     client_id=settings.reddit_client_id,

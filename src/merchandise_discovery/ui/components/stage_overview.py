@@ -5,6 +5,7 @@ in domain language rather than storage-shaped JSON. Each renderer below owns one
 summary while shared helpers keep spacing, cards, scores, and empty states consistent.
 """
 
+import json
 import os
 from collections.abc import Callable
 from pathlib import Path
@@ -98,6 +99,14 @@ def _render_playbook(payload: dict[str, Any]) -> None:
         st.write(f"- {item.get('label') or item.get('id')}{weight_text}")
 
 
+def _who_label(labels: object) -> str:
+    """Join 2 to 4 buyer categories for the run page and the line export."""
+
+    if not isinstance(labels, list):
+        return ""
+    return " · ".join(str(item) for item in labels if str(item).strip())
+
+
 def _render_line_reviews(payload: dict[str, Any]) -> None:
     """Show the Reddit-upvote critic: kept lines, dropped lines, and why."""
 
@@ -115,7 +124,10 @@ def _render_line_reviews(payload: dict[str, Any]) -> None:
         reason = item.get("reason") or "unspecified"
         pattern = item.get("pattern") or "unspecified"
         text = item.get("artwork_text") or "(empty)"
+        buyers = _who_label(item.get("who_its_for"))
         st.write(f"- {status} ({score_text}, {pattern}, {reason}): {text}")
+        if buyers:
+            st.caption(f"Who it's for: {buyers}")
 
 
 def _render_social_behavior_text(
@@ -200,6 +212,30 @@ def _render_social_behavior_text(
                 st.markdown(f"[{title}]({url})" if url else f"**{title}**")
                 st.caption(_text(evidence, "source_excerpt"))
 
+    if candidates:
+        st.download_button(
+            "Download text candidates",
+            data=json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "artwork_text": candidate.get("artwork_text", ""),
+                            "who_its_for": candidate.get("who_its_for") or [],
+                            "pattern": candidate.get("pattern", ""),
+                            "truth": candidate.get("truth", ""),
+                            "comic_turn": candidate.get("comic_turn", ""),
+                            "funny_score": candidate.get("funny_score"),
+                        }
+                        for candidate in candidates
+                    ],
+                    "line_reviews": payload.get("line_reviews") or [],
+                },
+                indent=2,
+            ),
+            file_name="sticker-lines.json",
+            mime="application/json",
+            key="export-sticker-lines",
+        )
     for index, candidate in enumerate(candidates, start=1):
         st.markdown(
             f"### {index}. {_text(candidate, 'artwork_text', default='Image only')}"
@@ -211,6 +247,9 @@ def _render_social_behavior_text(
             st.caption(f"Funny score: {funny_score} / 10")
         if candidate.get("pattern"):
             st.caption(f"Pattern: {_text(candidate, 'pattern')}")
+        buyers = _who_label(candidate.get("who_its_for"))
+        if buyers:
+            st.caption(f"Who it's for: {buyers}")
         if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
             st.caption(
                 "Humor: "

@@ -309,6 +309,7 @@ def test_live_stage_drops_source_quotes_and_always_runs_the_critic() -> None:
         specificity_reason="Both lives are in the line.",
         humor_mechanism="deadpan absurd",
         concrete_detail="0.4 mm nozzle",
+        comic_turn="ironic",
     )
     quoted = joke.model_copy(update={"artwork_text": copied})
     provider = scripted_social_provider(
@@ -481,12 +482,14 @@ def test_live_run_returns_two_absurd_identity_stacks() -> None:
             update={
                 "artwork_text": "NIGHT SHIFT TRUE CRIME CLUB",
                 "pattern": "absurd_identity_stack",
+                "comic_turn": "ironic",
             }
         ),
         base.model_copy(
             update={
                 "artwork_text": "CHARTING AND CHILL PODCAST",
                 "pattern": "ABSURD IDENTITY STACK",
+                "comic_turn": "sarcastic",
                 "source_url": "https://reddit.com/r/nursing/comments/abc/club",
             }
         ),

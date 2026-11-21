@@ -36,6 +36,7 @@ class Settings:
     xai_image_price: float = 0.02
     xai_image_edit_price: float = 0.022
     etsy_api_key: str | None = None
+    ebay_app_token: str | None = None
     reddit_client_id: str | None = None
     reddit_client_secret: str | None = None
     reddit_user_agent: str | None = None
@@ -83,6 +84,7 @@ def load_settings() -> Settings:
         xai_image_price=float(os.getenv("XAI_IMAGE_PRICE", "0.02")),
         xai_image_edit_price=float(os.getenv("XAI_IMAGE_EDIT_PRICE", "0.022")),
         etsy_api_key=_optional_secret("ETSY_API_KEY"),
+        ebay_app_token=_optional_secret("EBAY_APP_TOKEN"),
         reddit_client_id=_optional_secret("REDDIT_CLIENT_ID"),
         reddit_client_secret=_optional_secret("REDDIT_CLIENT_SECRET"),
         reddit_user_agent=_optional_secret("REDDIT_USER_AGENT"),

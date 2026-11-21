@@ -97,6 +97,31 @@ PRIORITY_PATTERNS = [
         ),
     },
     {
+        "id": "competence_vs_tiny_fear",
+        "label": "Competence versus a tiny fear",
+        "guidance": (
+            "A joke shape, not a topic. High competence in a big crisis, then panic "
+            "over a tiny thing. Fill it with whatever identity is chosen, including "
+            "ones that have not been used yet."
+        ),
+    },
+    {
+        "id": "identity_plus_vivid_habit",
+        "label": "Identity plus a vivid habit",
+        "guidance": (
+            "A joke shape, not a topic. One real identity plus one vivid specific habit. "
+            "Do not reuse dads, nurses, or morticians just because a rating used them."
+        ),
+    },
+    {
+        "id": "elders_in_younger_slang",
+        "label": "Older group in younger slang",
+        "guidance": (
+            "A joke shape, not a topic. An older group using a younger generation's slang. "
+            "Apply it across the atlas, not only to the people in the example lines."
+        ),
+    },
+    {
         "id": "fake_warning_sign",
         "label": "Fake warning sign",
         "guidance": (

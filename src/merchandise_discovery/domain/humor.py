@@ -38,7 +38,11 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "Set comic_turn to ironic, sarcastic, or straight. Irony and sarcasm are core "
         "mechanics: reward a clear turn, not a straight description of a rule. "
         "Across the batch use at least 6 different pattern values and at least 4 different "
-        "truths. An absurd_identity_stack line is ALL CAPS and at most 6 words. "
+        "truths. Set who_its_for to 2 to 4 plain buyer categories, identity groups and "
+        "interests, such as neighbors, commuters, and weeknight cooks. "
+        "A line that only describes the behavior, with no ironic twist, fails. "
+        "Set comic_turn to straight only when there is no turn. "
+        "An absurd_identity_stack line is ALL CAPS and at most 6 words. "
         "A long literal duty list is not a stack. Shape only, do not output this line: "
         "THICC DADS WHO VAPE FOR CHRIST. "
     )
@@ -176,6 +180,7 @@ class LineReviewRecord(BaseModel):
 
     artwork_text: str = ""
     pattern: str = ""
+    who_its_for: list[str] = Field(default_factory=list, max_length=4)
     funny_score: float | None = None
     kept: bool = False
     reason: str = ""
@@ -366,7 +371,7 @@ def niche_pair_request(identity: str = "", bank: list[dict] | None = None) -> st
         "Propose about 10 niche pairs for die-cut stickers. "
         "A good pair is two audiences that genuinely share a life, recognizable in one line. "
         "The traits must co-occur in a real group. Never propose a random combo. "
-        "Examples of good pairs: nurses + true crime, dads + grilling. "
+        "Do not prefer dads, nurses, or morticians. Cover identities that have not been used. "
         "Score each pair from 1 to 10 on shared_life_score (one person really lives both) "
         "and recognizability_score (a stranger gets the collision immediately). "
         "Do not propose a pair you would score under 7 on either axis.\n"
@@ -400,6 +405,8 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
         if turn in {"ironic", "sarcastic", "sarcasm"}:
             score += 3
         if member_would_not_buy(review):
+            continue
+        if str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":
             continue
         if identity_stack_is_too_long(
             str(getattr(candidate, "artwork_text", "") or ""),
