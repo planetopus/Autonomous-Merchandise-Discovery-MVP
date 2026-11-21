@@ -67,9 +67,12 @@ def _render_humor_references(payload: dict[str, Any]) -> None:
     if not identities and not themes and not hooks:
         return
     _section("What's selling")
-    st.caption("Market and trend signal. Funniness comes from the owner ratings and the humor lab.")
+    st.caption(
+        "Trending buyers are who is buying merch right now. "
+        "Themes are secondary. Product wording is not a joke to copy."
+    )
     if identities:
-        st.write("Identities: " + " · ".join(str(item) for item in identities[:12]))
+        st.write("Trending buyers: " + " · ".join(str(item) for item in identities[:12]))
     if themes:
         st.write("Themes: " + " · ".join(str(item) for item in themes[:12]))
     if hooks:
@@ -180,6 +183,11 @@ def _render_social_behavior_text(
 
         loaded = len(load_identity_atlas().subgroups)
     st.caption(f"atlas: {int(loaded)} subgroups loaded")
+    bucket = str(payload.get("identity_bucket") or "").strip()
+    if bucket:
+        share = payload.get("trending_share")
+        share_text = f" ({float(share):.0%} trending)" if isinstance(share, (int, float)) else ""
+        st.caption(f"Identity pick: {bucket}{share_text}")
     if pair_a and pair_b:
         score = payload.get("pairing_score")
         score_text = f" (pairing score {score}/10)" if score is not None else ""
@@ -249,6 +257,7 @@ def _render_social_behavior_text(
                             "website_title": candidate.get("website_title", ""),
                             "ebay_title": candidate.get("ebay_title", ""),
                             "slug": candidate.get("slug", ""),
+                            "identity_bucket": candidate.get("identity_bucket", ""),
                         }
                         for candidate in candidates
                     ],

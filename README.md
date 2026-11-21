@@ -116,6 +116,7 @@ Set these in the environment or in `.streamlit/secrets.toml` (flat keys). Enviro
 | `ETSY_API_KEY` | Optional | Etsy listing counts for the crowded-line check |
 | `EBAY_APP_TOKEN` | Optional | Extra eBay Browse API check. Final lines are already searched with the OpenAI web search tool, with no token required |
 | `HUMOR_REFERENCE_CSV_URL` | Optional | Fresh top-selling merch CSV. Blank uses the raw GitHub URL of `data/humor_references.csv` on `main`, then the committed file |
+| `MVP_TRENDING_SHARE` | Optional | Share of auto identity picks that follow trending buyers, from 0 to 1. Default `0.6`. The Create Run slider starts here |
 
 Reddit uses the client-credentials flow against `oauth.reddit.com` when both `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` are set. The reader backs off when `X-Ratelimit-Remaining` is exhausted. If those credentials are absent, live runs fall back to Reddit's public JSON endpoints. Create the script app at `https://www.reddit.com/prefs/apps`. `ETSY_API_KEY` is optional; without it, live mode counts public web results for the phrase plus "sticker", and fixture mode skips the check. Final sticker lines are also searched with the OpenAI web search tool, one quoted phrase at a time plus `sticker OR shirt OR decal`. A page that already sells that line on eBay, Etsy, Amazon, Redbubble, Teepublic, or another shop is flagged `already for sale` with the URL. The search is rate-limited, skipped on errors, and limited to the final candidates. `EBAY_APP_TOKEN` adds the Browse API as an extra check.
 

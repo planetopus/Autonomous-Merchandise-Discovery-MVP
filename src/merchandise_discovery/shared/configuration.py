@@ -45,6 +45,7 @@ class Settings:
     # The current MVP intentionally evaluates only Stage 1 until the client approves expanding
     # the funnel. This is a demo boundary, not a claim that later stages are complete.
     stop_after_stage: int = 1
+    trending_share: float = 0.6
 
 
 def load_settings() -> Settings:
@@ -91,7 +92,19 @@ def load_settings() -> Settings:
         humor_reference_csv_url=_optional_secret("HUMOR_REFERENCE_CSV_URL"),
         provider_mode=os.getenv("MVP_PROVIDER_MODE", "fixture").strip().lower(),
         stop_after_stage=max(1, min(18, int(os.getenv("MVP_STOP_AFTER_STAGE", "1")))),
+        trending_share=default_trending_share(),
     )
+
+
+def default_trending_share() -> float:
+    """Read MVP_TRENDING_SHARE. Values outside 0–1 clamp. Blank or junk stays at 0.6."""
+
+    raw = (os.getenv("MVP_TRENDING_SHARE", "0.6") or "0.6").strip()
+    try:
+        value = float(raw)
+    except ValueError:
+        return 0.6
+    return min(1.0, max(0.0, value))
 
 
 def _optional_secret(name: str) -> str | None:

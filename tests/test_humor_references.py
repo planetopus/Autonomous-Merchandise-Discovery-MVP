@@ -7,6 +7,7 @@ from merchandise_discovery.domain.humor_references import (
     copied_from_source,
     extract_market_signal,
     humor_reference_id,
+    identity_pick_bucket,
     is_too_similar_to_references,
     market_signal_prompt,
     select_humor_references,
@@ -168,9 +169,54 @@ def test_selling_rows_are_market_signal_and_not_joke_examples() -> None:
     assert "badge reel" in signal.hooks
     assert any("slop" in theme for theme in signal.themes)
     assert "Do not show me your rash" not in prompt
-    assert "Market signal" in prompt
+    assert "Buyer signal" in prompt
     assert is_too_similar_to_references("Do not show me your rash", parsed)
     assert signal.token_weights["nurses"] > signal.token_weights.get("office", 0)
+    assert "Trending buyers" in prompt
+
+
+def test_sales_weight_buyers_ahead_of_themes_and_the_pick_can_explore() -> None:
+    """A bigger seller boosts its buyer more. A share of 0 never follows that trend."""
+
+    import random
+
+    hunters = HumorReference(
+        text="Do not copy this hunter decal pack",
+        niche="hunters",
+        sales=100,
+        demand=100,
+        reference_id="h",
+    )
+    nurses = HumorReference(
+        text="Nurse badge reel 50 pack",
+        niche="nurses",
+        sales=25,
+        demand=25,
+        reference_id="n",
+    )
+    theme = HumorReference(
+        text="AI slop (theme)",
+        niche="general",
+        upvotes=90_000,
+        demand=90_000,
+        is_theme=True,
+        reference_id="t",
+    )
+    signal = extract_market_signal([hunters, nurses, theme])
+    prompt = market_signal_prompt(signal)
+
+    assert signal.identities[0] == "hunters"
+    assert "general" not in signal.identities
+    assert signal.token_weights["hunters"] > signal.token_weights["nurses"]
+    assert signal.token_weights["hunters"] > signal.token_weights.get("slop", 1)
+    assert "hunter decal" not in prompt
+    assert identity_pick_bucket(0, random.Random(1), has_buyers=True) == "exploratory"
+    assert identity_pick_bucket(1, random.Random(1), has_buyers=True) == "trending"
+    assert identity_pick_bucket(0.6, random.Random(1), has_buyers=False) == "exploratory"
+    chooser = random.Random(0)
+    picks = [identity_pick_bucket(0.6, chooser, has_buyers=True) for _ in range(200)]
+    assert 90 <= picks.count("trending") <= 150
+
 
 
 def test_csv_marks_theme_rows_and_hashes_text() -> None:

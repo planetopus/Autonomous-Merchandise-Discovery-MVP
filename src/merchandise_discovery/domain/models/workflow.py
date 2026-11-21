@@ -21,6 +21,7 @@ from merchandise_discovery.domain.models.common import (
     StageStatus,
 )
 from merchandise_discovery.domain.models.usage import UsageMetrics
+from merchandise_discovery.shared.configuration import default_trending_share
 
 
 def utc_now() -> datetime:
@@ -64,6 +65,8 @@ class RunConfig(BaseModel):
     humor_tone: HumorTone = HumorTone.DRY
     social_auto_identity: bool = False
     social_manual_artwork_selection: bool = False
+    # Share of auto identity picks that follow who is buying. The rest explore unused identities.
+    social_trending_share: float = Field(default_factory=default_trending_share, ge=0, le=1)
     social_selected_candidate_indices: list[int] = Field(default_factory=list)
 
     @model_validator(mode="after")

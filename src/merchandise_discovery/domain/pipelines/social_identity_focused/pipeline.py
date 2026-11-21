@@ -135,6 +135,8 @@ class SocialIdentityTextOutput(BaseModel):
     market_identities: list[str] = Field(default_factory=list)
     market_themes: list[str] = Field(default_factory=list)
     market_hooks: list[str] = Field(default_factory=list)
+    identity_bucket: str = ""
+    trending_share: float | None = None
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:

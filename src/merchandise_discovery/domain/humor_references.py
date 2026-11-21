@@ -7,6 +7,7 @@ does not cache rows across runs.
 
 import hashlib
 import math
+import random
 import re
 from dataclasses import dataclass
 
@@ -36,6 +37,7 @@ class HumorReference(BaseModel):
     hook: str = ""
     theme: str = ""
     demand: int = 0
+    sales: int = 0
 
 
 def normalize_reference_text(text: str) -> str:
@@ -145,7 +147,7 @@ def _niche_overlaps(reference_niche: str, niche_terms: list[str]) -> bool:
 
 @dataclass(frozen=True)
 class MarketSignal:
-    """Themes, identities, and hooks taken from what is selling. Not joke lines."""
+    """Who is buying, plus a smaller theme signal. Not joke lines."""
 
     identities: list[str]
     themes: list[str]
@@ -153,30 +155,59 @@ class MarketSignal:
     token_weights: dict[str, float]
 
 
-def extract_market_signal(references: list[HumorReference]) -> MarketSignal:
-    """Sum demand on identity, theme, and hook labels. Product wording is not a signal."""
+_GENERIC_BUYERS = {
+    "general",
+    "adults",
+    "adult",
+    "adults general",
+    "holiday",
+    "personalization",
+    "internet humor",
+    "internet-humor",
+    "meme",
+    "gift",
+    "gifts",
+    "white elephant",
+    "coworkers",
+}
 
-    identity_demand: dict[str, int] = {}
+
+def extract_market_signal(references: list[HumorReference]) -> MarketSignal:
+    """Buyer identities from top-seller rows, weighted by sales. Themes stay secondary."""
+
+    buyer_demand: dict[str, int] = {}
     theme_demand: dict[str, int] = {}
     hook_demand: dict[str, int] = {}
     for item in references:
-        demand = item.demand or item.upvotes or 1
-        for name in _split_labels(item.niche):
-            identity_demand[name] = identity_demand.get(name, 0) + demand
-        for name in _split_labels(item.theme):
-            theme_demand[name] = theme_demand.get(name, 0) + demand
-        if item.is_theme:
+        if item.sales > 0:
+            for name in _buyer_labels(item.niche):
+                buyer_demand[name] = buyer_demand.get(name, 0) + item.sales
+            secondary = max(1, item.sales // 5)
+            for name in _split_labels(item.theme):
+                theme_demand[name] = theme_demand.get(name, 0) + secondary
+            for name in _split_labels(item.hook):
+                hook_demand[name] = hook_demand.get(name, 0) + secondary
+        elif item.is_theme:
             label = " ".join(item.text.casefold().replace("(theme)", " ").split())
             if label and len(label.split()) <= 8:
-                theme_demand[label] = theme_demand.get(label, 0) + demand
-        for name in _split_labels(item.hook):
-            hook_demand[name] = hook_demand.get(name, 0) + demand
+                theme_demand[label] = theme_demand.get(label, 0) + 1
     return MarketSignal(
-        identities=_ranked(identity_demand),
+        identities=_ranked(buyer_demand),
         themes=_ranked(theme_demand),
         hooks=_ranked(hook_demand),
-        token_weights=_token_weights(identity_demand, theme_demand, hook_demand),
+        token_weights=_token_weights(buyer_demand, theme_demand, hook_demand),
     )
+
+
+def identity_pick_bucket(share: float, rng: random.Random, *, has_buyers: bool) -> str:
+    """Trending when this draw falls inside the configured share and buyers exist."""
+
+    bounded = min(1.0, max(0.0, share))
+    if not has_buyers or bounded <= 0:
+        return "exploratory"
+    if bounded >= 1:
+        return "trending"
+    return "trending" if rng.random() < bounded else "exploratory"
 
 
 def market_signal_prompt(signal: MarketSignal) -> str:
@@ -186,20 +217,26 @@ def market_signal_prompt(signal: MarketSignal) -> str:
         return ""
     lines = [
         (
-            "Market signal from top-selling merch, not a joke sheet. "
-            "These identities, themes, and hooks are selling or in the public mind. "
-            "Prefer matching atlas identities when they fit the buyer. "
-            "Do not copy product wording. Funniness comes from the owner ratings "
-            "and the humor lab, not from this list."
+            "Buyer signal from top-selling merch, not a joke sheet. "
+            "Top sellers say who is buying right now. "
+            "Prefer those atlas identities when this run is in the trending bucket. "
+            "Themes are secondary. Do not copy product wording. "
+            "Funniness comes from the owner ratings and the humor lab, not from this list."
         )
     ]
     if signal.identities:
-        lines.append("Trending identities: " + "; ".join(signal.identities[:6]))
+        lines.append("Trending buyers: " + "; ".join(signal.identities[:6]))
     if signal.themes:
-        lines.append("Trending themes: " + "; ".join(signal.themes[:4]))
+        lines.append("Secondary themes: " + "; ".join(signal.themes[:4]))
     if signal.hooks:
         lines.append("Selling hooks, as subjects only: " + "; ".join(signal.hooks[:4]))
     return "\n".join(lines) + "\n"
+
+
+def _buyer_labels(value: str) -> list[str]:
+    """Who would buy the product. Generic buckets such as 'adults' are not a buyer."""
+
+    return [label for label in _split_labels(value) if label.casefold() not in _GENERIC_BUYERS]
 
 
 def _split_labels(value: str) -> list[str]:
@@ -218,21 +255,30 @@ def _ranked(demand: dict[str, int], limit: int = 12) -> list[str]:
     ][:limit]
 
 
-def _token_weights(*groups: dict[str, int]) -> dict[str, float]:
-    """Map a label token to a boost from 1 up to 2. The top seller is the ceiling."""
+def _token_weights(
+    buyers: dict[str, int],
+    *secondary: dict[str, int],
+) -> dict[str, float]:
+    """Buyer tokens scale up to 3 with sales. Theme tokens stay near 1."""
 
+    weights = _scaled_tokens(buyers, scale=2.0)
+    for group in secondary:
+        for token, weight in _scaled_tokens(group, scale=0.35).items():
+            weights.setdefault(token, weight)
+    return weights
+
+
+def _scaled_tokens(demand: dict[str, int], *, scale: float) -> dict[str, float]:
     totals: dict[str, int] = {}
-    for group in groups:
-        for label, demand in group.items():
-            for token in re.findall(r"[a-z0-9]+", label.casefold()):
-                if len(token) < 3 or token in _SOURCE_STOPWORDS:
-                    continue
-                totals[token] = totals.get(token, 0) + demand
+    for label, value in demand.items():
+        for token in re.findall(r"[a-z0-9]+", label.casefold()):
+            if len(token) < 3 or token in _SOURCE_STOPWORDS:
+                continue
+            totals[token] = totals.get(token, 0) + value
     if not totals:
         return {}
-    peak = max(totals.values())
-    scale = math.log1p(peak) or 1.0
-    return {token: 1.0 + (math.log1p(value) / scale) for token, value in totals.items()}
+    peak = max(totals.values()) or 1
+    return {token: 1.0 + scale * (value / peak) for token, value in totals.items()}
 
 
 def humor_reference_prompt(selection: HumorReferenceSelection) -> str:
