@@ -26,10 +26,10 @@ def sticker_copy_rules() -> str:
 
     return (
         "Write die-cut vinyl sticker copy, not T-shirt or poster copy. Each merchandise "
-        "line must be roughly 2 to 5 words, or artwork_text may be an empty string when "
-        "the joke should be visual only. Do not write a sentence, a second clause, or a "
-        "mini-story. A sticker line is a short insider label, such as 'Chart Goblin' or "
-        "'Still On Call'. Empty artwork_text is valid and means the sticker has no text. "
+        "line must be joke-shaped: a setup plus a turn, a one-line confession, or a deadpan "
+        "absurd statement, about 4 to 14 words. A clever title or pun alone is rejected. "
+        "artwork_text may be an empty string when the joke should be visual only. "
+        "Empty artwork_text is valid and means the sticker has no text. "
         "The line must still make sense when read alone. Avoid generic achievement "
         "statements, broad labels, and slogans that could fit any audience."
     )

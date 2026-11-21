@@ -114,8 +114,27 @@ Set these in the environment or in `.streamlit/secrets.toml` (flat keys). Enviro
 | `REDDIT_CLIENT_SECRET` | Optional | Reddit app-only OAuth client secret |
 | `REDDIT_USER_AGENT` | Optional | Descriptive User-Agent sent with every Reddit request |
 | `ETSY_API_KEY` | Optional | Etsy listing counts for the crowded-line check |
+| `HUMOR_REFERENCE_CSV_URL` | Optional | Fresh humor-reference CSV. Blank uses the raw GitHub URL of `data/humor_references.csv` on `main`, then the committed file |
 
 Reddit uses the client-credentials flow against `oauth.reddit.com` when both `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` are set. The reader backs off when `X-Ratelimit-Remaining` is exhausted. If those credentials are absent, live runs fall back to Reddit's public JSON endpoints. Create the script app at `https://www.reddit.com/prefs/apps`. `ETSY_API_KEY` is optional; without it, live mode counts public web results for the phrase plus "sticker", and fixture mode skips the check.
+
+`OPENAI_REASONING_MODEL` defaults to `gpt-5`. `gpt-4o-mini` rejects the `filters` parameter on web search, and a live search with a model that does not support those filters fails before the request with a message to switch models.
+
+Humor references are loaded at the start of every run, with no cache. The primary file is `data/humor_references.csv` (`date_found`, `subreddit`, `sticker_text_or_idea`, `upvotes`, `humor_type`, `niche`, `post_url`). A row whose text contains `(theme)` is a topic, not an example line. The app fetches `HUMOR_REFERENCE_CSV_URL` when set, otherwise `https://raw.githubusercontent.com/planetopus/Autonomous-Merchandise-Discovery-MVP/main/data/humor_references.csv`, and uses the committed file if the fetch fails. MongoDB collection `humor_references` in `MONGODB_DATABASE` is an optional extra. Expected document:
+
+```json
+{
+  "_id": "<sha256 hex of the lowercased, whitespace-collapsed text>",
+  "text": "string",
+  "upvotes": 0,
+  "humor_type": "dark/absurd",
+  "niche": "nurses",
+  "subreddit": "nursing",
+  "post_url": "https://www.reddit.com/...",
+  "date_found": "2026-11-21",
+  "is_theme": false
+}
+```
 
 ## Design rules
 

@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from merchandise_discovery.domain.models.usage import UsageMetrics
 from merchandise_discovery.infrastructure.providers.openai_model_compatibility import (
     is_reasoning_model,
+    supports_web_search_filters,
 )
 
 
@@ -57,7 +58,7 @@ class OpenAIReasoningProvider:
     def __init__(
         self,
         api_key: str,
-        model: str = "gpt-4o-mini",
+        model: str = "gpt-5",
         *,
         input_price_per_million: float = 0.15,
         output_price_per_million: float = 0.60,
@@ -132,6 +133,12 @@ class OpenAIReasoningProvider:
             "text_format": response_model,
         }
         if web_search_domains:
+            if not supports_web_search_filters(self._model):
+                raise ReasoningProviderError(
+                    f"Model {self._model!r} does not support web_search filters "
+                    "(the API reports Parameter 'filters' not supported). "
+                    "Set OPENAI_REASONING_MODEL to gpt-5 or a newer reasoning model."
+                )
             request_kwargs["tools"] = [
                 {
                     "type": "web_search",
@@ -152,6 +159,12 @@ class OpenAIReasoningProvider:
             # Preserve the provider's actionable reason while keeping the application-facing
             # exception stable enough for stage logging and UI rendering.
             detail = str(error).strip() or type(error).__name__
+            if "filters" in detail.casefold() and "not supported" in detail.casefold():
+                detail = (
+                    f"Model {self._model!r} does not support web_search filters. "
+                    "Set OPENAI_REASONING_MODEL to gpt-5 or a newer reasoning model. "
+                    f"Provider said: {detail}"
+                )
             raise ReasoningProviderError(
                 f"Structured reasoning request failed: {detail[:500]}"
             ) from error

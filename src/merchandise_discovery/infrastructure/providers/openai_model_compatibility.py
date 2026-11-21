@@ -7,3 +7,13 @@ def is_reasoning_model(model: str) -> bool:
     """Return whether the configured model uses reasoning-specific request controls."""
 
     return model.casefold().startswith(_REASONING_MODEL_PREFIXES)
+
+
+def supports_web_search_filters(model: str) -> bool:
+    """Return whether this model accepts web_search `filters`.
+
+    gpt-4o-mini and the other GPT-4 chat models reject that parameter. GPT-5 and newer
+    reasoning models accept it.
+    """
+
+    return is_reasoning_model(model)

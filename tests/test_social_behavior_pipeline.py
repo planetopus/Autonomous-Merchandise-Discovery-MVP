@@ -195,7 +195,8 @@ def test_social_behavior_prompt_requires_standalone_personal_copy() -> None:
 
     assert "MUST make sense when read alone" in instructions
     assert "Preserve the personal relationship" in instructions
-    assert "2 to 5 words" in instructions
+    assert "4 to 14 words" in instructions
+    assert "pun alone is rejected" in instructions
     assert "artwork_text may be an empty string" in instructions
     assert "die-cut vinyl sticker" in instructions
     assert "plain white background" in instructions

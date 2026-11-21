@@ -74,7 +74,7 @@ class SocialIdentityTextCandidate(BaseModel):
     audience_context: str = Field(min_length=1, max_length=500)
     behavior: str = Field(min_length=1, max_length=500)
     friction_or_pressure: str = Field(min_length=1, max_length=500)
-    artwork_text: str = Field(default="", max_length=80)
+    artwork_text: str = Field(default="", max_length=160)
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
     visual_punchline: str = Field(min_length=1, max_length=500)
     main_visual_metaphor: str = Field(min_length=1, max_length=500)
@@ -86,6 +86,7 @@ class SocialIdentityTextCandidate(BaseModel):
     source_quote: str = Field(default="", max_length=500)
     humor_mechanism: str = Field(default="", max_length=200)
     concrete_detail: str = Field(default="", max_length=200)
+    funny_score: float | None = Field(default=None, ge=0, le=10)
 
     @field_validator("source_url")
     @classmethod
@@ -107,6 +108,8 @@ class SocialIdentityTextOutput(BaseModel):
     search_summary: str = Field(min_length=1, max_length=2_000)
     topic_explored: str = Field(default="", max_length=500)
     model: str = "deterministic"
+    humor_examples_used: list[dict] = Field(default_factory=list)
+    humor_themes_used: list[str] = Field(default_factory=list)
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
@@ -142,6 +145,7 @@ def build_user_prompt(
     *,
     draft_count: int | None = None,
     quotes: list | None = None,
+    humor_reference_block: str = "",
 ) -> str:
     """Build a provider request that repeats the identity anchor at every important decision."""
 
@@ -196,6 +200,7 @@ def build_user_prompt(
         )
     return (
         f"{humor_prompt_suffix(input_model.humor_tone)}\n"
+        f"{humor_reference_block}"
         f"{quote_block(quotes)}"
         f"{draft_note}"
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
@@ -207,7 +212,7 @@ def build_user_prompt(
         f"Return up to {limit} distinct candidates. Each candidate must include "
         "identity evidence explaining why the source actually supports this identity, then one "
         "specific behavior and friction grounded in that identity. The merchandise text must be "
-        "self-explanatory die-cut sticker copy of roughly 2 to 5 words, or empty when the sticker "
+        "self-explanatory joke-shaped sticker copy of about 4 to 14 words, or empty when the sticker "
         "is image-only. Preserve the identity in that short line without requiring the metadata. "
         "Avoid repeating the same identity behavior in different wording. Also provide an "
         "artwork_prompt, visual_punchline, main_visual_metaphor, audience_specific_cue, tone, "

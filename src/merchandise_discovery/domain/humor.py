@@ -82,6 +82,12 @@ class HumorCritiqueItem(BaseModel):
     novelty: float = Field(ge=0, le=10)
     tone_match: float = Field(ge=0, le=10)
     giftability: float = Field(default=5, ge=0, le=10)
+    reddit_upvote_score: float = Field(
+        default=8,
+        ge=1,
+        le=10,
+        description="Would this line get upvoted on Reddit, judged against the reference jokes.",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -100,12 +106,14 @@ class LineReview:
         novelty: float,
         tone_match: float,
         giftability: float = 5.0,
+        reddit_upvote_score: float | None = None,
     ):
         self.index = index
         self.humor_landed = humor_landed
         self.novelty = novelty
         self.tone_match = tone_match
         self.giftability = giftability
+        self.reddit_upvote_score = reddit_upvote_score
 
 
 def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone: HumorTone | str) -> list:
@@ -129,6 +137,8 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
             score = humor + novelty + tone_match
         else:
             score = humor + novelty + tone_match + (0.25 * giftability)
+        if review is not None and review.reddit_upvote_score is not None and review.reddit_upvote_score < 7:
+            continue
         key = joke_key(str(getattr(candidate, "artwork_text", "") or getattr(candidate, "phrase", "")))
         if key and key in seen:
             continue

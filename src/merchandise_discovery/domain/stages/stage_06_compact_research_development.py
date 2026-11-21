@@ -116,7 +116,8 @@ def reasoning_instructions() -> str:
         "Also include style, typography, palette, composition, merchandise type, and constraints. "
         "Every visual brief is a die-cut vinyl sticker: flat vector illustration, bold clean "
         "outlines, flat colors, one centered isolated subject, plain white background, and "
-        "merchandise copy of roughly 2 to 5 words or no text. Set merchandise type to die-cut "
+        "joke-shaped merchandise copy of about 4 to 14 words, not a title pun, or no text. "
+        "Set merchandise type to die-cut "
         "vinyl sticker. Put scene or landscape backgrounds, full-bleed backgrounds, realistic "
         "shading, and poster layouts in the avoid list."
     )

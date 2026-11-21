@@ -26,7 +26,7 @@ class Settings:
     xai_image_model: str
     artwork_storage_dir: str = ".artifacts"
     max_stage_attempts: int = 3
-    openai_reasoning_model: str = "gpt-4o-mini"
+    openai_reasoning_model: str = "gpt-5"
     openai_reasoning_effort: str = "medium"
     openai_reasoning_timeout_seconds: float = 420.0
     openai_image_detail: str = "high"
@@ -39,6 +39,7 @@ class Settings:
     reddit_client_id: str | None = None
     reddit_client_secret: str | None = None
     reddit_user_agent: str | None = None
+    humor_reference_csv_url: str | None = None
     provider_mode: str = "fixture"
     # The current MVP intentionally evaluates only Stage 1 until the client approves expanding
     # the funnel. This is a demo boundary, not a claim that later stages are complete.
@@ -52,7 +53,7 @@ def load_settings() -> Settings:
         load_dotenv(dotenv_path=ENV_FILE, override=False)
     else:
         load_dotenv(override=False)
-    reasoning_model = os.getenv("OPENAI_REASONING_MODEL", "gpt-4o-mini").strip() or "gpt-4o-mini"
+    reasoning_model = os.getenv("OPENAI_REASONING_MODEL", "gpt-5").strip() or "gpt-5"
     default_input_price, default_output_price = _default_openai_token_prices(reasoning_model)
     return Settings(
         mongodb_uri=os.getenv("MONGODB_URI"),
@@ -85,6 +86,7 @@ def load_settings() -> Settings:
         reddit_client_id=_optional_secret("REDDIT_CLIENT_ID"),
         reddit_client_secret=_optional_secret("REDDIT_CLIENT_SECRET"),
         reddit_user_agent=_optional_secret("REDDIT_USER_AGENT"),
+        humor_reference_csv_url=_optional_secret("HUMOR_REFERENCE_CSV_URL"),
         provider_mode=os.getenv("MVP_PROVIDER_MODE", "fixture").strip().lower(),
         stop_after_stage=max(1, min(18, int(os.getenv("MVP_STOP_AFTER_STAGE", "1")))),
     )

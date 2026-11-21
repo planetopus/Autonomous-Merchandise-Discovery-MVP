@@ -34,7 +34,7 @@ def _initialize_configured_runtime(
     xai_image_model: str = "grok-imagine-image",
     artwork_storage_dir: str = ".artifacts",
     max_stage_attempts: int = 3,
-    openai_reasoning_model: str = "gpt-4o-mini",
+    openai_reasoning_model: str = "gpt-5",
     openai_reasoning_effort: str = "medium",
     openai_reasoning_timeout_seconds: float = 420.0,
     openai_image_detail: str = "high",
@@ -47,6 +47,7 @@ def _initialize_configured_runtime(
     reddit_client_id: str | None = None,
     reddit_client_secret: str | None = None,
     reddit_user_agent: str | None = None,
+    humor_reference_csv_url: str | None = None,
     provider_mode: str = "fixture",
     stop_after_stage: int = 18,
 ) -> ApplicationRuntime:
@@ -73,6 +74,7 @@ def _initialize_configured_runtime(
         reddit_client_id=reddit_client_id,
         reddit_client_secret=reddit_client_secret,
         reddit_user_agent=reddit_user_agent,
+        humor_reference_csv_url=humor_reference_csv_url,
         provider_mode=provider_mode,
         stop_after_stage=stop_after_stage,
     )
@@ -116,6 +118,7 @@ def render_database_status() -> ApplicationRuntime | None:
                 reddit_client_id=settings.reddit_client_id,
                 reddit_client_secret=settings.reddit_client_secret,
                 reddit_user_agent=settings.reddit_user_agent,
+                humor_reference_csv_url=settings.humor_reference_csv_url,
                 provider_mode=settings.provider_mode,
                 stop_after_stage=settings.stop_after_stage,
             )
