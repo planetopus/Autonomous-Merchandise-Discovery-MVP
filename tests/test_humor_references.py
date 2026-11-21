@@ -125,26 +125,25 @@ def test_csv_loader_prefers_the_url_then_the_bundled_file_and_adds_mongo(tmp_pat
 
 
 def test_bundled_humor_csv_matches_the_synced_file_shape() -> None:
-    """The committed list uses integer upvotes, combined types, quotes, and theme rows."""
+    """The file may be the short list or the sales list. Every row has text and a demand number."""
 
     from merchandise_discovery.infrastructure.humor_reference_loader import (
         bundled_humor_reference_csv,
     )
 
     body = bundled_humor_reference_csv().read_text(encoding="utf-8")
+    header = body.splitlines()[0].casefold()
     parsed = parse_humor_reference_csv(body)
 
-    assert len(parsed) == 43
-    assert all(isinstance(item.upvotes, int) and item.upvotes > 0 for item in parsed)
-    assert parsed[0].upvotes >= parsed[-1].upvotes
-    assert any(item.humor_type == "dry/edgy" for item in parsed)
-    assert any(item.text == "Grass goes in, fast comes out" for item in parsed)
+    assert "sticker_text_or_idea" in header or "text" in header
+    assert "upvotes" in header or "sales" in header
+    assert parsed
+    assert all(item.text.strip() for item in parsed)
+    assert all(item.upvotes > 0 or item.demand > 0 for item in parsed)
     themes = [item for item in parsed if item.is_theme]
-    assert len(themes) == 3
     assert all("(theme)" in item.text.casefold() for item in themes)
     selection = select_humor_references(parsed, tone=HumorTone.DRY, niches=["mechanics"])
     assert all(not item.is_theme for item in selection.examples)
-    assert len(selection.themes) == 3
 
 
 def test_selling_rows_are_market_signal_and_not_joke_examples() -> None:
@@ -209,17 +208,17 @@ def test_source_sentences_are_not_treated_as_jokes() -> None:
     assert not copied_from_source("", quote)
 
 
-def test_blank_niches_ask_the_model_to_choose_two() -> None:
-    """A run with no Niche A/B still has to cross two lives, and score that pairing."""
+def test_blank_niches_ask_for_one_real_person() -> None:
+    """A run with no Niche A/B stacks co-occurring traits instead of two scenarios."""
 
     blank = niche_pair_block()
-    assert "two different niches" in blank
+    assert "one real person" in blank
     assert "pairing_score" in blank
     named = niche_pair_block(identity="night-shift nurses")
     assert "night-shift nurses" in named
-    assert "second niche" in named
+    assert "stack modifier" in named
     supplied = niche_pair_block("nurses", "3D printing")
-    assert 'Cross these two niches exactly: "nurses" and "3D printing"' in supplied
+    assert 'both "nurses" and "3D printing"' in supplied
 
 
 def test_empty_fetch_uses_the_file_above_the_working_directory(tmp_path) -> None:

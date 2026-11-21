@@ -10,6 +10,8 @@ Insider jargon a random adult would not know scores at most 5. A universal hook,
 
 A single tired trope (one identity, already sold everywhere) scores at most 6 unless it stacks a second identity or a fresh twist. Stacking 2 or 3 true traits is the original shape. See `tired_tropes.json`.
 
+Does every word earn its place in the joke? Outside or common words are allowed when everyone knows them and they serve the setup or the punchline. Random filler disconnected from the joke scores at most 4. The template "X is [adj]. My Y isn't." scores at most 5 unless both halves are concrete and surprising.
+
 Reusable shapes, not topics: Gen Z slang on a group that does not talk that way; quotation marks around a polite excuse; a parenthetical twist at the end. Fill each shape with whatever identity is in front of you.
 
 Judge like a tough crowd that also has $5 to spend on a sticker.

@@ -7,7 +7,9 @@ from merchandise_discovery.application.discovery_stage_executor import Discovery
 from merchandise_discovery.domain.humor import (
     LineReview,
     apply_jargon_cap,
+    apply_line_caps,
     apply_line_critic,
+    is_disconnected_filler,
 )
 from merchandise_discovery.domain.models.common import HumorTone, PipelineVariant, SocialSource
 from merchandise_discovery.domain.models.workflow import RunConfig, StageExecution, WorkflowRun
@@ -16,6 +18,8 @@ from merchandise_discovery.infrastructure.ant_ratings_loader import (
     ant_calibration_block,
     load_ant_ratings,
     parse_ant_ratings,
+    sample_ant_ratings,
+    style_examples_block,
 )
 from tests.live_reasoning import scripted_social_provider
 
@@ -45,6 +49,9 @@ def test_committed_ratings_match_ants_scores() -> None:
     assert ratings["Power-cycle has a 30-second cooldown, Karen."].verdict == "kind of funny"
     assert ratings["Power-cycle has a 30-second cooldown, Karen."].score == 6
     assert ratings["ALT-TAB PALADINS OF PRINTER HELL"].score == 6
+    assert ratings["The schedule is early. My teleportation isn't."].score == 1
+    assert ratings["DANCE MOMS IN OUR GLITTER ERA"].score == 6
+    assert ratings["GIRL MOMS, BOWS ATE MY HOUSE"].verdict == "don't get it"
     assert "printer hell" in ratings["ALT-TAB PALADINS OF PRINTER HELL"].reason
     assert ratings["GRANDMA HAS RIZZ (SHE GOT YOUR GRANDPA, DIDN'T SHE)"].score == 7
     assert "parenthetical" in ratings[
@@ -88,6 +95,48 @@ def test_insider_jargon_is_capped_and_a_universal_hook_is_not() -> None:
     flagged.insider_jargon = True
     apply_jargon_cap(flagged, "Please open a ticket with HR about Steam.")
     assert flagged.sticker_buy_score == 5
+
+
+def test_random_filler_caps_at_4_and_a_common_word_that_serves_the_joke_does_not() -> None:
+    """Teleporation does not earn a place. Printer hell is a word everyone knows and it lands."""
+
+    import random
+
+    filler = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=9)
+    apply_line_caps(filler, "The schedule is early. My teleportation isn't.")
+    assert filler.words_earn_their_place is False
+    assert filler.sticker_buy_score == 4
+
+    contrast = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=9)
+    apply_line_caps(contrast, "Her ponytail is bulletproof. My patience isn't.")
+    assert contrast.filler_contrast is True
+    assert contrast.sticker_buy_score == 5
+    assert is_disconnected_filler("ALT-TAB PALADINS OF PRINTER HELL") is False
+
+    concrete = LineReview(0, 8, 8, 8, sticker_buy_score=8, instantly_understandable=8)
+    apply_line_caps(concrete, "The bow is glued. My bun isn't.")
+    assert concrete.filler_contrast is False
+    assert concrete.sticker_buy_score == 8
+
+    unclear = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=9, can_explain=False)
+    apply_line_caps(unclear, "GIRL MOMS, BOWS ATE MY HOUSE")
+    kept = apply_line_critic(
+        [type("Line", (), {"artwork_text": "GIRL MOMS, BOWS ATE MY HOUSE", "comic_turn": "ironic", "pattern": "confession", "phrase": ""})()],
+        [unclear],
+        keep_count=1,
+        tone=HumorTone.DRY,
+    )
+    assert kept == []
+
+    sampled = sample_ant_ratings(load_ant_ratings(), rng=random.Random(0))
+    assert sampled
+    assert all(item.score >= 8 or item.score <= 3 for item in sampled)
+    assert "GLITTER ERA" not in ant_calibration_block(sampled)
+    style = style_examples_block(load_ant_ratings(), rng=random.Random(1))
+    assert "Never copy" in style
+    assert "(a)" in style and "(d)" in style
+    assert "one real person" in style
+    assert all(item.score >= 7 for item in load_ant_ratings() if item.line in style)
 
 
 def test_unclear_lines_are_dropped_even_when_the_buy_score_is_high() -> None:
@@ -162,9 +211,16 @@ def test_critic_prompt_opens_with_the_owner_ratings() -> None:
     )
     assert critic.startswith("OWNER CALIBRATION")
     assert critic.index("OWNER CALIBRATION") < critic.index("sticker_buy_score")
-    assert "My coffee gets tenure" in critic
-    assert "Laminator Survivors" in critic
+    assert "earn its place" in critic.casefold()
+    assert "at most 4" in critic
     assert "instantly_understandable" in critic
     assert "at most 5" in critic
     assert "at most 6" in critic
     assert "2 or 3" in critic
+    writer = next(
+        call.kwargs["system_prompt"]
+        for call in provider.complete_structured.call_args_list
+        if call.kwargs["response_model"].__name__
+        not in {"HumorCritiqueBatch", "NichePairBatch"}
+    )
+    assert "70%" in writer

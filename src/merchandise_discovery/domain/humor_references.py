@@ -194,11 +194,11 @@ def market_signal_prompt(signal: MarketSignal) -> str:
         )
     ]
     if signal.identities:
-        lines.append("Trending identities: " + "; ".join(signal.identities[:12]))
+        lines.append("Trending identities: " + "; ".join(signal.identities[:6]))
     if signal.themes:
-        lines.append("Trending themes: " + "; ".join(signal.themes[:12]))
+        lines.append("Trending themes: " + "; ".join(signal.themes[:4]))
     if signal.hooks:
-        lines.append("Selling hooks, as subjects only: " + "; ".join(signal.hooks[:12]))
+        lines.append("Selling hooks, as subjects only: " + "; ".join(signal.hooks[:4]))
     return "\n".join(lines) + "\n"
 
 

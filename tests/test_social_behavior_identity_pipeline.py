@@ -127,7 +127,7 @@ def test_live_stage_one_makes_one_structured_search_request() -> None:
     assert call["web_search_domains"] == ("reddit.com",)
     assert "independently for each behavior" in call["system_prompt"]
     assert "absurd_identity_stack" in call["user_prompt"]
-    assert "Cross these two niches" in call["user_prompt"]
+    assert "one real person" in call["user_prompt"].casefold()
     assert result.output_data["candidates"][0]["identity"] == "Bedside nurses"
     assert result.usage.request_count >= 2
 

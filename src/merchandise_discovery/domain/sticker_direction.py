@@ -74,10 +74,9 @@ def crossover_block(niche_a: str, niche_b: str) -> str:
     if not first or not second:
         return ""
     return (
-        "Crossover niches: search for people who are both "
-        f'"{first}" and "{second}", not for each niche on its own. Every merchandise line '
-        "must carry both lives. Someone who is only one of the two should not recognize the "
-        "line as theirs. Do not place the two niches side by side as unrelated subjects. "
+        "One real person who is both "
+        f'"{first}" and "{second}". Stack those co-occurring traits in the line. '
+        "Do not write a scenario about the two groups meeting, and do not describe a job procedure. "
         "Fuse them into one centered sticker subject.\n"
     )
 

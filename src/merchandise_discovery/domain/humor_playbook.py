@@ -177,7 +177,7 @@ def build_playbook(references: list | None = None) -> dict:
     ).model_dump()
 
 
-def playbook_prompt(playbook: dict) -> str:
+def playbook_prompt(playbook: dict, *, limit: int | None = None) -> str:
     """Tell the writer which shapes earned the upvotes, without offering lines to copy."""
 
     patterns = playbook.get("patterns") or []
@@ -199,6 +199,9 @@ def playbook_prompt(playbook: dict) -> str:
     ]
     priority = [item for item in patterns if item.get("priority")]
     learned = [item for item in patterns if not item.get("priority")]
+    if limit is not None:
+        priority = priority[:limit]
+        learned = learned[: max(0, limit - len(priority))]
     if priority:
         lines.append("High-priority shapes. There is no sample line; invent the shape:")
         for pattern in priority:

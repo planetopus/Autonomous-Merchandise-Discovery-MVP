@@ -89,9 +89,10 @@ def build_user_prompt(
 
     platforms = ", ".join(source.value for source in input_model.sources)
     identity_instruction = (
-        "The niche pair in this prompt is the audience. If the user did not name two niches, "
-        "choose two different niches that share a life before choosing the behavior, and set "
-        "`identity_selected` to niche_pair_a. Internally compare several concrete identities across "
+        "The traits in this prompt belong to one real person. If the user did not name them, "
+        "build that person from 2 or 3 atlas traits that co-occur, and set "
+        "`identity_selected` to niche_pair_a. Do not cross two niches into a scenario. "
+        "Internally compare several concrete identities across "
         "the available identity types, then choose the most distinctive one with repeated "
         "source evidence rather than the most familiar profession. Name it as a natural human "
         "identity label that a person would actually use for themselves, not as a bureaucratic "
