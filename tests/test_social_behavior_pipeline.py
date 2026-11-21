@@ -479,13 +479,13 @@ def test_live_run_returns_two_absurd_identity_stacks() -> None:
     stacks = [
         base.model_copy(
             update={
-                "artwork_text": "Night Shift True Crime Club",
+                "artwork_text": "NIGHT SHIFT TRUE CRIME CLUB",
                 "pattern": "absurd_identity_stack",
             }
         ),
         base.model_copy(
             update={
-                "artwork_text": "Charting And Chill Podcast",
+                "artwork_text": "CHARTING AND CHILL PODCAST",
                 "pattern": "ABSURD IDENTITY STACK",
                 "source_url": "https://reddit.com/r/nursing/comments/abc/club",
             }

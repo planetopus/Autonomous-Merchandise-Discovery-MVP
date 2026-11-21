@@ -37,15 +37,18 @@ def test_priority_patterns_lead_and_do_not_quote_the_source_lines() -> None:
     playbook = build_playbook(references)
     prompt = playbook_prompt(playbook)
 
-    assert playbook["patterns"][0]["id"] == "absurd_identity_stack"
-    assert playbook["patterns"][0]["examples"] == []
+    assert playbook["patterns"][0]["id"] == "clarity_beats_cleverness"
+    assert playbook["patterns"][1]["id"] == "absurd_identity_stack"
+    assert playbook["patterns"][1]["examples"] == []
     ids = [item["id"] for item in playbook["patterns"] if item.get("priority")]
     assert ids[:3] == [
+        "clarity_beats_cleverness",
         "absurd_identity_stack",
         "self_defeating_sign",
-        "cheerful_dark_label",
     ]
     assert "absurd_identity_stack" in prompt
+    assert "clarity beats cleverness" in prompt.casefold()
+    assert "under 2 seconds" in prompt
     assert "At least two candidates" in prompt
     assert "co-occur" in prompt
     assert "register" in prompt
@@ -104,6 +107,17 @@ def test_critic_drops_a_line_whose_three_scores_average_under_7() -> None:
     )
 
     assert kept == []
+
+
+def test_a_long_literal_stack_is_not_a_club_name() -> None:
+    """Identity-stack lines have to be short and in capitals."""
+
+    from merchandise_discovery.domain.humor import identity_stack_is_too_long
+
+    literal = "The First-Period Bus-Duty Coffee & Laminator Survivors"
+    assert identity_stack_is_too_long(literal, "absurd_identity_stack")
+    assert not identity_stack_is_too_long("THICC DADS WHO VAPE FOR CHRIST", "absurd_identity_stack")
+    assert not identity_stack_is_too_long(literal, "confession")
 
 
 def test_member_buy_score_outweighs_a_generic_reddit_score() -> None:

@@ -34,6 +34,13 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "random combo. A generational or register mismatch is a key comedy lever: use words "
         "or habits the group would not use about themselves, and keep the line wholesome "
         "enough that a member thinks 'that's me' and would buy the sticker. "
+        "Set truth to the one universal identity truth this line uses. "
+        "Set comic_turn to ironic, sarcastic, or straight. Irony and sarcasm are core "
+        "mechanics: reward a clear turn, not a straight description of a rule. "
+        "Across the batch use at least 6 different pattern values and at least 4 different "
+        "truths. An absurd_identity_stack line is ALL CAPS and at most 6 words. "
+        "A long literal duty list is not a stack. Shape only, do not output this line: "
+        "THICC DADS WHO VAPE FOR CHRIST. "
     )
     if selected == HumorTone.DARK:
         return (
@@ -106,6 +113,41 @@ def niche_pair_block(niche_a: str = "", niche_b: str = "", identity: str = "") -
         "and a life situation, or two communities. Do not pick a single niche or a single topic. "
         + shared
     )
+
+
+def broad_identity_brief(query: str = "") -> str:
+    """Keep an identity batch on universal truths instead of one narrow policy."""
+
+    seasoning = ""
+    cleaned = query.strip()
+    if cleaned:
+        seasoning = (
+            f"The user mentioned {cleaned}. Treat that as optional seasoning for one line, "
+            "not as the subject of the batch. "
+        )
+    return (
+        "Choose the broad identity first, then 5 to 10 universal truths that almost everyone "
+        "in it would recognize instantly: recurring objects, times, duties, and private jokes. "
+        "Spread the lines across those truths. Set each candidate's truth field to the truth "
+        "that line uses. "
+        f"{seasoning}"
+        "Source evidence may season a line. One narrow research thread, policy, ban, or "
+        "confiscation rule must not define the whole batch. Do not write several versions of "
+        "the same incident. Return topic_explored as the broad identity life, not a policy heading."
+    )
+
+
+def identity_stack_is_too_long(text: str, pattern: str) -> bool:
+    """Club names are ALL CAPS and at most six words. A duty list is not a stack."""
+
+    normalized = " ".join(pattern.casefold().replace("_", " ").replace("-", " ").split())
+    if normalized != "absurd identity stack":
+        return False
+    words = [word for word in text.split() if any(character.isalpha() for character in word)]
+    if len(words) > 6:
+        return True
+    letters = [character for character in text if character.isalpha()]
+    return bool(letters) and not all(character.isupper() for character in letters)
 
 
 def joke_key(text: str) -> str:
@@ -184,6 +226,12 @@ class HumorCritiqueItem(BaseModel):
         le=10,
         description="Would someone buy this exact line on a die-cut sticker.",
     )
+    instantly_understandable: float = Field(
+        default=8,
+        ge=1,
+        le=10,
+        description="Can a stranger understand the line in under 2 seconds?",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -226,6 +274,7 @@ class LineReview:
         giftability: float = 5.0,
         reddit_upvote_score: float | None = None,
         sticker_buy_score: float | None = None,
+        instantly_understandable: float | None = None,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -234,6 +283,7 @@ class LineReview:
         self.giftability = giftability
         self.reddit_upvote_score = reddit_upvote_score
         self.sticker_buy_score = sticker_buy_score
+        self.instantly_understandable = instantly_understandable
 
 
 def critic_average(review) -> float | None:
@@ -260,6 +310,9 @@ def member_would_not_buy(review) -> bool:
 
     if review is None:
         return False
+    clear = getattr(review, "instantly_understandable", None)
+    if clear is not None and float(clear) < 7:
+        return True
     sticker = getattr(review, "sticker_buy_score", None)
     reddit = getattr(review, "reddit_upvote_score", None)
     if sticker is not None:
@@ -343,7 +396,15 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
             score = humor + novelty + tone_match
         else:
             score = humor + novelty + tone_match + (0.25 * giftability)
+        turn = str(getattr(candidate, "comic_turn", "") or "").casefold()
+        if turn in {"ironic", "sarcastic", "sarcasm"}:
+            score += 3
         if member_would_not_buy(review):
+            continue
+        if identity_stack_is_too_long(
+            str(getattr(candidate, "artwork_text", "") or ""),
+            str(getattr(candidate, "pattern", "") or ""),
+        ):
             continue
         key = joke_key(str(getattr(candidate, "artwork_text", "") or getattr(candidate, "phrase", "")))
         if key and key in seen:

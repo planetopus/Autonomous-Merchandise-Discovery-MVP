@@ -75,6 +75,8 @@ class SocialBehaviorTextCandidate(BaseModel):
     humor_mechanism: str = Field(default="", max_length=200)
     concrete_detail: str = Field(default="", max_length=200)
     pattern: str = Field(default="", max_length=80)
+    truth: str = Field(default="", max_length=160)
+    comic_turn: str = Field(default="straight", max_length=20)
     funny_score: float | None = Field(default=None, ge=0, le=10)
 
     @field_validator("source_url")

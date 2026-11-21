@@ -7,7 +7,12 @@ Keeping the contract shared makes output quality attributable to prompting rathe
 research pass, new persistence model, or extra provider call.
 """
 
-from merchandise_discovery.domain.humor import humor_prompt_suffix, niche_pair_block, quote_block
+from merchandise_discovery.domain.humor import (
+    broad_identity_brief,
+    humor_prompt_suffix,
+    niche_pair_block,
+    quote_block,
+)
 from merchandise_discovery.domain.models.common import HumorTone, identity_type_guidance
 from merchandise_discovery.domain.pipelines.social_identity_focused.pipeline import (
     SocialIdentityTextCandidate as SocialIdentityV2Candidate,
@@ -43,15 +48,16 @@ def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
     return (
         "You are a merchandise discovery researcher and die-cut vinyl sticker creative director. "
         "Use the supplied web search tool to inspect public Reddit and/or X discussions, but treat "
-        "the selected identity as a hard audience anchor. Extract a concrete behavior, ritual, "
-        "artifact, phrase, contradiction, or private joke that this identity would recognize from "
-        "their own life. Do not write about the identity as a broad category. Every merchandise line "
+        "the selected identity as a hard audience anchor. Name the broad identity and the "
+        "universal truths of that life. Do not let one narrow incident or policy define every "
+        "line. Every merchandise line "
         "must be self-explanatory when read by itself and should make the target person think 'that is "
         "literally me'. Apply a blind-recognition test before returning each line: if the identity "
         "metadata were hidden, a reader should still be able to identify the intended audience from "
         "the lived detail. Make the identity recognizable through a short insider phrase, not by "
         "pasting the audience label in front of the joke. Never format merchandise text as "
-        "'IDENTITY: slogan', a category title, or an all-caps audience heading. "
+        "'IDENTITY: slogan' or a category title. A short absurd identity stack may be "
+        "ALL CAPS and at most 6 words. Do not write a long all-caps duty list. "
         f"{sticker_copy_rules()} The actual merchandise text, when present, must contain at least "
         "one natural identity cue, or two unmistakable contextual cues that identify the audience "
         "together. For an occupation, a natural possessive relationship to the people they serve, "
@@ -99,17 +105,7 @@ def build_user_prompt(
             f"Its identity type is {input_model.identity_type.value}."
         )
     )
-    topic_instruction = (
-        "Choose a narrow behavior or topic within this identity before searching. Prefer a distinct "
-        "lived situation: a concrete incident, object, ritual, insider phrase, contradiction, or "
-        "private joke that this audience would recognize from their own life. Translate any "
-        "institutional or system-level problem into what the person actually does, sees, handles, "
-        "says, or complains about. Avoid generic routines, broad identity slogans, hidden operational "
-        "consequences, systemic challenges, industry trends, and research-report phrasing. Return the "
-        "chosen topic in `topic_explored` as a human situation, not a report heading."
-        if input_model.auto_topic
-        else f"Behavior/topic to investigate within this identity: {input_model.query}"
-    )
+    topic_instruction = broad_identity_brief("" if input_model.auto_topic else input_model.query)
     diversity_instruction = (
         "Prefer a specific, underrepresented audience supported by repeated evidence. Do not default "
         "to a familiar healthcare, education, or office profession merely because it has many search "
