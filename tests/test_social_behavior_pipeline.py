@@ -215,6 +215,64 @@ def test_social_behavior_prompt_requires_standalone_personal_copy() -> None:
     assert "original joke" in blank_prompt
 
 
+def test_reddit_403_still_asks_web_search_for_source_evidence() -> None:
+    """A blocked comment fetch does not fail stage 1 or drop the source-quote requirement."""
+
+    run = WorkflowRun(
+        title="Reddit blocked",
+        config=RunConfig(
+            pipeline_variant=PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
+            social_sources=[SocialSource.REDDIT],
+            social_query="night shift charting",
+            social_candidate_count=1,
+            social_niche_a="night-shift nurses",
+            social_niche_b="true crime",
+        ),
+    )
+    stage = StageExecution(run_id=run.run_id, stage_number=1, stage_name="Social text")
+    candidate = pipeline.SocialBehaviorTextCandidate(
+        source_platform=SocialSource.REDDIT,
+        source_url="https://reddit.com/r/nursing/comments/abc/chart",
+        source_title="Charting",
+        source_excerpt="A nurse describes finishing notes in the car.",
+        source_quote="I finish the note in the parking lot.",
+        audience_context="Nurses who listen to cases on the way home.",
+        behavior="Finishing the chart after clock-out.",
+        friction_or_pressure="The story is not done when the shift is.",
+        artwork_text="My parking lot is the second desk",
+        artwork_prompt="A die-cut sticker of a badge on a steering wheel.",
+        visual_punchline="The badge is driving.",
+        main_visual_metaphor="A badge gripping a steering wheel.",
+        audience_specific_cue="A nurse badge and a steering wheel.",
+        tone="deadpan",
+        style_direction="Flat vector die-cut sticker.",
+        things_to_avoid=["a scene"],
+        specificity_reason="Both lives are in the line.",
+        pattern="confession",
+    )
+    provider = scripted_social_provider(
+        pipeline.SocialBehaviorTextOutput(
+            candidates=[candidate],
+            search_summary="Search excerpts covered the parking-lot notes.",
+        )
+    )
+
+    class BlockedReddit:
+        def collect(self, query: str) -> list:
+            raise RuntimeError("Reddit request failed with status 403.")
+
+    executor = _executor(Mock())
+    executor._reasoning_provider = provider
+    executor._reddit_reader = BlockedReddit()
+
+    result = executor.execute(run, stage, executor.prepare(run, stage))
+
+    prompt = first_writer_call(provider).kwargs["user_prompt"]
+    assert "No comments were prefetched" in prompt
+    assert first_writer_call(provider).kwargs["web_search_domains"] == ("reddit.com",)
+    assert result.output_data["candidates"][0]["source_quote"]
+
+
 def test_live_stage_drops_source_quotes_and_always_runs_the_critic() -> None:
     """A blank reference set still scores every line and rejects a copied source sentence."""
 

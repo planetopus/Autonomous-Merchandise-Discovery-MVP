@@ -438,3 +438,20 @@ def test_missing_reddit_credentials_stay_on_public_json() -> None:
     assert client.posts == 0
     assert client.urls[0] == "https://www.reddit.com/search.json"
     assert found[0].score == 12
+
+
+def test_reddit_403_returns_no_comments() -> None:
+    """A blocked Reddit request is empty comments, not a failed merchandise run."""
+
+    class Client:
+        def get(self, url, params=None, headers=None):
+            return _Response({}, status=403)
+
+    reader = RedditReader(
+        client=Client(),
+        min_interval_seconds=0,
+        sleep=lambda _seconds: None,
+        clock=lambda: 0.0,
+    )
+
+    assert reader.collect("night shift") == []

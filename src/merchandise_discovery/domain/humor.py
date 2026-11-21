@@ -1,6 +1,6 @@
 """Humor tone, quote handoff, and the critic that cuts a large line batch."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from merchandise_discovery.domain.models.common import HumorTone
 
@@ -110,8 +110,57 @@ def joke_key(text: str) -> str:
     return " ".join(text.casefold().split())
 
 
+class HumorExampleRecord(BaseModel):
+    """One reference line recorded on the run. Every field is required by strict mode."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    text: str = ""
+    upvotes: int = 0
+    humor_type: str = ""
+    niche: str = ""
+    subreddit: str = ""
+    post_url: str = ""
+
+
+class LineReviewRecord(BaseModel):
+    """One kept or dropped merchandise line from the critic."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    artwork_text: str = ""
+    funny_score: float | None = None
+    kept: bool = False
+    reason: str = ""
+
+
+class NichePairRecord(BaseModel):
+    """One scored niche pair, including pairs the run did not keep."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    niche_a: str = ""
+    niche_b: str = ""
+    shared_life_score: int = 0
+    recognizability_score: int = 0
+    reason: str = ""
+    kept: bool = False
+
+
+class PlaybookPatternRecord(BaseModel):
+    """A playbook shape shown on the run page."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = ""
+    label: str = ""
+    weight: int | None = None
+
+
 class HumorCritiqueItem(BaseModel):
     """Critic scores for one drafted merchandise line."""
+
+    model_config = ConfigDict(extra="forbid")
 
     index: int = Field(ge=0)
     humor_landed: float = Field(ge=0, le=10)
@@ -135,11 +184,15 @@ class HumorCritiqueItem(BaseModel):
 class HumorCritiqueBatch(BaseModel):
     """Separate critic pass over one batch of drafted lines."""
 
+    model_config = ConfigDict(extra="forbid")
+
     reviews: list[HumorCritiqueItem] = Field(min_length=1, max_length=30)
 
 
 class NichePairCandidate(BaseModel):
     """One proposed niche collision and the two scores that decide whether it stays."""
+
+    model_config = ConfigDict(extra="forbid")
 
     niche_a: str = Field(min_length=2, max_length=80)
     niche_b: str = Field(min_length=2, max_length=80)
@@ -150,6 +203,8 @@ class NichePairCandidate(BaseModel):
 
 class NichePairBatch(BaseModel):
     """About ten niche pairs, each scored before any sticker line is written."""
+
+    model_config = ConfigDict(extra="forbid")
 
     pairs: list[NichePairCandidate] = Field(min_length=1, max_length=12)
 

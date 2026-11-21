@@ -5,10 +5,13 @@ flow against oauth.reddit.com and back off from the X-Ratelimit headers. Without
 credentials the same comment parsing runs against the public www.reddit.com JSON endpoints.
 """
 
+import logging
 import time
 from dataclasses import dataclass
 
 import httpx
+
+logger = logging.getLogger(__name__)
 
 USER_AGENT = (
     "autonomous-merchandise-discovery/0.1 "
@@ -73,19 +76,33 @@ class RedditReader:
             else:
                 search_url = "https://www.reddit.com/search.json"
                 comments_url = "https://www.reddit.com/comments/{post_id}.json"
-            listing = self._get(
-                client,
-                search_url,
-                {"q": query, "sort": "relevance", "type": "link", "limit": self._post_limit},
-            )
-            posts = _posts(listing)[: self._post_limit]
             comments: list[RedditComment] = []
-            for post in posts:
-                payload = self._get(
+            try:
+                listing = self._get(
                     client,
-                    comments_url.format(post_id=post["id"]),
-                    {"sort": "top", "limit": self._comments_per_post + 2},
+                    search_url,
+                    {"q": query, "sort": "relevance", "type": "link", "limit": self._post_limit},
                 )
+            except RuntimeError as error:
+                logger.warning(
+                    "Reddit comment collection skipped: %s Web search will supply source evidence.",
+                    error,
+                )
+                return []
+            posts = _posts(listing)[: self._post_limit]
+            for post in posts:
+                try:
+                    payload = self._get(
+                        client,
+                        comments_url.format(post_id=post["id"]),
+                        {"sort": "top", "limit": self._comments_per_post + 2},
+                    )
+                except RuntimeError as error:
+                    logger.warning(
+                        "Reddit comment collection skipped: %s Web search will supply source evidence.",
+                        error,
+                    )
+                    break
                 comments.extend(
                     _comments(payload, post["title"], post["permalink"])[: self._comments_per_post]
                 )
