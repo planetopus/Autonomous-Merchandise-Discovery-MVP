@@ -129,6 +129,7 @@ class LineReviewRecord(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     artwork_text: str = ""
+    pattern: str = ""
     funny_score: float | None = None
     kept: bool = False
     reason: str = ""

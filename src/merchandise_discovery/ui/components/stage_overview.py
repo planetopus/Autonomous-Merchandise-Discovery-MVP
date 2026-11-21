@@ -113,8 +113,9 @@ def _render_line_reviews(payload: dict[str, Any]) -> None:
         score = item.get("funny_score")
         score_text = f"{score}/10" if score is not None else "unscored"
         reason = item.get("reason") or "unspecified"
+        pattern = item.get("pattern") or "unspecified"
         text = item.get("artwork_text") or "(empty)"
-        st.write(f"- {status} ({score_text}, {reason}): {text}")
+        st.write(f"- {status} ({score_text}, {pattern}, {reason}): {text}")
 
 
 def _render_social_behavior_text(
@@ -123,6 +124,8 @@ def _render_social_behavior_text(
 ) -> None:
     """Show either social A/B variant with its source request and audience context."""
 
+    if payload.get("stage_warning"):
+        st.warning(str(payload["stage_warning"]))
     candidates = _records(payload, "candidates")
     request = input_payload or {}
     sources = request.get("sources", [])

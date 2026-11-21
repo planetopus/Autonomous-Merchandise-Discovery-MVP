@@ -72,7 +72,12 @@ def test_execute_stage_failure_marks_stage_and_run_failed() -> None:
         execute_stage(runtime, run, execution)
 
     runtime.workflow_orchestrator.fail_stage_and_run.assert_called_once_with(
-        run, execution, "Stage execution error", max_attempts=3
+        run,
+        execution,
+        "Stage execution error",
+        max_attempts=3,
+        output_data=None,
+        usage=None,
     )
     runtime.stage_log_repository.save.assert_called_once()
 
@@ -112,4 +117,6 @@ def test_execute_stage_fails_before_completion_when_required_output_is_empty() -
         "Stage 09 (Merchandise Concept Generation) produced no usable output in: concepts. "
         "The run cannot continue because the next stage has no candidates.",
         max_attempts=3,
+        output_data=None,
+        usage=None,
     )

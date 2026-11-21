@@ -7,6 +7,7 @@ independently portable and provider dependencies are injected here.
 
 import json
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
 from merchandise_discovery.domain.humor import (
@@ -205,27 +206,37 @@ class DiscoveryStageExecutor:
     def _finish_social_text(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Validate the drafted lines, then record which humor references the run used."""
 
-        reasoning_output, usage, selection, line_reviews, playbook, pair_meta = self._social_reasoning(
-            run,
-            input_model,
-            pipeline_module,
-            output_model,
-        )
-        output = pipeline_module.execute(
-            input_model,
-            reasoning_output=reasoning_output,
-            model=usage.model if usage.provider != "fixture" else "deterministic",
-        )
-        output = self._stamp_humor_context(output, selection, playbook)
-        pair_update = {"line_reviews": line_reviews}
-        supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
-        supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
-        if pair_meta:
-            pair_update.update(pair_meta)
-        elif supplied_a and supplied_b:
-            pair_update["niche_pair_a"] = supplied_a
-            pair_update["niche_pair_b"] = supplied_b
-        return output.model_copy(update=pair_update), usage
+        usage = UsageMetrics()
+        try:
+            reasoning_output, usage, selection, line_reviews, playbook, pair_meta = self._social_reasoning(
+                run,
+                input_model,
+                pipeline_module,
+                output_model,
+            )
+            output = pipeline_module.execute(
+                input_model,
+                reasoning_output=reasoning_output,
+                model=usage.model if usage.provider != "fixture" else "deterministic",
+            )
+            output = self._stamp_humor_context(output, selection, playbook)
+            pair_update = {"line_reviews": line_reviews}
+            supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
+            supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
+            if pair_meta:
+                pair_update.update(pair_meta)
+            elif supplied_a and supplied_b:
+                pair_update["niche_pair_a"] = supplied_a
+                pair_update["niche_pair_b"] = supplied_b
+            return output.model_copy(update=pair_update), usage
+        except Exception as error:
+            if getattr(error, "stage_usage", None) is None:
+                error.stage_usage = usage if usage.request_count or usage.total_tokens else getattr(
+                    self, "_social_usage", None
+                )
+            if getattr(error, "stage_output", None) is None:
+                error.stage_output = getattr(self, "_social_preview", None)
+            raise
 
     def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Collect comments, draft joke-shaped lines, then let a critic cut them."""
@@ -235,18 +246,31 @@ class DiscoveryStageExecutor:
         reference_block = humor_reference_prompt(selection) + playbook_prompt(playbook)
         if self._reasoning_provider is None:
             return None, UsageMetrics(), selection, [], playbook, None
-        quotes = self._collect_reddit_quotes(input_model)
-        draft_count = 30
-        pair_meta = None
-        usage = UsageMetrics()
         supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
         supplied_b = str(getattr(input_model, "niche_b", "") or "").strip()
-        if not (supplied_a and supplied_b):
-            pair_meta, pair_usage = self._score_niche_pairs(input_model)
-            usage = pair_usage
-            input_model = input_model.model_copy(
-                update={"niche_a": pair_meta["niche_pair_a"], "niche_b": pair_meta["niche_pair_b"]}
-            )
+        need_pair = not (supplied_a and supplied_b)
+        pair_meta = None
+        usage = UsageMetrics()
+        self._social_usage = usage
+        self._social_preview = None
+        warnings: list[str] = []
+        # The pair call does not need Reddit, so the two waits overlap.
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            quote_job = pool.submit(self._collect_reddit_quotes, input_model)
+            pair_job = pool.submit(self._score_niche_pairs, input_model) if need_pair else None
+            quotes = quote_job.result()
+            if pair_job is not None:
+                pair_meta, pair_usage, pair_warning = pair_job.result()
+                usage = self._add_usage(usage, pair_usage)
+                self._note_social_progress(usage, pair_meta, [], [], warnings)
+                if pair_warning:
+                    warnings.append(pair_warning)
+                input_model = input_model.model_copy(
+                    update={
+                        "niche_a": pair_meta["niche_pair_a"],
+                        "niche_b": pair_meta["niche_pair_b"],
+                    }
+                )
         domains = None
         if not quotes:
             domains = tuple(
@@ -254,7 +278,7 @@ class DiscoveryStageExecutor:
             )
         user_prompt = pipeline_module.build_user_prompt(
             input_model,
-            draft_count=draft_count,
+            draft_count=12,
             quotes=quotes,
             humor_reference_block=reference_block,
         )
@@ -263,12 +287,11 @@ class DiscoveryStageExecutor:
             user_prompt=user_prompt,
             response_model=output_model,
             web_search_domains=domains,
+            reasoning_effort="low",
         )
-        usage = combine_usage(usage, response.usage) if usage.request_count else response.usage
-        candidates, reviews = self._drop_unoriginal(
-            list(getattr(response.output, "candidates", [])),
-            selection.examples,
-        )
+        usage = self._add_usage(usage, response.usage)
+        drafted = list(getattr(response.output, "candidates", []))
+        candidates, reviews = self._drop_unoriginal(drafted, selection.examples)
         if candidates:
             candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
@@ -276,86 +299,70 @@ class DiscoveryStageExecutor:
                 len(candidates),
                 reference_block,
             )
-            usage = combine_usage(usage, critic_usage)
+            usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
-        chosen = response.output
-        short = len(candidates) < input_model.candidate_count
-        weak_pair = self._pair_is_weak(chosen, input_model)
-        need_stacks = self._needs_absurd_stacks(candidates, input_model.candidate_count)
-        if short or weak_pair or need_stacks:
-            reasons = []
-            if short:
-                reasons.append(
-                    "too few lines survived. Dropped lines copied the source, copied a "
-                    "reference, or the average of reddit, sticker-buy, and originality "
-                    "was under 7"
-                )
-            if weak_pair:
-                reasons.append(
-                    "niche_pair_a and niche_pair_b were missing, identical, or pairing_score "
-                    "was under 7. Choose two niches whose audiences share a life and score "
-                    "that pairing at 7 or higher"
-                )
-            if need_stacks:
-                reasons.append(
-                    "at least two kept lines must use pattern absurd_identity_stack: "
-                    "a sincere club or bumper-sticker name that stacks three descriptors "
-                    "from the two niches. Do not copy any existing slogan"
-                )
-            retry = self._reasoning_provider.complete_structured(
-                system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
-                user_prompt=(
-                    f"{user_prompt}\nRewrite. {'. '.join(reasons)}. "
-                    "artwork_text must be an original joke, never the source sentence or a "
-                    "close paraphrase."
-                ),
-                response_model=output_model,
-                web_search_domains=domains,
-            )
-            usage = combine_usage(usage, retry.usage)
-            retried, retry_reviews = self._drop_unoriginal(
-                list(getattr(retry.output, "candidates", [])),
+        self._note_social_progress(usage, pair_meta, candidates or drafted, reviews, warnings)
+        if self._needs_absurd_stacks(candidates, input_model.candidate_count):
+            filled, fill_usage, fill_reviews = self._fill_absurd_stacks(
+                run,
+                input_model,
+                output_model,
+                pipeline_module,
+                reference_block,
                 selection.examples,
             )
-            if retried:
-                retried, critic_usage, critic_rows = self._critic_pass(
-                    run,
-                    retried,
-                    len(retried),
-                    reference_block,
+            usage = self._add_usage(usage, fill_usage)
+            reviews.extend(fill_reviews)
+            candidates = self._merge_stacks(candidates, filled)
+            if self._needs_absurd_stacks(candidates, input_model.candidate_count):
+                warnings.append(
+                    "Fewer than two absurd identity stack lines survived. "
+                    "Showing the best lines anyway."
                 )
-                usage = combine_usage(usage, critic_usage)
-                retry_reviews.extend(critic_rows)
-            if len(retried) >= len(candidates):
-                candidates = retried
-                chosen = retry.output
-                reviews = retry_reviews
-            elif self._pair_rank(retry.output) > self._pair_rank(chosen):
-                chosen = chosen.model_copy(
-                    update={
-                        "niche_pair_a": retry.output.niche_pair_a,
-                        "niche_pair_b": retry.output.niche_pair_b,
-                        "pairing_score": retry.output.pairing_score,
-                        "pairing_reason": retry.output.pairing_reason,
-                    }
-                )
-        if not candidates:
-            raise RuntimeError(
-                "Every line was dropped. Each one copied its source, copied a reference joke, "
-                "or averaged under 7 on reddit upvote, sticker buy, and originality."
+        chosen = response.output
+        if len(candidates) < input_model.candidate_count:
+            warnings.append(
+                "Fewer lines cleared the critic than requested. Showing the best lines anyway."
             )
-        if self._needs_absurd_stacks(candidates, input_model.candidate_count):
-            raise RuntimeError(
-                "This run needs at least two absurd identity stack lines built from its "
-                "two niches. Fewer than two surviving lines used pattern absurd_identity_stack."
-            )
+            candidates = self._best_available(drafted, candidates, input_model.candidate_count)
+        if not candidates and drafted:
+            warnings.append("No line cleared the critic. Showing the drafted lines anyway.")
+            candidates = drafted[: input_model.candidate_count]
+        ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
         output = chosen.model_copy(
             update={
-                "candidates": self._order_with_stacks(candidates, input_model.candidate_count)
+                "candidates": ordered,
+                "stage_warning": " ".join(warnings),
             }
         )
         output = self._drop_crowded_lines(output)
+        self._note_social_progress(usage, pair_meta, output.candidates, reviews, warnings)
         return output, usage, selection, reviews, playbook, pair_meta
+
+    def _note_social_progress(self, usage, pair_meta, candidates, reviews, warnings) -> None:
+        """Keep the latest drafts and token total so a later error can still fill the page."""
+
+        self._social_usage = usage
+        pair = pair_meta or {}
+        self._social_preview = {
+            "niche_pair_a": pair.get("niche_pair_a", ""),
+            "niche_pair_b": pair.get("niche_pair_b", ""),
+            "pairing_score": pair.get("pairing_score"),
+            "pairing_reason": pair.get("pairing_reason", ""),
+            "niche_pair_candidates": [
+                item.model_dump(mode="python") if hasattr(item, "model_dump") else item
+                for item in pair.get("niche_pair_candidates", [])
+            ],
+            "line_reviews": [
+                item.model_dump(mode="python") if hasattr(item, "model_dump") else item
+                for item in reviews
+            ],
+            "candidates": [
+                item.model_dump(mode="python") if hasattr(item, "model_dump") else item
+                for item in candidates
+            ],
+            "stage_warning": " ".join(warning for warning in warnings if warning),
+        }
 
     def _collect_reddit_quotes(self, input_model) -> list:
         """Pull top comments when Reddit is selected. A failure leaves the writer on web search."""
@@ -399,41 +406,40 @@ class DiscoveryStageExecutor:
         ]
         return select_humor_references(references, tone=run.config.humor_tone, niches=niches), references
 
+    def _add_usage(self, current: UsageMetrics, extra: UsageMetrics) -> UsageMetrics:
+        """Add a measured call. An empty starting total must not discard the first response."""
+
+        if current.request_count == 0 and current.total_tokens == 0 and current.estimated_cost_usd == 0:
+            return extra
+        return combine_usage(current, extra)
+
     def _score_niche_pairs(self, input_model):
-        """Ask for about ten pairs and keep the best one that scores 7 or higher on both axes."""
+        """Score about ten pairs once and keep the best, even when it is under 7."""
 
         identity = str(getattr(input_model, "identity", "") or "")
-        prompt = niche_pair_request(identity)
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
                 "You pair two niches that share a life. Score shared lived experience and "
                 "instant recognizability from 1 to 10. Nurses plus true crime, and dads plus "
                 "grilling, are the kind of pair that should score 7 or higher."
             ),
-            user_prompt=prompt,
+            user_prompt=niche_pair_request(identity),
             response_model=NichePairBatch,
+            reasoning_effort="low",
         )
-        usage = response.usage
-        strong = keep_strong_pairs(response.output.pairs)
         recorded = list(response.output.pairs)
+        strong = keep_strong_pairs(recorded)
+        ranked = sorted(
+            recorded,
+            key=lambda pair: (-(pair.shared_life_score + pair.recognizability_score), pair.niche_a),
+        )
+        best = strong[0] if strong else ranked[0]
+        warning = ""
         if not strong:
-            retry = self._reasoning_provider.complete_structured(
-                system_prompt=(
-                    "Every pair you just scored was under 7. Propose about 10 new pairs. "
-                    "Keep only collisions as recognizable as nurses + true crime or dads + grilling."
-                ),
-                user_prompt=prompt,
-                response_model=NichePairBatch,
+            warning = (
+                "The best niche pair scored under 7 on shared life or recognizability. "
+                "Using it anyway."
             )
-            usage = combine_usage(usage, retry.usage)
-            strong = keep_strong_pairs(retry.output.pairs)
-            recorded = list(retry.output.pairs)
-        if not strong:
-            raise RuntimeError(
-                "No niche pair scored 7 or higher on both shared lived experience and "
-                "instant recognizability."
-            )
-        best = strong[0]
         return (
             {
                 "niche_pair_a": best.niche_a.strip(),
@@ -452,8 +458,85 @@ class DiscoveryStageExecutor:
                     for pair in recorded
                 ],
             },
-            usage,
+            response.usage,
+            warning,
         )
+
+    def _fill_absurd_stacks(
+        self,
+        run,
+        input_model,
+        output_model,
+        pipeline_module,
+        reference_block: str,
+        examples: list,
+    ):
+        """One short call for identity-stack lines only. It does not search the web again."""
+
+        niche_a = str(getattr(input_model, "niche_a", "") or "").strip()
+        niche_b = str(getattr(input_model, "niche_b", "") or "").strip()
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                "Write exactly 2 merchandise lines. pattern must be absurd_identity_stack. "
+                f'Build each sincere club name from "{niche_a}" and "{niche_b}". '
+                "Stack three descriptors from those two niches. Do not copy an existing slogan. "
+                "Use a real reddit.com or x.com source_url already in the evidence you know, "
+                "and do not repeat a source sentence as artwork_text.\n"
+                f"{reference_block}"
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        usage = response.usage
+        fresh, reviews = self._drop_unoriginal(
+            list(getattr(response.output, "candidates", [])),
+            examples,
+        )
+        if fresh:
+            fresh, critic_usage, critic_rows = self._critic_pass(
+                run,
+                fresh,
+                len(fresh),
+                reference_block,
+            )
+            usage = self._add_usage(usage, critic_usage)
+            reviews.extend(critic_rows)
+        return fresh, usage, reviews
+
+    def _merge_stacks(self, candidates: list, filled: list) -> list:
+        """Append new identity-stack lines without duplicating text already kept."""
+
+        seen = {
+            str(getattr(candidate, "artwork_text", "") or "").casefold()
+            for candidate in candidates
+        }
+        merged = list(candidates)
+        for candidate in filled:
+            if not self._is_absurd_stack(candidate):
+                continue
+            text = str(getattr(candidate, "artwork_text", "") or "").casefold()
+            if text and text not in seen:
+                merged.append(candidate)
+                seen.add(text)
+        return merged
+
+    def _best_available(self, drafted: list, survivors: list, keep_count: int) -> list:
+        """Prefer critic survivors, then fill from the original draft so the page is not empty."""
+
+        if len(survivors) >= keep_count:
+            return survivors
+        seen = {str(getattr(candidate, "artwork_text", "") or "") for candidate in survivors}
+        filled = list(survivors)
+        for candidate in drafted:
+            text = str(getattr(candidate, "artwork_text", "") or "")
+            if text in seen:
+                continue
+            filled.append(candidate)
+            seen.add(text)
+            if len(filled) >= keep_count:
+                break
+        return filled or drafted[:keep_count]
 
     def _is_absurd_stack(self, candidate) -> bool:
         """True when the line is marked as the stacked-club pattern."""
@@ -513,6 +596,7 @@ class DiscoveryStageExecutor:
                 dropped.append(
                     LineReviewRecord(
                         artwork_text=text,
+                        pattern=str(getattr(candidate, "pattern", "") or ""),
                         funny_score=None,
                         kept=False,
                         reason="copied source",
@@ -523,6 +607,7 @@ class DiscoveryStageExecutor:
                 dropped.append(
                     LineReviewRecord(
                         artwork_text=text,
+                        pattern=str(getattr(candidate, "pattern", "") or ""),
                         funny_score=None,
                         kept=False,
                         reason="copied reference",
@@ -599,6 +684,7 @@ class DiscoveryStageExecutor:
                 f"novelty under 7.\n{numbered}"
             ),
             response_model=HumorCritiqueBatch,
+            reasoning_effort="low",
         )
         reviews = [
             LineReview(
@@ -645,6 +731,7 @@ class DiscoveryStageExecutor:
             rows.append(
                 LineReviewRecord(
                     artwork_text=str(getattr(candidate, "artwork_text", "") or ""),
+                    pattern=str(getattr(candidate, "pattern", "") or ""),
                     funny_score=round(average, 2) if average is not None else score,
                     kept=kept_flag,
                     reason=reason,

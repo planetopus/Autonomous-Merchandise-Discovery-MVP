@@ -64,10 +64,18 @@ class WorkflowOrchestrator:
         error_message: str,
         *,
         max_attempts: int = 3,
+        output_data: dict | None = None,
+        usage=None,
     ) -> None:
         """Persist failure and close the run, recording when no further retry is allowed."""
 
-        failed_execution = self._stages.fail(execution.execution_id, execution.version, error_message)
+        failed_execution = self._stages.fail(
+            execution.execution_id,
+            execution.version,
+            error_message,
+            output_data=output_data,
+            usage=usage,
+        )
         self._runs.update_status(
             run.run_id,
             expected_version=run.version,
