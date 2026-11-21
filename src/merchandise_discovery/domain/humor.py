@@ -43,6 +43,8 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "truths. Set who_its_for to 2 to 4 plain buyer categories, identity groups and "
         "interests, such as neighbors, commuters, and weeknight cooks. "
         "A line that only describes the behavior, with no ironic twist, fails. "
+        "Stack 2 or 3 true identity traits and one specific twist. "
+        "A single famous trope is not a sticker. "
         "Set comic_turn to straight only when there is no turn. "
         "An absurd_identity_stack line is ALL CAPS and at most 6 words. "
         "A long literal duty list is not a stack. Shape only, do not output this line: "
@@ -247,6 +249,16 @@ class HumorCritiqueItem(BaseModel):
             "A universal hook such as Karen or printer hell is not insider jargon."
         ),
     )
+    trait_count: int = Field(
+        default=0,
+        ge=0,
+        le=6,
+        description="How many true identity traits the line stacks. 2 or 3 is the original shape.",
+    )
+    fresh_twist: bool = Field(
+        default=False,
+        description="True only when the line adds a turn a tired trope does not already have.",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -291,6 +303,9 @@ class LineReview:
         sticker_buy_score: float | None = None,
         instantly_understandable: float | None = None,
         insider_jargon: bool = False,
+        trait_count: int = 0,
+        fresh_twist: bool = False,
+        tired_trope: bool = False,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -301,6 +316,9 @@ class LineReview:
         self.sticker_buy_score = sticker_buy_score
         self.instantly_understandable = instantly_understandable
         self.insider_jargon = insider_jargon
+        self.trait_count = trait_count
+        self.fresh_twist = fresh_twist
+        self.tired_trope = tired_trope
 
 
 def critic_average(review) -> float | None:
@@ -372,6 +390,138 @@ def apply_jargon_cap(review, text: str):
         if value is not None and float(value) > 5:
             setattr(review, name, 5.0)
     return review
+
+
+_ROLE_WORDS = (
+    "dad",
+    "dads",
+    "mom",
+    "moms",
+    "grandpa",
+    "grandpas",
+    "grandma",
+    "grandmas",
+    "nurse",
+    "nurses",
+    "mortician",
+    "morticians",
+    "daughter",
+    "daughters",
+    "farmer",
+    "farmers",
+    "pastor",
+    "pastors",
+    "widow",
+    "widows",
+    "trucker",
+    "truckers",
+    "deacon",
+    "deacons",
+    "retiree",
+    "retirees",
+)
+_MODIFIER_WORDS = ("divorced", "rizzless", "swiftie", "feral", "night", "therapy", "girl", "hot")
+
+
+def _stem(word: str) -> str:
+    token = word.casefold().strip()
+    if token.endswith("s") and len(token) > 3:
+        return token[:-1]
+    return token
+
+
+def _role_stems(text: str) -> set[str]:
+    lowered = text.casefold()
+    return {_stem(word) for word in _ROLE_WORDS if re.search(rf"\b{re.escape(word)}\b", lowered)}
+
+
+def stacked_trait_count(text: str) -> int:
+    """How many traits are visible. Two or three is the shape that stayed original."""
+
+    lowered = text.casefold()
+    points = 0
+    if _role_stems(text):
+        points += 1
+    modifiers = [word for word in _MODIFIER_WORDS if re.search(rf"\b{re.escape(word)}\b", lowered)]
+    points += min(len(modifiers), 2)
+    if re.search(r"\([^)]{3,}\)", text) or re.search(r"\bwho\b", lowered):
+        points += 1
+    if points <= 1:
+        return points
+    return min(points, 3)
+
+
+def _cue_hit(text: str, trope: dict) -> bool:
+    lowered = " ".join(text.casefold().split())
+    return any(cue.casefold() in lowered for cue in trope.get("cues") or [])
+
+
+def _second_identity(text: str, tropes: list[dict]) -> bool:
+    owned = {_stem(name) for trope in tropes for name in trope.get("identities") or []}
+    return any(stem not in owned for stem in _role_stems(text))
+
+
+def _fresh_twist_text(text: str, tropes: list[dict]) -> bool:
+    if re.search(r"\([^)]{3,}\)", text):
+        return True
+    if re.search(r"[\"“”].{2,}[\"“”]", text):
+        return True
+    lowered = text.casefold()
+    for trope in tropes:
+        for cue in trope.get("cues") or []:
+            index = lowered.find(cue.casefold())
+            if index < 0:
+                continue
+            after = lowered[index + len(cue) :]
+            if re.search(r"\b(actually|but|except|unless)\b", after):
+                return True
+    return False
+
+
+def escapes_tired_trope(text: str, tropes: list[dict], review=None) -> bool:
+    """A second identity or a real twist keeps a familiar idea from being only the trope."""
+
+    if _second_identity(text, tropes) or _fresh_twist_text(text, tropes):
+        return True
+    if review is not None and getattr(review, "fresh_twist", False):
+        leftover = text.casefold()
+        for trope in tropes:
+            for cue in trope.get("cues") or []:
+                leftover = leftover.replace(cue.casefold(), " ")
+        extra = [token for token in re.findall(r"[a-z0-9']+", leftover) if len(token) > 3]
+        return len(extra) >= 2
+    return False
+
+
+def apply_trope_cap(review, text: str, tropes: list[dict] | None = None):
+    """Cap a single tired trope at 6. A stacked line or a fresh twist keeps its score."""
+
+    if review is None or not tropes:
+        return review
+    matched = [trope for trope in tropes if _cue_hit(text, trope)]
+    if not matched or escapes_tired_trope(text, matched, review):
+        return review
+    review.tired_trope = True
+    for name in ("humor_landed", "sticker_buy_score", "reddit_upvote_score"):
+        value = getattr(review, name, None)
+        if value is not None and float(value) > 6:
+            setattr(review, name, 6.0)
+    return review
+
+
+def tired_trope_block(tropes: list[dict] | None) -> str:
+    """Tell the critic which single-identity jokes are already sold everywhere."""
+
+    if not tropes:
+        return ""
+    labels = "; ".join(str(trope.get("label") or trope.get("id") or "") for trope in tropes[:24])
+    return (
+        "Tired tropes, already sold as single-identity jokes: "
+        f"{labels}. A line that is only one of these scores at most 6 unless it stacks "
+        "a second identity or a fresh twist. Stacking 2 or 3 true traits is the original "
+        "shape and should score higher. Set trait_count to how many traits the line stacks. "
+        "Set fresh_twist true only when the line adds a turn the trope does not already have.\n"
+    )
 
 
 def keep_strong_pairs(pairs: list) -> list:
@@ -462,6 +612,12 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
         turn = str(getattr(candidate, "comic_turn", "") or "").casefold()
         if turn in {"ironic", "sarcastic", "sarcasm"}:
             score += 3
+        if review is None or not getattr(review, "tired_trope", False):
+            traits = int(getattr(review, "trait_count", 0) or 0)
+            if traits <= 0:
+                traits = stacked_trait_count(str(getattr(candidate, "artwork_text", "") or ""))
+            if 2 <= traits <= 3:
+                score += 3
         if member_would_not_buy(review):
             continue
         if str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":

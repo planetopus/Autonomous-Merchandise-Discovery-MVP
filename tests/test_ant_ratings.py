@@ -166,3 +166,5 @@ def test_critic_prompt_opens_with_the_owner_ratings() -> None:
     assert "Laminator Survivors" in critic
     assert "instantly_understandable" in critic
     assert "at most 5" in critic
+    assert "at most 6" in critic
+    assert "2 or 3" in critic

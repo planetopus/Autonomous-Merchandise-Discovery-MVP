@@ -8,6 +8,8 @@ A line that only describes the behavior, with no ironic twist, scores under 7.
 
 Insider jargon a random adult would not know scores at most 5. A universal hook, such as Karen or printer hell, can still be kind of funny inside a niche.
 
+A single tired trope (one identity, already sold everywhere) scores at most 6 unless it stacks a second identity or a fresh twist. Stacking 2 or 3 true traits is the original shape. See `tired_tropes.json`.
+
 Reusable shapes, not topics: Gen Z slang on a group that does not talk that way; quotation marks around a polite excuse; a parenthetical twist at the end. Fill each shape with whatever identity is in front of you.
 
 Judge like a tough crowd that also has $5 to spend on a sticker.

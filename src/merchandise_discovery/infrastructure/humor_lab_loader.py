@@ -1,7 +1,7 @@
 """Optional humor-lab files written by a separate job.
 
 Nothing here is required. When data/humor_lab/ exists, the engine uses
-playbook.json, niche_pairs.json, gold_lines.json, and critic_rubric.md.
+playbook.json, niche_pairs.json, gold_lines.json, tired_tropes.json, and critic_rubric.md.
 Missing files leave the built-in playbook, pair request, and critic unchanged.
 """
 
@@ -20,6 +20,7 @@ class HumorLab:
     niche_pairs: list[dict] = field(default_factory=list)
     gold_lines: list[str] = field(default_factory=list)
     rubric: str = ""
+    tired_tropes: list[dict] = field(default_factory=list)
 
 
 def find_humor_lab_dir(starts: list[Path] | None = None) -> Path | None:
@@ -53,6 +54,7 @@ def load_humor_lab(directory: Path | None = None) -> HumorLab:
         niche_pairs=_read_pairs(folder / "niche_pairs.json"),
         gold_lines=_read_gold_lines(folder / "gold_lines.json"),
         rubric=_read_text(folder / "critic_rubric.md"),
+        tired_tropes=_read_tired_tropes(folder / "tired_tropes.json"),
     )
 
 
@@ -137,6 +139,44 @@ def _read_pairs(path: Path) -> list[dict]:
             continue
         pairs.append({"niche_a": first, "niche_b": second})
     return pairs[:12]
+
+
+def _read_tired_tropes(path: Path) -> list[dict]:
+    """Single-identity jokes that are already sold widely. An empty file adds none."""
+
+    payload = _read_json(path)
+    rows = payload.get("tropes") if isinstance(payload, dict) else payload
+    if not isinstance(rows, list):
+        return []
+    tropes = []
+    for item in rows:
+        if isinstance(item, str) and item.strip():
+            tropes.append({"id": item.strip(), "label": item.strip(), "cues": [item.strip()], "identities": []})
+            continue
+        if not isinstance(item, dict):
+            continue
+        cues = [
+            str(cue).strip()
+            for cue in (item.get("cues") or item.get("phrases") or [])
+            if str(cue).strip()
+        ]
+        label = str(item.get("label") or item.get("id") or (cues[0] if cues else "")).strip()
+        if not label or not cues:
+            continue
+        identities = [
+            str(name).strip()
+            for name in (item.get("identities") or [])
+            if str(name).strip()
+        ]
+        tropes.append(
+            {
+                "id": str(item.get("id") or label).strip(),
+                "label": label,
+                "cues": cues,
+                "identities": identities,
+            }
+        )
+    return tropes
 
 
 def _read_gold_lines(path: Path) -> list[str]:

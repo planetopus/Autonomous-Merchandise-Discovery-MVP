@@ -4,8 +4,14 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 from merchandise_discovery.application.discovery_stage_executor import DiscoveryStageExecutor
+from merchandise_discovery.domain.humor import (
+    LineReview,
+    apply_line_critic,
+    apply_trope_cap,
+    stacked_trait_count,
+)
 from merchandise_discovery.domain.humor_playbook import build_playbook
-from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource
+from merchandise_discovery.domain.models.common import HumorTone, PipelineVariant, SocialSource
 from merchandise_discovery.domain.models.workflow import RunConfig, StageExecution, WorkflowRun
 from merchandise_discovery.domain.pipelines.social_behavior_text import pipeline
 from merchandise_discovery.infrastructure.humor_lab_loader import (
@@ -24,6 +30,7 @@ def test_missing_humor_lab_is_empty(tmp_path) -> None:
     assert lab.niche_pairs == []
     assert lab.gold_lines == []
     assert lab.rubric == ""
+    assert lab.tired_tropes == []
 
 
 def test_lab_files_load_and_override_a_matching_pattern(tmp_path) -> None:
@@ -137,3 +144,65 @@ def test_a_copied_gold_line_is_dropped() -> None:
 
     assert kept == []
     assert dropped[0].reason == "copied gold line"
+
+
+def test_a_single_tired_trope_caps_at_6_and_a_stack_does_not() -> None:
+    """One sold idea stays at 6. Two or three traits, or a fresh twist, can score higher."""
+
+    tropes = load_humor_lab().tired_tropes
+    labels = {item["id"] for item in tropes}
+    assert {
+        "nurse_rash",
+        "honk_anxiety",
+        "eldest_third_parent",
+        "mortician_naked",
+        "emergency_contact",
+        "talk_to_cows",
+        "garage_fridge",
+    } <= labels
+
+    rash = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=8)
+    apply_trope_cap(rash, "WARNING: OFF-DUTY NURSE. DO NOT SHOW ME YOUR RASH.", tropes)
+    assert rash.tired_trope is True
+    assert rash.sticker_buy_score == 6
+
+    bare_fridge = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=8)
+    apply_trope_cap(bare_fridge, "GARAGE FRIDGE CLUB", tropes)
+    assert bare_fridge.sticker_buy_score == 6
+
+    stacked_fridge = LineReview(0, 8, 8, 8, sticker_buy_score=8, instantly_understandable=8)
+    apply_trope_cap(stacked_fridge, "GARAGE FRIDGE DADS, HANDS-ON-HIPS DIVISION", tropes)
+    assert stacked_fridge.tired_trope is False
+    assert stacked_fridge.sticker_buy_score == 8
+
+    honk = LineReview(0, 8, 8, 8, sticker_buy_score=8, instantly_understandable=8)
+    apply_trope_cap(honk, "HONK IF YOU HAVE ANXIETY. ACTUALLY, PLEASE DON'T.", tropes)
+    assert honk.tired_trope is False
+
+    bare_honk = LineReview(0, 9, 9, 9, sticker_buy_score=9, instantly_understandable=8)
+    apply_trope_cap(bare_honk, "HONK IF YOU HAVE ANXIETY", tropes)
+    assert bare_honk.sticker_buy_score == 6
+
+    originals = [
+        "RIZZLESS DIVORCED DADS WHO SMOKE BRISKET FOR FOURTEEN HOURS",
+        "GIRL DAD IN HIS SWIFTIE ERA (AGAINST HIS WILL)",
+        "HOT GIRL WALK GRANDPAS IN BRAND NEW NEW BALANCES",
+    ]
+    assert all(2 <= stacked_trait_count(line) <= 3 for line in originals)
+    plain = SimpleNamespace(artwork_text="DADS", pattern="confession", comic_turn="ironic", phrase="")
+    stacked = SimpleNamespace(
+        artwork_text=originals[0],
+        pattern="confession",
+        comic_turn="ironic",
+        phrase="",
+    )
+    kept = apply_line_critic(
+        [plain, stacked],
+        [
+            LineReview(0, 8, 8, 8, sticker_buy_score=8, instantly_understandable=8),
+            LineReview(1, 8, 8, 8, sticker_buy_score=8, instantly_understandable=8),
+        ],
+        keep_count=1,
+        tone=HumorTone.DRY,
+    )
+    assert kept == [stacked]

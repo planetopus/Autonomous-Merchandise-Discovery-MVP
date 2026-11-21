@@ -1,0 +1,125 @@
+{
+  "note": "Single-identity jokes already sold widely. A line that is only one of these scores at most 6 unless it stacks a second identity or a fresh twist. The originals stacked 2 or 3 traits.",
+  "tropes": [
+    {
+      "id": "nurse_rash",
+      "label": "Nurse: don't show me your rash",
+      "cues": ["show me your rash", "don't show me your rash", "do not show me your rash"],
+      "identities": ["nurse", "nurses"]
+    },
+    {
+      "id": "honk_anxiety",
+      "label": "Honk if you have anxiety",
+      "cues": ["honk if you have anxiety", "honk if you have"],
+      "identities": []
+    },
+    {
+      "id": "eldest_third_parent",
+      "label": "Eldest daughter, third parent",
+      "cues": ["third parent"],
+      "identities": ["daughter", "daughters", "eldest"]
+    },
+    {
+      "id": "mortician_naked",
+      "label": "Mortician who has seen you naked",
+      "cues": ["seen you naked", "seen your whole family naked", "seen your family naked", "family naked"],
+      "identities": ["mortician", "morticians"]
+    },
+    {
+      "id": "emergency_contact",
+      "label": "Everyone's emergency contact",
+      "cues": ["emergency contact"],
+      "identities": []
+    },
+    {
+      "id": "talk_to_cows",
+      "label": "Tells the cows everything",
+      "cues": ["tell the cows", "talk to the cows", "talk to cows"],
+      "identities": ["cow", "cows"]
+    },
+    {
+      "id": "garage_fridge",
+      "label": "Garage fridge club",
+      "cues": ["garage fridge"],
+      "identities": []
+    },
+    {
+      "id": "worlds_okayest",
+      "label": "World's okayest",
+      "cues": ["world's okayest", "worlds okayest"],
+      "identities": []
+    },
+    {
+      "id": "keep_calm",
+      "label": "Keep calm and",
+      "cues": ["keep calm and"],
+      "identities": []
+    },
+    {
+      "id": "professional_overthinker",
+      "label": "Professional overthinker",
+      "cues": ["professional overthinker"],
+      "identities": []
+    },
+    {
+      "id": "nurse_life",
+      "label": "Nurse life, coffee chaos repeat",
+      "cues": ["nurse life", "coffee, chaos, repeat", "coffee chaos repeat"],
+      "identities": ["nurse", "nurses"]
+    },
+    {
+      "id": "cant_adult",
+      "label": "I can't adult",
+      "cues": ["can't adult", "cant adult", "adulting"],
+      "identities": []
+    },
+    {
+      "id": "emotional_support",
+      "label": "Emotional support object",
+      "cues": ["emotional support"],
+      "identities": []
+    },
+    {
+      "id": "sarcasm_love_language",
+      "label": "Sarcasm is my love language",
+      "cues": ["sarcasm is my love language", "sarcasm is how i"],
+      "identities": []
+    },
+    {
+      "id": "chaos_coordinator",
+      "label": "Chaos coordinator",
+      "cues": ["chaos coordinator"],
+      "identities": []
+    },
+    {
+      "id": "hot_mess",
+      "label": "Hot mess",
+      "cues": ["hot mess"],
+      "identities": []
+    },
+    {
+      "id": "live_laugh_love",
+      "label": "Live laugh love",
+      "cues": ["live laugh love"],
+      "identities": []
+    },
+    {
+      "id": "but_first_coffee",
+      "label": "But first, coffee",
+      "cues": ["but first coffee", "but first, coffee"],
+      "identities": []
+    },
+    {
+      "id": "ask_me_about",
+      "label": "Ask me about my",
+      "cues": ["ask me about my"],
+      "identities": []
+    },
+    {
+      "id": "not_a_morning_person",
+      "label": "Not a morning person",
+      "cues": ["not a morning person"],
+      "identities": []
+    }
+  ]
+}

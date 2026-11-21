@@ -20,10 +20,12 @@ from merchandise_discovery.domain.humor import (
     PlaybookPatternRecord,
     apply_jargon_cap,
     apply_line_critic,
+    apply_trope_cap,
     critic_average,
     keep_strong_pairs,
     member_would_not_buy,
     niche_pair_request,
+    tired_trope_block,
 )
 from merchandise_discovery.domain.humor_playbook import build_playbook, playbook_prompt
 from merchandise_discovery.domain.humor_references import (
@@ -1045,6 +1047,9 @@ class DiscoveryStageExecutor:
                 "If a line needs insider vocabulary a random adult would not know, set "
                 "insider_jargon true and cap instantly_understandable and sticker_buy_score "
                 "at 5. A universal hook, such as Karen or printer hell, is not insider jargon. "
+                "A single tired trope scores at most 6 unless it stacks a second identity "
+                "or a fresh twist. Stacking 2 or 3 true traits should score higher. "
+                f"{tired_trope_block(load_humor_lab().tired_tropes)}"
                 "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
                 "but must not decide the cut when the tone is dark. reddit_upvote_score is "
                 "1 to 10 for a generic Reddit upvote. novelty is originality. "
@@ -1078,8 +1083,11 @@ class DiscoveryStageExecutor:
                 sticker_buy_score=review.sticker_buy_score,
                 instantly_understandable=review.instantly_understandable,
                 insider_jargon=review.insider_jargon,
+                trait_count=review.trait_count,
+                fresh_twist=review.fresh_twist,
             )
             apply_jargon_cap(row, text)
+            apply_trope_cap(row, text, load_humor_lab().tired_tropes)
             reviews.append(row)
         scored = []
         by_index = {review.index: review for review in reviews}
@@ -1108,6 +1116,8 @@ class DiscoveryStageExecutor:
             buy = review.sticker_buy_score if review is not None else None
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
+            elif review is not None and getattr(review, "tired_trope", False):
+                reason, kept_flag = "tired trope", False
             elif review is not None and getattr(review, "insider_jargon", False):
                 reason, kept_flag = "insider jargon", False
             elif str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":
