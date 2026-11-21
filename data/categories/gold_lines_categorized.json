@@ -154,15 +154,15 @@
    "darkness": 1,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/family-roles/divorced",
+    "path": "Who It's For > Family Roles > Divorced",
+    "slug": "divorced"
    },
    "secondary_categories": [
     {
-     "id": "identity/family-roles/divorced",
-     "path": "Who It's For > Family Roles > Divorced",
-     "slug": "divorced"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "topic/bbq-grilling",
@@ -191,37 +191,37 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "divorced sticker",
-    "divorce gifts",
+    "divorced gift",
+    "divorced decal",
+    "divorced humor",
+    "gift for divorced",
+    "dad sticker",
+    "funny dad stickers",
     "bbq stickers",
     "meme stickers",
+    "divorce gifts",
     "car decals funny",
     "oddly specific gifts"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny divorced stickers",
     "gifts for divorced people",
+    "divorce gifts",
+    "funny dad stickers",
+    "gifts for dads",
     "bbq stickers",
     "grilling gifts for men",
     "meme stickers",
     "gen z stickers",
-    "divorce gifts",
     "divorce party gifts",
-    "funny bumper stickers"
+    "funny bumper stickers",
+    "car decals funny"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – RIZZLESS DIVORCED DADS WHO SMOKE BRISKET FOR FOURTEEN HOURS – Meme Decal",
-   "ebay_title": "Rizzless Divorced Dads Who Smoke Brisket For Fourteen Hours Funny Dad Sticker",
-   "url_slug": "dads/rizzless-divorced-dads-who-smoke-brisket-for-fourteen-hours"
+   "seo_title": "Funny Divorced Sticker – RIZZLESS DIVORCED DADS WHO SMOKE BRISKET FOR FOURTEEN HOURS – Meme Decal",
+   "ebay_title": "Rizzless Divorced Dads Who Smoke Brisket For Fourteen Hours Divorced Sticker",
+   "url_slug": "divorced/rizzless-divorced-dads-who-smoke-brisket-for-fourteen-hours"
   },
   {
    "id": "g004",
@@ -452,15 +452,15 @@
    "darkness": 1,
    "device": "irony",
    "primary_category": {
-    "id": "identity/hobbies-outdoors/true-crime-fans",
-    "path": "Who It's For > Hobbies & Outdoors > True Crime Fans",
-    "slug": "true-crime-fans"
+    "id": "identity/healthcare/nurses",
+    "path": "Who It's For > Healthcare > Nurses",
+    "slug": "nurses"
    },
    "secondary_categories": [
     {
-     "id": "identity/healthcare/nurses",
-     "path": "Who It's For > Healthcare > Nurses",
-     "slug": "nurses"
+     "id": "identity/hobbies-outdoors/true-crime-fans",
+     "path": "Who It's For > Hobbies & Outdoors > True Crime Fans",
+     "slug": "true-crime-fans"
     },
     {
      "id": "topic/true-crime-murder-podcasts",
@@ -489,13 +489,14 @@
     }
    ],
    "etsy_tags": [
-    "true crime sticker",
-    "true crime gift",
-    "true crime decal",
-    "true crime humor",
-    "gift for true crime",
+    "funny nurse sticker",
     "nurse sticker",
-    "funny nurse stickers",
+    "nurse gift",
+    "nurse decal",
+    "nurse humor",
+    "gift for nurse",
+    "true crime sticker",
+    "true crime gifts",
     "true crime stickers",
     "meme stickers",
     "nurses week gifts",
@@ -503,11 +504,11 @@
     "tired mom sticker"
    ],
    "seo_phrases": [
-    "funny true crime stickers",
-    "gifts for true crime fans",
-    "true crime gifts",
     "funny nurse stickers",
     "gifts for nurses",
+    "nurse life decal",
+    "funny true crime stickers",
+    "gifts for true crime fans",
     "true crime stickers",
     "murder podcast gifts",
     "meme stickers",
@@ -517,9 +518,9 @@
     "badge reel stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny True Crime Sticker – FERAL NIGHT SHIFT NURSES WHO FALL ASLEEP TO MURDER PODCASTS – Meme Decal",
-   "ebay_title": "Feral Night Shift Nurses Who Fall Asleep To Murder Podcasts True Crime Sticker",
-   "url_slug": "true-crime-fans/feral-night-shift-nurses-who-fall-asleep-to-murder-podcasts"
+   "seo_title": "Funny Nurse Sticker – FERAL NIGHT SHIFT NURSES WHO FALL ASLEEP TO MURDER PODCASTS – Meme Decal",
+   "ebay_title": "Feral Night Shift Nurses Who Fall Asleep To Murder Podcasts Funny Nurse Sticker",
+   "url_slug": "nurses/feral-night-shift-nurses-who-fall-asleep-to-murder-podcasts"
   },
   {
    "id": "g008",
@@ -529,15 +530,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/hobbies-outdoors/jeep-owners",
+    "path": "Who It's For > Hobbies & Outdoors > Jeep Owners",
+    "slug": "jeep-owners"
    },
    "secondary_categories": [
     {
-     "id": "identity/hobbies-outdoors/jeep-owners",
-     "path": "Who It's For > Hobbies & Outdoors > Jeep Owners",
-     "slug": "jeep-owners"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "topic/trucks-cars",
@@ -566,14 +567,14 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
+    "funny jeep sticker",
     "jeep sticker",
-    "funny jeep stickers",
+    "jeep gift",
+    "jeep decal",
+    "jeep humor",
+    "gift for jeep",
+    "dad sticker",
+    "funny dad stickers",
     "truck decals funny",
     "oddly specific gifts",
     "white elephant gifts",
@@ -581,11 +582,11 @@
     "relatable stickers"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny jeep stickers",
     "gifts for jeep owners",
+    "jeep decals",
+    "funny dad stickers",
+    "gifts for dads",
     "truck decals funny",
     "car guy gifts",
     "oddly specific stickers",
@@ -595,9 +596,9 @@
     "funny bumper stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – EMOTIONALLY UNAVAILABLE DADS WHO ONLY EXPRESS LOVE VIA JEEP WAVE – Oddly Specific Decal",
-   "ebay_title": "Emotionally Unavailable Dads Who Only Express Love Via Jeep Wave Dad Sticker",
-   "url_slug": "dads/emotionally-unavailable-dads-who-only-express-love-via-jeep"
+   "seo_title": "Funny Jeep Sticker – EMOTIONALLY UNAVAILABLE DADS WHO ONLY EXPRESS LOVE VIA JEEP WAVE – Oddly Specific Decal",
+   "ebay_title": "Emotionally Unavailable Dads Who Only Express Love Via Jeep Wave Jeep Sticker",
+   "url_slug": "jeep-owners/emotionally-unavailable-dads-who-only-express-love-via-jeep"
   },
   {
    "id": "g009",
@@ -761,15 +762,15 @@
    "darkness": 1,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/family-roles/divorced",
+    "path": "Who It's For > Family Roles > Divorced",
+    "slug": "divorced"
    },
    "secondary_categories": [
     {
-     "id": "identity/family-roles/divorced",
-     "path": "Who It's For > Family Roles > Divorced",
-     "slug": "divorced"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "humor/meme-gen-z-slang",
@@ -798,37 +799,37 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "divorced sticker",
-    "divorce gifts",
+    "divorced gift",
+    "divorced decal",
+    "divorced humor",
+    "gift for divorced",
+    "dad sticker",
+    "funny dad stickers",
     "meme stickers",
+    "divorce gifts",
     "car decals funny",
     "oddly specific gifts",
     "hydro flask stickers"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny divorced stickers",
     "gifts for divorced people",
+    "divorce gifts",
+    "funny dad stickers",
+    "gifts for dads",
     "meme stickers",
     "gen z stickers",
-    "divorce gifts",
     "divorce party gifts",
     "funny bumper stickers",
     "car decals funny",
-    "oddly specific stickers"
+    "oddly specific stickers",
+    "oddly specific gifts"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – RECENTLY DIVORCED DADS IN THEIR SKINCARE ERA – Meme Decal",
-   "ebay_title": "Recently Divorced Dads In Their Skincare Era Funny Dad Sticker Vinyl Decal",
-   "url_slug": "dads/recently-divorced-dads-in-their-skincare-era"
+   "seo_title": "Funny Divorced Sticker – RECENTLY DIVORCED DADS IN THEIR SKINCARE ERA – Meme Decal",
+   "ebay_title": "Recently Divorced Dads In Their Skincare Era Funny Divorced Sticker Vinyl Decal",
+   "url_slug": "divorced/recently-divorced-dads-in-their-skincare-era"
   },
   {
    "id": "g012",
@@ -1806,15 +1807,15 @@
    "darkness": 3,
    "device": "irony",
    "primary_category": {
-    "id": "identity/mental-health-neurodivergent/anxiety",
-    "path": "Who It's For > Mental Health & Neurodivergent > Anxiety",
-    "slug": "anxiety"
+    "id": "identity/first-responders/911-dispatchers",
+    "path": "Who It's For > First Responders > 911 Dispatchers",
+    "slug": "911-dispatchers"
    },
    "secondary_categories": [
     {
-     "id": "identity/first-responders/911-dispatchers",
-     "path": "Who It's For > First Responders > 911 Dispatchers",
-     "slug": "911-dispatchers"
+     "id": "identity/mental-health-neurodivergent/anxiety",
+     "path": "Who It's For > Mental Health & Neurodivergent > Anxiety",
+     "slug": "anxiety"
     },
     {
      "id": "topic/anxiety-mental-health",
@@ -1843,13 +1844,13 @@
     }
    ],
    "etsy_tags": [
-    "anxiety sticker",
-    "anxiety gift",
-    "anxiety decal",
-    "anxiety humor",
-    "gift for anxiety",
     "dispatcher sticker",
-    "911 dispatcher gifts",
+    "dispatcher gift",
+    "dispatcher decal",
+    "dispatcher humor",
+    "gift for dispatcher",
+    "anxiety sticker",
+    "gifts for anxiety",
     "anxiety stickers",
     "dark humor stickers",
     "white elephant gifts",
@@ -1857,23 +1858,23 @@
     "ironic stickers"
    ],
    "seo_phrases": [
+    "funny dispatcher stickers",
+    "gifts for dispatchers",
+    "911 dispatcher gifts",
     "funny anxiety stickers",
     "gifts for anxiety",
     "anxiety stickers",
-    "funny dispatcher stickers",
-    "gifts for dispatchers",
     "mental health stickers",
     "dark humor stickers",
     "dark humor decals",
     "white elephant gifts",
     "gag gifts",
-    "water bottle stickers",
-    "funny water bottle stickers"
+    "water bottle stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Anxiety Sticker – Calm through forty overdoses. Panics when the doorbell rings. – Dark Humor Decal",
-   "ebay_title": "Calm through forty overdoses. Panics when the doorbell rings. Anxiety Sticker",
-   "url_slug": "anxiety/calm-through-forty-overdoses-panics-when-the-doorbell-rings"
+   "seo_title": "Funny Dispatcher Sticker – Calm through forty overdoses. Panics when the doorbell rings. – Dark Humor Decal",
+   "ebay_title": "Calm through forty overdoses. Panics when the doorbell rings. Dispatcher Sticker",
+   "url_slug": "911-dispatchers/calm-through-forty-overdoses-panics-when-the-doorbell-rings"
   },
   {
    "id": "g026",
@@ -1883,15 +1884,15 @@
    "darkness": 1,
    "device": "irony",
    "primary_category": {
-    "id": "identity/hobbies-outdoors/true-crime-fans",
-    "path": "Who It's For > Hobbies & Outdoors > True Crime Fans",
-    "slug": "true-crime-fans"
+    "id": "identity/faith-church/church-moms",
+    "path": "Who It's For > Faith & Church > Church Moms",
+    "slug": "church-moms"
    },
    "secondary_categories": [
     {
-     "id": "identity/faith-church/church-moms",
-     "path": "Who It's For > Faith & Church > Church Moms",
-     "slug": "church-moms"
+     "id": "identity/faith-church/christians",
+     "path": "Who It's For > Faith & Church > Christians",
+     "slug": "christians"
     },
     {
      "id": "topic/church-faith",
@@ -1920,13 +1921,13 @@
     }
    ],
    "etsy_tags": [
-    "true crime sticker",
-    "true crime gift",
-    "true crime decal",
-    "true crime humor",
-    "gift for true crime",
     "church mom sticker",
-    "church lady gifts",
+    "church mom gift",
+    "church mom decal",
+    "church mom humor",
+    "gift for church mom",
+    "christian sticker",
+    "gifts for christians",
     "church humor",
     "ironic stickers",
     "funny gifts for mom",
@@ -1934,11 +1935,11 @@
     "true crime stickers"
    ],
    "seo_phrases": [
-    "funny true crime stickers",
-    "gifts for true crime fans",
-    "true crime gifts",
     "funny church mom stickers",
     "gifts for church moms",
+    "church lady gifts",
+    "funny christian stickers",
+    "gifts for christians",
     "christian stickers funny",
     "church humor",
     "ironic stickers",
@@ -1948,9 +1949,9 @@
     "water bottle stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny True Crime Sticker – Church choir on Sunday. Murder podcasts the other six days. – Funny Decal",
-   "ebay_title": "Church choir on Sunday. Murder podcasts the other six days. True Crime Sticker",
-   "url_slug": "true-crime-fans/church-choir-on-sunday-murder-podcasts-the-other-six-days"
+   "seo_title": "Funny Church Mom Sticker – Church choir on Sunday. Murder podcasts the other six days. – Funny Decal",
+   "ebay_title": "Church choir on Sunday. Murder podcasts the other six days. Church Mom Sticker",
+   "url_slug": "church-moms/church-choir-on-sunday-murder-podcasts-the-other-six-days"
   },
   {
    "id": "g027",
@@ -4132,15 +4133,15 @@
    "darkness": 2,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/trades-blue-collar/mechanics",
+    "path": "Who It's For > Trades & Blue Collar > Mechanics",
+    "slug": "mechanics"
    },
    "secondary_categories": [
     {
-     "id": "identity/trades-blue-collar/mechanics",
-     "path": "Who It's For > Trades & Blue Collar > Mechanics",
-     "slug": "mechanics"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "humor/dark-humor",
@@ -4164,25 +4165,25 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "mechanic sticker",
-    "gifts for mechanics",
+    "mechanic gift",
+    "mechanic decal",
+    "mechanic humor",
+    "gift for mechanic",
+    "dad sticker",
+    "funny dad stickers",
     "dark humor stickers",
     "white elephant gifts",
     "toolbox stickers",
-    "oddly specific gifts"
+    "oddly specific gifts",
+    "funny sticker"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny mechanic stickers",
     "gifts for mechanics",
+    "mechanic toolbox stickers",
+    "funny dad stickers",
+    "gifts for dads",
     "dark humor stickers",
     "dark humor decals",
     "white elephant gifts",
@@ -4192,9 +4193,9 @@
     "oddly specific stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – Smells like brake cleaner and divorce. – Dark Humor Decal",
-   "ebay_title": "Smells like brake cleaner and divorce. Funny Dad Sticker Vinyl Decal",
-   "url_slug": "dads/smells-like-brake-cleaner-and-divorce"
+   "seo_title": "Funny Mechanic Sticker – Smells like brake cleaner and divorce. – Dark Humor Decal",
+   "ebay_title": "Smells like brake cleaner and divorce. Funny Mechanic Sticker Vinyl Decal",
+   "url_slug": "mechanics/smells-like-brake-cleaner-and-divorce"
   },
   {
    "id": "g058",
@@ -5360,15 +5361,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/pets-animals/dog-lovers",
-    "path": "Who It's For > Pets & Animals > Dog Lovers",
-    "slug": "dog-lovers"
+    "id": "identity/family-roles/dog-moms",
+    "path": "Who It's For > Family Roles > Dog Moms",
+    "slug": "dog-moms"
    },
    "secondary_categories": [
     {
-     "id": "identity/family-roles/dog-moms",
-     "path": "Who It's For > Family Roles > Dog Moms",
-     "slug": "dog-moms"
+     "id": "identity/pets-animals/dog-lovers",
+     "path": "Who It's For > Pets & Animals > Dog Lovers",
+     "slug": "dog-lovers"
     },
     {
      "id": "topic/birds-animals",
@@ -5397,14 +5398,13 @@
     }
    ],
    "etsy_tags": [
-    "funny dog sticker",
-    "dog sticker",
-    "dog gift",
-    "dog decal",
-    "dog humor",
-    "gift for dog",
     "dog mom sticker",
-    "gifts for dog moms",
+    "dog mom gift",
+    "dog mom decal",
+    "dog mom humor",
+    "gift for dog mom",
+    "dog sticker",
+    "funny dog stickers",
     "crow stickers",
     "self roast sticker",
     "funny gifts for mom",
@@ -5412,11 +5412,11 @@
     "wine stickers"
    ],
    "seo_phrases": [
-    "funny dog stickers",
-    "gifts for dog lovers",
-    "dog lover gifts",
     "funny dog mom stickers",
     "gifts for dog moms",
+    "dog mom gifts",
+    "funny dog stickers",
+    "gifts for dog lovers",
     "animal stickers funny",
     "crow stickers",
     "self deprecating stickers",
@@ -5426,9 +5426,9 @@
     "water bottle stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dog Sticker – My dog gets a cone of shame. I get a copay. – Self-Deprecating Decal",
-   "ebay_title": "My dog gets a cone of shame. I get a copay. Funny Dog Sticker Vinyl Decal",
-   "url_slug": "dog-lovers/my-dog-gets-a-cone-of-shame-i-get-a-copay"
+   "seo_title": "Funny Dog Mom Sticker – My dog gets a cone of shame. I get a copay. – Self-Deprecating Decal",
+   "ebay_title": "My dog gets a cone of shame. I get a copay. Funny Dog Mom Sticker Vinyl Decal",
+   "url_slug": "dog-moms/my-dog-gets-a-cone-of-shame-i-get-a-copay"
   },
   {
    "id": "g075",
@@ -5657,15 +5657,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/trades-blue-collar/mechanics",
+    "path": "Who It's For > Trades & Blue Collar > Mechanics",
+    "slug": "mechanics"
    },
    "secondary_categories": [
     {
-     "id": "identity/trades-blue-collar/mechanics",
-     "path": "Who It's For > Trades & Blue Collar > Mechanics",
-     "slug": "mechanics"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "humor/fake-credentials-awards",
@@ -5684,25 +5684,25 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "mechanic sticker",
-    "gifts for mechanics",
+    "mechanic gift",
+    "mechanic decal",
+    "mechanic humor",
+    "gift for mechanic",
+    "dad sticker",
+    "funny dad stickers",
     "funny award stickers",
     "white elephant gifts",
     "toolbox stickers",
-    "funny sticker"
+    "funny sticker",
+    "vinyl decal"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny mechanic stickers",
     "gifts for mechanics",
+    "mechanic toolbox stickers",
+    "funny dad stickers",
+    "gifts for dads",
     "funny award stickers",
     "certified sticker funny",
     "white elephant gifts",
@@ -5711,9 +5711,9 @@
     "mechanic stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – Doctor of Driveway Diagnostics – Funny Award Decal",
-   "ebay_title": "Doctor of Driveway Diagnostics Funny Dad Sticker Vinyl Decal",
-   "url_slug": "dads/doctor-of-driveway-diagnostics"
+   "seo_title": "Funny Mechanic Sticker – Doctor of Driveway Diagnostics – Funny Award Decal",
+   "ebay_title": "Doctor of Driveway Diagnostics Funny Mechanic Sticker Vinyl Decal",
+   "url_slug": "mechanics/doctor-of-driveway-diagnostics"
   },
   {
    "id": "g079",
@@ -5795,15 +5795,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/moms",
-    "path": "Who It's For > Family Roles > Moms",
-    "slug": "moms"
+    "id": "identity/faith-church/catholics",
+    "path": "Who It's For > Faith & Church > Catholics",
+    "slug": "catholics"
    },
    "secondary_categories": [
     {
-     "id": "identity/faith-church/catholics",
-     "path": "Who It's For > Faith & Church > Catholics",
-     "slug": "catholics"
+     "id": "identity/family-roles/moms",
+     "path": "Who It's For > Family Roles > Moms",
+     "slug": "moms"
     },
     {
      "id": "topic/wine-drinking",
@@ -5832,14 +5832,13 @@
     }
    ],
    "etsy_tags": [
-    "funny mom sticker",
-    "mom sticker",
-    "mom gift",
-    "mom decal",
-    "mom humor",
-    "gift for mom",
     "catholic sticker",
-    "gifts for catholics",
+    "catholic gift",
+    "catholic decal",
+    "catholic humor",
+    "gift for catholic",
+    "mom sticker",
+    "funny mom stickers",
     "wine stickers",
     "oddly specific gifts",
     "funny gifts for mom",
@@ -5847,11 +5846,11 @@
     "relatable stickers"
    ],
    "seo_phrases": [
-    "funny mom stickers",
-    "gifts for moms",
-    "mom life sticker",
     "funny catholic stickers",
     "gifts for catholics",
+    "catholic stickers",
+    "funny mom stickers",
+    "gifts for moms",
     "wine stickers",
     "funny wine gifts",
     "oddly specific stickers",
@@ -5861,9 +5860,9 @@
     "funny bumper stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Mom Sticker – SPICY CATHOLIC MOMS WITH SIX KIDS AND A WINE FRIDGE – Oddly Specific Decal",
-   "ebay_title": "Spicy Catholic Moms With Six Kids And A Wine Fridge Funny Mom Sticker",
-   "url_slug": "moms/spicy-catholic-moms-with-six-kids-and-a-wine-fridge"
+   "seo_title": "Funny Catholic Sticker – SPICY CATHOLIC MOMS WITH SIX KIDS AND A WINE FRIDGE – Oddly Specific Decal",
+   "ebay_title": "Spicy Catholic Moms With Six Kids And A Wine Fridge Funny Catholic Sticker",
+   "url_slug": "catholics/spicy-catholic-moms-with-six-kids-and-a-wine-fridge"
   },
   {
    "id": "g081",
@@ -5950,15 +5949,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/trades-blue-collar/mechanics",
+    "path": "Who It's For > Trades & Blue Collar > Mechanics",
+    "slug": "mechanics"
    },
    "secondary_categories": [
     {
-     "id": "identity/trades-blue-collar/mechanics",
-     "path": "Who It's For > Trades & Blue Collar > Mechanics",
-     "slug": "mechanics"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "topic/trucks-cars",
@@ -5987,14 +5986,13 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "mechanic sticker",
-    "gifts for mechanics",
+    "mechanic gift",
+    "mechanic decal",
+    "mechanic humor",
+    "gift for mechanic",
+    "dad sticker",
+    "funny dad stickers",
     "truck decals funny",
     "ironic stickers",
     "white elephant gifts",
@@ -6002,11 +6000,11 @@
     "relatable stickers"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny mechanic stickers",
     "gifts for mechanics",
+    "mechanic toolbox stickers",
+    "funny dad stickers",
+    "gifts for dads",
     "truck decals funny",
     "car guy gifts",
     "ironic stickers",
@@ -6016,9 +6014,9 @@
     "toolbox stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – Fixes everyone's car. Drives a 2004 with three warning lights. – Funny Decal",
-   "ebay_title": "Fixes everyone's car. Drives a 2004 with three warning lights. Funny Dad Sticker",
-   "url_slug": "dads/fixes-everyone-s-car-drives-a-2004-with-three-warning-lights"
+   "seo_title": "Funny Mechanic Sticker – Fixes everyone's car. Drives a 2004 with three warning lights. – Funny Decal",
+   "ebay_title": "Fixes everyone's car. Drives a 2004 with three warning lights. Mechanic Sticker",
+   "url_slug": "mechanics/fixes-everyone-s-car-drives-a-2004-with-three-warning-lights"
   },
   {
    "id": "g083",
@@ -7267,15 +7265,15 @@
    "darkness": 1,
    "device": "irony",
    "primary_category": {
-    "id": "identity/hobbies-outdoors/gardeners",
-    "path": "Who It's For > Hobbies & Outdoors > Gardeners",
-    "slug": "gardeners"
+    "id": "identity/hobbies-outdoors/plant-parents",
+    "path": "Who It's For > Hobbies & Outdoors > Plant Parents",
+    "slug": "plant-parents"
    },
    "secondary_categories": [
     {
-     "id": "identity/hobbies-outdoors/plant-parents",
-     "path": "Who It's For > Hobbies & Outdoors > Plant Parents",
-     "slug": "plant-parents"
+     "id": "identity/hobbies-outdoors/gardeners",
+     "path": "Who It's For > Hobbies & Outdoors > Gardeners",
+     "slug": "gardeners"
     },
     {
      "id": "topic/gardening-plants",
@@ -7304,25 +7302,25 @@
     }
    ],
    "etsy_tags": [
-    "gardener sticker",
-    "gardener gift",
-    "gardener decal",
-    "gardener humor",
-    "gift for gardener",
     "plant mom sticker",
+    "plant mom gift",
+    "plant mom decal",
+    "plant mom humor",
+    "gift for plant mom",
+    "gardener sticker",
+    "gifts for gardeners",
     "gardening stickers",
     "sarcastic stickers",
     "white elephant gifts",
     "hydro flask stickers",
-    "laptop stickers",
-    "funny sticker"
+    "laptop stickers"
    ],
    "seo_phrases": [
-    "funny gardener stickers",
-    "gifts for gardeners",
-    "gardening gifts",
     "funny plant mom stickers",
     "gifts for plant parents",
+    "plant mom sticker",
+    "funny gardener stickers",
+    "gifts for gardeners",
     "gardening stickers",
     "plant stickers funny",
     "sarcastic stickers",
@@ -7332,9 +7330,9 @@
     "water bottle stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Gardener Sticker – Proud parent of a plant I'm actively drowning! – Sarcastic Decal",
-   "ebay_title": "Proud parent of a plant I'm actively drowning! Funny Gardener Sticker",
-   "url_slug": "gardeners/proud-parent-of-a-plant-i-m-actively-drowning"
+   "seo_title": "Funny Plant Mom Sticker – Proud parent of a plant I'm actively drowning! – Sarcastic Decal",
+   "ebay_title": "Proud parent of a plant I'm actively drowning! Funny Plant Mom Sticker",
+   "url_slug": "plant-parents/proud-parent-of-a-plant-i-m-actively-drowning"
   },
   {
    "id": "g101",
@@ -10964,15 +10962,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/pets-animals/dog-lovers",
-    "path": "Who It's For > Pets & Animals > Dog Lovers",
-    "slug": "dog-lovers"
+    "id": "identity/family-roles/dog-moms",
+    "path": "Who It's For > Family Roles > Dog Moms",
+    "slug": "dog-moms"
    },
    "secondary_categories": [
     {
-     "id": "identity/family-roles/dog-moms",
-     "path": "Who It's For > Family Roles > Dog Moms",
-     "slug": "dog-moms"
+     "id": "identity/pets-animals/dog-lovers",
+     "path": "Who It's For > Pets & Animals > Dog Lovers",
+     "slug": "dog-lovers"
     },
     {
      "id": "topic/birds-animals",
@@ -11001,14 +10999,13 @@
     }
    ],
    "etsy_tags": [
-    "funny dog sticker",
-    "dog sticker",
-    "dog gift",
-    "dog decal",
-    "dog humor",
-    "gift for dog",
     "dog mom sticker",
-    "gifts for dog moms",
+    "dog mom gift",
+    "dog mom decal",
+    "dog mom humor",
+    "gift for dog mom",
+    "dog sticker",
+    "funny dog stickers",
     "crow stickers",
     "self roast sticker",
     "funny gifts for mom",
@@ -11016,11 +11013,11 @@
     "wine stickers"
    ],
    "seo_phrases": [
-    "funny dog stickers",
-    "gifts for dog lovers",
-    "dog lover gifts",
     "funny dog mom stickers",
     "gifts for dog moms",
+    "dog mom gifts",
+    "funny dog stickers",
+    "gifts for dog lovers",
     "animal stickers funny",
     "crow stickers",
     "self deprecating stickers",
@@ -11030,9 +11027,9 @@
     "water bottle stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dog Sticker – Witness statement: the dog started it. – Self-Deprecating Decal",
-   "ebay_title": "Witness statement: the dog started it. Funny Dog Sticker Vinyl Decal",
-   "url_slug": "dog-lovers/witness-statement-the-dog-started-it"
+   "seo_title": "Funny Dog Mom Sticker – Witness statement: the dog started it. – Self-Deprecating Decal",
+   "ebay_title": "Witness statement: the dog started it. Funny Dog Mom Sticker Vinyl Decal",
+   "url_slug": "dog-moms/witness-statement-the-dog-started-it"
   },
   {
    "id": "g152",
@@ -12863,15 +12860,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/trades-blue-collar/mechanics",
+    "path": "Who It's For > Trades & Blue Collar > Mechanics",
+    "slug": "mechanics"
    },
    "secondary_categories": [
     {
-     "id": "identity/trades-blue-collar/mechanics",
-     "path": "Who It's For > Trades & Blue Collar > Mechanics",
-     "slug": "mechanics"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "topic/trucks-cars",
@@ -12900,14 +12897,13 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "mechanic sticker",
-    "gifts for mechanics",
+    "mechanic gift",
+    "mechanic decal",
+    "mechanic humor",
+    "gift for mechanic",
+    "dad sticker",
+    "funny dad stickers",
     "truck decals funny",
     "oddly specific gifts",
     "white elephant gifts",
@@ -12915,11 +12911,11 @@
     "ironic stickers"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny mechanic stickers",
     "gifts for mechanics",
+    "mechanic toolbox stickers",
+    "funny dad stickers",
+    "gifts for dads",
     "truck decals funny",
     "car guy gifts",
     "oddly specific stickers",
@@ -12929,9 +12925,9 @@
     "toolbox stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – Energy of a dad who just heard a noise in the engine. – Oddly Specific Decal",
-   "ebay_title": "Energy of a dad who just heard a noise in the engine. Funny Dad Sticker",
-   "url_slug": "dads/energy-of-a-dad-who-just-heard-a-noise-in-the-engine"
+   "seo_title": "Funny Mechanic Sticker – Energy of a dad who just heard a noise in the engine. – Oddly Specific Decal",
+   "ebay_title": "Energy of a dad who just heard a noise in the engine. Funny Mechanic Sticker",
+   "url_slug": "mechanics/energy-of-a-dad-who-just-heard-a-noise-in-the-engine"
   },
   {
    "id": "g179",
@@ -13440,15 +13436,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/trades-blue-collar/mechanics",
+    "path": "Who It's For > Trades & Blue Collar > Mechanics",
+    "slug": "mechanics"
    },
    "secondary_categories": [
     {
-     "id": "identity/trades-blue-collar/mechanics",
-     "path": "Who It's For > Trades & Blue Collar > Mechanics",
-     "slug": "mechanics"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "humor/self-deprecating",
@@ -13472,25 +13468,25 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
     "mechanic sticker",
-    "gifts for mechanics",
+    "mechanic gift",
+    "mechanic decal",
+    "mechanic humor",
+    "gift for mechanic",
+    "dad sticker",
+    "funny dad stickers",
     "self roast sticker",
     "white elephant gifts",
     "toolbox stickers",
-    "relatable stickers"
+    "relatable stickers",
+    "funny sticker"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny mechanic stickers",
     "gifts for mechanics",
+    "mechanic toolbox stickers",
+    "funny dad stickers",
+    "gifts for dads",
     "self deprecating stickers",
     "self roast sticker",
     "white elephant gifts",
@@ -13500,9 +13496,9 @@
     "relatable stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – I can hear your transmission lying. – Self-Deprecating Decal",
-   "ebay_title": "I can hear your transmission lying. Funny Dad Sticker Vinyl Decal",
-   "url_slug": "dads/i-can-hear-your-transmission-lying"
+   "seo_title": "Funny Mechanic Sticker – I can hear your transmission lying. – Self-Deprecating Decal",
+   "ebay_title": "I can hear your transmission lying. Funny Mechanic Sticker Vinyl Decal",
+   "url_slug": "mechanics/i-can-hear-your-transmission-lying"
   },
   {
    "id": "g187",
@@ -13738,15 +13734,15 @@
    "darkness": 1,
    "device": "irony",
    "primary_category": {
-    "id": "identity/faith-church/christians",
-    "path": "Who It's For > Faith & Church > Christians",
-    "slug": "christians"
+    "id": "identity/faith-church/church-moms",
+    "path": "Who It's For > Faith & Church > Church Moms",
+    "slug": "church-moms"
    },
    "secondary_categories": [
     {
-     "id": "identity/faith-church/church-moms",
-     "path": "Who It's For > Faith & Church > Church Moms",
-     "slug": "church-moms"
+     "id": "identity/faith-church/christians",
+     "path": "Who It's For > Faith & Church > Christians",
+     "slug": "christians"
     },
     {
      "id": "topic/church-faith",
@@ -13775,13 +13771,13 @@
     }
    ],
    "etsy_tags": [
-    "christian sticker",
-    "christian gift",
-    "christian decal",
-    "christian humor",
-    "gift for christian",
     "church mom sticker",
-    "church lady gifts",
+    "church mom gift",
+    "church mom decal",
+    "church mom humor",
+    "gift for church mom",
+    "christian sticker",
+    "gifts for christians",
     "church humor",
     "ironic stickers",
     "funny gifts for mom",
@@ -13789,11 +13785,11 @@
     "true crime stickers"
    ],
    "seo_phrases": [
-    "funny christian stickers",
-    "gifts for christians",
-    "christian stickers",
     "funny church mom stickers",
     "gifts for church moms",
+    "church lady gifts",
+    "funny christian stickers",
+    "gifts for christians",
     "christian stickers funny",
     "church humor",
     "ironic stickers",
@@ -13803,9 +13799,9 @@
     "water bottle stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Christian Sticker – Bible study at 7. True crime documentary at 7:30. – Funny Decal",
-   "ebay_title": "Bible study at 7. True crime documentary at 7:30. Funny Christian Sticker",
-   "url_slug": "christians/bible-study-at-7-true-crime-documentary-at-7-30"
+   "seo_title": "Funny Church Mom Sticker – Bible study at 7. True crime documentary at 7:30. – Funny Decal",
+   "ebay_title": "Bible study at 7. True crime documentary at 7:30. Funny Church Mom Sticker",
+   "url_slug": "church-moms/bible-study-at-7-true-crime-documentary-at-7-30"
   },
   {
    "id": "g191",
@@ -14273,15 +14269,15 @@
    "darkness": 0,
    "device": "irony",
    "primary_category": {
-    "id": "identity/family-roles/dads",
-    "path": "Who It's For > Family Roles > Dads",
-    "slug": "dads"
+    "id": "identity/hobbies-outdoors/gamers",
+    "path": "Who It's For > Hobbies & Outdoors > Gamers",
+    "slug": "gamers"
    },
    "secondary_categories": [
     {
-     "id": "identity/hobbies-outdoors/gamers",
-     "path": "Who It's For > Hobbies & Outdoors > Gamers",
-     "slug": "gamers"
+     "id": "identity/family-roles/dads",
+     "path": "Who It's For > Family Roles > Dads",
+     "slug": "dads"
     },
     {
      "id": "topic/gaming",
@@ -14310,14 +14306,14 @@
     }
    ],
    "etsy_tags": [
-    "funny dad sticker",
-    "dad sticker",
-    "dad gift",
-    "dad decal",
-    "dad humor",
-    "gift for dad",
+    "funny gamer sticker",
     "gamer sticker",
-    "funny gamer stickers",
+    "gamer gift",
+    "gamer decal",
+    "gamer humor",
+    "gift for gamer",
+    "dad sticker",
+    "funny dad stickers",
     "gaming stickers",
     "oddly specific gifts",
     "white elephant gifts",
@@ -14325,11 +14321,11 @@
     "relatable stickers"
    ],
    "seo_phrases": [
-    "funny dad stickers",
-    "gifts for dads",
-    "fathers day stickers",
     "funny gamer stickers",
     "gifts for gamers",
+    "gamer laptop stickers",
+    "funny dad stickers",
+    "gifts for dads",
     "gaming stickers",
     "gamer decals",
     "oddly specific stickers",
@@ -14339,9 +14335,9 @@
     "funny bumper stickers"
    ],
    "seo_title_template": "Funny {Who} Sticker – {line} – {HumorStyle} Decal",
-   "seo_title": "Funny Dad Sticker – GAMER DADS WITH TWENTY MINUTES A WEEK AND A 300-GAME BACKLOG – Oddly Specific Decal",
-   "ebay_title": "Gamer Dads With Twenty Minutes A Week And A 300-game Backlog Funny Dad Sticker",
-   "url_slug": "dads/gamer-dads-with-twenty-minutes-a-week-and-a-300-game-backlog"
+   "seo_title": "Funny Gamer Sticker – GAMER DADS WITH TWENTY MINUTES A WEEK AND A 300-GAME BACKLOG – Oddly Specific Decal",
+   "ebay_title": "Gamer Dads With Twenty Minutes A Week And A 300-game Backlog Funny Gamer Sticker",
+   "url_slug": "gamers/gamer-dads-with-twenty-minutes-a-week-and-a-300-game-backlog"
   },
   {
    "id": "g198",

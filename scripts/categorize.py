@@ -138,13 +138,14 @@ class Tagger:
         self.res = {n["id"]: [(t, term_re(t)) for t in n["match_terms"]] for n in self.leaves}
 
     def _score(self, node, a, b, line):
-        s = 0.0
+        s, a_best = 0.0, 0.0
         for t, rx in self.res[node["id"]]:
             w = 1.0 + min(len(t), 12) / 24  # longer terms are more specific
-            if rx.search(a): s = max(s, 4 * w) if s < 4 * w else s + 0.1
+            if rx.search(a): a_best = max(a_best, w)
             if rx.search(b): s += 2.5 * w
             if rx.search(line): s += 1 * w
-        return s
+        # niche A is who the joke is FOR, so a match there outranks any pile-up of line/topic hits
+        return s + (10 * a_best if a_best else 0)
 
     def tag(self, line, niche_pair="", pattern="", darkness=0, device=""):
         L = line.lower()
