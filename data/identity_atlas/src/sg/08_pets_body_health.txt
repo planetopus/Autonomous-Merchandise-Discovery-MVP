@@ -1,0 +1,51 @@
+cat_ladies|Cat ladies|Pets & Animals|talks to cats more than people;cat hair on everything;'just one more cat';cats judge her;owns cat-themed everything|cat mom, cat lady|crazy cat lady|introverts,book_lovers,crocheters,crazy_plant_people,childfree|9|2|A;R:r/cats;S
+cat_dads|Cat dads|Pets & Animals|big guy, tiny kitten;'I didn't want a cat';cat sleeps on him only|cat dad|cat guy|gamers,it_support,introverts|9|1|S
+dog_moms|Dog moms|Pets & Animals|dog has more clothes than her;'my fur baby';birthday party for dog|dog mom, fur mama|dog lady|dinks,hikers,millennials,wine_moms|9|1|A;S;B
+dog_dads|Dog dads|Pets & Animals|'I didn't want the dog' now sleeps with it;dog in truck;belly rubs|dog dad|dog guy|dad_bods,truck_guys,hunters|9|1|A;S;B
+pitbull_people|Pit bull owners|Pets & Animals|'nanny dog' defense;velvet hippo;sweet babies|pittie mom/dad|pit people|dog_moms,dog_dads|9|1|S
+golden_people|Golden retriever owners|Pets & Animals|fur tumbleweeds;golden energy;'golden retriever boyfriend'|golden mom|golden people|dog_moms,millennials|9|1|S
+small_dog|Small dog owners|Pets & Animals|ankle biter defenders;purse dog;chihuahua rage|chihuahua mom|small dog people|dog_moms,grandmas|8|1|S
+doodle|Doodle owners|Pets & Animals|$4000 dog;grooming bills;'is it a poodle'|doodle mom|doodle people|suburban_people,dog_moms|7|1|X
+horse_girls|Horse girls|Pets & Animals|horse girl stereotype;barn smell;horse costs more than college|horse girl, equestrian|horse girls|rural_folks,girl_moms|9|1|R:r/Equestrian;S
+reptile_people|Reptile people|Pets & Animals|feeds mice from freezer;snake noodle;gecko named|reptile keeper|weirdos|introverts,goths|8|1|R:r/reptiles
+bird_owners|Pet bird owners|Pets & Animals|screaming parrot;bird swears like owner|bird mom|bird people|birdwatchers|8|1|S
+rescue_people|Animal rescue folks|Pets & Animals|'adopt don't shop';foster fail;house full of rescues|rescue mom|rescue people|dog_moms,cat_ladies,vet_tech|9|1|S
+raccoon_possum_fans|Raccoon and possum enjoyers|Online Communities|trash panda;'eat trash live free';possum screaming|trash animal fan|weirdos|gen_z,chronically_online|8|1|S;R:r/Opossums
+dad_bods|Dad bods|Body & Looks|beer belly by choice;'not fat, dad bod';shirtless at the lake anyway;New Balance;groans getting up|dad bod, built for comfort|out of shape|beer_dads,grilling_dads,church_dads,golfers,gamers|9|1|A;S
+thicc_people|Thicc people|Body & Looks|thick thighs save lives;chub rub;'more to love'|thicc, curvy|plus-size|gym_girls|8|1|S
+big_guys|Big guys|Body & Looks|husky jeans childhood;hugs are great;bench seat only|big guy, big boy|fat (avoid)|dad_bods,football_fans|8|2|X
+short_people|Short people|Body & Looks|can't reach shelves;'fun-sized';shortest in every photo|shortie, fun-sized|short|gym_girls|8|1|S
+tall_people|Tall people|Body & Looks|'how's the weather up there';hits head on everything;airline legroom pain|tall|giant|basketball|8|1|S
+bald_guys|Bald guys|Body & Looks|'solar panel for a sex machine';shaving head daily;sunburnt scalp|bald, chrome dome|bald|dad_bods,beard_guys|8|1|S
+beard_guys|Beard guys|Body & Looks|beard oil;crumbs in beard;'no shave November all year'|bearded, beardo|lumberjack|bald_guys,truck_guys|9|1|S
+tattooed_people|Heavily tattooed people|Body & Looks|'did that hurt';tattoos are addictive;grandma hates them|tatted|inked|tattoo_artists,metalheads|9|1|S
+redheads|Redheads|Body & Looks|soul jokes;sunburn in 5 min;'gingers'|redhead, ginger|ginger|irish_americans|9|1|S
+pretty_girls|Pretty girls|Body & Looks|'pretty girls walk like this';hot girl walk;pretty privilege jokes;'I'm just a girl';free drinks|pretty girl, hot girl|stuck-up|baddies,gym_girls,skincare_girlies|8|1|A;S;O
+hot_girls|Hot girls with problems|Body & Looks|'hot girls have IBS/anxiety';hot girl summer|hot girl|hot girls|pretty_girls,anxiety_havers,ibs_people|9|2|S
+ugly_people|Self-proclaimed ugly people|Body & Looks|'ugly but funny';great personality;always the photographer;'face for radio'|ugly, face for radio|ugly|class_clowns,comedians,introverts|8|2|A;X
+mid_people|Average-looking people|Body & Looks|'a 6 in good lighting';mid vibes;'I'm not ugly, I'm just mid'|mid, average|plain|ugly_people|8|1|X
+glasses_people|Glasses wearers|Body & Looks|blind without glasses;fogged in masks;contacts dread|four-eyes|nerds|book_lovers|7|1|S
+skincare_girlies|Skincare girlies|Body & Looks|10-step routine;Sephora haul;sunscreen lecture|skincare girlie|vain|pretty_girls,gen_z|8|1|S
+baddies|Baddies|Body & Looks|lashes and nails done;'that girl';boss energy|baddie|baddies|pretty_girls,gen_z|8|1|X
+chronic_illness|Chronic illness warriors (spoonies)|Health & Recovery|out of spoons;'you don't look sick';pill organizer bigger than candy;heating pad married|spoonie, chronic illness warrior|sick people|anxiety_havers,ibs_people,cat_ladies|8|3|A;R:r/ChronicIllness;S
+ibs_people|IBS and gut problem people|Health & Recovery|knows every bathroom;'my tummy hurts and I'm mad';dairy betrayal|IBS gang|sensitive stomach|hot_girls,anxiety_havers|8|2|S
+gluten_free|Gluten-free and celiac people|Health & Recovery|'is there gluten in this';cross contamination police;sad bread|celiac, GF|picky|ibs_people|8|1|S
+diabetics|Diabetics|Health & Recovery|beeping CGM;'can you eat that?';sugar police|T1D, diabetic|diabetics|chronic_illness|8|2|R:r/diabetes;S
+migraine|Migraine sufferers|Health & Recovery|dark room hermit;weather predictor;sunglasses indoors|migraine warrior|migraine people|chronic_illness|7|1|S
+back_pain|Bad back people|Health & Recovery|hurt it sleeping;heating pad;'I'm not old my back is'|bad back|old|middle_aged,dad_bods|8|1|S
+cancer_survivors|Cancer survivors|Health & Recovery|dark humor;'I beat cancer, what's your excuse';chemo brain;bald jokes|survivor, warrior|survivor|chronic_illness,dark_humor_people|9|3|S
+amputees|Amputees (ownership)|Health & Recovery|'I'm not legless, I'm just tired' puns;prosthetic jokes they own|amputee|disabled|military_vet|8|3|X
+wheelchair_users|Wheelchair users (ownership)|Health & Recovery|'I'm not drunk, my wheels are';parking spot pride|wheelchair user, wheelie|disabled|chronic_illness|8|3|X
+deaf_folks|Deaf and hard of hearing (ownership)|Health & Recovery|'what?';can't hear you, don't care;ASL jokes|Deaf, HoH|deaf|grandpas|8|2|W;X
+sober_people|Sober people and recovery|Health & Recovery|one day at a time;mocktail menu critic;'I'm the designated driver forever';sobriety date|sober, in recovery, friend of Bill|recovering addicts|coffee_addicts,gym_bros,therapy_goers|9|2|A;R:r/stopdrinking;S
+sober_curious|Sober-curious|Health & Recovery|dry January forever;NA beer|sober curious|health nuts|gen_z,sober_people|7|1|X
+therapy_goers|Therapy goers|Health & Recovery|'my therapist says';healing era;boundaries;trauma dumping|in therapy|therapy people|anxiety_havers,millennials,overthinkers|9|2|S
+adhd|ADHD people|Neurodivergent|forgot what I came in here for;hyperfocus on random thing;'downgrading from ADHD to AD720p';10 tabs open;doom piles;meds shortage pain;time blindness|ADHD, ADHDer, neurospicy|scatterbrained|anxiety_havers,dnd_players,3d_printing,programmers,chronically_online,overthinkers|9|2|A;R:r/ADHD;O;S
+autistic_people|Autistic people (ownership)|Neurodivergent|special interests;stims;'autistic and proud';noise-canceling headphones;trains or dinos|autistic, neurospicy|autistic|adhd,model_trains,gamers|8|1|R:r/autism;S
+anxiety_havers|Anxiety havers|Neurodivergent|overthinks text messages;'sorry for being anxious earlier';phone calls are horror;emotional support water bottle|anxious, anxiety girlie|worrywart|adhd,overthinkers,introverts,gen_z,therapy_goers|9|2|A;R:r/Anxiety;S
+depression|Depression memers|Neurodivergent|bed rot;'existing is exhausting';dark memes|depressed but funny|sad|anxiety_havers,dark_humor_people|7|3|X
+ocd|OCD (real) folks|Neurodivergent|checks the stove 7 times;'I'm not a little OCD';rituals|OCD|neat freak (wrong)|anxiety_havers|7|2|X
+insomniacs|Insomniacs|Neurodivergent|awake at 3am overthinking;melatonin gummies;'sleep is for the weak'|insomniac|night owl|night_owls,overthinkers|8|2|S
+night_owls|Night owls|Personality & Temperament|productive at midnight;mornings are a war crime|night owl|lazy|insomniacs,gamers|8|1|S
+morning_people|Morning people|Personality & Temperament|5am club;sunrise run;annoyingly cheerful|early bird|psychos|runners,retired_dads|6|1|X
+undiagnosed|Undiagnosed but something ain't right|Neurodivergent|self-diagnosed via TikTok;'undiagnosed but something ain't right';quirky|undiagnosed|weird|adhd,chronically_online|8|2|O;S

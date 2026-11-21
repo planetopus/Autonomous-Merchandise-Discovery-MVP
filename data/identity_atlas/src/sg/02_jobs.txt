@@ -1,0 +1,36 @@
+teachers|Teachers|Education|buys own classroom supplies;teacher voice can stop a riot;summers off myth;coffee and Diet Coke IV;counts down to Friday out loud;has said 'I'll wait' 10000 times|teacher life, educator|underpaid babysitters|coffee_addicts,wine_moms,anxiety_havers,crafters,target_moms|9|2|A;R:r/Teachers;S
+kinder_teacher|Kindergarten teachers|Education|ties 400 shoes a day;glitter in hair permanently;sings to transition;has been sneezed on directly|kinder teacher|preschool lady|teachers,girl_moms,disney_adults|9|1|S
+hs_teacher|High school teachers|Education|confiscates vapes for a living;knows all the slang and pretends not to;'is this going to be on the test'|HS teacher|teacher|teachers,coaches,gen_x|8|2|S
+substitute|Substitute teachers|Education|kids lie about the seating chart;puts on a movie;survives on vibes|sub|sub|teachers,gen_z|6|1|R:r/SubstituteTeachers
+para|Paraprofessionals|Education|does the teacher job for a third of pay;bus duty forever;wears comfy shoes|para, aide|helper|teachers,people_pleasers|7|1|X
+school_admin|School secretaries|Education|actually runs the school;knows every kid's mom;has seen the lice|front office, school secretary|receptionist|teachers,church_ladies|8|1|S
+principal|Principals and admin|Education|loves a meeting that could have been an email;walkie-talkie on hip;says 'data driven'|admin|the man|teachers|5|1|X
+professors|Professors|Academia|tweed jackets;rambles about their own research;office hours nobody comes to;tenure jokes|academic, prof|eggheads|grad_students,introverts,coffee_addicts|6|2|R:r/Professors
+grad_students|Grad students|Academia|stipend below poverty line;thesis never done;free pizza hunter;imposter syndrome|grad student, PhD candidate|eternal student|anxiety_havers,coffee_addicts,overthinkers|8|3|R:r/GradSchool;S
+college_students|College students|Academia|ramen budget;8am class skipper;all-nighter with energy drinks;group project martyr|college kid|kids|gen_z,energy_drink_people|7|2|S
+stem_majors|STEM majors and engineers|Office & Tech|over-engineers a birthday card;math joke shirts;'technically correct';thinks in units|engineer, STEM|nerds|gamers,3d_printing,introverts,dnd_players|8|1|R:r/EngineeringStudents;S;O
+engineers|Engineers|Office & Tech|calculates the tip to three decimals;'it works on paper';hates management;owns a label maker|engineer|nerd|stem_majors,3d_printing,dad_bods,golfers|8|1|R:r/engineering;S
+it_support|IT support|Office & Tech|'have you tried turning it off and on';users are the problem;knows your password is password123;printer is the enemy|IT guy, tech support, help desk|computer guy|gamers,introverts,energy_drink_people,cat_dads|9|2|A;R:r/talesfromtechsupport;S
+sysadmins|Sysadmins|Office & Tech|it's always DNS;never deploy on Friday;on call at Christmas;screams in YAML|sysadmin|IT|it_support,gamers,introverts|8|2|R:r/sysadmin;S
+programmers|Software developers|Office & Tech|it works on my machine;rubber duck debugging;tabs vs spaces war;Stack Overflow copypaster;fixes one bug makes three|dev, coder, SWE|tech bro|gamers,introverts,stem_majors,coffee_addicts,adhd|8|1|R:r/ProgrammerHumor;S
+tech_bros|Tech bros|Office & Tech|Patagonia vest;says 'disrupt';cold plunges;crypto in 2021|founder, builder|tech bro|crypto_bros,gym_bros,podcast_guys|5|1|X
+office_workers|Office workers|Office & Tech|'per my last email';meeting could have been an email;steals office pens;Friday cake;reply-all disaster|corporate girlie, 9-to-5er|cubicle drone|coffee_addicts,introverts,people_pleasers,millennials|7|2|R:r/antiwork;S
+corporate_girlies|Corporate girlies|Office & Tech|Stanley cup at desk;LinkedIn humblebrag;Teams status always green;quiet quitting|corporate girlie|office girl|millennials,gen_z,iced_coffee_girls|7|1|X
+hr|HR people|Office & Tech|not your friend;'let's circle back';knows all the gossip but can't say|HR|the enemy|office_workers|5|1|X
+accountants|Accountants|Office & Tech|tax season ghost;Excel wizard;spreadsheets for fun;debits and credits jokes|CPA, bean counter|nerds|introverts,golfers|7|1|R:r/Accounting;S
+lawyers|Lawyers|Office & Tech|bills in 6-minute increments;'objection' at dinner;billable hours brain|attorney|sharks|coffee_addicts,overachievers|6|2|R:r/Lawyertalk
+paralegals|Paralegals|Office & Tech|does the lawyer's job;knows every deadline;works with wine at home|paralegal|secretary|wine_moms,true_crime_fans|7|1|S
+real_estate|Realtors|Office & Tech|face on a bus bench;'it's a great time to buy';SUV full of signs|realtor|salesperson|mlm_huns,boy_moms|6|1|S
+insurance_agents|Insurance agents|Office & Tech|nobody wants to talk to them;knows how you'll die statistically|agent|sales guy|dad_bods,golfers|5|2|X
+call_center|Call center workers|Office & Tech|'this call may be recorded';customers yell daily;bathroom break timed|agent|phone people|retail_workers,anxiety_havers|7|2|R:r/talesfromcallcenter
+social_workers|Social workers|Healthcare|caseload of 80;carries everything in a tote;burnout poster child|social worker, MSW|do-gooders|therapist,teachers,wine_moms|8|2|R:r/socialwork;S
+librarians|Librarians|Education|shushing is a myth;cardigan and cat;knows all the town gossip|librarian, book person|old lady|book_lovers,cat_ladies,introverts|8|1|R:r/Librarians;S
+scientists|Scientists|Academia|lab coat stains;'more research needed';grant writing pain;names pipettes|scientist|nerds|stem_majors,introverts|7|1|S;R:r/labrats
+truckers|Truckers|Transport & Logistics|lives on the road and truck stop food;CB handle;holds it for 400 miles;hates four-wheelers who cut them off;Wyoming wind trauma;knows every Love's and Pilot|driver, trucker, gear jammer|truck drivers|night_shift,dad_bods,energy_drink_people,country_music_fans,small_town|9|2|A;R:r/Truckers;S;O
+delivery_drivers|Delivery drivers|Transport & Logistics|package thrown with love;dogs hate them;pees in bottles;Amazon van speed|driver|delivery guy|truckers,gig_workers|7|2|R:r/AmazonDSPDrivers
+gig_workers|Gig workers (DoorDash/Uber)|Transport & Logistics|$2 tip trauma;'customer said leave at door';rates people back|dasher, driver|gig worker|delivery_drivers,gen_z,broke_people|7|2|R:r/doordash_drivers
+pilots|Pilots|Transport & Logistics|will tell you they're a pilot within 5 minutes;aviator sunglasses;chair flying|pilot, aviator|flyboys|military_vet,dad_bods|8|1|R:r/flying;S
+flight_attendants|Flight attendants|Transport & Logistics|smiles through rage;seatbelt sign police;hotel life;mini bottles|FA, crew|stewardess|travel_lovers,wine_moms|8|2|R:r/flightattendants;S
+bus_drivers|School bus drivers|Transport & Logistics|eyes in the mirror;assigned seats;sings on the route|bus driver|bus lady|grandmas,small_town|7|1|X
+forklift_drivers|Forklift and warehouse workers|Transport & Logistics|forklift certified flex;OSHA violations everywhere;steel toes;mandatory OT|warehouse, forklift certified|warehouse guy|truckers,energy_drink_people,blue_collar|8|2|R:r/Warehouseworkers;S
+railroaders|Railroad workers|Transport & Logistics|on call forever;union proud;train horn deaf|railroader, rails|train guys|blue_collar,union_workers|8|2|R:r/railroading

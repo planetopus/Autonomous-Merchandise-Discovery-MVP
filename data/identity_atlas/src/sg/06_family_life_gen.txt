@@ -1,0 +1,59 @@
+boy_dads|Boy dads|Family Roles|everything is a wrestling match;ER visit count;'boys will be boys';fart joke household|boy dad|dad of boys|boy_moms,dad_bods,football_fans,grilling_dads|9|1|A;S;B
+girl_dads|Girl dads|Family Roles|tea parties with beard;knows every Taylor Swift song;'girl dad' hashtag;protective glare at boyfriends|girl dad, #girldad|dad of girls|dad_bods,swifties,boy_dads,church_dads|9|1|A;S;B
+boy_moms|Boy moms|Family Roles|'boy mom' tired;mud everything;snacks for an army;everything is a weapon|boy mom|boy moms|wine_moms,minivan_moms,baseball_parents,coffee_addicts|9|1|A;S;B
+girl_moms|Girl moms|Family Roles|hair bows and attitude;drama at age 4;matching outfits;'she gets it from me'|girl mom|girl moms|wine_moms,dance_moms,cheer_moms|9|1|A;S
+moms|Moms (general)|Family Roles|'because I said so';finds anything you lose;mental load;'ask your father'|mom, mama|mothers|wine_moms,coffee_addicts|9|1|S;B
+dad_jokes|Dads (general)|Family Roles|dad jokes;thermostat guard;'who left the lights on';knows a guy|dad, pops|fathers|dad_bods,grilling_dads,lawn_dads|9|1|S;B
+new_parents|New parents|Life Stages|sleep is a memory;spit up on every shirt;Googles everything at 3am;baby monitor zombie|new mom, new dad, first time parent|new parents|coffee_addicts,anxiety_havers,millennials|9|2|A;R:r/NewParents;S
+toddler_parents|Toddler parents|Family Roles|threenager negotiations;Bluey on repeat;snack hostage|toddler mom|parents|new_parents,coffee_addicts,wine_moms|9|1|S
+teen_parents|Parents of teens|Family Roles|'I'm not a taxi';eye-roll survivor;grounded phone|teen mom (avoid), parent of teen|parents|gen_x,wine_moms|8|1|X
+twin_parents|Twin parents|Family Roles|double trouble;'are they twins?' x1000;two of everything|twin mom|twin parents|new_parents|9|1|S
+millennial_moms|Millennial moms|Family Roles|gentle parenting;Stanley cup;Target run therapy;'let's use our words'|millennial mom|crunchy|wine_moms,target_moms,iced_coffee_girls|8|1|S
+crunchy_moms|Crunchy moms|Family Roles|essential oils;home birth;raw milk opinions;cloth diapers|crunchy mama, natural mom|hippie moms|homesteaders,yoga_people,mlm_huns|7|1|R:r/ShitMomGroupsSay;S
+target_moms|Target moms|Family Roles|went in for diapers left with $200;Starbucks inside;dollar spot|Target mom|basic moms|millennial_moms,iced_coffee_girls|8|1|S
+homeschool_moms|Homeschool moms|Family Roles|denim skirt stereotype;curriculum fairs;field trip every day|homeschool mom|homeschoolers|church_ladies,crunchy_moms|7|1|S
+sahm|Stay-at-home moms|Family Roles|'what do you do all day';nap time is sacred;never alone in bathroom|SAHM|housewife|millennial_moms,wine_moms|8|1|R:r/SAHP;S
+sahd|Stay-at-home dads|Family Roles|playground dad stares;school pickup lone guy;Mr Mom jokes he hates|SAHD|Mr Mom|dad_bods|7|1|X
+working_moms|Working moms|Family Roles|mom guilt;daycare germs;answering emails at soccer|working mom|career mom|coffee_addicts,corporate_girlies|8|1|S
+single_moms|Single moms|Family Roles|does it all;Mom AND Dad on Father's Day;tired but proud|single mama|single moms|working_moms,wine_moms|9|2|S
+single_dads|Single dads|Family Roles|braids learned from YouTube;chicken nuggets 4 nights;every other weekend|single dad|single dads|divorced_dads,dad_bods|8|1|S
+divorced_dads|Divorced dads|Family Roles|apartment with one plate;every other weekend Disney dad;new Camaro;grill on balcony|divorced dad|weekend dad|single_dads,dad_bods,gym_bros,motorcyclists|7|3|A;S
+divorced_women|Divorced women|Life Stages|'I got the house';divorce party;thriving era;'he took the dog... it's fine'|divorcée|ex-wife|wine_moms,single_moms|8|3|S
+step_parents|Step-parents|Family Roles|bonus mom/dad;'you're not my real dad';co-parenting calendar|bonus mom, stepdad|step-parent|blended_families|8|2|A;R:r/stepparents;S
+blended_families|Blended families|Family Roles|yours mine and ours;holiday schedule spreadsheet|blended family|stepfamily|step_parents|8|1|S
+foster_parents|Foster and adoptive parents|Family Roles|paperwork for days;love is thicker than blood;caseworker visits|foster mom, adoptive dad|foster parents|church_dads,church_ladies|9|1|S
+grandmas|Grandmas|Family Roles|spoils grandkids then sends them home;'did you eat';Facebook grandma comments;sweet tooth candy in purse|grandma, nana, gigi, mimi|grandmothers|church_ladies,boomers,quilters,gardeners|9|1|A;S;B
+grandpas|Grandpas|Family Roles|'back in my day';werther's originals;falls asleep in recliner;fixes everything with duct tape|grandpa, papaw, pops|grandfathers|boomers,retired_dads,fishermen,woodworkers|9|1|S;B
+glammas|Young grandmas (Glammas)|Family Roles|'too young to be a grandma';Botox and grandkids;Gigi not Grandma|Gigi, Glamma|young grandma|wine_moms,gen_x|9|1|S
+aunts|Fun aunts|Family Roles|cool aunt with no rules;gives sugar then leaves;'aunt-ie'|auntie, fun aunt|aunt|cat_ladies,wine_moms,dinks|9|1|S
+uncles|Fun uncles|Family Roles|'pull my finger';teaches bad words;fireworks guy|funcle, uncle|uncle|beer_dads,gay_uncles|9|1|S
+gay_uncles|Gay uncles|Family Roles|best gifts;brunch;styles everyone's hair at weddings (ownership joke)|guncle|gay uncle|lgbtq_folks,uncles|9|1|S;X
+older_siblings|Oldest children|Family Roles|third parent;responsible since age 6;'guinea pig child'|oldest child, eldest daughter|eldest|people_pleasers,anxiety_havers,type_a_people|8|2|R:r/EldestDaughter;S
+middle_children|Middle children|Family Roles|forgotten;'what about me';peacemaker|middle child|middle kid|class_clowns|8|1|S
+youngest_children|Youngest children|Family Roles|baby forever;got away with everything;'golden child'|baby of the family|spoiled|class_clowns|8|1|S
+only_children|Only children|Family Roles|doesn't share;talks to adults like peers;'must be lonely'|only child|spoiled|introverts|7|1|X
+empty_nesters|Empty nesters|Life Stages|kids gone, dog spoiled;'we can finally travel';turned room into office|empty nester|old couple|boomers,gen_x,rv_people,dog_moms|8|1|A;S
+retired_dads|Retirees|Life Stages|retired: no job no boss no paycheck;'I'm busier now than when I worked';up at 5am for nothing|retiree, retired|old people|boomers,golfers,fishermen,rv_people,woodworkers|9|1|S;B
+newlyweds|Newlyweds|Life Stages|'my husband' every sentence;registry china never used;still cute|newlywed, wifey, hubby|newlyweds|millennials,gen_z|8|1|S
+brides|Brides-to-be|Life Stages|Pinterest board for 8 years;bridezilla fear;bachelorette tiara|bride|bridezilla|newlyweds|8|1|S
+dinks|DINKs|Life Stages|dual income no kids;travel and brunch;'the dog is our kid'|DINK|childless|dog_moms,cat_ladies,foodies,travel_lovers|8|1|R:r/childfree;S
+childfree|Childfree people|Life Stages|'no thanks I like sleep';plant and cat children|childfree|selfish (unfair)|dinks,cat_ladies,crazy_plant_people|8|2|R:r/childfree
+singles|Single people|Life Stages|dating apps fatigue;'table for one';friends' wedding plus-zero|single|alone|cat_ladies,dating_app_users|7|2|S
+dating_app_users|Dating app users|Life Stages|swiped thumb;first date horror stories;'ghosted';situationships|on the apps|singles|singles,gen_z,millennials|7|2|R:r/Tinder
+married_couples|Long-married couples|Life Stages|'married 30 years still not sure who's right';one blanket thief;thermostat war|old married couple|couple|boomers,gen_x|8|1|S;B
+wives|Wives|Family Roles|'I'm not yelling I'm explaining';'where's my...' husband syndrome|wifey|the wife|moms,wine_moms|8|1|S
+husbands|Husbands|Family Roles|'happy wife happy life';can't find ketchup in fridge;'I'm just resting my eyes'|hubby|the husband|dad_bods,lawn_dads|8|1|S
+widows|Widows and widowers|Life Stages|dark humor helps;'I'm a widow, I can say that';casseroles for months|widow|widow|grandmas,dark_humor_people|6|3|O;X
+pregnant|Pregnant people|Life Stages|cravings at 2am;'eating for two';can't see feet|preggo, mama-to-be|pregnant lady|new_parents|8|1|S
+ivf_warriors|IVF and infertility warriors|Life Stages|needle queen;two-week wait;hope tired|IVF warrior|infertility|pregnant|7|2|R:r/IVF;S
+boomers|Baby boomers|Generations|Facebook all caps;'nobody wants to work';sends Minion memes;cash only;'back in my day';calls tech 'the Google'|boomer, baby boomer|OK boomer|grandmas,grandpas,retired_dads,golfers,rv_people|7|2|A;W;S
+gen_x|Gen X|Generations|latchkey kid;raised on the hose;forgotten generation;sarcasm native;'whatever'|Gen X, latchkey|middle-aged|glammas,empty_nesters,grunge_kids|8|2|A;R:r/GenX;S
+millennials|Millennials|Generations|avocado toast;student debt;'adulting';side part;thumbs-up emoji rage;nostalgia for 90s|millennial, elder millennial|snowflakes|millennial_moms,dinks,crazy_plant_people,anxiety_havers|8|2|A;R:r/millennials;S
+elder_millennials|Elder millennials|Generations|remembers dial-up;back hurts at 35;'I'm not old, I'm vintage'|elder millennial|millennial|millennials,gen_x|8|2|S
+gen_z|Gen Z|Generations|no cap;phone call anxiety;skinny jeans hate;thrifting;'it's giving'|Gen Z, zoomer|zoomers|gen_z_workers,thrifters,anxiety_havers,chronically_online|8|2|A;R:r/GenZ;S
+gen_alpha|Gen Alpha|Generations|skibidi;iPad kid;Roblox;Sephora kids;six-seven|Gen Alpha|iPad kids|gen_z|6|1|X
+gen_z_workers|Gen Z workers|Generations|quiet quitting;'let me check my calendar';BeReal at work;sets boundaries|zoomer coworker|lazy kids|gen_z,office_workers|7|1|X
+middle_aged|Middle-aged people|Life Stages|back hurts from sleeping;readers glasses;'when did I get old';groans when standing up|over the hill|middle-aged|gen_x,elder_millennials|8|2|S;B
+turning_40|People turning 40/50|Life Stages|over the hill party;'40 is the new 30';birthday sash|40 and fabulous|old|middle_aged|8|2|S
+seniors|Seniors 70+|Life Stages|early bird special;Wheel of Fortune;'I'm old I can say what I want'|senior, old fart|elderly|grandmas,grandpas|8|2|S;B
+unc|Uncs (30s+ men)|Generations|called unc by gen z;'unc status';back cracks;knows 2009 songs|unc|old head|elder_millennials,dad_bods|8|1|X

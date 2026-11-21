@@ -1,0 +1,41 @@
+hippies|Grateful Dead on vinyl;drum circles;'far out, man'
+hipsters|mustache wax;typewriter at the coffee shop;'you've probably never heard of it'
+juggalos|hatchetman logo;loyal to 'the family' above all;Juggalo Gathering stories
+ravers|kandi trades;'drop the bass';fanny pack with essentials
+rockabilly|vintage cars at cruise nights;tattoo flash art;Elvis sideburns
+dark_academia|fountain pens;Latin quotes;rainy-day aesthetic
+cottagecore|wildflower crowns;'I want to live in a cottage in the woods';linen dresses
+preppy|lacrosse sticks;'summer in Nantucket';monogrammed everything
+scouts|merit badge sash;S'mores master;'leave no trace'
+grunge_kids|Seattle sound;thrift store flannel;'smells like teen spirit'
+musicians|band practice in the garage;'one more song';guitar picks in every pocket
+drummers|drumsticks in the car;'tap tap tap' on desks;hearing loss
+guitarists|guitar picks everywhere;'Stairway to Heaven' forbidden;pedal board addiction
+hip_hop_heads|vinyl crates;freestyle battles;'real hip-hop' debates
+sneakerheads|sneaker wall;'deadstock' talk;SNKRS app losses
+straight_edge|'XXX' tattoos;hardcore shows;sober pride
+lgbtq_folks|rainbow everything in June;chosen family dinners;'gay agenda' jokes
+lesbians|carabiner with keys;cats and plants;'U-Haul'
+gay_men|Pride month parties;brunch mimosas;'yas queen'
+bi_folks|bi flag colors;'bisexual lighting';'can't sit straight'
+irish_americans|Guinness;Irish blessing on the kitchen wall;St. Patrick's parade
+italian_americans|Nonna's recipes;Sunday dinners;'mangia!'
+hispanic_moms|'cuando tengas tus hijos';Vicks VapoRub;'¿ya comiste?'
+mexican_americans|tamales at Christmas;Selena songs;quinceañeras
+puerto_ricans|Bad Bunny on repeat;pasteles at Christmas;'wepa!'
+black_aunties|'baby, come here';cookout potato salad;church fans
+asian_moms|'Why not 100%?';rice cooker;slippers indoors
+filipino_americans|Jollibee;karaoke;'tita' gossip
+indian_americans|'beta, eat';Bollywood songs;'aunty' network
+polish_americans|pierogi;polka;'Na zdrowie!'
+german_americans|Oktoberfest;bratwurst;'Prost!'
+scandi_americans|lutefisk;lefse;'uff da'
+cajun_creole|gumbo;zydeco music;'laissez les bons temps rouler'
+immigrant_kids|translator for parents;'we have food at home';first-gen pride
+conservatives|'Don't Tread on Me' flag;'Back the Blue';'freedom isn't free' tee;gas price rants at the pump
+liberals|'Coexist' bumper sticker;NPR tote bag;'Love is love'
+libertarians|'Taxation is theft';'Don't Tread on Me';'Ron Swanson'
+political_independents|'I hate both parties';'vote for nobody';'both sides'
+patriots|American flag shorts;bald eagle shirts;'Murica'
+overachievers|'I need an A+';extra credit;'gifted kid'
+gifted_kids|'you have so much potential';burnout;'gifted kid syndrome'

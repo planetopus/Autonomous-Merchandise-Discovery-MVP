@@ -1,0 +1,66 @@
+irish_americans|Irish-Americans (ownership)|Identity & Heritage|St Paddy's is Christmas;'kiss me I'm Irish';whiskey;Catholic guilt|Irish|Irish|catholics,redheads,bostonians|9|2|S
+italian_americans|Italian-Americans (ownership)|Identity & Heritage|Sunday gravy;nonna;talks with hands;'fuhgeddaboudit'|Italian|Italians|catholics,jersey,new_yorkers|9|1|S
+hispanic_moms|Latina moms (ownership)|Identity & Heritage|chancla aim;Vicks fixes all;cookie tin full of sewing supplies;'¿ya comiste?'|Latina mom, mamá|Hispanic moms|catholics,girl_moms,boy_moms|9|1|S
+mexican_americans|Mexican-Americans (ownership)|Identity & Heritage|Tupperware not Tupperware;tamales at Christmas;tías;Abuela's Cumbia at parties|Mexican, Chicano|Mexicans|hispanic_moms,catholics,texans|9|1|S
+puerto_ricans|Puerto Ricans (ownership)|Identity & Heritage|wepa;coquí;flag on everything|Boricua|Puerto Ricans|hispanic_moms,new_yorkers|9|1|S
+black_aunties|Black aunties and cookout culture (ownership)|Identity & Heritage|cookout invite is sacred;'who made the potato salad';auntie side-eye;church fan|auntie|Black families|church_ladies,aunts|9|1|S
+asian_moms|Asian moms (ownership)|Identity & Heritage|'why not doctor';rice cooker sacred;slippers inside|Asian mom|Asian moms|overachievers|8|1|S
+filipino_americans|Filipino-Americans (ownership)|Identity & Heritage|titas;karaoke;everyone's a nurse;balikbayan box|Pinoy, Pinay|Filipinos|er_nurse,karaoke|9|1|S
+indian_americans|Indian-Americans (ownership)|Identity & Heritage|'did you eat?';engineer or doctor;aunty network|desi|Indians|engineers,doctor|8|1|S
+polish_americans|Polish-Americans|Identity & Heritage|pierogi;Pączki Day;Polka|Polish|Polish|midwesterners,catholics|9|1|S
+german_americans|German-Americans|Identity & Heritage|Oktoberfest;bratwurst;punctual|German|Germans|midwesterners,beer_dads|8|1|S
+scandi_americans|Scandinavian-Americans|Identity & Heritage|uff da;lutefisk;Minnesota nice|Norwegian, Swede|Scandis|minnesotans,lutherans|9|1|S
+cajun_creole|Creole and Cajun heritage|Identity & Heritage|gumbo;Mardi Gras;'laissez les bons temps rouler'|Cajun|Cajuns|cajuns|9|1|S
+immigrant_kids|Children of immigrants|Identity & Heritage|translator at 8;parents' accent love;'we have McDonald's at home'|first gen|immigrant kids|overachievers,older_siblings|8|2|X
+conservatives|Conservatives|Politics & Civic|'don't tread on me';gas price talk;'back in my day'|conservative, patriot|right-wingers|gun_owners,truck_guys,rural_folks,church_dads|7|1|S;B
+liberals|Liberals and progressives|Politics & Civic|tote bag;'coexist';NPR;composting|progressive, liberal|libs|crazy_plant_people,subaru_lesbians,city_people|7|1|S;B
+libertarians|Libertarians|Politics & Civic|'taxation is theft';road debate;Ron Swanson|libertarian|libertarians|gun_owners,crypto_bros|8|1|X
+political_independents|Fed-up independents|Politics & Civic|'I hate everyone equally';'anyone can be president' jokes;both sides are cooked|independent, moderate|fence sitters|sarcastic,gen_x|8|1|O;S
+patriots|Flag-waving patriots|Politics & Civic|'Merica;4th of July fireworks;flag shorts;bald eagle everything|patriot|patriots|conservatives,military_vet,beer_dads|9|1|S;B
+overachievers|Overachievers|Personality & Temperament|gold star kid;'gifted kid burnout';resume padding|overachiever|try-hard|type_a_people,older_siblings|8|2|S
+gifted_kids|Former gifted kids|Personality & Temperament|'gifted kid burnout';peaked in 3rd grade;can't do basic tasks|former gifted kid|burnouts|millennials,adhd,overachievers|9|2|R:r/aftergifted;S
+coroners|Coroners and death investigators|Death & Odd Jobs|dead people don't complain;lunch with a body;dark jokes required|coroner|creepy|mortician,dark_humor_people|8|3|X
+crime_scene_cleaners|Crime scene cleaners|Death & Odd Jobs|biohazard suits;cleaning the unimaginable;strong stomach|biohazard tech|cleaners|dark_humor_people|8|3|X
+zookeepers|Zookeepers|Death & Odd Jobs|shoveling poop for a passion;animal bites|zookeeper|animal people|vet_tech|8|1|X
+park_rangers|Park rangers|Outdoors|tourists petting bison;'please don't feed the bears';flat hat|ranger|rangers|hikers,campers|8|1|S
+game_wardens|Game wardens|Outdoors|caught poachers;checks licenses;knows every trick|warden|game cops|hunters,fishermen|8|1|X
+wildland_fire|Wildland firefighters|First Responders|hotshot crews;dig line for 16 hours;smells like smoke|hotshot|forest fire fighters|firefighters|9|2|X
+loggers|Loggers|Trades & Blue Collar|cork boots;chainsaw;'timber!'|logger, timber faller|lumberjacks|pnw,truck_guys|9|2|X
+miners|Coal miners|Trades & Blue Collar|black lung jokes;underground lunch;miner pride|coal miner|miners|appalachians,union_workers|9|3|S
+commercial_fishermen|Commercial fishermen|Trades & Blue Collar|crab season;deadliest catch;salt in veins|fisherman, deckhand|fishermen|alaskans,fishermen|9|3|X
+sanitation|Sanitation workers|Trades & Blue Collar|smell immune;truck back rider;knows your secrets by trash|garbage man, sanitation|trash guys|blue_collar|8|2|X
+exterminators|Exterminators|Trades & Blue Collar|seen roaches in your toaster;'bugs fear me'|pest control|bug guy|blue_collar|8|2|X
+mail_carriers|Mail carriers|Transport & Logistics|neither snow nor rain;dogs hate them;shorts in January|letter carrier|mailman|delivery_drivers|8|1|R:r/USPS
+ups_drivers|UPS drivers|Transport & Logistics|brown shorts;legs of steel;peak season|UPS driver|package guy|delivery_drivers|8|1|R:r/UPS
+tow_truck|Tow truck drivers|Transport & Logistics|everyone hates them till they need them;3am calls|tow operator|repo guy|truckers,night_shift|8|2|X
+locksmiths|Locksmiths|Trades & Blue Collar|'you locked yourself out again?';picks anything|locksmith|lock guy|blue_collar|7|1|X
+auctioneers|Auctioneers|Small Town & Rural|talks 200 words a minute;livestock auctions|auctioneer|fast talker|farmers,small_town|8|1|X
+sonographers|Sonographers|Healthcare|'is it a boy?';can't tell you anything;jelly everywhere|sonographer|ultrasound tech|labor_nurse|8|1|X
+phlebotomists|Phlebotomists|Healthcare|vampire jokes;'small pinch';finds the vein|phleb|blood suckers|cna,night_shift|9|2|S
+or_nurses|OR nurses|Healthcare|counts sponges;surgeons' moods;scrub cap collection|OR nurse|surgical nurse|icu_nurse,er_nurse|8|2|S
+school_nurses|School nurses|Healthcare|ice pack fixes all;'go back to class';lice checks|school nurse|nurse|teachers|8|1|S
+medical_coders|Medical coders|Healthcare|ICD-10 codes for everything;W61.62 (struck by duck)|coder|billing|office_workers|7|1|X
+court_reporters|Court reporters|Office & Tech|types 225 wpm;knows all the secrets|stenographer|typist|paralegals|7|1|X
+project_managers|Project managers|Office & Tech|'let's take this offline';Gantt charts;herding cats|PM|managers|office_workers,type_a_people|7|1|X
+graphic_designers|Graphic designers|Creative & Media|'make the logo bigger';Comic Sans rage;client from hell|designer|artists|painters_artists,coffee_addicts|8|1|R:r/graphic_design;S
+marketers|Marketing people|Office & Tech|synergy;KPI;'let's go viral'|marketer|marketing|office_workers|6|1|X
+social_media_managers|Social media managers|Office & Tech|always online;'the algorithm';posts at 2am|SMM|social media people|chronically_online|7|1|X
+influencers|Influencers and content creators|Online Communities|'link in bio';ring light;PR packages|creator|influencers|tiktok_people|6|1|X
+streamers|Streamers|Online Communities|'thanks for the sub';3 viewers;RGB everything|streamer|streamers|gamers|7|1|X
+youtubers|YouTubers|Online Communities|'smash that like button';thumbnail faces|YouTuber|YouTubers|streamers|7|1|X
+wedding_planners|Wedding planners|Service & Hospitality|bridezilla tamer;emergency kit;'is this the 4th wedding this month'|planner|planners|brides|8|1|X
+djs|DJs|Music Scenes|'can you play Cupid Shuffle';requests for Mr Brightside|DJ|DJ guy|ravers|8|1|X
+coaches|Coaches|Sports & Fitness|whistle;'run it again';clipboard;dad voice|coach|coaches|hs_teacher,football_fans|9|1|S
+pe_teachers|PE teachers|Education|'run a lap';dodgeball tyrant;whistle|PE teacher, gym teacher|gym teacher|coaches,teachers|8|1|S
+lunch_ladies|Lunch ladies|Education|hairnet;mystery meat;knows every kid|lunch lady|cafeteria ladies|teachers,grandmas|9|1|S
+custodians|School custodians|Education|actually runs the school;sees everything;keys on belt|custodian, janitor|janitors|blue_collar|8|1|X
+clowns|Clowns and entertainers|Creative & Media|people scared of them;balloon animals;'15 clowns max'|clown|creepy|class_clowns|8|1|O
+magicians|Magicians|Creative & Media|'pick a card';deck in pocket at all times|magician|nerds|nerds|7|1|X
+actuaries|Actuaries|Office & Tech|predicts your death for money;exam hell|actuary|nerds|accountants,stem_majors|7|3|X
+data_analysts|Data analysts|Office & Tech|Excel jockey;'it depends';pivot tables are love|data person|nerds|accountants,programmers|7|1|X
+travel_lovers|Travel addicts|Hobbies|passport stamps;'where to next';airport bar|traveler|wanderlust|dinks,foodies,photographers|8|1|S
+beach_people|Beach people|Outdoors|salty hair;'life's a beach';sunburn and sand everywhere|beach bum|beach bums|surfers,boaters,floridians|8|1|S
+basketball|Basketball players and fans|Sports & Fitness|pickup games;'ball is life';ankle sprains|baller|ballers|tall_people,gen_z|8|1|S
+bodega_fans|Bodega and corner store regulars|Online Communities|bodega cat appreciation;chopped cheese|bodega regular|city folk|new_yorkers|8|1|X
+hispanic_dads|Latino dads (ownership)|Identity & Heritage|thermostat guard;'I'm not your friend I'm your father';Vicks;fixes cars in driveway|papá|Hispanic dads|hispanic_moms,mechanics|9|1|S
+black_dads|Black dads and cookout uncles (ownership)|Identity & Heritage|grill master;Sunday best;'go ask your mother'|pops|Black dads|black_aunties,grilling_dads|9|1|S

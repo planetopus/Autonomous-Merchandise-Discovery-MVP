@@ -1,0 +1,69 @@
+# ids +|true shared detail|slang hook|example line|pattern|dark 0-3
+church_dads+vapers+dad_bods|heavier church-going dads who quietly vape in the truck before service|thicc|THICC DEACONS WHO VAPE BETWEEN SERMONS|identity_stack|0
+er_nurse+true_crime_fans|ER nurses binge murder podcasts on the drive home after 12s|no cap|I KNOW 14 WAYS TO HIDE A BODY AND I USE THEM TO SAVE YOURS NO CAP|confession|3
+night_shift+er_nurse+energy_drink_people|3am Monster to survive a full-moon night shift|aura|NIGHT SHIFT NURSES RUNNING ON MONSTER AND AURA|identity_stack|1
+dispatchers+anxiety_havers|dispatchers stay calm for strangers then panic over their own voicemail|built different|CALM DURING YOUR WORST DAY. PANICS WHEN THE DOORBELL RINGS.|confession|1
+mortician+introverts|funeral directors prefer the quiet clients|lowkey|MY CLIENTS LOWKEY THE BEST LISTENERS|dark_label|3
+mortician+dad_jokes|undertaker dads with the deadest jokes|dead|UNDERTAKER DAD: MY JOKES ARE DEAD, AND SO IS MY 2 O'CLOCK|identity_stack|3
+paramedic+dark_humor_people|medics cope with gallows humor at 70 mph|unalive|PARAMEDIC: PROFESSIONALLY KEEPING YOU FROM BEING UNALIVED|dark_label|3
+cops+coffee_addicts+dad_bods|cop dads, coffee and the mustache|era|MUSTACHE COP IN HIS DONUT ERA|era|1
+firefighters+grilling_dads|firefighters cook giant station dinners and argue over chili|cooked|FIREFIGHTER DADS: WE PUT OUT FIRES AND STILL GOT COOKED AT THE CHILI COOK-OFF|identity_stack|0
+truckers+energy_drink_people+night_shift|truckers live on gas station energy drinks overnight|built different|TRUCKERS WHO HOLD IT FOR 400 MILES ARE BUILT DIFFERENT|built_different|1
+truckers+church_dads|church-going truckers listening to sermons on the CB at 2am|on God|ON GOD I'M NOT STOPPING TILL AMARILLO|confession|0
+linemen+linemans_wife|lineman's wives hold down the house during storm season|aura|LINEMAN'S WIFE: SINGLE MOM DURING EVERY STORM, +1000 AURA|aura|1
+welders+dad_bods|welder dads with burn holes in every shirt|drip|WELDER DAD DRIP: 47 BURN HOLES AND A CARHARTT|drip|0
+mechanics+boy_dads|mechanic dads who hear 'it makes a noise' at home too|skill issue|'IT MAKES A NOISE' IS A SKILL ISSUE|confession|0
+mechanics+car_guys|everyone loses the 10mm socket|Roman Empire|THE 10MM SOCKET IS MY ROMAN EMPIRE|roman_empire|0
+it_support+introverts|IT guys who want users to stop talking to them|NPC|IT SUPPORT: TURNING NPCs OFF AND ON AGAIN SINCE 2009|identity_stack|1
+programmers+adhd|devs with ADHD hyperfocus on the wrong bug|locked in|LOCKED IN ON A BUG THAT ISN'T THE BUG|confession|0
+teachers+wine_moms|teachers who are moms who survive on wine Fridays|it's giving|IT'S GIVING 'I'LL WAIT' (FOR FRIDAY WINE)|its_giving|1
+teachers+coffee_addicts+anxiety_havers|teachers living on coffee and Diet Coke between bells|delulu|DELULU ENOUGH TO THINK I'LL PEE BEFORE 3PM|confession|0
+hs_teacher+gen_z|teachers who know all the slang and pretend not to|skibidi|I KNOW WHAT SKIBIDI MEANS AND I'M STILL GIVING YOU DETENTION|mismatch|0
+kinder_teacher+girl_moms|kinder teachers with glitter permanently in their hair|ate|KINDERGARTEN TEACHER: ATE 400 SHOELACES AND LEFT NO CRUMBS|ate|0
+servers+anxiety_havers|servers who are anxious everywhere except table 12|slay|SLAYS A DOUBLE SHIFT, CRIES ORDERING PIZZA ON THE PHONE|confession|1
+line_cooks+dark_humor_people|cooks with burn scars and a dark sense of humor|cooked|LINE COOK: I'M NOT STRESSED, I'M COOKED (MEDIUM RARE)|dark_label|2
+bartenders+therapist|bartenders hear more confessions than priests|lowkey|BARTENDER, LOWKEY A LICENSED THERAPIST (NOT LICENSED)|confession|1
+retail_workers+introverts|retail workers who hate people professionally|NPC|'I DON'T KNOW, I JUST WORK HERE' — A TIRED NPC|identity_stack|0
+farmers+church_dads+small_town|farmers who pray for rain then complain about it|ong|FARMERS PRAYING FOR RAIN THEN CUSSING THE RAIN, ONG|identity_stack|0
+hunters+dad_bods+church_dads|deer-camp church dads who nap in the stand|sigma|SIGMA DEER CAMP DAD: ASLEEP IN THE TREE STAND BY 7|mismatch|0
+hunting_widow+wine_moms|wives who disappear into wine during deer season|era|IN MY DEER SEASON WIDOW ERA|era|1
+fishermen+beer_dads+dad_bods|fishing dads who mostly drink beer on the boat|aura|FISHING DADS: ZERO FISH, MAXIMUM AURA|aura|0
+fishermen+grandpas|grandpas who lie about fish size|cap|GRANDPA SAID IT WAS THIS BIG (CAP)|mismatch|0
+golfers+dad_bods+boomers|boomer golf dads who blame the club|skill issue|IT'S NOT THE CLUB, PAPA, IT'S A SKILL ISSUE|mismatch|0
+gym_bros+church_dads|lifting dads who say grace over their protein shake|sigma|SIGMA GRINDSET: BIBLE, BULK, BED BY 9|identity_stack|0
+gym_bros+dad_bods|ex-gym bros now in dad-bod form|washed|WASHED GYM BRO, STILL GOT THE PRE-WORKOUT|confession|0
+dad_bods+grilling_dads|grill dads who eat the 'test' brisket|big back|BIG BACK DADS WHO 'TEST' THE BRISKET|identity_stack|0
+runners+anxiety_havers|people who run to outrun their thoughts|built different|I DON'T RUN FOR FITNESS, I RUN FROM MY THOUGHTS|confession|1
+crocheters+gen_z+anxiety_havers|young anxious crocheters making frogs for everyone|era|IN MY GRANDMA HOBBIES ERA|era|0
+crocheters+true_crime_fans|crocheters who listen to murder podcasts while making cute animals|lowkey|LOWKEY CROCHETING A FROG, HIGHKEY LISTENING TO A MURDER PODCAST|identity_stack|2
+gardeners+boomers|retirees at war with squirrels|opp|THE SQUIRRELS ARE THE OPP|mismatch|0
+crazy_plant_people+cat_ladies|plant ladies whose cats eat the plants|delulu|DELULU PLANT MOM: MY CAT ISN'T EATING THE MONSTERA|confession|0
+cat_ladies+introverts+book_lovers|bookish introverts with three cats and no plans|core|CAT LADY CORE: CANCELED PLANS, THREE CATS, ONE MORE CHAPTER|core|0
+dog_dads+truck_guys|truck guys whose dog rides shotgun|pookie|BIG TRUCK, BIGGER LOVE FOR MY LITTLE POOKIE IN THE PASSENGER SEAT|mismatch|0
+cat_dads+gamers|gamer cat dads whose cat walks on the keyboard mid-match|ratio|MY CAT RATIO'D ME MID-RANKED MATCH|confession|0
+boy_moms+coffee_addicts|boy moms living on coffee while everything becomes a weapon|crash out|BOY MOM: ONE MORE STICK SWORD AND I'M CRASHING OUT|confession|0
+girl_dads+swifties|dads who know every Taylor Swift lyric because of their daughters|era|GIRL DAD IN HIS SWIFTIE ERA (AGAINST HIS WILL)|era|0
+girl_dads+church_dads|dads with braids in their beard from Sunday school|slay|GIRL DADS WHO SLAY BRAIDS FOR JESUS|identity_stack|0
+new_parents+coffee_addicts|sleep-deprived new parents|cooked|NEW PARENTS: WE ARE SO COOKED (AND SO IN LOVE)|confession|0
+divorced_dads+gym_bros|divorced dads who discovered the gym|glow-up|DIVORCED DAD GLOW-UP: GYM, HARLEY, ONE PLATE|identity_stack|2
+divorced_women+wine_moms|newly divorced moms thriving|era|IN MY 'HE TOOK THE COUCH, I KEPT MY PEACE' ERA|era|2
+grandmas+gen_alpha|grandmas who learned slang from grandkids|rizz|GRANDMA HAS RIZZ (SHE GOT YOUR GRANDPA, DIDN'T SHE)|mismatch|0
+grandpas+boomers|grandpas proud of their recliners|aura|GRANDPA RECLINER AURA IS UNMATCHED|aura|0
+church_ladies+southerners|southern church ladies spreading 'prayer requests'|tea|PRAYER REQUESTS ARE JUST SWEET TEA WITH EXTRA STEPS|mismatch|0
+church_ladies+grandmas|grandmas who bring casseroles to every funeral|bussin'|GRANDMA'S FUNERAL CASSEROLE IS BUSSIN (RIP DALE)|mismatch|2
+youth_pastors+gen_x|youth pastors trying to be cool|no cap|JESUS DIED FOR YOUR SINS NO CAP — YOUR YOUTH PASTOR|mismatch|0
+catholics+italian_americans|Catholic guilt plus nonna guilt|mid|NONNA SAYS YOUR GRAVY IS MID AND GOD AGREES|mismatch|0
+midwesterners+lutherans|Lutheran Midwesterners who apologize to furniture|ope|OPE, JUST A LITTLE LUTHERAN GUILT|identity_stack|0
+midwesterners+minnesotans|40-minute Minnesota goodbyes|yap|MIDWEST GOODBYE: 45 MINUTES OF YAPPING IN THE DRIVEWAY|mismatch|0
+texans+grilling_dads|Texan dads who judge your brisket|mid|TEXAS DAD SAYS YOUR BRISKET IS MID|mismatch|0
+southerners+church_ladies|'bless your heart' as an insult|ratio|BLESS YOUR HEART (THAT'S A RATIO)|mismatch|0
+small_town+rural_folks|everyone knows everyone in a one-stoplight town|main character|MAIN CHARACTER OF A ONE-STOPLIGHT TOWN|mismatch|0
+rural_folks+truck_guys|country boys whose truck is their personality|drip|COUNTRY BOY DRIP: MUD, CAMO, AND A TRUCK PAYMENT|drip|0
+floridians+boaters|Florida boat dads at the sandbar|cooked|FLORIDA BOAT DADS ARE COOKED (SUNBURN)|identity_stack|1
+appalachians+cryptid_believers|Appalachian folks proud of Mothman|rizz|MOTHMAN HAS MORE RIZZ THAN YOUR EX|mismatch|0
+pnw+bigfoot_believers|Pacific Northwesterners who 'saw him once'|no cap|SAW BIGFOOT IN '96 NO CAP|confession|0
+boomers+facebook_moms|boomer moms sharing Minion memes in all caps|brain rot|BOOMER BRAIN ROT: MINION MEMES SINCE 2012|mismatch|0
+gen_x+middle_aged|Gen X latchkey kids raised on the garden hose|built different|GEN X: RAISED ON HOSE WATER, BUILT DIFFERENT|built_different|1
+millennials+back_pain|millennials whose back hurts at 34|it's joever|I SLEPT WRONG, IT'S JOEVER|confession|1
+elder_millennials+unc|elder millennials getting called unc|unc|DON'T CALL ME UNC, I HAVE A BAD BACK AND A 401K|mismatch|0
+gen_z+anxiety_havers|Gen Z dread of phone calls|cooked|SOMEONE CALLED ME INSTEAD OF TEXTING. I'M COOKED.|confession|0

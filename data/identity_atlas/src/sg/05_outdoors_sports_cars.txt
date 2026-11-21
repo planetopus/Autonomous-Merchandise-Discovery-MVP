@@ -1,0 +1,55 @@
+fishermen|Fishermen|Outdoors|the one that got away;lies about size;tackle box bigger than toolbox;'reel cool dad';wife thinks they're working|angler, fisherman|fishing guys|dad_bods,beer_dads,hunters,boomers,truck_guys,retired_dads|9|1|A;R:r/Fishing;S;B
+bass_fishermen|Bass fishermen|Outdoors|boat costs more than house;sponsor patch shirts;tournament talk|bass guy|fisherman|fishermen,southerners|9|1|R:r/bassfishing
+fly_fishers|Fly fishers|Outdoors|thinks they're better than bait guys;waders;tying flies in winter|fly guy|fishing snob|fishermen,hikers|8|1|R:r/flyfishing;S
+ice_fishers|Ice fishers|Outdoors|shanty town;sits on bucket in -20;beer stays cold|ice fisherman|crazy cold guys|fishermen,midwesterners,minnesotans|9|1|S
+hunters|Hunters|Outdoors|deer camp is church;camo everything;up at 4am;scent control obsession;'hunting season widow';buck mount on wall|hunter, sportsman|hunters|fishermen,truck_guys,rural_folks,gun_owners,dad_bods,country_music_fans|9|2|A;R:r/Hunting;S;B
+deer_hunters|Deer hunters|Outdoors|tree stand naps;trail cam obsession;rut is a holiday|deer hunter|hunters|hunters,small_town|9|2|R:r/Hunting;S
+duck_hunters|Duck hunters|Outdoors|calls at dinner;labrador partner;cold wet misery fun|duck hunter, waterfowler|duck guys|hunters,dog_dads|9|2|R:r/Waterfowl
+hunting_widow|Hunting widows|Family Roles|husband disappears every November;deer season single mom;camo laundry|hunting widow|wife|hunters,wine_moms|8|1|S;B
+gun_owners|Gun owners|Outdoors|'it's not a hobby it's a collection';range day;ammo prices complaining;safe full|2A, gun guy|gun nuts|hunters,military_vet,truck_guys,conservatives|8|2|R:r/guns;S;B
+preppers|Preppers|Outdoors|bunker snacks;go-bag in trunk;100 cans of beans;ready for zombies|prepper|crazy preppers|gun_owners,ham_radio,homesteaders|7|2|R:r/preppers
+campers|Campers|Outdoors|smells like campfire for a week;s'mores expertise;rain on camping weekend|camper|outdoorsy|hikers,rv_people,boy_scouts_dads|8|1|R:r/camping;S
+rv_people|RV and camper owners|Outdoors|black tank horror;retiree convoy;KOA loyalty;'we've been to 47 states'|RVer|retirees|boomers,retired_dads,campers|8|2|R:r/RVLiving;S
+hikers|Hikers|Outdoors|elevation gain talk;REI dividend;trail mix snob|hiker|granola|campers,dog_moms,crunchy_moms|8|1|R:r/hiking;S
+van_lifers|Van lifers|Outdoors|Instagram sunsets;pooping in buckets;'off-grid' with WiFi|van lifer|homeless with Instagram|hikers,travel_nurse|7|2|R:r/VanLife
+kayakers|Kayakers and paddlers|Outdoors|flipped once;dry bag;river beer|paddler|kayakers|campers,fishermen|7|1|S
+boaters|Boaters|Outdoors|boat = break out another thousand;sandbar beer;lake life|boater, lake life|boat people|beer_dads,lake_people|8|1|S
+lake_people|Lake people|Outdoors|lake time is my time;dock life;sunburn crew|lake life|lake people|boaters,midwesterners|8|1|S;B
+surfers|Surfers|Outdoors|dawn patrol;'gnarly';sunscreen zinc;surf shack|surfer|beach bums|beach_people,californians|8|1|W
+golfers|Golfers|Sports & Fitness|blames the club;golf widow;beer cart girl crush;sliced it again;dad bod golf polo|golfer, golf bro|golfers|dad_bods,boomers,beer_dads,engineers,accountants|9|1|A;R:r/golf;S
+disc_golfers|Disc golfers|Sports & Fitness|tree finder;bag of 30 discs;weed scent nearby|disc golfer|frisbee guys|stoners,hikers|8|1|R:r/discgolf
+pickleball|Pickleball people|Sports & Fitness|won't shut up about pickleball;kitchen rule;retirees dominating|pickler|pickleball cult|boomers,retired_dads,wine_moms|8|1|R:r/Pickleball;S
+runners|Runners|Sports & Fitness|tells you their mile time;26.2 sticker;toenails missing;'runner's high' is a lie|runner|runners|crossfitters,anxiety_havers,type_a_people|8|1|A;R:r/running;S;B
+marathoners|Marathon runners|Sports & Fitness|13.1 vs 26.2 sticker wars;GU gels;chafing horror|marathoner|crazy runners|runners|9|1|S;B
+crossfitters|CrossFitters|Sports & Fitness|won't stop talking about CrossFit;WOD;burpees;box is a cult|CrossFitter|cult|gym_bros,runners|8|1|R:r/crossfit;S
+gym_bros|Gym bros|Sports & Fitness|never skips leg day (does);creatine scoop;'do you even lift';mirror selfies;protein shaker smells;tank top in winter|gym bro, lifter|meatheads|lifters,crypto_bros,podcast_guys,energy_drink_people|9|1|A;R:r/gymbros;S
+gym_girls|Gym girls|Sports & Fitness|hip thrust queen;matching sets;filming at the gym;pre-workout tingles|gym girl, gym rat|gym girlies|gym_bros,iced_coffee_girls|8|1|S
+lifters|Powerlifters|Sports & Fitness|chalk everywhere;squat bench deadlift;bulking excuse to eat|lifter|meatheads|gym_bros,dad_bods|9|1|R:r/powerlifting
+bodybuilders|Bodybuilders|Sports & Fitness|chicken and rice;spray tan;'are you natty';posing in mirrors|bodybuilder|juiceheads|gym_bros|8|1|W;R:r/bodybuilding
+yoga_people|Yoga people|Sports & Fitness|namaste;lululemon;breathwork;chakra talk|yogi|yoga girls|crunchy_moms,spiritual_girls|7|1|S
+cyclists|Cyclists|Sports & Fitness|spandex;bike costs more than car;Strava;drivers hate them|cyclist, roadie|lycra guys|runners,engineers|7|1|R:r/cycling
+mountain_bikers|Mountain bikers|Sports & Fitness|scars as trophies;'just one more lap';full suspension talk|MTB, shredder|bikers|hikers,cyclists|8|2|R:r/MTB
+skaters|Skateboarders|Sports & Fitness|bruised shins;'skate or die';Vans;security kicks them out|skater|skater kids|gen_z,stoners,punks|8|2|W;R:r/skateboarding
+football_fans|Football fans|Sports & Fitness|Sunday is sacred;fantasy league;yells at TV;team jersey for church|football fan|sports guys|beer_dads,dad_bods,grilling_dads,texans,southerners|9|1|S
+fantasy_football|Fantasy football players|Sports & Fitness|trash talk group chat;last place punishment;checks waiver wire at weddings|league manager|fantasy nerds|football_fans,office_workers|8|1|R:r/fantasyfootball;S
+college_football|College football fans (SEC etc.)|Sports & Fitness|it just means more;tailgate for 9 hours;roll tide or war eagle|fan|fans|southerners,football_fans|9|1|S;B
+baseball_parents|Baseball and softball parents|Family Roles|lives at the field;sunflower seeds;'good eye!';travel ball money pit|baseball mom, softball dad|sports parents|boy_moms,girl_dads,minivan_moms|9|1|S;B
+soccer_moms|Soccer moms|Family Roles|orange slices;minivan;folding chair pro|soccer mom|soccer moms|minivan_moms,boy_moms,girl_moms|8|1|S
+hockey_parents|Hockey parents|Family Roles|5am ice time;smelly gear bag;cold rink coffee|hockey mom|hockey parents|boy_moms,midwesterners|9|1|S
+wrestling_moms|Wrestling moms|Family Roles|weigh-in stress;singlet laundry;loudest in the bleachers|wrestling mom|loud moms|boy_moms|9|1|S
+dance_moms|Dance moms|Family Roles|bobby pins everywhere;recital season;competition hairspray|dance mom|dance moms|girl_moms|8|1|S
+cheer_moms|Cheer moms|Family Roles|bows bigger than heads;competition weekends;glitter forever|cheer mom|cheer moms|girl_moms,dance_moms|8|1|S
+nascar_fans|NASCAR fans|Sports & Fitness|turning left;race day cooler;driver loyalty|race fan|rednecks|southerners,truck_guys,beer_dads|9|1|S
+wrestling_fans|Pro wrestling fans|Fandoms & Pop Culture|'it's fake' 'it's scripted';heel turns;Stone Cold quotes|wrestling fan, mark|fans|gamers,dad_bods,millennials|8|1|R:r/SquaredCircle
+car_guys|Car guys|Cars & Motor|'it's not loud it's a performance exhaust';project car never done;10mm socket;cars and coffee|car guy, gearhead, enthusiast|car nerds|mechanics,dad_bods,truck_guys,jdm_guys|9|1|A;R:r/cars;S;B
+truck_guys|Truck guys|Cars & Motor|lifted truck;never hauls anything;Truck Month;Ford vs Chevy war;stickers on back window|truck guy|truck bros|hunters,welders,linemen,country_music_fans,small_town|9|1|A;R:r/trucks;S;B
+jeep_people|Jeep people|Cars & Motor|duck ducking;Jeep wave;'it's a Jeep thing';always something broken|Jeep girl, Jeeper|Jeep people|car_guys,hikers|9|1|R:r/Jeep;S;B
+jdm_guys|JDM and tuner guys|Cars & Motor|stance;Civic with wing;turbo noises;'BRAP'|tuner, JDM|ricers|car_guys,gamers,gen_z|8|1|R:r/JDM;S
+muscle_car|Muscle car guys|Cars & Motor|V8 or nothing;Mopar or no car;Sunday cruise night|muscle car guy|old guys|car_guys,boomers|9|1|S
+miata|Miata owners|Cars & Motor|Miata is always the answer;pop-up headlights;small but mighty|Miata gang|hairdresser car|car_guys|9|1|R:r/Miata
+motorcyclists|Bikers|Cars & Motor|loud pipes save lives;leather vests;wave low;'four wheels move the body two move the soul'|biker, rider|bikers|harley_guys,military_vet|9|2|R:r/motorcycles;S;B
+harley_guys|Harley riders|Cars & Motor|beard and leather;Sturgis pilgrimage;more chrome|Harley rider|biker gang|motorcyclists,boomers,military_vet|9|2|S
+off_roaders|Off-roaders|Cars & Motor|mud is the goal;winch flex;'we'll make it';lifted SxS|off-roader|mud guys|truck_guys,jeep_people,rural_folks|9|1|S
+minivan_moms|Minivan moms|Family Roles|fries under seats from 2019;sliding door pride;'swagger wagon'|minivan mom|soccer mom|soccer_moms,boy_moms,girl_moms|8|1|S
+subaru_lesbians|Subaru drivers|Cars & Motor|dog in back;hiking stickers;coexist sticker;lesbian Subaru joke (ownership)|Subie|Subaru people|hikers,dog_moms,lgbtq_folks|8|1|S;X
+tesla_owners|Tesla owners|Cars & Motor|will tell you about autopilot;charging stops;Elon opinions|Tesla owner|Tesla bros|tech_bros|5|1|X
