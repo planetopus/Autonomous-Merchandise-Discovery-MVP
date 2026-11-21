@@ -53,7 +53,9 @@ from merchandise_discovery.infrastructure.mongo.repositories.stage_log_repositor
 from merchandise_discovery.infrastructure.providers.ebay_browse import EbayStickerSearch
 from merchandise_discovery.infrastructure.providers.image_provider import (
     FixtureImageProvider,
+    OpenAIImageProvider,
     XAIImageProvider,
+    image_backend_name,
 )
 from merchandise_discovery.infrastructure.providers.marketplace_saturation import MarketplaceChecker
 from merchandise_discovery.infrastructure.providers.reasoning_provider import (
@@ -166,16 +168,22 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             if live_mode and settings.openai_api_key
             else None
         )
-        image_provider = (
-            XAIImageProvider(
+        image_name = image_backend_name(
+            settings.openai_api_key,
+            settings.xai_api_key,
+            live=live_mode,
+        )
+        if image_name.startswith("openai") and settings.openai_api_key:
+            image_provider = OpenAIImageProvider(settings.openai_api_key)
+        elif image_name.startswith("xAI") and settings.xai_api_key:
+            image_provider = XAIImageProvider(
                 settings.xai_api_key,
                 settings.xai_image_model,
                 settings.xai_image_price,
                 settings.xai_image_edit_price,
             )
-            if live_mode and settings.xai_api_key
-            else FixtureImageProvider()
-        )
+        else:
+            image_provider = FixtureImageProvider()
         artwork_storage = LocalArtworkStorage(settings.artwork_storage_dir) if live_mode else None
         stage_executor = DiscoveryStageExecutor(
             seed_repository,
@@ -227,7 +235,7 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             provider_modes={
                 "research": "openai web search" if live_mode and settings.openai_api_key else "fixture",
                 "reasoning": "openai structured outputs" if live_mode and settings.openai_api_key else "fixture",
-                "image": "xAI image generation" if live_mode and settings.xai_api_key else "fixture",
+                "image": image_name,
             },
             seed_repository=seed_repository,
             seed_library_repository=seed_library_repository,

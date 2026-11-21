@@ -708,14 +708,43 @@ def _render_prompts(payload: dict[str, Any]) -> None:
 
 
 def _render_artwork_generation(payload: dict[str, Any]) -> None:
-    """Render generated images inline while retaining provider references as fallback."""
+    """Render the finished stickers in one row, then any extras as cards."""
 
     artworks = _records(payload, "artworks")
     _metric_row([("Artwork candidates", str(len(artworks)))])
     if artworks:
-        _render_artwork_cards(artworks, "Generated artwork")
+        _render_sticker_grid(artworks[:5])
+        if len(artworks) > 5:
+            _render_artwork_cards(artworks[5:], "Generated artwork")
     else:
         st.caption("No artwork images were generated.")
+
+
+def _render_sticker_grid(artworks: list[dict[str, Any]]) -> None:
+    """Show up to five finished stickers with the line, the buyer, and a download."""
+
+    columns = st.columns(len(artworks))
+    for column, artwork in zip(columns, artworks):
+        with column:
+            text = _text(artwork, "combination_name", default="Sticker")
+            st.markdown(f"**{text}**")
+            buyers = ""
+            critique = artwork.get("critique") or {}
+            if isinstance(critique, dict):
+                buyers = str(critique.get("who_its_for") or "")
+            if buyers:
+                st.caption(f"Who it's for: {buyers}")
+            _render_artwork_image(artwork, text)
+            source = _artwork_source(artwork)
+            path = Path(source) if source else None
+            if path is not None and path.is_file():
+                st.download_button(
+                    "Download",
+                    data=path.read_bytes(),
+                    file_name=f"{path.stem}.png",
+                    mime="image/png",
+                    key=f"download-{artwork.get('artwork_id', path.name)}",
+                )
 def _artwork_source(record: dict[str, Any]) -> str:
     """Prefer the durable local artifact and fall back to the provider reference URL."""
 

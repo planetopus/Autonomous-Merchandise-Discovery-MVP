@@ -18,6 +18,7 @@ from merchandise_discovery.domain.stages.stage_15_artwork_generation import (
 from merchandise_discovery.domain.sticker_direction import (
     artwork_preamble,
     crossover_block,
+    finished_sticker_direction,
     merchandise_text_clause,
     merged_avoid_list,
 )
@@ -70,7 +71,8 @@ def build_identity_artwork_prompt(
         f"Style direction: {candidate.style_direction}\n"
         f"AI visual direction: {candidate.artwork_prompt}\n"
         f"Do not include: {avoid}\n"
-        "The target identity should recognize the sticker immediately: 'That is literally me.'"
+        "The target identity should recognize the sticker immediately: 'That is literally me.'\n"
+        f"{finished_sticker_direction(candidate)}"
     )
 
 
@@ -94,6 +96,7 @@ def to_artwork_generation_input(
             combination_name=(
                 f"{candidate.identity} · {candidate.artwork_text or 'image only'}"
             ),
+            audience_label=" · ".join(candidate.who_its_for),
         )
         for index, candidate in enumerate(input_model.candidates, start=1)
     ]

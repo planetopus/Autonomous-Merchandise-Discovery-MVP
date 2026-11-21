@@ -5,6 +5,7 @@ inspectable metadata only; the application storage adapter persists live provide
 changing the stage or worker protocol.
 """
 
+import base64
 import re
 from dataclasses import dataclass, field
 from typing import Protocol
@@ -45,6 +46,34 @@ class GeneratedImage:
     mime_type: str
     file_size_bytes: int
     usage: UsageMetrics = field(default_factory=UsageMetrics)
+    content: bytes | None = None
+
+
+OPENAI_IMAGE_MODEL = "gpt-image-1"
+OPENAI_IMAGE_PRICE = 0.04
+
+
+def image_backend_name(openai_key: str | None, xai_key: str | None, *, live: bool) -> str:
+    """Prefer OpenAI gpt-image-1, then xAI, then the fixture provider."""
+
+    if live and (openai_key or "").strip():
+        return f"openai {OPENAI_IMAGE_MODEL}"
+    if live and (xai_key or "").strip():
+        return "xAI image generation"
+    return "fixture"
+
+
+def estimate_image_cost(backend: str, count: int = 5) -> float:
+    """Rough dollars for one run's sticker images. Text tokens are separate."""
+
+    if count <= 0:
+        return 0.0
+    name = backend.casefold()
+    if "gpt-image" in name or name.startswith("openai"):
+        return round(OPENAI_IMAGE_PRICE * count, 2)
+    if "xai" in name:
+        return round(0.02 * count, 2)
+    return 0.0
 
 
 class ImageProvider(Protocol):
@@ -85,6 +114,65 @@ class FixtureImageProvider:
             mime_type="image/png",
             file_size_bytes=128_000,
         )
+
+
+class OpenAIImageProvider:
+    """Generate one sticker with OpenAI gpt-image-1 and return the PNG bytes."""
+
+    def __init__(
+        self,
+        api_key: str,
+        model: str = OPENAI_IMAGE_MODEL,
+        price_per_image: float = OPENAI_IMAGE_PRICE,
+    ):
+        self._client = OpenAI(api_key=api_key)
+        self._model = model
+        self._price_per_image = price_per_image
+
+    def generate(self, request: ImageGenerationRequest) -> GeneratedImage:
+        """Submit one prompt. gpt-image-1 returns base64, not a hosted URL."""
+
+        try:
+            response = self._client.images.generate(
+                model=self._model,
+                prompt=request.prompt,
+                size="1024x1024",
+                quality="medium",
+            )
+        except (OpenAIError, TypeError, ValueError) as error:
+            raise RuntimeError("OpenAI image generation request failed.") from error
+        if not response.data:
+            raise RuntimeError("OpenAI image generation returned no image.")
+        record = response.data[0]
+        raw = getattr(record, "b64_json", None)
+        content = base64.b64decode(raw) if raw else None
+        source_url = getattr(record, "url", None) or f"openai://{self._model}/{request.concept_id}"
+        if content is None and not getattr(record, "url", None):
+            raise RuntimeError("OpenAI image generation returned no image bytes.")
+        slug = re.sub(r"[^a-z0-9]+", "-", request.concept_id.lower()).strip("-")
+        return GeneratedImage(
+            source_url=source_url,
+            storage_key=f"openai-artwork/{slug}/variant-{request.variant_number}.png",
+            width=1024,
+            height=1024,
+            mime_type="image/png",
+            file_size_bytes=len(content) if content else 128_000,
+            content=content,
+            usage=UsageMetrics(
+                provider="openai",
+                model=self._model,
+                request_count=1,
+                image_count=1,
+                estimated_cost_usd=self._price_per_image,
+                cost_is_estimate=True,
+                pricing_note="Estimated at $0.04 per gpt-image-1 medium 1024 image.",
+            ),
+        )
+
+    def edit(self, request: ImageEditRequest) -> GeneratedImage:
+        """Editing stays on the xAI path. This provider only generates finished stickers."""
+
+        raise RuntimeError("OpenAI sticker generation does not edit an existing image.")
 
 
 class XAIImageProvider:

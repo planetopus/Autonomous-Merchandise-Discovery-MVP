@@ -23,6 +23,7 @@ from merchandise_discovery.domain.stages.stage_15_artwork_generation import (
 from merchandise_discovery.domain.sticker_direction import (
     artwork_preamble,
     crossover_block,
+    finished_sticker_direction,
     merchandise_text_clause,
     merged_avoid_list,
 )
@@ -66,6 +67,7 @@ def to_artwork_generation_input(
                 brief_id=_stable_id(run_id, candidate.source_url, index, "brief"),
                 prompt=prompt,
                 combination_name=candidate.artwork_text or "Image-only sticker",
+                audience_label=" · ".join(candidate.who_its_for),
             )
         )
     return ArtworkGenerationInput(
@@ -103,7 +105,8 @@ def build_targeted_artwork_prompt(
         f"Style direction: {candidate.style_direction}\n"
         f"AI visual direction: {candidate.artwork_prompt}\n"
         f"Do not include: {avoid}\n"
-        "The final sticker should make the target audience think: 'That is literally me.'"
+        "The final sticker should make the target audience think: 'That is literally me.'\n"
+        f"{finished_sticker_direction(candidate)}"
     )
 
 
