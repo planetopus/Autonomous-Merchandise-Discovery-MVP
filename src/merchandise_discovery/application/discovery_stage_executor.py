@@ -21,10 +21,12 @@ from merchandise_discovery.domain.humor import (
     apply_line_critic,
     critic_average,
     keep_strong_pairs,
+    member_would_not_buy,
     niche_pair_request,
 )
 from merchandise_discovery.domain.humor_playbook import build_playbook, playbook_prompt
 from merchandise_discovery.domain.humor_references import (
+    HumorReference,
     HumorReferenceLoadError,
     copied_from_source,
     humor_reference_prompt,
@@ -72,6 +74,11 @@ from merchandise_discovery.domain.stages import stage_14_prompt_compilation as s
 from merchandise_discovery.domain.stages import stage_15_artwork_generation as stage_15
 from merchandise_discovery.domain.stages import stage_16_artwork_critique as stage_16
 from merchandise_discovery.domain.stages import stage_17_artwork_revision as stage_17
+from merchandise_discovery.infrastructure.humor_lab_loader import (
+    gold_lines_block,
+    load_humor_lab,
+    merge_lab_playbook,
+)
 from merchandise_discovery.infrastructure.mongo.repositories.artwork_repository import (
     ArtworkRepository,
 )
@@ -242,8 +249,13 @@ class DiscoveryStageExecutor:
         """Collect comments, draft joke-shaped lines, then let a critic cut them."""
 
         selection, references = self._humor_selection(run, input_model)
-        playbook = build_playbook(references)
-        reference_block = humor_reference_prompt(selection) + playbook_prompt(playbook)
+        lab = load_humor_lab()
+        playbook = merge_lab_playbook(build_playbook(references), lab.playbook)
+        reference_block = (
+            humor_reference_prompt(selection)
+            + playbook_prompt(playbook)
+            + gold_lines_block(lab.gold_lines)
+        )
         if self._reasoning_provider is None:
             return None, UsageMetrics(), selection, [], playbook, None
         supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
@@ -257,7 +269,9 @@ class DiscoveryStageExecutor:
         # The pair call does not need Reddit, so the two waits overlap.
         with ThreadPoolExecutor(max_workers=2) as pool:
             quote_job = pool.submit(self._collect_reddit_quotes, input_model)
-            pair_job = pool.submit(self._score_niche_pairs, input_model) if need_pair else None
+            pair_job = (
+                pool.submit(self._score_niche_pairs, input_model, lab.niche_pairs) if need_pair else None
+            )
             quotes = quote_job.result()
             if pair_job is not None:
                 pair_meta, pair_usage, pair_warning = pair_job.result()
@@ -291,13 +305,14 @@ class DiscoveryStageExecutor:
         )
         usage = self._add_usage(usage, response.usage)
         drafted = list(getattr(response.output, "candidates", []))
-        candidates, reviews = self._drop_unoriginal(drafted, selection.examples)
+        candidates, reviews = self._drop_unoriginal(drafted, selection.examples, lab.gold_lines)
         if candidates:
             candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
                 candidates,
                 len(candidates),
                 reference_block,
+                lab.rubric,
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
@@ -310,6 +325,8 @@ class DiscoveryStageExecutor:
                 pipeline_module,
                 reference_block,
                 selection.examples,
+                lab.gold_lines,
+                lab.rubric,
             )
             usage = self._add_usage(usage, fill_usage)
             reviews.extend(fill_reviews)
@@ -413,7 +430,7 @@ class DiscoveryStageExecutor:
             return extra
         return combine_usage(current, extra)
 
-    def _score_niche_pairs(self, input_model):
+    def _score_niche_pairs(self, input_model, bank: list[dict] | None = None):
         """Score about ten pairs once and keep the best, even when it is under 7."""
 
         identity = str(getattr(input_model, "identity", "") or "")
@@ -421,9 +438,10 @@ class DiscoveryStageExecutor:
             system_prompt=(
                 "You pair two niches that share a life. Score shared lived experience and "
                 "instant recognizability from 1 to 10. Nurses plus true crime, and dads plus "
-                "grilling, are the kind of pair that should score 7 or higher."
+                "grilling, are the kind of pair that should score 7 or higher. "
+                "Reject a random combo whose traits do not co-occur."
             ),
-            user_prompt=niche_pair_request(identity),
+            user_prompt=niche_pair_request(identity, bank),
             response_model=NichePairBatch,
             reasoning_effort="low",
         )
@@ -470,6 +488,8 @@ class DiscoveryStageExecutor:
         pipeline_module,
         reference_block: str,
         examples: list,
+        gold_lines: list[str] | None = None,
+        rubric: str = "",
     ):
         """One short call for identity-stack lines only. It does not search the web again."""
 
@@ -480,7 +500,9 @@ class DiscoveryStageExecutor:
             user_prompt=(
                 "Write exactly 2 merchandise lines. pattern must be absurd_identity_stack. "
                 f'Build each sincere club name from "{niche_a}" and "{niche_b}". '
-                "Stack three descriptors from those two niches. Do not copy an existing slogan. "
+                "The traits must genuinely co-occur in one real group, named in a younger "
+                "register that group would not use about themselves, and kept wholesome "
+                "enough that a member would buy it. Do not copy an existing slogan. "
                 "Use a real reddit.com or x.com source_url already in the evidence you know, "
                 "and do not repeat a source sentence as artwork_text.\n"
                 f"{reference_block}"
@@ -492,6 +514,7 @@ class DiscoveryStageExecutor:
         fresh, reviews = self._drop_unoriginal(
             list(getattr(response.output, "candidates", [])),
             examples,
+            gold_lines,
         )
         if fresh:
             fresh, critic_usage, critic_rows = self._critic_pass(
@@ -499,6 +522,7 @@ class DiscoveryStageExecutor:
                 fresh,
                 len(fresh),
                 reference_block,
+                rubric,
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
@@ -581,13 +605,33 @@ class DiscoveryStageExecutor:
         score = getattr(output, "pairing_score", None)
         return (1 if distinct else 0, float(score) if score is not None else 0.0)
 
-    def _drop_unoriginal(self, candidates: list, examples: list) -> tuple[list, list]:
-        """Drop lines that quote the source or an upvoted reference instead of joking."""
+    def _drop_unoriginal(
+        self,
+        candidates: list,
+        examples: list,
+        gold_lines: list[str] | None = None,
+    ) -> tuple[list, list]:
+        """Drop lines that quote the source, a reference, or a humor-lab gold line."""
 
+        gold = [line for line in (gold_lines or []) if line.strip()]
+        gold_refs = [HumorReference(text=line, upvotes=1, humor_type="gold") for line in gold]
         kept: list = []
         dropped: list = []
         for candidate in candidates:
             text = str(getattr(candidate, "artwork_text", "") or "")
+            if gold and (
+                copied_from_source(text, *gold) or is_too_similar_to_references(text, gold_refs)
+            ):
+                dropped.append(
+                    LineReviewRecord(
+                        artwork_text=text,
+                        pattern=str(getattr(candidate, "pattern", "") or ""),
+                        funny_score=None,
+                        kept=False,
+                        reason="copied gold line",
+                    )
+                )
+                continue
             if copied_from_source(
                 text,
                 str(getattr(candidate, "source_quote", "") or ""),
@@ -652,8 +696,9 @@ class DiscoveryStageExecutor:
         candidates: list,
         keep_count: int,
         reference_block: str = "",
+        rubric: str = "",
     ):
-        """Score humor against the reference set and drop lines under the upvote bar."""
+        """Score humor. A member buying the sticker outweighs a generic Reddit score."""
 
         numbered = "\n".join(
             f"{index}. {getattr(candidate, 'artwork_text', '')} "
@@ -664,24 +709,27 @@ class DiscoveryStageExecutor:
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
                 "You are a merchandise humor critic. Score each drafted sticker line. "
+                "The main question is sticker_buy_score, 1 to 10: would a real member of "
+                "this group read the line, say 'that's me', and buy it? That score outweighs "
+                "reddit_upvote_score. A high Reddit score cannot save a line a member would "
+                "not buy. A member who would buy it is not dropped just because Reddit might "
+                "not upvote it. Identity stacks must name a real co-occurring group, in a "
+                "younger register they would not use about themselves, and stay wholesome. "
+                "Score a random word stack at 4 or below on sticker_buy_score. "
                 "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
                 "but must not decide the cut when the tone is dark. reddit_upvote_score is "
-                "1 to 10 for 'would this get upvoted on Reddit' compared with the reference "
-                "jokes. Score title puns and clever names at 4 or below. Score a real setup "
-                "and turn, confession, or deadpan absurdity at 7 or above only when it would "
-                "actually get a laugh. Also score sticker_buy_score from 1 to 10 for "
-                "'would someone buy this exact line on a sticker' and use novelty as "
-                "originality. A line is dropped when the average of reddit_upvote_score, "
-                "sticker_buy_score, and novelty is under 7. Score a line that quotes or "
-                "closely paraphrases its source at 4 or below on all three. Do not reward "
-                "a line that copies a reference."
+                "1 to 10 for a generic Reddit upvote. novelty is originality. "
+                "Score a line that quotes its source, a reference, or a style example at 4 "
+                "or below on sticker_buy_score. Do not reward a copied line.\n"
+                f"{rubric}"
             ),
             user_prompt=(
                 f"Requested tone: {run.config.humor_tone.value}.\n"
                 f"{reference_block}"
                 "Score every index once, in this single batch. "
-                "Drop guidance: average of reddit_upvote_score, sticker_buy_score, and "
-                f"novelty under 7.\n{numbered}"
+                "sticker_buy_score is 'would a real member say that's me and buy it?'. "
+                "It outweighs reddit_upvote_score.\n"
+                f"{numbered}"
             ),
             response_model=HumorCritiqueBatch,
             reasoning_effort="low",
@@ -704,10 +752,11 @@ class DiscoveryStageExecutor:
             review = by_index.get(index)
             score = review.reddit_upvote_score if review is not None else None
             average = critic_average(review) if review is not None else None
-            if (score is None and average is None) or not hasattr(candidate, "model_copy"):
+            buy = review.sticker_buy_score if review is not None else None
+            if (score is None and average is None and buy is None) or not hasattr(candidate, "model_copy"):
                 scored.append(candidate)
                 continue
-            shown = round(average, 2) if average is not None else score
+            shown = buy if buy is not None else average if average is not None else score
             scored.append(candidate.model_copy(update={"funny_score": shown}))
         kept = apply_line_critic(
             scored,
@@ -721,18 +770,20 @@ class DiscoveryStageExecutor:
             review = by_index.get(index)
             score = review.reddit_upvote_score if review is not None else None
             average = critic_average(review) if review is not None else None
-            below = (average is not None and average < 7) or (score is not None and score < 7)
+            buy = review.sticker_buy_score if review is not None else None
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
-            elif below:
-                reason, kept_flag = "below 7", False
+            elif member_would_not_buy(review):
+                reason = "would not buy" if buy is not None else "below 7"
+                kept_flag = False
             else:
                 reason, kept_flag = "cut by critic", False
+            shown = buy if buy is not None else average if average is not None else score
             rows.append(
                 LineReviewRecord(
                     artwork_text=str(getattr(candidate, "artwork_text", "") or ""),
                     pattern=str(getattr(candidate, "pattern", "") or ""),
-                    funny_score=round(average, 2) if average is not None else score,
+                    funny_score=shown,
                     kept=kept_flag,
                     reason=reason,
                 )

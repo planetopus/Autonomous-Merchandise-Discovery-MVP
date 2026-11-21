@@ -30,6 +30,10 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "joke, never the source sentence, a close paraphrase, or a title pun. "
         "Write in the insider voice of someone who lives the niche, about 4 to 14 words. "
         "Dark humor is welcome. "
+        "Identity stacks must name a real group whose traits genuinely co-occur, never a "
+        "random combo. A generational or register mismatch is a key comedy lever: use words "
+        "or habits the group would not use about themselves, and keep the line wholesome "
+        "enough that a member thinks 'that's me' and would buy the sticker. "
     )
     if selected == HumorTone.DARK:
         return (
@@ -233,14 +237,34 @@ class LineReview:
 
 
 def critic_average(review) -> float | None:
-    """Average of Reddit-upvote, sticker-buy, and originality. Missing scores do not invent one."""
+    """Weighted score. The member-buy test is half; Reddit and originality share the rest."""
 
     reddit = getattr(review, "reddit_upvote_score", None)
     sticker = getattr(review, "sticker_buy_score", None)
     originality = getattr(review, "novelty", None)
-    if reddit is None or sticker is None or originality is None:
-        return None
-    return (float(reddit) + float(sticker) + float(originality)) / 3
+    if sticker is None:
+        if reddit is None or originality is None:
+            return None
+        return (float(reddit) + float(originality)) / 2
+    reddit_part = float(reddit) if reddit is not None else float(sticker)
+    novelty_part = float(originality) if originality is not None else float(sticker)
+    return (0.5 * float(sticker)) + (0.25 * novelty_part) + (0.25 * reddit_part)
+
+
+def member_would_not_buy(review) -> bool:
+    """The buy-it test outweighs a generic Reddit score.
+
+    A line a real member would not buy is dropped even if Reddit would upvote it.
+    A line a member would buy is not dropped just because the Reddit score is low.
+    """
+
+    if review is None:
+        return False
+    sticker = getattr(review, "sticker_buy_score", None)
+    reddit = getattr(review, "reddit_upvote_score", None)
+    if sticker is not None:
+        return float(sticker) < 7
+    return reddit is not None and float(reddit) < 7
 
 
 def keep_strong_pairs(pairs: list) -> list:
@@ -262,7 +286,7 @@ def keep_strong_pairs(pairs: list) -> list:
     return strong
 
 
-def niche_pair_request(identity: str = "") -> str:
+def niche_pair_request(identity: str = "", bank: list[dict] | None = None) -> str:
     """Ask for about ten collisions and a score for each, before any joke is written."""
 
     named = identity.strip()
@@ -271,13 +295,29 @@ def niche_pair_request(identity: str = "") -> str:
         if named
         else ""
     )
+    bank_lines = ""
+    if bank:
+        rendered = "\n".join(
+            f'- {item["niche_a"]} + {item["niche_b"]}'
+            for item in bank
+            if item.get("niche_a") and item.get("niche_b")
+        )
+        if rendered:
+            bank_lines = (
+                "Score pairs from this bank first. Use one when its audiences really "
+                "co-occur. Add a new pair only when none of these fit, and only if the "
+                "traits genuinely co-occur.\n"
+                f"{rendered}\n"
+            )
     return (
         "Propose about 10 niche pairs for die-cut stickers. "
         "A good pair is two audiences that genuinely share a life, recognizable in one line. "
+        "The traits must co-occur in a real group. Never propose a random combo. "
         "Examples of good pairs: nurses + true crime, dads + grilling. "
         "Score each pair from 1 to 10 on shared_life_score (one person really lives both) "
         "and recognizability_score (a stranger gets the collision immediately). "
         "Do not propose a pair you would score under 7 on either axis.\n"
+        f"{bank_lines}"
         f"{anchor}"
     )
 
@@ -303,15 +343,7 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
             score = humor + novelty + tone_match
         else:
             score = humor + novelty + tone_match + (0.25 * giftability)
-        average = critic_average(review) if review is not None else None
-        if average is not None and average < 7:
-            continue
-        if (
-            review is not None
-            and average is None
-            and review.reddit_upvote_score is not None
-            and review.reddit_upvote_score < 7
-        ):
+        if member_would_not_buy(review):
             continue
         key = joke_key(str(getattr(candidate, "artwork_text", "") or getattr(candidate, "phrase", "")))
         if key and key in seen:

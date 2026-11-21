@@ -47,6 +47,8 @@ def test_priority_patterns_lead_and_do_not_quote_the_source_lines() -> None:
     ]
     assert "absurd_identity_stack" in prompt
     assert "At least two candidates" in prompt
+    assert "co-occur" in prompt
+    assert "register" in prompt
     blob = (prompt + " ".join(item["guidance"] for item in playbook["patterns"])).casefold()
     saved = bundled_humor_reference_csv().parents[0].joinpath("humor_playbook.json").read_text(
         encoding="utf-8"
@@ -102,3 +104,35 @@ def test_critic_drops_a_line_whose_three_scores_average_under_7() -> None:
     )
 
     assert kept == []
+
+
+def test_member_buy_score_outweighs_a_generic_reddit_score() -> None:
+    """A member who would buy the line is kept even when Reddit would not upvote it."""
+
+    bought = SimpleNamespace(artwork_text="Our small group brings the snacks", phrase="")
+    upvoted = SimpleNamespace(artwork_text="Random words stacked for shock", phrase="")
+    kept = apply_line_critic(
+        [upvoted, bought],
+        [
+            LineReview(
+                0,
+                humor_landed=9,
+                novelty=9,
+                tone_match=9,
+                reddit_upvote_score=10,
+                sticker_buy_score=4,
+            ),
+            LineReview(
+                1,
+                humor_landed=8,
+                novelty=8,
+                tone_match=8,
+                reddit_upvote_score=3,
+                sticker_buy_score=9,
+            ),
+        ],
+        keep_count=2,
+        tone=HumorTone.DRY,
+    )
+
+    assert kept == [bought]

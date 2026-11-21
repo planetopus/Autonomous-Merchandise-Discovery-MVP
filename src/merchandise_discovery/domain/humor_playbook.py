@@ -41,9 +41,12 @@ PRIORITY_PATTERNS = [
         "id": "absurd_identity_stack",
         "label": "Absurd identity stack",
         "guidance": (
-            "Three unrelated identity or niche descriptors stacked into a sincere club "
-            "or bumper-sticker name. Build every stack from this run's two niches. "
-            "This is the top pattern. At least two lines in the batch use it."
+            "A sincere club or bumper-sticker name for a REAL group whose traits "
+            "genuinely co-occur. Build it from this run's two niches, not from a random "
+            "combo. Name that group in a younger generation's words or habits they would "
+            "not use about themselves, and keep the line wholesome enough that a member "
+            "thinks 'that's me' and would buy it. This is the top pattern. At least two "
+            "lines in the batch use it."
         ),
     },
     {
@@ -192,8 +195,11 @@ def playbook_prompt(playbook: dict) -> str:
             "Humor playbook. These are structures, not lines to copy. "
             "Do not reuse any existing sticker slogan. "
             "Set each candidate's pattern to one of these ids. "
-            "At least two candidates must use absurd_identity_stack, a sincere club name "
-            "stacked from this run's two niches."
+            "At least two candidates must use absurd_identity_stack. "
+            "An identity stack names a real group whose traits co-occur, in a register "
+            "that group would not use about themselves, and stays wholesome enough to buy. "
+            "A generational or register mismatch is a key comedy lever. "
+            "Never stack unrelated words just because they sound odd."
         )
     ]
     priority = [item for item in patterns if item.get("priority")]
