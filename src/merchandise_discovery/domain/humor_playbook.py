@@ -122,6 +122,34 @@ PRIORITY_PATTERNS = [
         ),
     },
     {
+        "id": "gen_z_slang_mismatch",
+        "label": "Gen Z slang on the wrong group",
+        "guidance": (
+            "A joke shape, not a topic. Put Gen Z slang on a real group that does not "
+            "talk that way. Words such as big back, rizz, era, and crash out are the "
+            "device. Fill the shape with identities across the atlas, not only the "
+            "groups in the ratings."
+        ),
+    },
+    {
+        "id": "polite_excuse_quotes",
+        "label": "Quotes around a polite excuse",
+        "guidance": (
+            "A joke shape, not a topic. Put quotation marks around the polite word the "
+            "group uses to excuse the habit, such as test. The excuse is the turn. "
+            "Use it for any identity, not only the one in the example."
+        ),
+    },
+    {
+        "id": "parenthetical_twist",
+        "label": "Parenthetical twist",
+        "guidance": (
+            "A joke shape, not a topic. End the line with a parenthetical that flips "
+            "the boast, such as against his will or damaged. The aside is the joke. "
+            "Apply it across identities instead of repeating the sample groups."
+        ),
+    },
+    {
         "id": "fake_warning_sign",
         "label": "Fake warning sign",
         "guidance": (

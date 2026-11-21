@@ -132,7 +132,7 @@ def test_bundled_humor_csv_matches_the_synced_file_shape() -> None:
     body = bundled_humor_reference_csv().read_text(encoding="utf-8")
     parsed = parse_humor_reference_csv(body)
 
-    assert len(parsed) == 29
+    assert len(parsed) == 34
     assert all(isinstance(item.upvotes, int) and item.upvotes > 0 for item in parsed)
     assert parsed[0].upvotes >= parsed[-1].upvotes
     assert any(item.humor_type == "dry/edgy" for item in parsed)

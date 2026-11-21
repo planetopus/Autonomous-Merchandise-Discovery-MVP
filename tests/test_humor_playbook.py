@@ -46,7 +46,12 @@ def test_priority_patterns_lead_and_do_not_quote_the_source_lines() -> None:
         "absurd_identity_stack",
         "self_defeating_sign",
     ]
+    assert "gen_z_slang_mismatch" in ids
+    assert "polite_excuse_quotes" in ids
+    assert "parenthetical_twist" in ids
     assert "absurd_identity_stack" in prompt
+    assert "parenthetical twist" in prompt.casefold()
+    assert "polite" in prompt.casefold()
     assert "clarity beats cleverness" in prompt.casefold()
     assert "under 2 seconds" in prompt
     assert "At least two candidates" in prompt

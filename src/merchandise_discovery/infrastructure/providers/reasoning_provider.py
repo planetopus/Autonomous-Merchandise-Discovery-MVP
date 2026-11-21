@@ -184,33 +184,91 @@ class OpenAIReasoningProvider:
             ) from error
         if response.output_parsed is None:
             raise ReasoningProviderError("Structured reasoning response was empty or invalid.")
-        provider_usage = response.usage
-        input_tokens = _usage_count(provider_usage, "input_tokens", "prompt_tokens")
-        output_tokens = _usage_count(provider_usage, "output_tokens", "completion_tokens")
         search_cost = self._web_search_price_per_call if web_search_domains else 0.0
         return StructuredResponse(
             output=response.output_parsed,
-            usage=UsageMetrics(
-                provider="openai",
-                model=self._model,
-                request_count=1,
-                input_tokens=input_tokens,
-                output_tokens=output_tokens,
-                total_tokens=_usage_count(provider_usage, "total_tokens") or input_tokens + output_tokens,
-                estimated_cost_usd=round(
-                    input_tokens * self._input_price / 1_000_000
-                    + output_tokens * self._output_price / 1_000_000
-                    + search_cost,
-                    8,
-                ),
-                cost_is_estimate=True,
-                pricing_note=(
-                    "Estimated from configured OpenAI per-million-token rates"
-                    + (
-                        f" plus ${search_cost:.2f} for the web-search call."
-                        if search_cost
-                        else "."
-                    )
-                ),
+            usage=self._usage_metrics(response.usage, search_cost),
+        )
+
+    def search_web(self, query: str) -> tuple[list[dict[str, str]], UsageMetrics]:
+        """Run one OpenAI web search and return citation URLs plus the measured cost.
+
+        This is the same Responses web-search tool the research and social stages use,
+        without a domain filter, so a phrase can be checked on any store.
+        """
+
+        request_kwargs: dict[str, object] = {
+            "model": self._model,
+            "tools": [{"type": "web_search"}],
+            "tool_choice": "required",
+            "input": query,
+        }
+        if is_reasoning_model(self._model):
+            request_kwargs["reasoning"] = {"effort": "low"}
+        try:
+            response = self._client.responses.create(**request_kwargs)
+        except (OpenAIError, TypeError, ValueError) as error:
+            detail = str(error).strip() or type(error).__name__
+            raise ReasoningProviderError(f"Web search failed: {detail[:500]}") from error
+        citations: list[dict[str, str]] = []
+        seen: set[str] = set()
+        for annotation in _iter_annotations(response):
+            url = _annotation_value(annotation, "url")
+            if not url or url in seen:
+                continue
+            seen.add(url)
+            title = _annotation_value(annotation, "title") or url
+            citations.append({"url": url, "title": title})
+        return citations, self._usage_metrics(
+            getattr(response, "usage", None),
+            self._web_search_price_per_call,
+        )
+
+    def _usage_metrics(self, provider_usage: object, search_cost: float) -> UsageMetrics:
+        """Convert one Responses usage block into the application cost contract."""
+
+        input_tokens = _usage_count(provider_usage, "input_tokens", "prompt_tokens")
+        output_tokens = _usage_count(provider_usage, "output_tokens", "completion_tokens")
+        return UsageMetrics(
+            provider="openai",
+            model=self._model,
+            request_count=1,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            total_tokens=_usage_count(provider_usage, "total_tokens") or input_tokens + output_tokens,
+            estimated_cost_usd=round(
+                input_tokens * self._input_price / 1_000_000
+                + output_tokens * self._output_price / 1_000_000
+                + search_cost,
+                8,
+            ),
+            cost_is_estimate=True,
+            pricing_note=(
+                "Estimated from configured OpenAI per-million-token rates"
+                + (
+                    f" plus ${search_cost:.2f} for the web-search call."
+                    if search_cost
+                    else "."
+                )
             ),
         )
+
+
+def _iter_annotations(response: object):
+    """Yield citation annotations from a Responses web-search result."""
+
+    for item in getattr(response, "output", None) or []:
+        content = item.get("content") if isinstance(item, dict) else getattr(item, "content", None)
+        for block in content or []:
+            annotations = (
+                block.get("annotations")
+                if isinstance(block, dict)
+                else getattr(block, "annotations", None)
+            )
+            yield from annotations or []
+
+
+def _annotation_value(annotation: object, name: str) -> str:
+    if isinstance(annotation, dict):
+        return str(annotation.get(name) or "")
+    return str(getattr(annotation, name, "") or "")

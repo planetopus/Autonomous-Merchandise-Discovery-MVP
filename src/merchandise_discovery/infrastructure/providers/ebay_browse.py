@@ -39,6 +39,14 @@ class EbayStickerSearch:
     def already_for_sale(self, phrase: str) -> bool | None:
         """Return True, False, or None when the check is skipped."""
 
+        found = self.match(phrase)
+        if found is None:
+            return None
+        return found[0]
+
+    def match(self, phrase: str) -> tuple[bool, str] | None:
+        """Return whether a listing matches, and its URL. None when the check is skipped."""
+
         cleaned = " ".join(phrase.split())
         if not self._token or len(cleaned) < 3:
             return None
@@ -67,8 +75,9 @@ class EbayStickerSearch:
         for item in summaries:
             title = str(item.get("title") or "")
             if _is_sticker_listing(title) and _near_duplicate(cleaned, title):
-                return True
-        return False
+                url = str(item.get("itemWebUrl") or item.get("itemAffiliateWebUrl") or "")
+                return True, url
+        return False, ""
 
     def _wait(self) -> None:
         if self._last_at is None:
