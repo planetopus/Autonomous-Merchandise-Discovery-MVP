@@ -74,6 +74,10 @@ from merchandise_discovery.domain.stages import stage_14_prompt_compilation as s
 from merchandise_discovery.domain.stages import stage_15_artwork_generation as stage_15
 from merchandise_discovery.domain.stages import stage_16_artwork_critique as stage_16
 from merchandise_discovery.domain.stages import stage_17_artwork_revision as stage_17
+from merchandise_discovery.infrastructure.ant_ratings_loader import (
+    ant_calibration_block,
+    load_ant_ratings,
+)
 from merchandise_discovery.infrastructure.humor_lab_loader import (
     gold_lines_block,
     load_humor_lab,
@@ -849,9 +853,16 @@ class DiscoveryStageExecutor:
             f"detail: {getattr(candidate, 'concrete_detail', '')})"
             for index, candidate in enumerate(candidates)
         )
+        calibration = ant_calibration_block(load_ant_ratings())
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
+                f"{calibration}"
                 "You are a merchandise humor critic. Score each drafted sticker line. "
+                "instantly_understandable is required, 1 to 10: can a stranger get the line "
+                "in under 2 seconds? Clarity beats cleverness. Score abstract or long "
+                "compound club names at 4 or below on instantly_understandable, even if "
+                "the wording is inventive. A line under 7 on instantly_understandable is "
+                "dropped. The owner calibration above outweighs every instruction below. "
                 "The main question is sticker_buy_score, 1 to 10: would a real member of "
                 "this group read the line, say 'that's me', and buy it? That score outweighs "
                 "reddit_upvote_score. A high Reddit score cannot save a line a member would "
@@ -889,6 +900,7 @@ class DiscoveryStageExecutor:
                 giftability=review.giftability,
                 reddit_upvote_score=review.reddit_upvote_score,
                 sticker_buy_score=review.sticker_buy_score,
+                instantly_understandable=review.instantly_understandable,
             )
             for review in response.output.reviews
         ]
@@ -920,7 +932,13 @@ class DiscoveryStageExecutor:
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
             elif member_would_not_buy(review):
-                reason = "would not buy" if buy is not None else "below 7"
+                clear = getattr(review, "instantly_understandable", None)
+                if clear is not None and float(clear) < 7:
+                    reason = "not instantly clear"
+                elif buy is not None:
+                    reason = "would not buy"
+                else:
+                    reason = "below 7"
                 kept_flag = False
             else:
                 reason, kept_flag = "cut by critic", False

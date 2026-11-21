@@ -226,6 +226,12 @@ class HumorCritiqueItem(BaseModel):
         le=10,
         description="Would someone buy this exact line on a die-cut sticker.",
     )
+    instantly_understandable: float = Field(
+        default=8,
+        ge=1,
+        le=10,
+        description="Can a stranger understand the line in under 2 seconds?",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -268,6 +274,7 @@ class LineReview:
         giftability: float = 5.0,
         reddit_upvote_score: float | None = None,
         sticker_buy_score: float | None = None,
+        instantly_understandable: float | None = None,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -276,6 +283,7 @@ class LineReview:
         self.giftability = giftability
         self.reddit_upvote_score = reddit_upvote_score
         self.sticker_buy_score = sticker_buy_score
+        self.instantly_understandable = instantly_understandable
 
 
 def critic_average(review) -> float | None:
@@ -302,6 +310,9 @@ def member_would_not_buy(review) -> bool:
 
     if review is None:
         return False
+    clear = getattr(review, "instantly_understandable", None)
+    if clear is not None and float(clear) < 7:
+        return True
     sticker = getattr(review, "sticker_buy_score", None)
     reddit = getattr(review, "reddit_upvote_score", None)
     if sticker is not None:

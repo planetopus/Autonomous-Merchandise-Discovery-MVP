@@ -37,15 +37,18 @@ def test_priority_patterns_lead_and_do_not_quote_the_source_lines() -> None:
     playbook = build_playbook(references)
     prompt = playbook_prompt(playbook)
 
-    assert playbook["patterns"][0]["id"] == "absurd_identity_stack"
-    assert playbook["patterns"][0]["examples"] == []
+    assert playbook["patterns"][0]["id"] == "clarity_beats_cleverness"
+    assert playbook["patterns"][1]["id"] == "absurd_identity_stack"
+    assert playbook["patterns"][1]["examples"] == []
     ids = [item["id"] for item in playbook["patterns"] if item.get("priority")]
     assert ids[:3] == [
+        "clarity_beats_cleverness",
         "absurd_identity_stack",
         "self_defeating_sign",
-        "cheerful_dark_label",
     ]
     assert "absurd_identity_stack" in prompt
+    assert "clarity beats cleverness" in prompt.casefold()
+    assert "under 2 seconds" in prompt
     assert "At least two candidates" in prompt
     assert "co-occur" in prompt
     assert "register" in prompt

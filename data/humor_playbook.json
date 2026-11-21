@@ -2,6 +2,14 @@
   "source": "data/humor_references.csv",
   "patterns": [
     {
+      "id": "clarity_beats_cleverness",
+      "label": "Clarity beats cleverness",
+      "guidance": "A line must be instantly understood in under 2 seconds. Abstract or long compound club names are penalized. If a stranger needs the backstory, the line fails.",
+      "weight": null,
+      "priority": true,
+      "examples": []
+    },
+    {
       "id": "absurd_identity_stack",
       "label": "Absurd identity stack",
       "guidance": "A sincere club name for a real group whose traits co-occur. ALL CAPS, 6 words maximum, in a younger register that group would not use about themselves. A long literal list of duties is not this pattern. Keep it wholesome enough that a member would buy it. At least two lines use it.",

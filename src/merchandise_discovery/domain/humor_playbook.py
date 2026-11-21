@@ -38,6 +38,15 @@ class HumorPlaybook(BaseModel):
 # Hand-authored shapes. Guidance only: do not store sample slogans here.
 PRIORITY_PATTERNS = [
     {
+        "id": "clarity_beats_cleverness",
+        "label": "Clarity beats cleverness",
+        "guidance": (
+            "A line must be instantly understood in under 2 seconds. "
+            "Abstract or long compound club names are penalized. "
+            "If a stranger needs the backstory, the line fails."
+        ),
+    },
+    {
         "id": "absurd_identity_stack",
         "label": "Absurd identity stack",
         "guidance": (
@@ -190,6 +199,8 @@ def playbook_prompt(playbook: dict) -> str:
         return ""
     lines = [
         (
+            "Lesson: clarity beats cleverness. A line must be instantly understood "
+            "in under 2 seconds. Abstract or long compound club names are penalized. "
             "Humor playbook. These are structures, not lines to copy. "
             "Do not reuse any existing sticker slogan. "
             "Set each candidate's pattern to one of these ids. "
