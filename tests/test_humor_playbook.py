@@ -106,6 +106,17 @@ def test_critic_drops_a_line_whose_three_scores_average_under_7() -> None:
     assert kept == []
 
 
+def test_a_long_literal_stack_is_not_a_club_name() -> None:
+    """Identity-stack lines have to be short and in capitals."""
+
+    from merchandise_discovery.domain.humor import identity_stack_is_too_long
+
+    literal = "The First-Period Bus-Duty Coffee & Laminator Survivors"
+    assert identity_stack_is_too_long(literal, "absurd_identity_stack")
+    assert not identity_stack_is_too_long("THICC DADS WHO VAPE FOR CHRIST", "absurd_identity_stack")
+    assert not identity_stack_is_too_long(literal, "confession")
+
+
 def test_member_buy_score_outweighs_a_generic_reddit_score() -> None:
     """A member who would buy the line is kept even when Reddit would not upvote it."""
 

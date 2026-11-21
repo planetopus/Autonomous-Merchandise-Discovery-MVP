@@ -249,10 +249,9 @@ def test_identity_v2_auto_selection_targets_lived_merchandise_situations() -> No
     prompt = pipeline.build_user_prompt(input_model)
 
     assert "natural human identity label" in prompt
-    assert "concrete incident, object, ritual" in prompt
-    assert "hidden operational consequences" in prompt
-    assert "research-report phrasing" in prompt
-    assert "human situation, not a report heading" in prompt
+    assert "5 to 10 universal truths" in prompt
+    assert "must not define the whole batch" in prompt
+    assert "Choose a narrow behavior" not in prompt
     assert "life_stage:" in prompt
     assert "interest:" in prompt
     assert "relationship:" in prompt

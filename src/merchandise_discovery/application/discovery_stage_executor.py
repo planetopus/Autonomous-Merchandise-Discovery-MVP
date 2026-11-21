@@ -355,6 +355,28 @@ class DiscoveryStageExecutor:
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
+        if self._spread_is_thin(drafted):
+            spread, spread_usage, spread_reviews = self._rewrite_for_spread(
+                run,
+                input_model,
+                output_model,
+                pipeline_module,
+                reference_block + atlas_block,
+                selection.examples,
+                lab.gold_lines,
+                critic_rubric,
+            )
+            usage = self._add_usage(usage, spread_usage)
+            reviews.extend(spread_reviews)
+            if spread and not self._spread_is_thin(spread):
+                candidates = spread
+            else:
+                if spread:
+                    candidates = self._best_available(spread, candidates, input_model.candidate_count)
+                warnings.append(
+                    "The first batch sat on too few patterns or truths. "
+                    "Showing the widest lines available."
+                )
         self._note_social_progress(usage, pair_meta, candidates or drafted, reviews, warnings)
         if self._needs_absurd_stacks(candidates, input_model.candidate_count):
             filled, fill_usage, fill_reviews = self._fill_absurd_stacks(
@@ -555,9 +577,10 @@ class DiscoveryStageExecutor:
             user_prompt=(
                 "Write exactly 2 merchandise lines. pattern must be absurd_identity_stack. "
                 f'Build each sincere club name from "{niche_a}" and "{niche_b}". '
-                "The traits must genuinely co-occur in one real group, named in a younger "
-                "register that group would not use about themselves, and kept wholesome "
-                "enough that a member would buy it. Do not copy an existing slogan. "
+                "The traits must genuinely co-occur in one real group. artwork_text is ALL CAPS "
+                "and at most 6 words, in a younger register that group would not use about "
+                "themselves. A long literal duty list is rejected. Keep it wholesome enough "
+                "that a member would buy it. Do not copy an existing slogan. "
                 "Use a real reddit.com or x.com source_url already in the evidence you know, "
                 "and do not repeat a source sentence as artwork_text.\n"
                 f"{reference_block}"
@@ -623,6 +646,71 @@ class DiscoveryStageExecutor:
         raw = str(getattr(candidate, "pattern", "") or "")
         normalized = " ".join(raw.casefold().replace("_", " ").replace("-", " ").split())
         return normalized == "absurd identity stack"
+
+    def _spread_is_thin(self, candidates: list) -> bool:
+        """A large batch that sits on one pattern or one truth is not a sticker set."""
+
+        if len(candidates) < 6:
+            return False
+        patterns = {
+            str(getattr(candidate, "pattern", "") or "").strip().casefold()
+            for candidate in candidates
+        }
+        truths = {
+            " ".join(str(getattr(candidate, "truth", "") or "").casefold().split())
+            for candidate in candidates
+        }
+        patterns.discard("")
+        truths.discard("")
+        return len(patterns) < 6 or len(truths) < 4
+
+    def _rewrite_for_spread(
+        self,
+        run,
+        input_model,
+        output_model,
+        pipeline_module,
+        reference_block: str,
+        examples: list,
+        gold_lines: list[str] | None,
+        rubric: str,
+    ):
+        """One short rewrite when every line described the same narrow situation."""
+
+        niche_a = str(getattr(input_model, "niche_a", "") or "").strip()
+        niche_b = str(getattr(input_model, "niche_b", "") or "").strip()
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                "The previous lines all described one narrow policy or incident. "
+                f"Rewrite {input_model.candidate_count} lines for the broad life of "
+                f'"{niche_a}" and "{niche_b}". '
+                "Use at least 6 different pattern values and at least 4 different truth values. "
+                "Source details are seasoning only. "
+                "Set comic_turn to ironic or sarcastic when the line turns. "
+                "absurd_identity_stack lines are ALL CAPS and at most 6 words.\n"
+                f"{reference_block}"
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        fresh, reviews = self._drop_unoriginal(
+            list(getattr(response.output, "candidates", [])),
+            examples,
+            gold_lines,
+        )
+        usage = response.usage
+        if fresh:
+            fresh, critic_usage, critic_rows = self._critic_pass(
+                run,
+                fresh,
+                len(fresh),
+                reference_block,
+                rubric,
+            )
+            usage = self._add_usage(usage, critic_usage)
+            reviews.extend(critic_rows)
+        return fresh, usage, reviews
 
     def _needs_absurd_stacks(self, candidates: list, keep_count: int) -> bool:
         """Runs that ask for two or more lines must keep two stacked-identity jokes."""
@@ -770,7 +858,10 @@ class DiscoveryStageExecutor:
                 "not buy. A member who would buy it is not dropped just because Reddit might "
                 "not upvote it. Identity stacks must name a real co-occurring group, in a "
                 "younger register they would not use about themselves, and stay wholesome. "
-                "Score a random word stack at 4 or below on sticker_buy_score. "
+                "Score a random word stack, or an absurd_identity_stack longer than 6 words "
+                "or not in ALL CAPS, at 4 or below on sticker_buy_score. "
+                "Raise sticker_buy_score when comic_turn is ironic or sarcastic and the turn "
+                "is clear. Lower it for a straight observation of a policy or rule. "
                 "humor_landed, novelty, and tone_match are 0 to 10. giftability is 0 to 10 "
                 "but must not decide the cut when the tone is dark. reddit_upvote_score is "
                 "1 to 10 for a generic Reddit upvote. novelty is originality. "

@@ -15,6 +15,7 @@ from merchandise_discovery.domain.humor import (
     LineReviewRecord,
     NichePairRecord,
     PlaybookPatternRecord,
+    broad_identity_brief,
     humor_prompt_suffix,
     niche_pair_block,
     quote_block,
@@ -95,6 +96,8 @@ class SocialIdentityTextCandidate(BaseModel):
     humor_mechanism: str = Field(default="", max_length=200)
     concrete_detail: str = Field(default="", max_length=200)
     pattern: str = Field(default="", max_length=80)
+    truth: str = Field(default="", max_length=160)
+    comic_turn: str = Field(default="straight", max_length=20)
     funny_score: float | None = Field(default=None, ge=0, le=10)
 
     @field_validator("source_url")
@@ -138,7 +141,8 @@ def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:
         "the user-supplied identity as a hard audience anchor. Do not replace it with a broad "
         "demographic, invent an identity, or infer sensitive traits. Extract concrete behavior, "
         "friction, contradiction, ritual, or private joke that is recognizably experienced by that "
-        "identity. If the identity is not supplied, first consider several concrete, non-sensitive "
+        "identity. Use source evidence as seasoning. Do not let one narrow policy or incident "
+        "define every line. If the identity is not supplied, first consider several concrete, non-sensitive "
         "identities across the available identity types. Choose the "
         "most distinctive identity with repeated source evidence, not the most familiar profession "
         "or the easiest audience to write for. Avoid repeating recent selections unless the source "
@@ -182,17 +186,7 @@ def build_user_prompt(
             f"Its identity type is {input_model.identity_type.value}."
         )
     )
-    topic_instruction = (
-        "Choose a narrow behavior or topic within this identity before searching. Prefer a distinct "
-        "lived situation: a concrete incident, object, ritual, insider phrase, contradiction, or "
-        "private joke that the audience would recognize from their own life. Translate any "
-        "institutional or system-level problem into what the person actually does, sees, handles, "
-        "says, or complains about. Avoid generic routines, broad identity slogans, hidden operational "
-        "consequences, systemic challenges, industry trends, and research-report phrasing. Return the "
-        "chosen topic in `topic_explored` as a human situation, not a report heading."
-        if input_model.auto_topic
-        else f"Behavior/topic to investigate within this identity: {input_model.query}"
-    )
+    topic_instruction = broad_identity_brief("" if input_model.auto_topic else input_model.query)
     diversity_instruction = (
         "Before selecting the identity, internally compare several source-backed candidates across "
         "different identity types and prefer the most distinctive, underrepresented audience. Do "
