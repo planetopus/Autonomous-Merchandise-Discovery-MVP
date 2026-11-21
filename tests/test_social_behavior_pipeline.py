@@ -73,7 +73,7 @@ def test_social_behavior_pipeline_can_delegate_topic_selection_to_ai() -> None:
     prompt = pipeline.build_user_prompt(input_model)
     fixture_output = pipeline.execute(input_model)
 
-    assert "Choose the behavior or topic yourself" in prompt
+    assert "one real person" in prompt
     assert "topic_explored" in prompt
     assert fixture_output.topic_explored
     assert fixture_output.candidates[0].artwork_text != "Still doing "
@@ -211,7 +211,7 @@ def test_social_behavior_prompt_requires_standalone_personal_copy() -> None:
         )
     )
     assert "visual_punchline" in blank_prompt
-    assert "two different niches" in blank_prompt
+    assert "one real person" in blank_prompt
     assert "original joke" in blank_prompt
 
 

@@ -420,7 +420,7 @@ def atlas_prompt(groups: list[IdentitySubgroup], slang: list[SlangTerm]) -> str:
         if group.dimension or group.parent:
             bits.append(f"({group.dimension or group.parent})")
         if group.traits:
-            bits.append("traits: " + "; ".join(group.traits[:6]))
+            bits.append("traits: " + "; ".join(group.traits[:3]))
         if group.self_words:
             bits.append("words they use: " + ", ".join(group.self_words[:4]))
         if group.outsider_words:
@@ -430,8 +430,8 @@ def atlas_prompt(groups: list[IdentitySubgroup], slang: list[SlangTerm]) -> str:
             bits.append(f"self-ownable: {group.self_ownable}")
         lines.append("- " + ". ".join(bits))
     if slang:
-        lines.append("High-mismatch slang, 5 to 8 terms. Use at most one, and only if it fits:")
-        for term in slang[:8]:
+        lines.append("High-mismatch slang. Use at most one, and only if it fits:")
+        for term in slang[:4]:
             lines.append(
                 f"- {term.term} ({term.register or 'younger register'}, mismatch {term.mismatch_score:g}): "
                 f"{term.meaning}"

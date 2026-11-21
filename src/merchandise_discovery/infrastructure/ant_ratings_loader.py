@@ -6,6 +6,7 @@ rating. Extra columns are ignored. The file is read on every run and is not cach
 
 import csv
 import io
+import random
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -75,6 +76,58 @@ def parse_ant_ratings(body: str) -> list[AntRating]:
     return ratings
 
 
+def sample_ant_ratings(
+    ratings: list[AntRating],
+    *,
+    high: int = 4,
+    low: int = 4,
+    rng: random.Random | None = None,
+) -> list[AntRating]:
+    """A few top and bottom anchors. Mid scores stay out of the prompt."""
+
+    chooser = rng or random.Random()
+    highs = [item for item in ratings if item.score >= 8]
+    lows = [item for item in ratings if item.score <= 3]
+
+    def take(pool: list[AntRating], count: int) -> list[AntRating]:
+        if len(pool) <= count:
+            return list(pool)
+        return chooser.sample(pool, count)
+
+    chosen = take(highs, high) + take(lows, low)
+    chosen.sort(key=lambda item: (-item.score, item.line.casefold()))
+    return chosen
+
+
+def style_examples_block(
+    ratings: list[AntRating],
+    *,
+    limit: int = 8,
+    rng: random.Random | None = None,
+) -> str:
+    """Top-rated lines as style, not text to copy. Shapes a through d plus sarcasm."""
+
+    pool = [item for item in ratings if item.score >= 7]
+    if not pool:
+        return ""
+    chooser = rng or random.Random()
+    chosen = pool if len(pool) <= limit else chooser.sample(pool, limit)
+    chosen.sort(key=lambda item: (-item.score, item.line.casefold()))
+    samples = "\n".join(f"- {item.line}" for item in chosen)
+    return (
+        "Style examples from lines that already worked. Learn the shape. "
+        "Never copy a line or a close paraphrase.\n"
+        f"{samples}\n"
+        "Spread the batch across these shapes: "
+        "(a) a CAPS identity stack of 2 or 3 traits that co-occur in one real person; "
+        "(b) high competence versus a tiny fear; "
+        "(c) a fake WARNING or NOTICE sign; "
+        "(d) a deadpan dark one-liner; "
+        "plus sarcastic or ironic one-liners. "
+        "Do not write a behavior paragraph, a job procedure, or a scenario about two groups meeting.\n"
+    )
+
+
 def ant_calibration_block(ratings: list[AntRating]) -> str:
     """Few-shot owner taste. This block is meant to sit above every other critic instruction."""
 
@@ -101,7 +154,12 @@ def ant_calibration_block(ratings: list[AntRating]) -> str:
             "inside a niche. "
             "A single tired trope scores at most 6 unless it stacks a second identity "
             "or a fresh twist. Stacking 2 or 3 traits is the original shape and should "
-            "score higher."
+            "score higher. "
+            "The template 'X is [adj]. My Y isn't.' scores at most 5 unless both halves "
+            "are concrete and surprising. "
+            "Does every word earn its place in the joke? Outside or common words are "
+            "allowed when everyone knows them and they serve the setup or the punchline. "
+            "Random filler disconnected from the joke scores at most 4."
         )
     ]
     for rating in ratings:

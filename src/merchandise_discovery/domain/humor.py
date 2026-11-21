@@ -37,6 +37,10 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "or habits the group would not use about themselves, and keep the line wholesome "
         "enough that a member thinks 'that's me' and would buy the sticker. "
         "Set truth to the one universal identity truth this line uses. "
+        "Primary mode is sarcasm, irony, and wit. At least 70% of the lines must be "
+        "sarcastic understatement, situational or dramatic irony, or a clever wordplay "
+        "or reversal. Identity stacks are the secondary mode: still write at least two, "
+        "and do not let them replace the jokes. "
         "Set comic_turn to ironic, sarcastic, or straight. Irony and sarcasm are core "
         "mechanics: reward a clear turn, not a straight description of a rule. "
         "Across the batch use at least 6 different pattern values and at least 4 different "
@@ -104,22 +108,19 @@ def niche_pair_block(niche_a: str = "", niche_b: str = "", identity: str = "") -
     )
     if first and second:
         return (
-            f'Cross these two niches exactly: "{first}" and "{second}". '
-            "They must share a life, not sit side by side as unrelated subjects. "
+            f'One real person is both "{first}" and "{second}". '
+            "Stack those co-occurring traits. Do not write a scenario about the two groups meeting. "
             + shared
         )
     if named:
         return (
-            f'The user named "{named}" as one side. Choose a second niche from a broad identity '
-            "a buyer is proud of: body, age, family, faith, region, vice, or personality. "
-            "Do not pair it with a narrow occupation or hobby. Do not stop at a single niche. "
+            f'The user named "{named}". Add one co-occurring atlas trait as a stack modifier, '
+            "not as a second niche and not as a hobby scenario. "
             + shared
         )
     return (
-        "The user did not name two niches. Before writing jokes, choose two different niches "
-        "from broad identities a buyer is proud of: body, age, family, faith, region, vice, "
-        "or personality. Do not cross a narrow occupation with a hobby, and do not pick a "
-        "single niche or a single topic. "
+        "Build one real person from 2 or 3 traits that co-occur in the atlas overlaps. "
+        "Do not cross two separate niches into a scenario, and do not describe a job procedure. "
         + shared
     )
 
@@ -259,6 +260,21 @@ class HumorCritiqueItem(BaseModel):
         default=False,
         description="True only when the line adds a turn a tired trope does not already have.",
     )
+    plain_reading: str = Field(
+        default="A member of this group would recognize the situation.",
+        description="One sentence a random adult would think the line means. Empty if it is unclear.",
+    )
+    can_explain: bool = Field(
+        default=True,
+        description="False when a random adult would not know what the line means.",
+    )
+    words_earn_their_place: bool = Field(
+        default=True,
+        description=(
+            "False when a word is random filler disconnected from the joke. "
+            "Outside words are fine when everyone knows them and they serve the setup or punchline."
+        ),
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -306,6 +322,10 @@ class LineReview:
         trait_count: int = 0,
         fresh_twist: bool = False,
         tired_trope: bool = False,
+        plain_reading: str = "A member of this group would recognize the situation.",
+        can_explain: bool = True,
+        words_earn_their_place: bool = True,
+        filler_contrast: bool = False,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -319,6 +339,10 @@ class LineReview:
         self.trait_count = trait_count
         self.fresh_twist = fresh_twist
         self.tired_trope = tired_trope
+        self.plain_reading = plain_reading
+        self.can_explain = can_explain
+        self.words_earn_their_place = words_earn_their_place
+        self.filler_contrast = filler_contrast
 
 
 def critic_average(review) -> float | None:
@@ -390,6 +414,118 @@ def apply_jargon_cap(review, text: str):
         if value is not None and float(value) > 5:
             setattr(review, name, 5.0)
     return review
+
+
+_ABSTRACT_HALVES = {
+    "patience",
+    "sanity",
+    "love",
+    "hope",
+    "luck",
+    "talent",
+    "mood",
+    "vibe",
+    "soul",
+    "energy",
+}
+# Disconnected filler. Common words that serve a punchline are not on this list.
+_DISCONNECTED_FILLER = {"teleportation", "teleport", "speedrunner", "speedrunners", "ridgid"}
+_CONTRAST_STOP = {"a", "an", "the", "my", "her", "his", "is", "isnt", "isn't", "not", "of", "in", "to", "and"}
+
+
+def _cap_scores(review, ceiling: float, names: tuple[str, ...]) -> None:
+    for name in names:
+        value = getattr(review, name, None)
+        if value is not None and float(value) > ceiling:
+            setattr(review, name, float(ceiling))
+
+
+def is_disconnected_filler(text: str) -> bool:
+    """An outside concept used as random filler, not a word that earns its place."""
+
+    tokens = set(re.findall(r"[a-z0-9']+", str(text or "").casefold()))
+    return bool(tokens & _DISCONNECTED_FILLER)
+
+
+def is_filler_contrast(text: str) -> bool:
+    """The 'X is [adj]. My Y isn't.' template, unless both halves are concrete."""
+
+    cleaned = " ".join(str(text or "").split())
+    match = re.search(
+        r"^(?P<left>.+?\bis\b.+?)\.\s+my\s+(?P<right>.+?)\s+isn't\.?$",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    if match is None:
+        return False
+
+    def concrete(side: str) -> bool:
+        tokens = [
+            token
+            for token in re.findall(r"[a-z0-9']+", side.casefold())
+            if token not in _CONTRAST_STOP
+        ]
+        if any(token in _ABSTRACT_HALVES or token in _DISCONNECTED_FILLER for token in tokens):
+            return False
+        return any(len(token) >= 3 for token in tokens)
+
+    return not (concrete(match.group("left")) and concrete(match.group("right")))
+
+
+def reading_failed(review) -> bool:
+    """True when the critic cannot say what a random adult would think the line means."""
+
+    if review is None:
+        return False
+    if getattr(review, "can_explain", True) is False:
+        return True
+    reading = getattr(review, "plain_reading", None)
+    if reading is None:
+        return False
+    text = str(reading).strip()
+    if not text:
+        return True
+    return text.casefold() in {"unclear", "i don't know", "i dont know", "no idea"}
+
+
+def apply_line_caps(review, text: str):
+    """Cap filler contrasts at 5 and disconnected filler at 4. Do not cap a word that serves the joke."""
+
+    if review is None:
+        return review
+    if is_disconnected_filler(text) or getattr(review, "words_earn_their_place", True) is False:
+        review.words_earn_their_place = False
+        _cap_scores(
+            review,
+            4,
+            ("humor_landed", "sticker_buy_score", "instantly_understandable", "reddit_upvote_score"),
+        )
+    if is_filler_contrast(text):
+        review.filler_contrast = True
+        _cap_scores(review, 5, ("humor_landed", "sticker_buy_score", "reddit_upvote_score"))
+    if reading_failed(review):
+        review.can_explain = False
+        _cap_scores(review, 3, ("instantly_understandable",))
+        _cap_scores(review, 4, ("sticker_buy_score", "humor_landed"))
+    return review
+
+
+def line_is_primary_wit(candidate) -> bool:
+    """Sarcasm, irony, or wit. An identity stack alone is the secondary mode."""
+
+    turn = str(getattr(candidate, "comic_turn", "") or "").casefold()
+    mechanism = str(getattr(candidate, "humor_mechanism", "") or "").casefold()
+    if turn in {"ironic", "sarcastic", "sarcasm"}:
+        return True
+    return any(word in mechanism for word in ("understatement", "reversal", "wordplay", "irony", "sarcasm", "wit"))
+
+
+def primary_wit_share(candidates: list) -> float:
+    """Share of a batch whose comic turn is sarcasm, irony, or wit."""
+
+    if not candidates:
+        return 1.0
+    return sum(1 for item in candidates if line_is_primary_wit(item)) / len(candidates)
 
 
 _ROLE_WORDS = (
@@ -514,7 +650,7 @@ def tired_trope_block(tropes: list[dict] | None) -> str:
 
     if not tropes:
         return ""
-    labels = "; ".join(str(trope.get("label") or trope.get("id") or "") for trope in tropes[:24])
+    labels = "; ".join(str(trope.get("label") or trope.get("id") or "") for trope in tropes[:8])
     return (
         "Tired tropes, already sold as single-identity jokes: "
         f"{labels}. A line that is only one of these scores at most 6 unless it stacks "
@@ -573,8 +709,10 @@ def niche_pair_request(identity: str = "", bank: list[dict] | None = None) -> st
             "with a hobby.\n"
         )
     return (
-        "Propose about 10 niche pairs for die-cut stickers. "
-        "A good pair is two broad identities that genuinely share a life: body, age, family, "
+        "Propose about 10 stacks for die-cut stickers. "
+        "Each stack is 2 or 3 traits that co-occur in one real person, taken from the atlas bank. "
+        "Do not invent a job crossed with a hobby, and do not describe a scenario. "
+        "A good stack is traits one person actually lives: body, age, family, "
         "faith, region, vice, or personality. "
         "The traits must co-occur in a real group. Never propose a random combo. "
         "Do not prefer dads, nurses, or morticians. Cover identities that have not been used. "
@@ -600,7 +738,9 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
     seen: set[str] = set()
     for index, candidate in enumerate(candidates):
         review = by_index.get(index)
-        apply_jargon_cap(review, str(getattr(candidate, "artwork_text", "") or ""))
+        text = str(getattr(candidate, "artwork_text", "") or "")
+        apply_jargon_cap(review, text)
+        apply_line_caps(review, text)
         humor = review.humor_landed if review is not None else 5.0
         novelty = review.novelty if review is not None else 5.0
         tone_match = review.tone_match if review is not None else 5.0

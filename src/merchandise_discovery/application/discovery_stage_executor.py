@@ -7,6 +7,7 @@ independently portable and provider dependencies are injected here.
 
 import json
 import logging
+import random
 from concurrent.futures import ThreadPoolExecutor
 
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
@@ -18,12 +19,15 @@ from merchandise_discovery.domain.humor import (
     NichePairRecord,
     PlaybookPatternRecord,
     apply_jargon_cap,
+    apply_line_caps,
     apply_line_critic,
     apply_trope_cap,
     critic_average,
     keep_strong_pairs,
     member_would_not_buy,
     niche_pair_request,
+    primary_wit_share,
+    reading_failed,
     tired_trope_block,
 )
 from merchandise_discovery.domain.humor_playbook import build_playbook, playbook_prompt
@@ -80,6 +84,8 @@ from merchandise_discovery.domain.stages import stage_17_artwork_revision as sta
 from merchandise_discovery.infrastructure.ant_ratings_loader import (
     ant_calibration_block,
     load_ant_ratings,
+    sample_ant_ratings,
+    style_examples_block,
 )
 from merchandise_discovery.infrastructure.humor_lab_loader import (
     gold_lines_block,
@@ -301,8 +307,12 @@ class DiscoveryStageExecutor:
         self._market_signal = market
         lab = load_humor_lab()
         playbook = merge_lab_playbook(build_playbook([]), lab.playbook)
-        humor_block = playbook_prompt(playbook) + gold_lines_block(lab.gold_lines)
-        writer_block = market_signal_prompt(market) + humor_block
+        humor_block = playbook_prompt(playbook, limit=8) + gold_lines_block(lab.gold_lines[:6])
+        style_block = style_examples_block(
+            load_ant_ratings(),
+            rng=random.Random(getattr(run, "run_id", "style")),
+        )
+        writer_block = style_block + market_signal_prompt(market) + humor_block
         if self._reasoning_provider is None:
             return None, UsageMetrics(), selection, [], playbook, None
         supplied_a = str(getattr(input_model, "niche_a", "") or "").strip()
@@ -368,7 +378,9 @@ class DiscoveryStageExecutor:
         groups, slang = subgroup_context(atlas, *chosen_names)
         atlas_block = atlas_prompt(groups, slang)
         ownable = self_ownable_block(groups)
-        critic_rubric = "\n".join(part for part in (lab.rubric, ownable) if part)
+        critic_rubric = "\n".join(
+            part for part in ((lab.rubric or "")[:1200], ownable) if part
+        )
         user_prompt = pipeline_module.build_user_prompt(
             input_model,
             draft_count=12,
@@ -395,7 +407,7 @@ class DiscoveryStageExecutor:
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
-        if self._spread_is_thin(drafted):
+        if self._spread_is_thin(drafted) or self._wit_is_thin(drafted):
             spread, spread_usage, spread_reviews = self._rewrite_for_spread(
                 run,
                 input_model,
@@ -678,11 +690,10 @@ class DiscoveryStageExecutor:
         identity = (anchor[0] if anchor else "") or str(getattr(input_model, "identity", "") or "")
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
-                "You pair two broad identities a buyer is proud of: body, age, family, faith, "
-                "region, vice, or personality. Score shared lived experience and instant "
-                "recognizability from 1 to 10. A narrow occupation crossed with a hobby scores "
-                "under 7. Use only pairs from the supplied bank when one is provided. "
-                "Reject a random combo whose traits do not co-occur."
+                "You stack 2 or 3 traits that co-occur in one real person. "
+                "Use the supplied atlas bank. Do not invent a job crossed with a hobby, "
+                "and do not describe a scenario. Score how truly one person lives the stack, "
+                "and how fast a stranger recognizes that person, from 1 to 10."
             ),
             user_prompt=niche_pair_request(identity, bank),
             response_model=NichePairBatch,
@@ -837,6 +848,11 @@ class DiscoveryStageExecutor:
         normalized = " ".join(raw.casefold().replace("_", " ").replace("-", " ").split())
         return normalized == "absurd identity stack"
 
+    def _wit_is_thin(self, candidates: list) -> bool:
+        """A large batch that is mostly identity stacks, not jokes, needs another pass."""
+
+        return len(candidates) >= 6 and primary_wit_share(candidates) < 0.7
+
     def _spread_is_thin(self, candidates: list) -> bool:
         """A large batch that sits on one pattern or one truth is not a sticker set."""
 
@@ -873,7 +889,10 @@ class DiscoveryStageExecutor:
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
             user_prompt=(
-                "The previous lines all described one narrow policy or incident. "
+                "The previous lines all described one narrow policy or incident, "
+                "or too few of them were sarcastic, ironic, or witty. "
+                "At least 70% of the lines must be sarcastic understatement, "
+                "situational or dramatic irony, or a clever reversal. "
                 f"Rewrite {input_model.candidate_count} lines for the broad life of "
                 f'"{niche_a}" and "{niche_b}". '
                 "Use at least 6 different pattern values and at least 4 different truth values. "
@@ -1042,11 +1061,23 @@ class DiscoveryStageExecutor:
             f"detail: {getattr(candidate, 'concrete_detail', '')})"
             for index, candidate in enumerate(candidates)
         )
-        calibration = ant_calibration_block(load_ant_ratings())
+        calibration = ant_calibration_block(
+            sample_ant_ratings(load_ant_ratings(), rng=random.Random(run.run_id))
+        )
         response = self._reasoning_provider.complete_structured(
             system_prompt=(
                 f"{calibration}"
-                "You are a merchandise humor critic. Score each drafted sticker line. "
+                "You are a merchandise humor critic. "
+                "The top question is: is this genuinely witty, sarcastic, or ironic, "
+                "and does the target group get it in 2 seconds? "
+                "Before the scores, set plain_reading to one sentence a random adult would "
+                "think the line means. If you cannot, set can_explain false. "
+                "Does every word earn its place in the joke? Outside or common words are "
+                "allowed when everyone knows them and they serve the setup or the punchline. "
+                "Random filler disconnected from the joke scores at most 4. Set "
+                "words_earn_their_place false for that filler. "
+                "The template 'X is [adj]. My Y isn't.' scores at most 5 unless both halves "
+                "are concrete and surprising. "
                 "instantly_understandable is required, 1 to 10: can a stranger get the line "
                 "in under 2 seconds? Clarity beats cleverness. Score abstract or long "
                 "compound club names at 4 or below on instantly_understandable, even if "
@@ -1104,8 +1135,12 @@ class DiscoveryStageExecutor:
                 insider_jargon=review.insider_jargon,
                 trait_count=review.trait_count,
                 fresh_twist=review.fresh_twist,
+                plain_reading=review.plain_reading,
+                can_explain=review.can_explain,
+                words_earn_their_place=review.words_earn_their_place,
             )
             apply_jargon_cap(row, text)
+            apply_line_caps(row, text)
             apply_trope_cap(row, text, load_humor_lab().tired_tropes)
             reviews.append(row)
         scored = []
@@ -1135,6 +1170,12 @@ class DiscoveryStageExecutor:
             buy = review.sticker_buy_score if review is not None else None
             if id(candidate) in kept_ids:
                 reason, kept_flag = "kept", True
+            elif review is not None and getattr(review, "words_earn_their_place", True) is False:
+                reason, kept_flag = "doesn't earn its place", False
+            elif review is not None and reading_failed(review):
+                reason, kept_flag = "unclear", False
+            elif review is not None and getattr(review, "filler_contrast", False):
+                reason, kept_flag = "filler contrast", False
             elif review is not None and getattr(review, "tired_trope", False):
                 reason, kept_flag = "tired trope", False
             elif review is not None and getattr(review, "insider_jargon", False):

@@ -153,13 +153,14 @@ def build_user_prompt(
 
     platforms = ", ".join(source.value for source in input_model.sources)
     topic_instruction = (
-        "Choose the behavior or topic yourself before searching. Select a narrow, distinct everyday "
-        "behavior with a recognizable tension, contradiction, absurdity, or private joke. Avoid "
-        "broad demographics, product categories, generic trends, and soft self-care routines with "
-        "no sharp angle. Return the chosen topic in "
-        "`topic_explored`."
+        "Do not investigate a narrow behavior or an insider incident. "
+        "Write jokes for one real person. Return topic_explored as that person's life, "
+        "not a policy, procedure, or scenario."
         if input_model.auto_topic
-        else f"Behavior/topic to investigate: {input_model.query}"
+        else (
+            f"Optional seasoning, not the subject of the batch: {input_model.query}. "
+            "Do not turn it into a job procedure or an insider scenario."
+        )
     )
     limit = draft_count or input_model.candidate_count
     draft_note = ""
@@ -176,8 +177,8 @@ def build_user_prompt(
         f"{crossover_block(input_model.niche_a, input_model.niche_b)}"
         f"Search these public platforms: {platforms}.\n"
         f"{topic_instruction}\n"
-        f"Return up to {limit} distinct behavior-based merchandise text "
-        "candidates. Avoid repeating the same audience pressure or behavior in different wording. "
+        f"Return up to {limit} distinct merchandise text "
+        "candidates. Do not describe a job procedure, a policy, or an insider incident. "
         "Before returning each line, check that a reader can understand the joke without any other "
         "field. Write a joke-shaped line of about 4 to 14 words, or leave artwork_text empty "
         "for an image-only sticker. Use the real relationship, behavior, or object instead of a "
@@ -185,7 +186,7 @@ def build_user_prompt(
         "artwork_prompt that tells Grok how to render one isolated subject for this audience on "
         "a plain white background. Also provide visual_punchline, main_visual_metaphor, "
         "audience_specific_cue, tone, style_direction, and a things_to_avoid list. The visual "
-        "punchline must exaggerate the insider behavior rather than literally illustrate a "
+        "punchline must exaggerate the joke rather than literally illustrate a "
         "bedroom, clock, meal, couch, scene, or landscape. The style direction must describe a "
         "flat vector die-cut vinyl sticker: bold clean outlines, flat colors, one centered "
         "isolated subject, and a plain white background. things_to_avoid must include a scene or "
