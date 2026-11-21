@@ -1380,8 +1380,8 @@ class DiscoveryStageExecutor:
                 "Write 4 new sticker lines. Rotate them across these buyer groups: "
                 f"{named}. {dark}"
                 "Set who_its_for to that group's two labels. "
-                "Each artwork_prompt is a full cartoon sticker prompt with the exact text "
-                "in quotes and the words 'text appears exactly once'."
+                "Each artwork_prompt is a flat vector sticker: bold outlines, flat colors, "
+                "one subject, no shading, and a plain white background."
             ),
             response_model=output_model,
             reasoning_effort="low",

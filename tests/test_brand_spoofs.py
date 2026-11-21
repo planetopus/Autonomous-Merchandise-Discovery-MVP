@@ -20,7 +20,6 @@ from merchandise_discovery.domain.pipelines.social_behavior_text.pipeline import
 )
 from merchandise_discovery.domain.sticker_direction import (
     direct_image_prompt,
-    render_image_prompt,
     sticker_download_name,
 )
 from merchandise_discovery.infrastructure.brand_catalog import (
@@ -211,19 +210,36 @@ def test_a_morbid_picture_still_counts_as_dark_humor() -> None:
     assert is_dark_humor(line)
 
 
-def test_a_medium_art_prompt_is_sent_without_the_flat_wrapper() -> None:
-    """Stage 2 keeps the writer's scene and only adds the exact-text line."""
+def test_a_shaded_art_prompt_still_gets_the_flat_sticker_wrapper() -> None:
+    """Cartoon shading does not skip the flat vector sticker prompt."""
 
     body = (
         "Grumpy orange cat with half-closed eyes kneading a steaming mug, "
         "warm orange palette, cartoon shading, thick white border."
     )
-    rendered = render_image_prompt(SimpleNamespace(artwork_prompt=body, artwork_text="I KNEAD COFFEE"))
-    assert rendered is not None
-    assert rendered.startswith("Grumpy orange cat")
-    assert 'Text appears exactly once: "I KNEAD COFFEE"' in rendered
-    assert "Do not use" not in rendered
     wrapped = build_targeted_artwork_prompt(
+        SimpleNamespace(
+            artwork_prompt=body,
+            artwork_text="I KNEAD COFFEE",
+            things_to_avoid=["a scene"],
+            audience_context="Cat people",
+            audience_specific_cue="a mug",
+            visual_punchline="The cat kneads the coffee.",
+            main_visual_metaphor="A cat and a mug.",
+            tone="dry",
+            style_direction="Flat vector.",
+            image_idea="A cat kneading a mug.",
+            why_it_works="Knead is the pun.",
+            format="die-cut cartoon",
+            spoof_brand="",
+            pattern="",
+            humor_mechanism="",
+        )
+    )
+    assert wrapped.startswith("Die-cut vinyl sticker") or "flat vector" in wrapped.casefold()
+    assert "flat vector" in wrapped.casefold()
+    assert "I KNEAD COFFEE" in wrapped
+    short = build_targeted_artwork_prompt(
         SimpleNamespace(
             artwork_prompt="A chip.",
             artwork_text="NACHO",
@@ -242,4 +258,5 @@ def test_a_medium_art_prompt_is_sent_without_the_flat_wrapper() -> None:
             humor_mechanism="",
         )
     )
-    assert "die-cut vinyl sticker" in wrapped.casefold()
+    assert "die-cut vinyl sticker" in short.casefold()
+    assert "flat vector" in short.casefold()
