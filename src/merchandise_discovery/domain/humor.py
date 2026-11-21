@@ -1,5 +1,6 @@
 """Humor tone, quote handoff, and the critic that cuts a large line batch."""
 
+import math
 import re
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -54,8 +55,13 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "innocent_image_innuendo, cute_but_menacing, dark_twist_scene, catchphrase_flip, "
         "relatable_confession_action, pop_culture_quote_flip, historical_name_pun, "
         "fake_acronym_org, fake_warning_sign, slogan_twist, rhyme_innuendo, or holiday_pun. "
-        "At least 2 of every 5 lines must be brand_logo_spoof: a major brand's logo "
-        "layout and colors with new pun text for this buyer. Set spoof_brand to that brand. "
+        "A brand_logo_spoof is rare. Keep it only when the brand's product, slogan, or "
+        "identity is why the joke is funny. A plain name swap that pastes the topic onto "
+        "a logo is not a joke. Set spoof_brand and explain the link in why_it_works. "
+        "At least 10 percent of the lines, and at least 1 of every 5 finals, are dark humor: "
+        "death, misery, doom, dread, or a morbid twist in a cute picture. "
+        "Still clear and funny to the group. Not hateful. "
+        "Set pattern to dark_twist_scene or humor_mechanism to gallows for those. "
         "A spoof of a famous logo, celebrity, or movie character is allowed. "
         "Mild crude or adult innuendo is allowed when the picture completes the joke. "
         "The wholesome bar applies to identity stacks, not to these pairs. "
@@ -125,11 +131,16 @@ def pun_examples_block() -> str:
         "a cool cat in sunglasses on a retro sunset | "
         "the cat takes the phrase away from the crude reading.\n"
         "- cute_but_menacing | circle badge | PEACE WAS NEVER AN OPTION | "
-        "a cute duck holding a knife | the duck looks sweet and the knife flips it.\n"
+        "a cute duck holding a knife | the duck looks sweet and the knife flips it. "
+        "Dark humor: the cute picture carries the menace.\n"
         "- dark_twist_scene | retro sunset badge | "
         "BRING A COMPASS, IT'S AWKWARD WHEN YOU HAVE TO EAT YOUR FRIENDS | "
         "a hiker silhouette on a mountain with a bear | "
-        "the pretty badge turns into the dark hike.\n"
+        "the pretty badge turns into the dark hike. Dark humor, not hate.\n"
+        "- dark_twist_scene | bold text stack | I CAME HERE TO DIE QUIETLY | "
+        "a cute cat asleep in a coffin-shaped bed | the nap is the ending.\n"
+        "- dark_twist_scene | bold text stack | MY LAST NERVE LEFT WITH THE OTHERS | "
+        "a smiling houseplant in a tiny grave | the plant outlived the patience.\n"
         "- catchphrase_flip | circle badge | "
         "THICK THIGHS SAVE LIVES / BUT THIGH HIGHS ARE MY DEMISE | "
         "a torso in thigh-high stockings, warning-badge style | "
@@ -234,6 +245,8 @@ _ANCHOR_TEXTS = (
     "BE KIND, REWIND MY BACK",
     "I WAS GIFTED, NOW I'M RE-GIFTED",
     "CODE BREW",
+    "I CAME HERE TO DIE QUIETLY",
+    "MY LAST NERVE LEFT WITH THE OTHERS",
 )
 
 
@@ -302,20 +315,52 @@ def _kept_score(candidate) -> float:
         return 0.0
 
 
+def spoof_earns_final(candidate) -> bool:
+    """A logo spoof makes the finals only when the brand is why it is funny and the score is high."""
+
+    if not is_brand_spoof(candidate):
+        return True
+    if getattr(candidate, "brand_fits", True) is False:
+        return False
+    link = str(getattr(candidate, "brand_joke_link", "") or "").strip()
+    if len(link) < 12:
+        return False
+    return _kept_score(candidate) >= 8.5
+
+
+def is_dark_humor(candidate) -> bool:
+    """Death, misery, doom, or a morbid twist. A cute picture can carry it."""
+
+    if pattern_key(candidate) in {"dark twist scene", "cheerful dark label", "dark comparison"}:
+        return True
+    mechanism = str(getattr(candidate, "humor_mechanism", "") or "").casefold()
+    return any(word in mechanism for word in ("gallows", "morbid", "doom", "existential"))
+
+
+def dark_humor_needed(total: int, dark_count: int) -> int:
+    """At least 10 percent of a batch of five or more, which is also one of the final five."""
+
+    if total < 5:
+        return 0
+    need = max(1, math.ceil(total * 0.1))
+    return max(0, need - dark_count)
+
+
 def order_kept_lines(candidates: list, keep_count: int) -> list:
-    """Highest scores first, after two brand spoofs and three puns are seated."""
+    """Highest scores first, after one dark line and three puns. Weak logo spoofs stay out."""
 
     if keep_count < 5:
         return candidates[:keep_count]
-    ranked = sorted(candidates, key=_kept_score, reverse=True)
-    spoofs = [item for item in ranked if is_brand_spoof(item)]
-    puns = [item for item in ranked if line_is_pun(item) and not is_brand_spoof(item)]
+    pool = [item for item in candidates if spoof_earns_final(item)]
+    ranked = sorted(pool, key=_kept_score, reverse=True)
+    dark = [item for item in ranked if is_dark_humor(item)]
+    puns = [item for item in ranked if line_is_pun(item) and not is_dark_humor(item)]
     chosen: list = []
     chosen_ids: set[int] = set()
 
-    def take(pool: list, count: int) -> None:
+    def take(items: list, count: int) -> None:
         left = count
-        for item in pool:
+        for item in items:
             if left <= 0 or len(chosen) >= keep_count:
                 return
             if id(item) in chosen_ids:
@@ -324,19 +369,18 @@ def order_kept_lines(candidates: list, keep_count: int) -> list:
             chosen_ids.add(id(item))
             left -= 1
 
-    take(spoofs, 2)
-    pun_have = sum(1 for item in chosen if line_is_pun(item) or is_brand_spoof(item))
+    take(dark, 1)
+    pun_have = sum(1 for item in chosen if line_is_pun(item) or is_dark_humor(item))
     take(puns, max(0, 3 - pun_have))
     take(ranked, keep_count - len(chosen))
     return chosen
 
 
 def brand_spoofs_needed(keep_count: int, spoof_count: int) -> int:
-    """A final batch of five must include two major-brand logo spoofs."""
+    """Logo spoofs are not a quota. A perfect one can still win on score."""
 
-    if keep_count < 5:
-        return 0
-    return max(0, 2 - spoof_count)
+    _ = (keep_count, spoof_count)
+    return 0
 
 
 def puns_still_needed(keep_count: int, pun_count: int) -> int:
@@ -574,6 +618,17 @@ class HumorCritiqueItem(BaseModel):
         default=False,
         description="True when the picture only illustrates the words and adds no twist.",
     )
+    brand_fits: bool = Field(
+        default=True,
+        description=(
+            "False when a logo spoof only pastes the topic onto the brand. "
+            "True when the brand's product or slogan is why the joke is funny."
+        ),
+    )
+    brand_joke_link: str = Field(
+        default="",
+        description="One sentence on why this brand makes the joke. Empty when it is not a logo spoof.",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -629,6 +684,8 @@ class LineReview:
         pun_lands: bool = True,
         pun_forced: bool = False,
         literal_image: bool = False,
+        brand_fits: bool = True,
+        brand_joke_link: str = "",
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -650,6 +707,8 @@ class LineReview:
         self.pun_lands = pun_lands
         self.pun_forced = pun_forced
         self.literal_image = literal_image
+        self.brand_fits = brand_fits
+        self.brand_joke_link = brand_joke_link
 
 
 def critic_average(review) -> float | None:
@@ -871,6 +930,20 @@ def synergy_failed(review) -> bool:
         return float(score) < 7
     except (TypeError, ValueError):
         return False
+
+
+def apply_brand_cap(review, candidate):
+    """A logo spoof that only renames the topic scores at most 4."""
+
+    if review is None or not is_brand_spoof(candidate):
+        return review
+    if getattr(review, "brand_fits", True) is False:
+        _cap_scores(
+            review,
+            4,
+            ("humor_landed", "sticker_buy_score", "reddit_upvote_score"),
+        )
+    return review
 
 
 def apply_pun_cap(review, candidate):
@@ -1140,6 +1213,7 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
         apply_jargon_cap(review, text)
         apply_line_caps(review, text)
         apply_pun_cap(review, candidate)
+        apply_brand_cap(review, candidate)
         humor = review.humor_landed if review is not None else 5.0
         novelty = review.novelty if review is not None else 5.0
         tone_match = review.tone_match if review is not None else 5.0

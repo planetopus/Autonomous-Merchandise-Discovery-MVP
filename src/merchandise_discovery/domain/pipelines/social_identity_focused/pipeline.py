@@ -107,6 +107,8 @@ class SocialIdentityTextCandidate(BaseModel):
         max_length=80,
         description="Major brand whose logo layout and colors this spoof recreates. Empty otherwise.",
     )
+    brand_fits: bool = True
+    brand_joke_link: str = Field(default="", max_length=240)
     artwork_prompt: str = Field(min_length=20, max_length=4_000)
     visual_punchline: str = Field(min_length=1, max_length=500)
     main_visual_metaphor: str = Field(min_length=1, max_length=500)
