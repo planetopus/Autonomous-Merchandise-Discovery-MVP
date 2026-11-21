@@ -92,6 +92,25 @@ def _render_playbook(payload: dict[str, Any]) -> None:
         st.write(f"- {item.get('label') or item.get('id')}{weight_text}")
 
 
+def _render_shop_fields(candidate: dict) -> None:
+    """Show the categorizer fields for one final line."""
+
+    if candidate.get("main_category"):
+        st.caption(f"Category: {candidate['main_category']}")
+    secondary = candidate.get("secondary_categories") or []
+    if secondary:
+        st.caption("Also: " + " · ".join(str(item) for item in secondary))
+    tags = candidate.get("tags") or []
+    if tags:
+        st.caption("Tags: " + ", ".join(str(item) for item in tags))
+    if candidate.get("website_title"):
+        st.caption(f"Website title: {candidate['website_title']}")
+    if candidate.get("ebay_title"):
+        st.caption(f"eBay title: {candidate['ebay_title']}")
+    if candidate.get("slug"):
+        st.caption(f"Slug: {candidate['slug']}")
+
+
 def _who_label(labels: object) -> str:
     """Join 2 to 4 buyer categories for the run page and the line export."""
 
@@ -224,6 +243,12 @@ def _render_social_behavior_text(
                             "truth": candidate.get("truth", ""),
                             "comic_turn": candidate.get("comic_turn", ""),
                             "funny_score": candidate.get("funny_score"),
+                            "main_category": candidate.get("main_category", ""),
+                            "secondary_categories": candidate.get("secondary_categories") or [],
+                            "tags": candidate.get("tags") or [],
+                            "website_title": candidate.get("website_title", ""),
+                            "ebay_title": candidate.get("ebay_title", ""),
+                            "slug": candidate.get("slug", ""),
                         }
                         for candidate in candidates
                     ],
@@ -249,6 +274,7 @@ def _render_social_behavior_text(
         buyers = _who_label(candidate.get("who_its_for"))
         if buyers:
             st.caption(f"Who it's for: {buyers}")
+        _render_shop_fields(candidate)
         if candidate.get("humor_mechanism") or candidate.get("concrete_detail"):
             st.caption(
                 "Humor: "

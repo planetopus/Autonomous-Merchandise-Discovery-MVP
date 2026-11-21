@@ -67,7 +67,13 @@ def load_atlas(atlas_dir):
             d = json.load(open(p))
         except Exception:
             continue
-        items = d.get("identities", d.get("groups", d)) if isinstance(d, dict) else d
+        items = None
+        if isinstance(d, dict) and isinstance(d.get("subgroups"), list):
+            items = d["subgroups"]
+        elif isinstance(d, dict):
+            items = d.get("identities", d.get("groups", d))
+        else:
+            items = d
         if not isinstance(items, list):
             continue
         for it in items:
@@ -76,7 +82,8 @@ def load_atlas(atlas_dir):
                 if isinstance(st, str):
                     st = [x.strip() for x in st.split(",")]
                 rows.append({"id": it["id"], "label": it.get("label") or it.get("name"),
-                             "group": it.get("group") or it.get("category") or "Other", "self_terms": st})
+                             "group": it.get("group") or it.get("parent_group") or it.get("category") or "Other",
+                             "self_terms": st})
     if not rows:
         for p in sorted(glob.glob(os.path.join(atlas_dir, "src", "sg", "*.txt"))):
             for line in open(p):
@@ -129,6 +136,21 @@ def merge_atlas(tax, atlas):
     return tax
 
 
+def _identity_words(node):
+    """Names a shopper would read as this identity, not generic product words."""
+
+    words = set()
+    for key in ("singular", "plural", "name"):
+        for token in re.findall(r"[a-z0-9]+", (node.get(key) or "").lower()):
+            if len(token) >= 3:
+                words.add(token)
+    for term in node.get("match_terms") or []:
+        if " " in term or len(term) < 3:
+            continue
+        words.add(term.lower())
+    return words
+
+
 # ---------------- tagger ----------------
 class Tagger:
     def __init__(self, tax):
@@ -136,6 +158,28 @@ class Tagger:
         self.nodes = {n["id"]: n for n in walk(tax["tree"])}
         self.leaves = [n for n in self.nodes.values() if not n["children"] and "/" in n["id"]]
         self.res = {n["id"]: [(t, term_re(t)) for t in n["match_terms"]] for n in self.leaves}
+        self.identity_words = {
+            n["id"]: _identity_words(n)
+            for n in self.leaves
+            if n.get("facet") == "identity"
+        }
+
+    def _topic_tag_ok(self, phrase, source, primary_id):
+        """A secondary topic may not lend a tag that names a different identity."""
+
+        if not phrase or source is None or source.get("facet") != "topic" or source.get("id") == primary_id:
+            return True
+        owned = self.identity_words.get(primary_id, set())
+        lowered = phrase.lower()
+        for ident, words in self.identity_words.items():
+            if ident == primary_id:
+                continue
+            for word in words:
+                if word in owned:
+                    continue
+                if term_re(word).search(lowered):
+                    return False
+        return True
 
     def _score(self, node, a, b, line):
         s, a_best = 0.0, 0.0
@@ -221,8 +265,10 @@ class Tagger:
         cats = [primary] + sec
         # ---- Etsy tags (<=20 chars, 10-13) ----
         tags = []
-        def tadd(t):
+        def tadd(t, source=None):
             t = re.sub(r"\s+", " ", t.lower().replace("&", "and").replace("'", "")).strip()
+            if source is not None and not self._topic_tag_ok(t, source, primary):
+                return
             if t and len(t) <= 20 and t not in tags and len(tags) < 13:
                 tags.append(t)
         sing = P.get("singular")
@@ -233,22 +279,26 @@ class Tagger:
             tadd(P["short_tag"])
         for c in cats[1:]:
             n = self.nodes[c]
-            tadd(n["short_tag"])
+            tadd(n["short_tag"], n)
             for ph in n["search_phrases"]:
-                tadd(ph)
+                tadd(ph, n)
                 if sum(1 for t in tags if t in n["search_phrases"]) >= 1:
                     break
         for g in GENERIC_TAGS:
             if len(tags) >= 12: break
             tadd(g)
         for c in cats:  # top up to >=10 from any short phrase
-            for ph in self.nodes[c]["search_phrases"]:
+            node = self.nodes[c]
+            for ph in node["search_phrases"]:
                 if len(tags) >= 10: break
-                tadd(ph)
+                tadd(ph, node)
         # ---- longer SEO phrases ----
         seo = []
         for c in cats:
-            for ph in self.nodes[c]["search_phrases"][:3 if c == primary else 2]:
+            node = self.nodes[c]
+            for ph in node["search_phrases"][:3 if c == primary else 2]:
+                if not self._topic_tag_ok(ph, node, primary):
+                    continue
                 if ph not in seo:
                     seo.append(ph)
         seo = seo[:12]
