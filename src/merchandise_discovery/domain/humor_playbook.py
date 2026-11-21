@@ -51,6 +51,7 @@ _PINNED_SHAPE_IDS = (
     "fake_warning_sign",
     "slogan_twist",
     "rhyme_innuendo",
+    "holiday_pun",
 )
 
 PRIORITY_PATTERNS = [
@@ -196,6 +197,14 @@ PRIORITY_PATTERNS = [
         ),
     },
     {
+        "id": "holiday_pun",
+        "label": "Holiday pun",
+        "guidance": (
+            "A holiday word with a second everyday meaning. The costume or prop "
+            "has to make that second reading obvious. A cute seasonal character is enough."
+        ),
+    },
+    {
         "id": "cheerful_dark_label",
         "label": "Cheerful dark label",
         "guidance": (
@@ -334,7 +343,7 @@ def playbook_prompt(playbook: dict, *, limit: int | None = None) -> str:
             "About 30 to 40 percent of candidates are puns or spoofs. "
             "Each one is a word-and-image pair. Set format to the layout, such as "
             "retro sunset badge, logo spoof, circle badge, bold text stack, "
-            "bumper sticker strip, warning sign, or plaque."
+            "bumper sticker strip, warning sign, plaque, or oval outdoor badge."
         )
     ]
     priority = [item for item in patterns if item.get("priority")]

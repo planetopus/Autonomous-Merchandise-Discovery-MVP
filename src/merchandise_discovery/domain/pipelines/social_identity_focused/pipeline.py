@@ -99,7 +99,7 @@ class SocialIdentityTextCandidate(BaseModel):
         max_length=80,
         description=(
             "Layout, such as retro sunset badge, logo spoof, circle badge, "
-            "bold text stack, bumper sticker strip, warning sign, or plaque."
+            "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge."
         ),
     )
     artwork_prompt: str = Field(min_length=20, max_length=4_000)

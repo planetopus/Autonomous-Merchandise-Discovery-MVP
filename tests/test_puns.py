@@ -67,6 +67,12 @@ def test_best_seller_anchors_name_the_pattern_the_picture_and_the_format() -> No
         "NOT MY PASTURE, NOT MY BULLSHIT",
         "FIGHT CRIME, SHOOT BACK",
         "DON'T FORGET THE VASOLINE WHEN YOU GET THE GASOLINE",
+        "ONLY YOU CAN PREVENT DRAMA",
+        "THIS IS A TASTY BEVERAGE",
+        "BEST BUTT",
+        "THAT'S SOME BOO SHEET!",
+        "SUCK MY BALLS",
+        "LET'S GET WET",
     ):
         assert line in block
     for pattern in (
@@ -83,6 +89,7 @@ def test_best_seller_anchors_name_the_pattern_the_picture_and_the_format() -> No
         "fake_warning_sign",
         "slogan_twist",
         "rhyme_innuendo",
+        "holiday_pun",
     ):
         assert pattern in block
     for layout in (
@@ -93,6 +100,7 @@ def test_best_seller_anchors_name_the_pattern_the_picture_and_the_format() -> No
         "bumper sticker strip",
         "warning sign",
         "plaque",
+        "oval outdoor badge",
     ):
         assert layout in block
     assert "Do not reprint" in block
@@ -115,6 +123,7 @@ def test_pun_shapes_survive_a_short_playbook_and_the_old_leaders_stay_first() ->
     assert "pop_culture_quote_flip" in ids
     assert "rhyme_innuendo" in ids
     assert "slogan_twist" in ids
+    assert "holiday_pun" in ids
     crowded = [
         {"id": f"lab_{index}", "label": "Lab", "guidance": "Lab shape.", "priority": True, "examples": []}
         for index in range(12)

@@ -76,7 +76,7 @@ class SocialBehaviorTextCandidate(BaseModel):
         max_length=80,
         description=(
             "Layout, such as retro sunset badge, logo spoof, circle badge, "
-            "bold text stack, bumper sticker strip, warning sign, or plaque."
+            "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge."
         ),
     )
     # Stage 2 consumes this exact prompt. Keeping it beside the copy makes the first stage the

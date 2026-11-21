@@ -48,11 +48,11 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "Set image_idea to that picture in one sentence. "
         "Set why_it_works to one sentence on how the words and the picture combine. "
         "Set format to the layout, such as retro sunset badge, logo spoof, circle badge, "
-        "bold text stack, bumper sticker strip, warning sign, or plaque. "
+        "bold text stack, bumper sticker strip, warning sign, plaque, or oval outdoor badge. "
         "Use wordplay_pun, image_pun, celebrity_food_pun, brand_logo_spoof, "
         "innocent_image_innuendo, cute_but_menacing, dark_twist_scene, catchphrase_flip, "
         "relatable_confession_action, pop_culture_quote_flip, historical_name_pun, "
-        "fake_acronym_org, fake_warning_sign, slogan_twist, or rhyme_innuendo. "
+        "fake_acronym_org, fake_warning_sign, slogan_twist, rhyme_innuendo, or holiday_pun. "
         "A spoof of a famous logo, celebrity, or movie character is allowed. "
         "Mild crude or adult innuendo is allowed when the picture completes the joke. "
         "The wholesome bar applies to identity stacks, not to these pairs. "
@@ -141,6 +141,22 @@ def pun_examples_block() -> str:
         "the voyage slogan stalls, and the galaxy shows the trip that never starts.\n"
         "- pop_culture_quote_flip | bold text stack | CAN WE FIX IT? NO. IT'S FUCKED. | "
         "Bob the Builder waving | the catchphrase answers itself and the wave sells the no.\n"
+        "- pop_culture_quote_flip | retro sunset badge | ONLY YOU CAN PREVENT DRAMA | "
+        "a llama in a ranger hat and sunglasses | "
+        "the Smokey Bear pose makes the drama warning a PSA parody.\n"
+        "- pop_culture_quote_flip | logo spoof | THIS IS A TASTY BEVERAGE | "
+        "Samuel L. Jackson sipping, inside a Starbucks ring | "
+        "the burger quote becomes a drink, and the ring makes it a cafe order.\n"
+        "- brand_logo_spoof | logo spoof | BEST BUTT | "
+        "the Best Buy yellow tag logo | the price tag turns the store name into the joke.\n"
+        "- holiday_pun | bold text stack | THAT'S SOME BOO SHEET! | "
+        "a cute trick-or-treat ghost with a pumpkin bucket | "
+        "the ghost makes boo sheet a Halloween pun.\n"
+        "- innocent_image_innuendo | bold text stack | SUCK MY BALLS | "
+        "a cute kawaii boba tea with tapioca balls | "
+        "the tapioca balls take the phrase off the crude reading.\n"
+        "- innocent_image_innuendo | oval outdoor badge | LET'S GET WET | "
+        "a kayaker on a mountain lake | the lake makes the phrase an outdoor boast.\n"
         "- historical_name_pun | bold text stack | BEN DRANKIN | "
         "Ben Franklin in a flag headband and aviators, holding a shot | "
         "the portrait turns the name into the drinking pun.\n"
@@ -163,7 +179,7 @@ def pun_examples_block() -> str:
         "a gas nozzle and a Vaseline jar drawn into the letters | "
         "the rhyme and the two icons are the same joke.\n"
         "Formats to reuse: retro sunset badge, logo spoof, circle badge, bold text stack, "
-        "bumper sticker strip, warning sign, plaque. "
+        "bumper sticker strip, warning sign, plaque, oval outdoor badge. "
         "Parody of a famous logo, celebrity, or movie character is allowed. "
         "Mild adult innuendo is allowed when the picture completes it. "
         "About 30 to 40 percent of the batch uses these shapes. "
@@ -656,6 +672,7 @@ _PUN_PATTERNS = {
     "fake warning sign",
     "slogan twist",
     "rhyme innuendo",
+    "holiday pun",
 }
 
 
