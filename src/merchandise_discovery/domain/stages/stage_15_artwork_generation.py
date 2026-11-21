@@ -32,6 +32,19 @@ class ArtworkGenerationOutput(BaseModel):
     warning: str = ""
 
 
+def _artwork_critique(prompt: PromptCompilation) -> dict:
+    """Buyer groups and the art style travel with the image so the gallery can label it."""
+
+    critique = {}
+    if prompt.audience_label:
+        critique["who_its_for"] = prompt.audience_label
+    if prompt.combination_name:
+        critique["expected_text"] = prompt.combination_name
+    if prompt.style_label:
+        critique["art_style"] = prompt.style_label
+    return critique
+
+
 def execute(
     input_data: ArtworkGenerationInput,
     provider: ImageProvider,
@@ -69,7 +82,7 @@ def execute(
             prompt=prompt.prompt,
             combination_name=prompt.combination_name,
             storage_key=stored.storage_key,
-            critique={"who_its_for": prompt.audience_label} if prompt.audience_label else {},
+            critique=_artwork_critique(prompt),
             raw_storage_key=stored.raw_storage_key,
             source_url=generated.source_url,
             width=stored.width or generated.width,
@@ -81,7 +94,7 @@ def execute(
 
     if not jobs:
         return ArtworkGenerationOutput()
-    workers = min(5, len(jobs))
+    workers = min(8, len(jobs))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         finished = list(pool.map(_generate_one, jobs))
     finished.sort(key=lambda item: item[0])

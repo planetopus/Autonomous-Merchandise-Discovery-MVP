@@ -73,6 +73,26 @@ def test_reasoning_effort_is_configurable_for_gpt5_models() -> None:
     assert "temperature" not in kwargs
 
 
+def test_vision_model_override_does_not_send_reasoning_controls() -> None:
+    """The text check calls gpt-4o-mini on a gpt-5 provider. That call must not send reasoning."""
+
+    provider = _provider("gpt-5")
+
+    result = provider.complete_structured(
+        system_prompt="system",
+        user_prompt="read the sticker",
+        response_model=ExampleOutput,
+        temperature=0.0,
+        model="gpt-4o-mini",
+    )
+
+    kwargs = provider._client.responses.parse.call_args.kwargs
+    assert kwargs["model"] == "gpt-4o-mini"
+    assert kwargs["temperature"] == 0.0
+    assert "reasoning" not in kwargs
+    assert result.usage.model == "gpt-4o-mini"
+
+
 def test_chat_models_keep_temperature() -> None:
     """Existing GPT-4o-mini runs retain their deterministic temperature setting."""
 

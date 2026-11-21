@@ -6,12 +6,14 @@ independently portable and provider dependencies are injected here.
 """
 
 import base64
+import io
 import json
 import logging
 import os
 import random
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import get_args
 
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
 from merchandise_discovery.domain.humor import (
@@ -45,6 +47,7 @@ from merchandise_discovery.domain.humor import (
     pun_examples_block,
     pun_share_is_thin,
     puns_still_needed,
+    quote_block,
     reading_failed,
     spoof_earns_final,
     synergy_failed,
@@ -61,7 +64,12 @@ from merchandise_discovery.domain.humor_references import (
     market_signal_prompt,
     select_humor_references,
 )
-from merchandise_discovery.domain.models.common import PipelineVariant, SocialSource, StageStatus
+from merchandise_discovery.domain.models.common import (
+    IdentityType,
+    PipelineVariant,
+    SocialSource,
+    StageStatus,
+)
 from merchandise_discovery.domain.models.usage import UsageMetrics, combine_usage
 from merchandise_discovery.domain.models.workflow import StageExecution, WorkflowRun
 from merchandise_discovery.domain.pipelines.social_behavior_identity import (
@@ -102,6 +110,26 @@ from merchandise_discovery.domain.stages import stage_14_prompt_compilation as s
 from merchandise_discovery.domain.stages import stage_15_artwork_generation as stage_15
 from merchandise_discovery.domain.stages import stage_16_artwork_critique as stage_16
 from merchandise_discovery.domain.stages import stage_17_artwork_revision as stage_17
+from merchandise_discovery.domain.sticker_direction import STICKER_AVOID
+from merchandise_discovery.domain.studio_lines import (
+    BUYER_GATE_SYSTEM,
+    COMEDY_GATE_SYSTEM,
+    BuyerGateBatch,
+    ComedyGateBatch,
+    ScoredLine,
+    StudioBatch,
+    apply_gate_reviews,
+    apply_sale_flags,
+    buyer_gate_prompt,
+    chunked,
+    comedy_gate_prompt,
+    crossover_writer_prompt,
+    format_writer_prompt,
+    reject_unoriginal,
+    scored_from_draft,
+    select_studio_finals,
+    studio_image_prompt,
+)
 from merchandise_discovery.infrastructure.ant_ratings_loader import (
     ant_calibration_block,
     load_ant_ratings,
@@ -208,6 +236,44 @@ def needs_extra_line_round(kept: int, requested: int) -> bool:
 
 def _has_group(candidate) -> bool:
     return any(str(item).strip() for item in (getattr(candidate, "who_its_for", None) or []))
+
+
+def _expected_sticker_text(artwork) -> str:
+    """The words that should appear on the sticker, not the audience prefix."""
+
+    critique = getattr(artwork, "critique", None) or {}
+    explicit = ""
+    if isinstance(critique, dict):
+        explicit = " ".join(str(critique.get("expected_text") or "").split())
+    name = explicit or " ".join(str(getattr(artwork, "combination_name", "") or "").split())
+    if " · " in name:
+        name = name.split(" · ", 1)[1].strip()
+    if name.casefold() in {"", "image only", "image-only sticker"}:
+        return ""
+    return name
+
+
+def _shrink_vision_url(url: str, max_edge: int = 768) -> str:
+    """Send a smaller PNG to the vision model so a batch of stickers fits in one call."""
+
+    if not url.startswith("data:image"):
+        return url
+    _header, _separator, payload = url.partition(",")
+    if not payload:
+        return url
+    try:
+        from PIL import Image
+
+        image = Image.open(io.BytesIO(base64.b64decode(payload)))
+        image.thumbnail((max_edge, max_edge))
+        if image.mode not in {"RGB", "RGBA"}:
+            image = image.convert("RGBA")
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+    except (OSError, ValueError):
+        return url
+    return f"data:image/png;base64,{encoded}"
 
 
 def _stamp_text_check(artwork, status: str, problem: str):
@@ -320,11 +386,13 @@ class DiscoveryStageExecutor:
 
         usage = UsageMetrics()
         try:
-            reasoning_output, usage, selection, line_reviews, playbook, pair_meta = self._social_reasoning(
-                run,
-                input_model,
-                pipeline_module,
-                output_model,
+            reasoning_output, usage, selection, line_reviews, playbook, pair_meta = (
+                self._social_reasoning(
+                    run,
+                    input_model,
+                    pipeline_module,
+                    output_model,
+                )
             )
             output = pipeline_module.execute(
                 input_model,
@@ -349,8 +417,10 @@ class DiscoveryStageExecutor:
             return output.model_copy(update=pair_update), usage
         except Exception as error:
             if getattr(error, "stage_usage", None) is None:
-                error.stage_usage = usage if usage.request_count or usage.total_tokens else getattr(
-                    self, "_social_usage", None
+                error.stage_usage = (
+                    usage
+                    if usage.request_count or usage.total_tokens
+                    else getattr(self, "_social_usage", None)
                 )
             if getattr(error, "stage_output", None) is None:
                 error.stage_output = getattr(self, "_social_preview", None)
@@ -359,6 +429,11 @@ class DiscoveryStageExecutor:
     def _social_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
         """Collect comments, draft joke-shaped lines, then let a critic cut them."""
 
+        mode = (
+            str(getattr(run.config, "social_generation_mode", "") or "classic").strip().casefold()
+        )
+        if mode == "studio":
+            return self._studio_reasoning(run, input_model, pipeline_module, output_model)
         selection, references = self._humor_selection(run, input_model)
         market = extract_market_signal(references)
         self._market_signal = market
@@ -483,7 +558,8 @@ class DiscoveryStageExecutor:
         domains = None
         if not fast and not quotes:
             domains = tuple(
-                "reddit.com" if source.value == "reddit" else "x.com" for source in input_model.sources
+                "reddit.com" if source.value == "reddit" else "x.com"
+                for source in input_model.sources
             )
         chosen_names = split_identity_names(
             str(getattr(input_model, "niche_a", "") or ""),
@@ -500,9 +576,7 @@ class DiscoveryStageExecutor:
             prompt_input = input_model
         atlas_block = atlas_prompt(context_groups, slang)
         ownable = self_ownable_block(context_groups)
-        critic_rubric = "\n".join(
-            part for part in ((lab.rubric or "")[:1200], ownable) if part
-        )
+        critic_rubric = "\n".join(part for part in ((lab.rubric or "")[:1200], ownable) if part)
         user_prompt = pipeline_module.build_user_prompt(
             prompt_input,
             draft_count=12,
@@ -544,7 +618,9 @@ class DiscoveryStageExecutor:
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
         if not fast and (
-            self._spread_is_thin(drafted) or self._wit_is_thin(drafted) or pun_share_is_thin(drafted)
+            self._spread_is_thin(drafted)
+            or self._wit_is_thin(drafted)
+            or pun_share_is_thin(drafted)
         ):
             spread, spread_usage, spread_reviews = self._rewrite_for_spread(
                 run,
@@ -570,7 +646,9 @@ class DiscoveryStageExecutor:
                 candidates = spread
             else:
                 if spread:
-                    candidates = self._best_available(spread, candidates, input_model.candidate_count)
+                    candidates = self._best_available(
+                        spread, candidates, input_model.candidate_count
+                    )
                 warnings.append(
                     "The first batch sat on too few patterns or truths. "
                     "Showing the widest lines available."
@@ -639,9 +717,7 @@ class DiscoveryStageExecutor:
                 input_model.candidate_count,
                 sum(1 for item in candidates if is_dark_humor(item)),
             ):
-                warnings.append(
-                    "No dark-humor line cleared. Showing the best lines anyway."
-                )
+                warnings.append("No dark-humor line cleared. Showing the best lines anyway.")
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
         if fast and input_model.candidate_count >= 5:
@@ -710,9 +786,14 @@ class DiscoveryStageExecutor:
                 warnings.append(
                     "Logo spoofs under 8.5, or without a real brand-joke link, were left out."
                 )
-            ordered = order_kept_lines(eligible or candidates, input_model.candidate_count) or candidates[:1]
+            ordered = (
+                order_kept_lines(eligible or candidates, input_model.candidate_count)
+                or candidates[:1]
+            )
         else:
-            ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
+            ordered = (
+                self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
+            )
         ordered, reviews = self._apply_who_its_for(
             ordered,
             reviews,
@@ -745,6 +826,374 @@ class DiscoveryStageExecutor:
         self._note_social_progress(usage, pair_meta, output.candidates, reviews, warnings)
         return output, usage, selection, reviews, playbook, pair_meta
 
+    def _studio_reasoning(self, run: WorkflowRun, input_model, pipeline_module, output_model):
+        """Draft about 40 lines, then keep the ones that clear three separate gates."""
+
+        del pipeline_module
+        selection, references = self._humor_selection(run, input_model)
+        market = extract_market_signal(references)
+        self._market_signal = market
+        lab = load_humor_lab()
+        playbook = merge_lab_playbook(build_playbook([]), lab.playbook)
+        if self._reasoning_provider is None:
+            return None, UsageMetrics(), selection, [], playbook, None
+        atlas = load_identity_atlas()
+        share = min(1.0, max(0.0, float(getattr(run.config, "social_trending_share", 0.6))))
+        self._trending_share = share
+        self._identity_bucket = "trending" if market.identities else "studio"
+        supplied = split_identity_names(
+            str(getattr(input_model, "niche_a", "") or ""),
+            str(getattr(input_model, "niche_b", "") or ""),
+            str(getattr(input_model, "identity", "") or ""),
+        )
+        anchor = supplied[0] if len(supplied) == 1 else ""
+        bank = self._atlas_pair_bank(
+            atlas,
+            anchor,
+            self._recent_catalog_terms(run),
+            market.token_weights if market.identities else None,
+        )
+        groups: list[dict] = []
+        if len(supplied) >= 2:
+            groups.append({"niche_a": supplied[0], "niche_b": " + ".join(supplied[1:])})
+        groups.extend(select_distinct_groups(bank, 6) or bank[:6])
+        pair_a = str(groups[0]["niche_a"]) if groups else (supplied[0] if supplied else "")
+        pair_b = str(groups[0]["niche_b"]) if groups else ""
+        pair_meta = {
+            "niche_pair_a": pair_a,
+            "niche_pair_b": pair_b,
+            "pairing_score": None,
+            "pairing_reason": "Studio wrote crossover puns and original takes on selling formats.",
+            "niche_pair_candidates": [],
+        }
+        tone = getattr(run.config, "humor_tone", None)
+        tone_text = getattr(tone, "description", None) or getattr(tone, "value", "dry")
+        fast = bool(getattr(run.config, "social_fast_mode", True))
+        quotes = [] if fast else self._collect_reddit_quotes(input_model)
+        seasoning = quote_block(quotes) if quotes else ""
+        usage = UsageMetrics()
+        warnings = ["Studio mode drafted crossover puns and original takes on proven formats."]
+        if fast:
+            warnings.append("Fast mode skipped Reddit. The two review gates still ran.")
+        crossover_prompt = crossover_writer_prompt(
+            groups=groups,
+            tone=str(tone_text),
+            quotes=seasoning,
+        )
+        format_prompt = format_writer_prompt(
+            market_block=market_signal_prompt(market),
+            tone=str(tone_text),
+            quotes=seasoning,
+        )
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            drafted_halves = list(
+                pool.map(
+                    lambda prompt: self._safe_studio_draft(prompt),
+                    (crossover_prompt, format_prompt),
+                )
+            )
+        drafted: list[ScoredLine] = []
+        for lines, draft_usage, error in drafted_halves:
+            usage = self._add_usage(usage, draft_usage)
+            drafted.extend(lines)
+            if error:
+                warnings.append(f"One draft half failed: {error}")
+        gold = [
+            HumorReference(text=line, upvotes=1, humor_type="gold")
+            for line in (lab.gold_lines or [])
+            if str(line).strip()
+        ]
+        quote_refs = [
+            HumorReference(text=body, upvotes=1, humor_type="quote")
+            for quote in quotes
+            if (body := " ".join(str(getattr(quote, "body", "") or "").split()))
+        ]
+        fresh, copied = reject_unoriginal(drafted, [*references, *gold, *quote_refs])
+        if copied:
+            warnings.append(f"Cut {len(copied)} lines that copied an example or a top seller.")
+        if not fresh:
+            raise RuntimeError("Studio mode wrote no original sticker lines.")
+        self._note_social_progress(usage, pair_meta, [], [], warnings)
+        gate_usage, gate_note = self._run_studio_gates(fresh)
+        usage = self._add_usage(usage, gate_usage)
+        if gate_note:
+            warnings.append(gate_note)
+        contenders = [line for line in fresh if line.critic_ok and line.buyer_ok]
+        if getattr(run.config, "social_check_already_for_sale", False):
+            sale_note = self._flag_exact_phrases(contenders)
+            if sale_note:
+                warnings.append(sale_note)
+        else:
+            warnings.append(
+                "Exact-phrase sale check was off. "
+                "Turn on Check if already for sale to cut lines already sold."
+            )
+        search_usage = getattr(self._listing_search, "usage", None)
+        if search_usage is not None and getattr(search_usage, "request_count", 0):
+            usage = self._add_usage(usage, search_usage)
+        keep = max(1, int(getattr(input_model, "candidate_count", 10) or 10))
+        flat_only = bool(getattr(run.config, "social_flat_art", False))
+        styled, style_note = select_studio_finals(fresh, keep, flat_only=flat_only)
+        if style_note:
+            warnings.append(style_note)
+        if not styled:
+            raise RuntimeError("No studio line cleared the comedy critic and the buyer review.")
+        for line, _style_name, _style_note in styled:
+            line.buyers = infer_who_its_for(line.buyers, [], [], atlas)
+        kept_text = {line.text for line, _name, _note in styled}
+        reviews = []
+        for line in fresh:
+            if line.text in kept_text:
+                reason = line.critic_reason or "kept"
+            elif not line.critic_ok:
+                reason = line.critic_reason or "critic cut"
+            elif not line.buyer_ok:
+                reason = line.buyer_reason or "buyer would not buy"
+            elif line.for_sale_url:
+                reason = f"already for sale: {line.for_sale_url}"
+            elif line.spoof_brand and not spoof_earns_final(line.probe()):
+                reason = "brand spoof did not fit the joke"
+            else:
+                reason = "outranked"
+            reviews.append(
+                LineReviewRecord(
+                    artwork_text=line.text,
+                    pattern=line.pattern,
+                    who_its_for=line.buyers[:4],
+                    funny_score=line.score if line.critic_ok else None,
+                    kept=line.text in kept_text,
+                    reason=reason[:500],
+                )
+            )
+        for line in copied:
+            reviews.append(
+                LineReviewRecord(
+                    artwork_text=line.text,
+                    pattern=line.pattern,
+                    who_its_for=line.buyers[:4],
+                    kept=False,
+                    reason="copied example or top seller",
+                )
+            )
+        candidates = [
+            self._studio_candidate(output_model, input_model, line, style_name, style_note, index)
+            for index, (line, style_name, style_note) in enumerate(styled, start=1)
+        ]
+        summary = (
+            f"Studio drafted {len(drafted)} lines and kept {len(candidates)} "
+            "after a comedy critic, a buyer review, and the sale check."
+        )
+        payload = {
+            "candidates": candidates,
+            "search_summary": summary[:2000],
+            "topic_explored": (str(getattr(input_model, "query", "") or "studio sticker lines"))[
+                :500
+            ],
+            "line_reviews": reviews,
+            "stage_warning": " ".join(warnings),
+            "niche_pair_a": pair_a[:200],
+            "niche_pair_b": pair_b[:200],
+            "pairing_reason": pair_meta["pairing_reason"][:500],
+        }
+        if "identity_selected" in output_model.model_fields:
+            selected = str(getattr(input_model, "identity", "") or pair_a or "mixed buyers")
+            payload["identity_selected"] = selected[:300]
+            payload["identity_type_selected"] = (
+                getattr(input_model, "identity_type", None) or IdentityType.INTEREST
+            )
+        output = output_model(
+            **{key: value for key, value in payload.items() if key in output_model.model_fields}
+        )
+        self._note_social_progress(usage, pair_meta, output.candidates, reviews, warnings)
+        return output, usage, selection, reviews, playbook, pair_meta
+
+    def _safe_studio_draft(self, prompt: str):
+        """One half of the draft. A failed half does not throw away the other."""
+
+        try:
+            response = self._reasoning_provider.complete_structured(
+                system_prompt=(
+                    "You write original die-cut sticker lines. Never copy an example. "
+                    "Every line is about 4 to 14 words and readable in one second. "
+                    "buyer_groups has 2 to 4 short labels. scene is one sentence where "
+                    "the picture carries the joke. dark is true only for gallows humor "
+                    "that group would tell about itself."
+                ),
+                user_prompt=prompt,
+                response_model=StudioBatch,
+                reasoning_effort="low",
+            )
+        except (OSError, RuntimeError, TypeError, ValueError) as error:
+            return [], UsageMetrics(), str(error)[:180]
+        lines = []
+        for draft in response.output.lines:
+            scored = scored_from_draft(draft)
+            if scored is not None:
+                lines.append(scored)
+        return lines, response.usage, ""
+
+    def _run_studio_gates(self, lines: list) -> tuple[UsageMetrics, str]:
+        """Comedy critic and buyer review, in parallel, on batches of twenty."""
+
+        batches = chunked(lines)
+        if not batches:
+            return UsageMetrics(), ""
+        usage = UsageMetrics()
+        failures = 0
+
+        def _one(batch):
+            return self._gate_studio_batch(batch)
+
+        workers = min(4, len(batches))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            results = list(pool.map(_one, batches))
+        for batch_usage, failed in results:
+            usage = self._add_usage(usage, batch_usage)
+            failures += failed
+        note = ""
+        if failures:
+            note = f"{failures} review calls failed. Those lines were not kept."
+        return usage, note
+
+    def _gate_studio_batch(self, batch: list) -> tuple[UsageMetrics, int]:
+        """Run the two review personas at the same time for one batch."""
+
+        usage = UsageMetrics()
+        failures = 0
+
+        def _critic():
+            response = self._reasoning_provider.complete_structured(
+                system_prompt=COMEDY_GATE_SYSTEM,
+                user_prompt=comedy_gate_prompt(batch),
+                response_model=ComedyGateBatch,
+                reasoning_effort="low",
+            )
+            return response.output.reviews, response.usage
+
+        def _buyer():
+            response = self._reasoning_provider.complete_structured(
+                system_prompt=BUYER_GATE_SYSTEM,
+                user_prompt=buyer_gate_prompt(batch),
+                response_model=BuyerGateBatch,
+                reasoning_effort="low",
+            )
+            return response.output.reviews, response.usage
+
+        comedy: list = []
+        buyers: list = []
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            critic_job = pool.submit(_critic)
+            buyer_job = pool.submit(_buyer)
+            for job, sink in ((critic_job, "comedy"), (buyer_job, "buyer")):
+                try:
+                    reviews, review_usage = job.result()
+                except (OSError, RuntimeError, TypeError, ValueError):
+                    failures += 1
+                    continue
+                usage = self._add_usage(usage, review_usage)
+                if sink == "comedy":
+                    comedy = reviews
+                else:
+                    buyers = reviews
+        apply_gate_reviews(batch, comedy, buyers)
+        return usage, failures
+
+    def _flag_exact_phrases(self, lines: list) -> str:
+        """Exact-phrase web search on lines that already cleared the two reviews."""
+
+        if not lines:
+            return "Exact-phrase check had no lines left to search."
+        search = self._listing_search
+        if search is None or not getattr(search, "enabled", False):
+            return "Exact-phrase sale check did not run. Web search is not configured."
+        phrases = [line.text for line in lines]
+        try:
+            if hasattr(search, "find_listings"):
+                found = search.find_listings(phrases, workers=4)
+            else:
+                found = [search.find_listing(phrase) for phrase in phrases]
+        except (OSError, RuntimeError, TypeError, ValueError) as error:
+            return f"Exact-phrase sale check did not run. {str(error)[:160]}"
+        hits = {}
+        for line, item in zip(lines, found):
+            if item is None:
+                continue
+            hits[line.text] = str(getattr(item, "url", "") or "listed")
+        apply_sale_flags(lines, hits)
+        return f"Exact-phrase check searched {len(phrases)} lines and cut {len(hits)}."
+
+    def _studio_candidate(
+        self,
+        output_model,
+        input_model,
+        line,
+        style_name: str,
+        style_note: str,
+        index: int,
+    ):
+        """Map one survivor onto the pipeline's candidate record."""
+
+        candidate_cls = get_args(output_model.model_fields["candidates"].annotation)[0]
+        source = input_model.sources[0]
+        if source == SocialSource.X:
+            url = f"https://x.com/studio/status/{index}"
+        else:
+            url = f"https://www.reddit.com/r/stickers/comments/studio{index}/line"
+        scene = line.scene or "The picture completes the joke."
+        identity = " + ".join(line.buyers[:2]) or str(
+            getattr(input_model, "identity", "") or "this group"
+        )
+        if len(identity) < 2:
+            identity = "this group"
+        tone = getattr(input_model, "humor_tone", None)
+        tone_text = getattr(tone, "value", None) or "dry"
+        prompt = studio_image_prompt(line.text, scene, style_name, style_note)
+        payload = {
+            "source_platform": source,
+            "source_url": url,
+            "source_title": "Studio sticker line",
+            "source_excerpt": (
+                "Written from buyer groups and proven sticker shapes. Not a copied listing."
+            ),
+            "audience_context": identity[:500],
+            "behavior": scene[:500],
+            "friction_or_pressure": (line.format_source or "The joke has to land in one second.")[
+                :500
+            ],
+            "artwork_text": line.text,
+            "image_idea": scene[:280],
+            "why_it_works": (line.critic_reason or "The picture carries the second meaning.")[:280],
+            "format": style_name[:80],
+            "spoof_brand": line.spoof_brand,
+            "brand_fits": line.brand_fits,
+            "brand_joke_link": line.brand_joke_link,
+            "artwork_prompt": prompt[:4000],
+            "visual_punchline": scene[:500],
+            "main_visual_metaphor": scene[:500],
+            "audience_specific_cue": (", ".join(line.buyers) or identity)[:500],
+            "tone": str(tone_text)[:200],
+            "style_direction": f"{style_name}. {style_note}"[:500],
+            "things_to_avoid": list(STICKER_AVOID)[:7],
+            "specificity_reason": (
+                f"Buyers: {', '.join(line.buyers) or identity}. Style: {style_name}."
+            )[:700],
+            "humor_mechanism": ("gallows" if line.dark else line.kind)[:200],
+            "concrete_detail": (line.format_source or line.kind)[:200],
+            "pattern": line.pattern,
+            "truth": (line.format_source or line.kind)[:160],
+            "comic_turn": "ironic",
+            "who_its_for": line.buyers[:4],
+            "funny_score": max(0.0, min(10.0, float(line.score or 0))),
+        }
+        if "identity" in candidate_cls.model_fields:
+            payload["identity"] = identity[:300]
+            payload["identity_type"] = (
+                getattr(input_model, "identity_type", None) or IdentityType.INTEREST
+            )
+            payload["identity_evidence"] = payload["specificity_reason"][:700]
+        allowed = set(candidate_cls.model_fields)
+        return candidate_cls(**{key: value for key, value in payload.items() if key in allowed})
+
     def _apply_who_its_for(self, candidates, reviews, atlas, names: list[str]):
         """Fill 2 to 4 buyer categories on every surviving line and critic row."""
 
@@ -753,7 +1202,11 @@ class DiscoveryStageExecutor:
         by_text: dict[str, list[str]] = {}
         for candidate in candidates:
             text = str(getattr(candidate, "artwork_text", "") or "")
-            own = [str(item).strip() for item in (getattr(candidate, "who_its_for", []) or []) if str(item).strip()]
+            own = [
+                str(item).strip()
+                for item in (getattr(candidate, "who_its_for", []) or [])
+                if str(item).strip()
+            ]
             labels = infer_who_its_for(
                 own,
                 [] if len(own) >= 2 else names,
@@ -893,12 +1346,18 @@ class DiscoveryStageExecutor:
             str(getattr(input_model, "niche_b", "") or ""),
             str(getattr(input_model, "identity", "") or ""),
         ]
-        return select_humor_references(references, tone=run.config.humor_tone, niches=niches), references
+        return select_humor_references(
+            references, tone=run.config.humor_tone, niches=niches
+        ), references
 
     def _add_usage(self, current: UsageMetrics, extra: UsageMetrics) -> UsageMetrics:
         """Add a measured call. An empty starting total must not discard the first response."""
 
-        if current.request_count == 0 and current.total_tokens == 0 and current.estimated_cost_usd == 0:
+        if (
+            current.request_count == 0
+            and current.total_tokens == 0
+            and current.estimated_cost_usd == 0
+        ):
             return extra
         return combine_usage(current, extra)
 
@@ -946,12 +1405,11 @@ class DiscoveryStageExecutor:
         """Sample broad atlas identities, boosted when they match what is selling."""
 
         sampled = sample_overlap_pairs(atlas, anchor=anchor, limit=10, avoid=avoid, trend=trend)
-        return [
-            {"niche_a": item["niche_a"], "niche_b": item["niche_b"]}
-            for item in sampled
-        ][:12]
+        return [{"niche_a": item["niche_a"], "niche_b": item["niche_b"]} for item in sampled][:12]
 
-    def _score_niche_pairs(self, input_model, bank: list[dict] | None = None, anchor: list[str] | None = None):
+    def _score_niche_pairs(
+        self, input_model, bank: list[dict] | None = None, anchor: list[str] | None = None
+    ):
         """Score about ten pairs once and keep the best, even when it is under 7."""
 
         identity = (anchor[0] if anchor else "") or str(getattr(input_model, "identity", "") or "")
@@ -1064,8 +1522,7 @@ class DiscoveryStageExecutor:
         """Append new identity-stack lines without duplicating text already kept."""
 
         seen = {
-            str(getattr(candidate, "artwork_text", "") or "").casefold()
-            for candidate in candidates
+            str(getattr(candidate, "artwork_text", "") or "").casefold() for candidate in candidates
         }
         merged = list(candidates)
         for candidate in filled:
@@ -1081,9 +1538,7 @@ class DiscoveryStageExecutor:
         """Do not bring a copied source, reference, or gold line back after the critic."""
 
         blocked = {
-            review.artwork_text
-            for review in reviews
-            if str(review.reason).startswith("copied")
+            review.artwork_text for review in reviews if str(review.reason).startswith("copied")
         }
         return [
             candidate
@@ -1206,7 +1661,9 @@ class DiscoveryStageExecutor:
         note = str(getattr(self._image_provider, "fallback_note", "") or "").strip()
         check_note = str(getattr(output, "warning", "") or "").strip()
         if note and hasattr(output, "model_copy"):
-            output = output.model_copy(update={"warning": " ".join(part for part in (check_note, note) if part)})
+            output = output.model_copy(
+                update={"warning": " ".join(part for part in (check_note, note) if part)}
+            )
             note = " ".join(part for part in (check_note, note) if part)
         elif check_note:
             note = check_note
@@ -1243,73 +1700,70 @@ class DiscoveryStageExecutor:
                 try:
                     if path.is_file() and path.is_relative_to(Path(root).resolve()):
                         payload = base64.b64encode(path.read_bytes()).decode("ascii")
-                        return f"data:image/png;base64,{payload}"
+                        return _shrink_vision_url(f"data:image/png;base64,{payload}")
                 except (OSError, ValueError):
                     continue
         return str(artwork.source_url or "")
 
     def _check_sticker_text(self, run, output):
-        """One vision call against the exact sticker text. Regenerate only the failures, once."""
+        """Vision-check the exact sticker line. Regenerate only the failures, once."""
 
         if not getattr(run.config, "social_image_qa", True):
             return output
         if self._reasoning_provider is None or not getattr(output, "artworks", None):
             return output
         artworks = list(output.artworks)
-        urls = []
         indexed = []
         for index, artwork in enumerate(artworks):
             source = str(artwork.source_url or "")
             if source.startswith(("https://fixture.local/", "openai://")):
                 continue
+            expected = _expected_sticker_text(artwork)
+            if not expected:
+                artworks[index] = _stamp_text_check(artwork, "passed", "")
+                continue
             url = self._sticker_image_url(artwork)
             if not url or url.startswith(("https://fixture.local/", "openai://")):
                 continue
-            urls.append(url)
             indexed.append((index, artwork))
-        if not urls:
-            return output
-        lines = "\n".join(
-            f'{number}. The sticker text must be exactly "{artwork.combination_name}" and appear once.'
-            for number, (_index, artwork) in enumerate(indexed, start=1)
-        )
-        try:
-            response = self._reasoning_provider.complete_structured(
-                system_prompt=(
-                    "Compare each sticker image to its expected text, character for character. "
-                    "text_ok is false when a letter is doubled or missing, such as STICKERRS "
-                    "instead of STICKERS, when the words are misspelled, or when the line "
-                    "appears more than once. Index starts at 1. Ignore drawing style."
-                ),
-                user_prompt=f"Images are in this order.\n{lines}",
-                response_model=StickerTextBatch,
-                image_urls=urls,
-                image_detail="high",
-                reasoning_effort="low",
-                model=os.getenv("MVP_VISION_MODEL", "gpt-4o-mini"),
-            )
-        except (OSError, RuntimeError, TypeError, ValueError) as error:
-            marked = [_stamp_text_check(artwork, "skipped", str(error)[:180]) for artwork in artworks]
-            return output.model_copy(
-                update={
-                    "artworks": marked,
-                    "warning": "Text check did not run. The images were kept.",
-                }
-            )
+        if not indexed:
+            return output.model_copy(update={"artworks": artworks})
+        chunks = [indexed[start : start + 4] for start in range(0, len(indexed), 4)]
         problems: dict[int, str] = {}
-        for check in response.output.checks:
-            slot = check.index - 1
-            if check.text_ok or not 0 <= slot < len(indexed):
-                continue
-            problems[slot] = str(check.problem or "The sticker text does not match.")
-        for slot, (index, artwork) in enumerate(indexed):
-            if slot not in problems:
-                artworks[index] = _stamp_text_check(artwork, "passed", "")
+        failed_chunks = 0
 
-        def _redo(slot: int):
-            index, artwork = indexed[slot]
-            text = artwork.combination_name or ""
-            problem = problems[slot]
+        def _read(chunk):
+            return self._read_sticker_chunk(chunk)
+
+        workers = min(3, len(chunks))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            reads = list(pool.map(_read, chunks))
+        for chunk, read in zip(chunks, reads):
+            error, checks = read
+            if error:
+                failed_chunks += 1
+                for index, artwork in chunk:
+                    artworks[index] = _stamp_text_check(artwork, "skipped", error)
+                continue
+            local = [(index, artwork) for index, artwork in chunk]
+            returned = [check.index for check in checks]
+            zero_based = 0 in returned
+            bad: dict[int, str] = {}
+            for check in checks:
+                slot = check.index if zero_based else check.index - 1
+                if check.text_ok or not 0 <= slot < len(local):
+                    continue
+                bad[slot] = str(check.problem or "The sticker text does not match.")
+            for slot, (index, artwork) in enumerate(local):
+                if slot in bad:
+                    problems[index] = bad[slot]
+                else:
+                    artworks[index] = _stamp_text_check(artwork, "passed", "")
+
+        def _redo(index: int):
+            artwork = artworks[index]
+            text = _expected_sticker_text(artwork)
+            problem = problems[index]
             try:
                 generated = self._image_provider.generate(
                     ImageGenerationRequest(
@@ -1349,26 +1803,64 @@ class DiscoveryStageExecutor:
             for index, artwork in replaced:
                 artworks[index] = artwork
         elif problems:
-            for slot, (index, artwork) in enumerate(indexed):
-                if slot in problems:
-                    artworks[index] = _stamp_text_check(artwork, "failed", problems[slot])
+            for index, problem in problems.items():
+                artworks[index] = _stamp_text_check(artworks[index], "failed", problem)
         regenerated = sum(
             1 for artwork in artworks if (artwork.critique or {}).get("text_check") == "regenerated"
         )
         failed = sum(
             1 for artwork in artworks if (artwork.critique or {}).get("text_check") == "failed"
         )
+        skipped = sum(
+            1 for artwork in artworks if (artwork.critique or {}).get("text_check") == "skipped"
+        )
         note = ""
-        if regenerated or failed:
-            note = f"Text check regenerated {regenerated} and still failed {failed}."
+        if skipped and skipped == len(indexed):
+            note = "Text check did not run. The images were kept."
+        elif regenerated or failed or skipped:
+            note = (
+                f"Text check regenerated {regenerated}, still failed {failed}, "
+                f"and skipped {skipped}."
+            )
         return output.model_copy(update={"artworks": artworks, "warning": note})
 
-    def _draft_gap_lines(self, run, pipeline_module, output_model, groups: list[dict], *, need_dark: bool):
+    def _read_sticker_chunk(self, chunk: list) -> tuple[str, list]:
+        """One vision call for up to four stickers. The error string is empty on success."""
+
+        urls = [_shrink_vision_url(self._sticker_image_url(artwork)) for _index, artwork in chunk]
+        lines = "\n".join(
+            f'{number}. The sticker text must be exactly "{_expected_sticker_text(artwork)}" '
+            "and appear once."
+            for number, (_index, artwork) in enumerate(chunk, start=1)
+        )
+        try:
+            response = self._reasoning_provider.complete_structured(
+                system_prompt=(
+                    "Compare each sticker image to its expected text, character for character. "
+                    "text_ok is false when a letter is doubled or missing, such as STICKERRS "
+                    "instead of STICKERS, when the words are misspelled, or when the line "
+                    "appears more than once. Index starts at 1. Ignore drawing style."
+                ),
+                user_prompt=f"Images are in this order.\n{lines}",
+                response_model=StickerTextBatch,
+                image_urls=urls,
+                image_detail="high",
+                reasoning_effort="low",
+                model=os.getenv("MVP_VISION_MODEL", "gpt-4o-mini"),
+            )
+        except (OSError, RuntimeError, TypeError, ValueError) as error:
+            return str(error)[:180], []
+        return "", list(response.output.checks)
+
+    def _draft_gap_lines(
+        self, run, pipeline_module, output_model, groups: list[dict], *, need_dark: bool
+    ):
         """One short call for a missing group or dark line. No second critic."""
 
-        named = "; ".join(
-            f"{group['niche_a']} + {group['niche_b']}" for group in groups[:5]
-        ) or "the buyer groups already in the batch"
+        named = (
+            "; ".join(f"{group['niche_a']} + {group['niche_b']}" for group in groups[:5])
+            or "the buyer groups already in the batch"
+        )
         dark = (
             "Two of the four lines must be dark humor with pattern dark_twist_scene. "
             if need_dark
@@ -1433,8 +1925,7 @@ class DiscoveryStageExecutor:
         """Append new survivor lines. Critic-dropped lines are not in either list."""
 
         seen = {
-            str(getattr(candidate, "artwork_text", "") or "").casefold()
-            for candidate in candidates
+            str(getattr(candidate, "artwork_text", "") or "").casefold() for candidate in candidates
         }
         merged = list(candidates)
         for candidate in extra:
@@ -1475,8 +1966,7 @@ class DiscoveryStageExecutor:
         """Append new pun lines without duplicating text already kept."""
 
         seen = {
-            str(getattr(candidate, "artwork_text", "") or "").casefold()
-            for candidate in candidates
+            str(getattr(candidate, "artwork_text", "") or "").casefold() for candidate in candidates
         }
         merged = list(candidates)
         for candidate in filled:
@@ -1508,11 +1998,7 @@ class DiscoveryStageExecutor:
             return candidates[:keep_count]
         head = (spoofs[:2] + puns)[:3]
         used = {id(candidate) for candidate in head}
-        tail = [
-            candidate
-            for candidate in spoofs + puns + others
-            if id(candidate) not in used
-        ]
+        tail = [candidate for candidate in spoofs + puns + others if id(candidate) not in used]
         return (head + tail)[:keep_count]
 
     def _fill_dark_humor(self, run, output_model, pipeline_module, missing: int):
@@ -1544,7 +2030,9 @@ class DiscoveryStageExecutor:
 
         offered = list(getattr(self, "_offer_brands", []) or [])
         count = max(1, min(2, missing))
-        picks = offered[:count] or [{"name": "a major US brand", "style": "its real logo colors and shape"}]
+        picks = offered[:count] or [
+            {"name": "a major US brand", "style": "its real logo colors and shape"}
+        ]
         brief = "; ".join(f"{item['name']}: {item['style']}" for item in picks)
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
@@ -1833,7 +2321,9 @@ class DiscoveryStageExecutor:
             score = review.reddit_upvote_score if review is not None else None
             average = critic_average(review) if review is not None else None
             buy = review.sticker_buy_score if review is not None else None
-            if (score is None and average is None and buy is None) or not hasattr(candidate, "model_copy"):
+            if (score is None and average is None and buy is None) or not hasattr(
+                candidate, "model_copy"
+            ):
                 scored.append(candidate)
                 continue
             shown = buy if buy is not None else average if average is not None else score
@@ -1879,10 +2369,9 @@ class DiscoveryStageExecutor:
                 reason, kept_flag = "tired trope", False
             elif review is not None and getattr(review, "insider_jargon", False):
                 reason, kept_flag = "insider jargon", False
-            elif (
-                str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight"
-                and not line_is_pun(candidate)
-            ):
+            elif str(
+                getattr(candidate, "comic_turn", "") or ""
+            ).casefold() == "straight" and not line_is_pun(candidate):
                 reason, kept_flag = "no ironic twist", False
             elif member_would_not_buy(review):
                 clear = getattr(review, "instantly_understandable", None)
@@ -2158,7 +2647,10 @@ class DiscoveryStageExecutor:
 
         # Compact Stage 5 was removed, but its downstream stage number remains stable for run
         # history. Stage 6 therefore reads the merged Stage 4 result directly.
-        if stage.stage_number == 6 and run.config.pipeline_variant.value == "compact_research_first":
+        if (
+            stage.stage_number == 6
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             stage_4 = self._stage_repository.get_latest(run.run_id, 4)
             if stage_4 is None or not stage_4.output_data:
                 raise ValueError("Stage 6 is missing merged Stage 4 research-selection output.")
@@ -2182,9 +2674,7 @@ class DiscoveryStageExecutor:
         # Stage 11 is optional. When disabled, Stage 12 consumes the Stage 10 critique output
         # and still applies the marketplace saturation check before ranking.
         stage_11_skipped = stage.stage_number == 12 and (
-            previous is None
-            or previous.status == StageStatus.SKIPPED
-            or not previous.output_data
+            previous is None or previous.status == StageStatus.SKIPPED or not previous.output_data
         )
         if stage_11_skipped:
             previous = self._stage_repository.get_latest(run.run_id, 10)
@@ -2222,9 +2712,7 @@ class DiscoveryStageExecutor:
                 stage_4_output = stage_04.CoherenceOutput.model_validate(stage_4.output_data)
                 selected_ids = stage_4_output.selected_intersection_ids
                 if selected_ids:
-                    by_id = {
-                        item.intersection_id: item for item in stage_4_output.intersections
-                    }
+                    by_id = {item.intersection_id: item for item in stage_4_output.intersections}
                     selected = [
                         by_id[intersection_id]
                         for intersection_id in selected_ids
@@ -2253,7 +2741,9 @@ class DiscoveryStageExecutor:
             ).model_dump(mode="python")
         if stage.stage_number == 7:
             if run.config.pipeline_variant.value == "compact_research_first":
-                combined = stage_06_compact.CompactDevelopmentOutput.model_validate(previous.output_data)
+                combined = stage_06_compact.CompactDevelopmentOutput.model_validate(
+                    previous.output_data
+                )
                 return stage_15.ArtworkGenerationInput(
                     prompts=combined.prompts,
                     artwork_variants_per_concept=run.config.artwork_variants_per_concept,
@@ -2266,7 +2756,9 @@ class DiscoveryStageExecutor:
         if stage.stage_number == 8:
             if run.config.pipeline_variant.value == "compact_research_first":
                 prior = stage_15.ArtworkGenerationOutput.model_validate(previous.output_data)
-                return stage_16.ArtworkCritiqueInput(artworks=prior.artworks).model_dump(mode="python")
+                return stage_16.ArtworkCritiqueInput(artworks=prior.artworks).model_dump(
+                    mode="python"
+                )
             research = self._stage_repository.get_latest(run.run_id, 6)
             if research is None or not research.output_data:
                 raise ValueError("Stage 8 is missing Stage 6 research output.")
@@ -2276,13 +2768,19 @@ class DiscoveryStageExecutor:
                 niches=research_output.niches,
                 signals=mined.signals,
             ).model_dump(mode="python")
-        if stage.stage_number == 9 and run.config.pipeline_variant.value == "compact_research_first":
+        if (
+            stage.stage_number == 9
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             prior = stage_16.ArtworkCritiqueOutput.model_validate(previous.output_data)
             return stage_17.ArtworkRevisionInput(
                 artworks=prior.artworks,
                 evaluations=prior.evaluations,
             ).model_dump(mode="python")
-        if stage.stage_number == 10 and run.config.pipeline_variant.value == "compact_research_first":
+        if (
+            stage.stage_number == 10
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             prior = stage_17.ArtworkRevisionOutput.model_validate(previous.output_data)
             return stage_09_gallery.ArtworkGalleryInput(
                 artworks=prior.artworks,
@@ -2421,7 +2919,9 @@ class DiscoveryStageExecutor:
 
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_BEHAVIOR_IDENTITY:
             if stage.stage_number == 1:
-                input_model = social_behavior_identity.BehaviorIdentityInput.model_validate(input_data)
+                input_model = social_behavior_identity.BehaviorIdentityInput.model_validate(
+                    input_data
+                )
                 output, usage = self._finish_social_text(
                     run,
                     input_model,
@@ -2489,7 +2989,9 @@ class DiscoveryStageExecutor:
                     usage=usage,
                 )
             if stage.stage_number == 2:
-                identity_input = social_identity_artwork.IdentityArtworkInput.model_validate(input_data)
+                identity_input = social_identity_artwork.IdentityArtworkInput.model_validate(
+                    input_data
+                )
                 output = social_identity_artwork.execute(
                     identity_input,
                     run_id=run.run_id,
@@ -2627,10 +3129,7 @@ class DiscoveryStageExecutor:
                 reasoning_output=reasoning_output,
                 model=usage.model if usage.provider != "fixture" else "deterministic",
             )
-            summary = (
-                f"Expanded {len(output.identities)} identity dimensions "
-                f"using {output.model}."
-            )
+            summary = f"Expanded {len(output.identities)} identity dimensions using {output.model}."
         elif stage.stage_number == 3:
             input_model = stage_03.IntersectionGenerationInput.model_validate(input_data)
             reasoning_output = None
@@ -2731,7 +3230,9 @@ class DiscoveryStageExecutor:
                     model=usage.model if usage.provider != "fixture" else "deterministic",
                 )
                 self._intersections.replace_for_run(run.run_id, output.intersections)
-                selection_actor = "AI" if output.model != "deterministic" else "Deterministic fixture logic"
+                selection_actor = (
+                    "AI" if output.model != "deterministic" else "Deterministic fixture logic"
+                )
                 summary = (
                     f"{selection_actor} selected {len(output.selected_intersection_ids)} of "
                     f"{len(output.intersections)} intersections for niche research."
@@ -2784,7 +3285,10 @@ class DiscoveryStageExecutor:
                 f"Researched {len(output.niches)} niches and stored "
                 f"{len(output.evidence)} source records."
             )
-        elif stage.stage_number == 7 and run.config.pipeline_variant.value == "compact_research_first":
+        elif (
+            stage.stage_number == 7
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             input_model = stage_15.ArtworkGenerationInput.model_validate(input_data)
             output = stage_15.execute(
                 input_model,
@@ -2794,13 +3298,19 @@ class DiscoveryStageExecutor:
             usage = output.usage
             self._artworks.replace_for_run(run.run_id, output.artworks)
             summary = f"Generated {len(output.artworks)} compact-pipeline artwork candidates."
-        elif stage.stage_number == 8 and run.config.pipeline_variant.value == "compact_research_first":
+        elif (
+            stage.stage_number == 8
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             input_model = stage_16.ArtworkCritiqueInput.model_validate(input_data)
             output, usage = self._critique_artworks(input_model)
             self._artworks.replace_for_run(run.run_id, output.artworks)
             accepted = sum(item.decision.value == "accept" for item in output.evaluations)
             summary = f"Luna reviewed {len(output.evaluations)} artworks; {accepted} need no edit."
-        elif stage.stage_number == 9 and run.config.pipeline_variant.value == "compact_research_first":
+        elif (
+            stage.stage_number == 9
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             input_model = stage_17.ArtworkRevisionInput.model_validate(input_data)
             output = stage_17.execute(
                 input_model,
@@ -2811,7 +3321,10 @@ class DiscoveryStageExecutor:
             self._artworks.replace_for_run(run.run_id, output.artworks)
             revised = sum(item.revised for item in output.revisions)
             summary = f"Grok revised {revised} artwork candidates; {len(output.artworks) - revised} unchanged."
-        elif stage.stage_number == 10 and run.config.pipeline_variant.value == "compact_research_first":
+        elif (
+            stage.stage_number == 10
+            and run.config.pipeline_variant.value == "compact_research_first"
+        ):
             input_model = stage_09_gallery.ArtworkGalleryInput.model_validate(input_data)
             output = stage_09_gallery.execute(input_model)
             summary = output.summary
@@ -3009,7 +3522,9 @@ class DiscoveryStageExecutor:
                 model=usage.model if usage.provider != "fixture" else "deterministic",
             )
             self._concepts.replace_for_run(run.run_id, output.concepts)
-            summary = f"Critiqued {len(output.evaluations)} merchandise concepts using {output.model}."
+            summary = (
+                f"Critiqued {len(output.evaluations)} merchandise concepts using {output.model}."
+            )
         elif stage.stage_number == 11:
             input_model = stage_11.SimilarityCheckInput.model_validate(input_data)
             if self._saturation_checker is not None and not input_model.saturation:
@@ -3017,7 +3532,10 @@ class DiscoveryStageExecutor:
                     update={
                         "saturation": _saturation_findings(
                             self._saturation_checker,
-                            [(concept.concept_id, concept.phrase) for concept in input_model.concepts],
+                            [
+                                (concept.concept_id, concept.phrase)
+                                for concept in input_model.concepts
+                            ],
                         )
                     }
                 )

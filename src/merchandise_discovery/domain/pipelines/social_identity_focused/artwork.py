@@ -22,6 +22,7 @@ from merchandise_discovery.domain.sticker_direction import (
     finished_sticker_direction,
     merchandise_text_clause,
     merged_avoid_list,
+    style_label,
 )
 from merchandise_discovery.infrastructure.providers.image_provider import ImageProvider
 from merchandise_discovery.infrastructure.storage import ArtworkStorage
@@ -97,10 +98,9 @@ def to_artwork_generation_input(
                 niche_a=input_model.niche_a,
                 niche_b=input_model.niche_b,
             ),
-            combination_name=(
-                f"{candidate.identity} · {candidate.artwork_text or 'image only'}"
-            ),
+            combination_name=candidate.artwork_text or "Image-only sticker",
             audience_label=" · ".join(candidate.who_its_for),
+            style_label=style_label(candidate.style_direction),
         )
         for index, candidate in enumerate(input_model.candidates, start=1)
     ]

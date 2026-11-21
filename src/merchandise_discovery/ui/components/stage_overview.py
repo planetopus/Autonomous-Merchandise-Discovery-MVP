@@ -709,22 +709,46 @@ def _render_prompts(payload: dict[str, Any]) -> None:
 
 
 def _render_artwork_generation(payload: dict[str, Any]) -> None:
-    """Render the finished stickers in one row, then any extras as cards."""
+    """Render every finished sticker, labeled, in rows of five."""
 
     if payload.get("warning"):
         st.warning(str(payload["warning"]))
     artworks = _records(payload, "artworks")
     _metric_row([("Artwork candidates", str(len(artworks)))])
     if artworks:
-        _render_sticker_grid(artworks[:5])
-        if len(artworks) > 5:
-            _render_artwork_cards(artworks[5:], "Generated artwork")
+        for start in range(0, len(artworks), 5):
+            _render_sticker_grid(artworks[start : start + 5])
     else:
         st.caption("No artwork images were generated.")
 
 
+def _render_sticker_labels(artwork: dict[str, Any]) -> None:
+    """Buyer groups, art style, and the sticker-text check for one image."""
+
+    critique = artwork.get("critique") or {}
+    if not isinstance(critique, dict):
+        critique = {}
+    buyers = str(critique.get("who_its_for") or "")
+    if buyers:
+        st.caption(f"Who it's for: {buyers}")
+    style = str(critique.get("art_style") or "")
+    if style:
+        st.caption(f"Style: {style}")
+    status = str(critique.get("text_check") or "")
+    problem = str(critique.get("text_problem") or "")
+    if status == "passed":
+        st.caption("Text check: passed")
+    elif status == "regenerated":
+        st.caption(f"Text check: regenerated. {problem}".strip())
+    elif status == "failed":
+        st.caption(f"Text check: failed. {problem}".strip())
+    elif status == "skipped":
+        detail = f" {problem}" if problem else ""
+        st.caption(f"Text check: did not run.{detail}")
+
+
 def _render_sticker_grid(artworks: list[dict[str, Any]]) -> None:
-    """Show up to five finished stickers with the line, the buyer, and a download."""
+    """Show a row of finished stickers with the line, the buyers, and a download."""
 
     columns = st.columns(len(artworks))
     used_names: set[str] = set()
@@ -732,22 +756,7 @@ def _render_sticker_grid(artworks: list[dict[str, Any]]) -> None:
         with column:
             text = _text(artwork, "combination_name", default="Sticker")
             st.markdown(f"**{text}**")
-            buyers = ""
-            critique = artwork.get("critique") or {}
-            if isinstance(critique, dict):
-                buyers = str(critique.get("who_its_for") or "")
-            if buyers:
-                st.caption(f"Who it's for: {buyers}")
-            status = str(critique.get("text_check") or "") if isinstance(critique, dict) else ""
-            problem = str(critique.get("text_problem") or "") if isinstance(critique, dict) else ""
-            if status == "passed":
-                st.caption("Text check: passed")
-            elif status == "regenerated":
-                st.caption(f"Text check: regenerated. {problem}".strip())
-            elif status == "failed":
-                st.caption(f"Text check: failed. {problem}".strip())
-            elif status == "skipped":
-                st.caption("Text check: did not run")
+            _render_sticker_labels(artwork)
             with st.expander("Image prompt"):
                 st.code(_text(artwork, "prompt"), language="text")
             _render_artwork_image(artwork, text)
@@ -817,6 +826,7 @@ def _render_artwork_cards(artworks: list[dict[str, Any]], category: str) -> None
                 st.markdown(
                     f"**{_text(artwork, 'combination_name', 'phrase', default='Artwork candidate')}**"
                 )
+                _render_sticker_labels(artwork)
                 st.caption(
                     f"Candidate ID: {_text(artwork, 'artwork_id')} · "
                     f"Concept ID: {_text(artwork, 'concept_id')}"

@@ -46,6 +46,8 @@ def build_run_config(
     social_trending_share: float = 0.6,
     social_generate_images: bool = True,
     social_fast_mode: bool = True,
+    social_generation_mode: str = "classic",
+    social_flat_art: bool = False,
     social_check_already_for_sale: bool = False,
     social_image_qa: bool = True,
     social_image_model: str = "",
@@ -74,6 +76,8 @@ def build_run_config(
         social_trending_share=min(1.0, max(0.0, social_trending_share)),
         social_generate_images=social_generate_images,
         social_fast_mode=social_fast_mode,
+        social_generation_mode=social_generation_mode,
+        social_flat_art=social_flat_art,
         social_check_already_for_sale=social_check_already_for_sale,
         social_image_qa=social_image_qa,
         social_image_model=social_image_model.strip(),
@@ -113,9 +117,7 @@ def render_run_create(
         # database-backed library. A configured runtime should always provide the Mongo catalog.
         seed_library_options = {"MVP Seed Library": "mvp_seed_library"}
     else:
-        seed_library_options = {
-            library.name: library.library_id for library in seed_libraries
-        }
+        seed_library_options = {library.name: library.library_id for library in seed_libraries}
 
     st.markdown(
         '<div class="opus-breadcrumb">Workspace &nbsp;›&nbsp; New run</div>',
@@ -137,9 +139,7 @@ def render_run_create(
         PipelineVariant.SOCIAL_BEHAVIOR_TEXT,
     ]
     if show_legacy_pipelines:
-        pipeline_options.extend(
-            [PipelineVariant.BASELINE, PipelineVariant.COMPACT_RESEARCH_FIRST]
-        )
+        pipeline_options.extend([PipelineVariant.BASELINE, PipelineVariant.COMPACT_RESEARCH_FIRST])
     pipeline_variant = st.selectbox(
         "Pipeline",
         options=pipeline_options,
@@ -160,6 +160,8 @@ def render_run_create(
     manual_artwork_selection = False
     generate_images = True
     fast_mode = True
+    generation_mode = "classic"
+    flat_art = False
     check_already_for_sale = False
     image_qa = True
     image_model = ""
@@ -172,10 +174,41 @@ def render_run_create(
                 "trending buyers, and the pun anchors. Turn off to search discussions."
             ),
         )
+        generation_mode = st.selectbox(
+            "Line method",
+            options=["studio", "classic"],
+            index=0,
+            format_func=lambda value: {
+                "studio": "Studio — crossovers and proven formats",
+                "classic": "Current writer",
+            }[value],
+            help=(
+                "Studio writes about 40 lines, half niche-crossover puns and half original "
+                "takes on top-selling formats, then a comedy critic, a buyer review, and "
+                "an exact-phrase sale check. Current writer keeps the existing flat-vector batch."
+            ),
+        )
+        if generation_mode == "studio":
+            flat_art = st.checkbox(
+                "Flat vector only",
+                value=False,
+                help=(
+                    "Every sticker uses the current flat vector style. "
+                    "Off rotates styles so no style is used twice."
+                ),
+            )
+            st.caption(
+                "Studio keeps the best lines after three gates. Fast mode still skips Reddit. "
+                "The exact-phrase sale check stays on unless you turn it off below."
+            )
         check_already_for_sale = st.checkbox(
             "Check if already for sale",
-            value=False,
-            help="Search the web for each final line. Off by default so a run stays fast.",
+            value=generation_mode == "studio",
+            key=f"sale-check-{generation_mode}",
+            help=(
+                "Exact-phrase web search. Studio turns this on so a line already for sale is cut. "
+                "Fast mode still runs this short check when it is on. Turn it off to skip it."
+            ),
         )
         image_qa = st.checkbox(
             "Check sticker text",
@@ -202,10 +235,11 @@ def render_run_create(
         backend = "fixture"
         if runtime is not None:
             backend = runtime.provider_modes.get("image", "fixture")
-        image_cost = estimate_image_cost(backend, 5)
+        sticker_count = 10 if generation_mode == "studio" else 5
+        image_cost = estimate_image_cost(backend, sticker_count)
         if generate_images:
             st.caption(
-                f"Image provider: {backend}. About ${image_cost:.2f} for 5 stickers, "
+                f"Image provider: {backend}. About ${image_cost:.2f} for {sticker_count} stickers, "
                 "plus the text-model tokens."
             )
         elif runtime is not None and runtime.stop_after_stage < 2:
@@ -224,8 +258,7 @@ def render_run_create(
                 value=False,
                 help=(
                     "OpenAI will still cross two niches. It names the first as the identity and "
-                    "classifies it with the supported taxonomy: "
-                    + identity_type_guidance()
+                    "classifies it with the supported taxonomy: " + identity_type_guidance()
                 ),
             )
 
@@ -266,7 +299,9 @@ def render_run_create(
             if is_identity_pipeline:
                 st.markdown("#### Identity anchor")
                 if auto_identity:
-                    st.info("AI will select the identity and identity type from the public discussions.")
+                    st.info(
+                        "AI will select the identity and identity type from the public discussions."
+                    )
                 else:
                     social_identity_type = st.selectbox(
                         "Identity type",
@@ -331,8 +366,14 @@ def render_run_create(
                 "Text candidates",
                 min_value=1,
                 max_value=15,
-                value=5,
-                help="Maximum number of distinct source-backed merchandise lines to generate.",
+                value=10 if generation_mode == "studio" else 5,
+                key=f"text-candidates-{generation_mode}",
+                help=(
+                    "How many lines to keep. Studio writes about 40, then cuts to this many. "
+                    "10 is the intended studio batch."
+                    if generation_mode == "studio"
+                    else "Maximum number of distinct source-backed merchandise lines to generate."
+                ),
             )
             manual_artwork_selection = st.checkbox(
                 "Let me choose which texts get artwork",
@@ -351,7 +392,9 @@ def render_run_create(
             intersections = st.slider("Identity intersections", min_value=1, max_value=25, value=10)
             niches = st.slider("Niches to research", min_value=1, max_value=10, value=3)
             concepts = st.slider("Concepts per niche", min_value=1, max_value=10, value=5)
-            artwork_variants = st.slider("Artwork variants per finalist", min_value=1, max_value=4, value=2)
+            artwork_variants = st.slider(
+                "Artwork variants per finalist", min_value=1, max_value=4, value=2
+            )
         submitted = st.form_submit_button("Create demo run", width="stretch")
 
     if not submitted:
@@ -369,11 +412,7 @@ def render_run_create(
         if not auto_topic and not social_query.strip():
             st.error("Describe the behavior or topic to explore.")
             return
-        if (
-            is_identity_pipeline
-            and not auto_identity
-            and not social_identity.strip()
-        ):
+        if is_identity_pipeline and not auto_identity and not social_identity.strip():
             st.error("Enter the target identity for the identity-focused pipeline.")
             return
     try:
@@ -400,6 +439,8 @@ def render_run_create(
                 social_trending_share=trending_share,
                 social_generate_images=generate_images,
                 social_fast_mode=fast_mode,
+                social_generation_mode=generation_mode,
+                social_flat_art=flat_art,
                 social_check_already_for_sale=check_already_for_sale,
                 social_image_qa=image_qa,
                 social_image_model=image_model,

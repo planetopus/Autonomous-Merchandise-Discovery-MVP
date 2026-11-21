@@ -27,6 +27,7 @@ from merchandise_discovery.domain.sticker_direction import (
     finished_sticker_direction,
     merchandise_text_clause,
     merged_avoid_list,
+    style_label,
 )
 from merchandise_discovery.infrastructure.providers.image_provider import ImageProvider
 from merchandise_discovery.infrastructure.storage import ArtworkStorage
@@ -69,6 +70,7 @@ def to_artwork_generation_input(
                 prompt=prompt,
                 combination_name=candidate.artwork_text or "Image-only sticker",
                 audience_label=" · ".join(candidate.who_its_for),
+                style_label=style_label(candidate.style_direction),
             )
         )
     return ArtworkGenerationInput(
