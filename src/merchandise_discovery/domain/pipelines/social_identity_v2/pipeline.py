@@ -155,10 +155,12 @@ def build_user_prompt(
         "versions of the same behavior. Include identity evidence, behavior, friction_or_pressure, "
         "artwork_prompt, image_idea, why_it_works, format, visual_punchline, "
         "main_visual_metaphor, audience_specific_cue, tone, "
-        "style_direction, and things_to_avoid. The artwork prompt must render the exact merchandise "
-        "text when present and make the identity-specific joke visible as one isolated sticker "
-        "subject on a plain white background, without generic category imagery, scenes, realistic "
-        "shading, or a poster layout. Cite one directly relevant source URL per candidate and "
+        "style_direction, and things_to_avoid. The artwork_prompt is the full image prompt: "
+        "one character with a personality and expression, the scene that shows the double "
+        "meaning, the layout, a color palette, detailed cartoon illustration with shading, "
+        "the exact merchandise text in quotes, the words 'text appears exactly once', and a "
+        "plain white background. Do not request realistic shading or a poster layout. "
+        "Cite one directly relevant source URL per candidate and "
         "return the actual topic in `topic_explored`."
     )
 

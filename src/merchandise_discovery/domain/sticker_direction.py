@@ -44,12 +44,12 @@ def sticker_visual_rules() -> str:
 
     avoid = ", ".join(STICKER_AVOID)
     return (
-        "The artwork_prompt and style_direction must describe a die-cut vinyl sticker: "
-        "flat vector-style illustration, bold clean outlines, flat colors, a single "
-        "centered isolated subject, and a plain white background. Do not request a scene, "
-        "landscape, full-bleed background, realistic or comic shading, poster layout, or "
-        "a T-shirt graphic. The white die-cut border is added later, so do not draw a "
-        "rectangular frame, sticker sheet, or fake white outline. "
+        "The artwork_prompt is the full image prompt for a die-cut vinyl sticker, not a caption. "
+        "Name one character with a personality and expression, the scene that shows the "
+        "double meaning, the layout, a color palette, and detailed cartoon illustration "
+        "with shading. Put the exact sticker text in quotes and include the words "
+        "'text appears exactly once'. Use a plain white background. Do not request a "
+        "full-bleed background, realistic shading, poster layout, or a T-shirt graphic. "
         f"Always include these in things_to_avoid: {avoid}."
     )
 
@@ -61,6 +61,33 @@ def direct_image_prompt(candidate) -> str | None:
     if len(text) >= 180 and "text appears exactly once" in text.casefold():
         return text
     return None
+
+
+def render_image_prompt(candidate) -> str | None:
+    """Send the writer's art prompt. Append the exact-text line only when it is missing."""
+
+    direct = direct_image_prompt(candidate)
+    if direct:
+        return direct
+    text = str(getattr(candidate, "artwork_prompt", "") or "").strip()
+    folded = text.casefold()
+    if len(text) < 80 or "cartoon" not in folded or "shading" not in folded:
+        return None
+    line = " ".join(str(getattr(candidate, "artwork_text", "") or "").split())
+    if "text appears exactly once" in text.casefold():
+        return text
+    if line:
+        clause = (
+            f'\nText appears exactly once: "{line}". '
+            "Die-cut vinyl sticker, thick white border, detailed cartoon with shading, "
+            "white background."
+        )
+    else:
+        clause = (
+            "\nNo words. Die-cut vinyl sticker, thick white border, detailed cartoon "
+            "with shading, white background."
+        )
+    return text + clause
 
 
 def finished_sticker_direction(candidate) -> str:

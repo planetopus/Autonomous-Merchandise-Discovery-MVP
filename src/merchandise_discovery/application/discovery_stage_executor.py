@@ -5,11 +5,13 @@ providers to stage functions, and persisting artifact snapshots. Each stage modu
 independently portable and provider dependencies are injected here.
 """
 
+import base64
 import json
 import logging
 import os
 import random
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
 from merchandise_discovery.domain.humor import (
@@ -26,6 +28,8 @@ from merchandise_discovery.domain.humor import (
     apply_line_critic,
     apply_pun_cap,
     apply_trope_cap,
+    assign_buyer_groups,
+    buyer_group_count,
     critic_average,
     dark_humor_needed,
     finished_sticker_examples_block,
@@ -120,6 +124,7 @@ from merchandise_discovery.infrastructure.identity_atlas_loader import (
     infer_who_its_for,
     load_identity_atlas,
     sample_overlap_pairs,
+    select_distinct_groups,
     self_ownable_block,
     split_identity_names,
     subgroup_context,
@@ -199,6 +204,21 @@ def needs_extra_line_round(kept: int, requested: int) -> bool:
     """A five-line run that cleared fewer than five gets one more batch, not the dropped lines."""
 
     return requested >= 5 and kept < 5
+
+
+def _has_group(candidate) -> bool:
+    return any(str(item).strip() for item in (getattr(candidate, "who_its_for", None) or []))
+
+
+def _stamp_text_check(artwork, status: str, problem: str):
+    """Record the vision result on the image so the run page can show it."""
+
+    critique = dict(getattr(artwork, "critique", None) or {})
+    critique["text_check"] = status
+    critique["text_problem"] = problem
+    if hasattr(artwork, "model_copy"):
+        return artwork.model_copy(update={"critique": critique})
+    return artwork
 
 
 def _social_artwork_candidates(run: WorkflowRun, candidates: list) -> list:
@@ -404,8 +424,9 @@ class DiscoveryStageExecutor:
             )
         fast = bool(getattr(run.config, "social_fast_mode", True))
         picked_groups: list[dict] = []
-        if fast and need_pair and len(pair_bank) >= 3:
-            picked_groups = pair_bank[: min(5, len(pair_bank))]
+        distinct = select_distinct_groups(pair_bank, 4)
+        if fast and need_pair and len(distinct) >= 3:
+            picked_groups = distinct
             need_pair = False
             first = picked_groups[0]
             pair_meta = {
@@ -468,18 +489,28 @@ class DiscoveryStageExecutor:
             str(getattr(input_model, "niche_a", "") or ""),
             str(getattr(input_model, "niche_b", "") or ""),
         )
-        groups, slang = subgroup_context(atlas, *chosen_names)
-        atlas_block = atlas_prompt(groups, slang)
-        ownable = self_ownable_block(groups)
+        if picked_groups:
+            atlas_names: list[str] = []
+            for group in picked_groups:
+                atlas_names.extend([group["niche_a"], group["niche_b"]])
+            context_groups, slang = subgroup_context(atlas, *atlas_names)
+            prompt_input = input_model.model_copy(update={"niche_a": "", "niche_b": ""})
+        else:
+            context_groups, slang = subgroup_context(atlas, *chosen_names)
+            prompt_input = input_model
+        atlas_block = atlas_prompt(context_groups, slang)
+        ownable = self_ownable_block(context_groups)
         critic_rubric = "\n".join(
             part for part in ((lab.rubric or "")[:1200], ownable) if part
         )
         user_prompt = pipeline_module.build_user_prompt(
-            input_model,
+            prompt_input,
             draft_count=12,
             quotes=quotes,
-            humor_reference_block=writer_block + atlas_block + buyer_groups_block(picked_groups),
+            humor_reference_block=writer_block + atlas_block,
         )
+        if picked_groups:
+            user_prompt += "\n" + buyer_groups_block(picked_groups)
         response = self._reasoning_provider.complete_structured(
             system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
             user_prompt=user_prompt,
@@ -489,54 +520,19 @@ class DiscoveryStageExecutor:
         )
         usage = self._add_usage(usage, response.usage)
         drafted = list(getattr(response.output, "candidates", []))
+        if picked_groups:
+            drafted = assign_buyer_groups(drafted, picked_groups)
         candidates, reviews = self._drop_unoriginal(drafted, references, lab.gold_lines)
-        if fast:
-            if puns_still_needed(
-                input_model.candidate_count,
-                sum(1 for item in candidates if line_is_pun(item)),
-            ):
-                filled, fill_usage, fill_reviews = self._fill_puns(
-                    run,
-                    input_model,
-                    output_model,
-                    pipeline_module,
-                    puns_still_needed(
-                        input_model.candidate_count,
-                        sum(1 for item in candidates if line_is_pun(item)),
-                    ),
-                )
-                usage = self._add_usage(usage, fill_usage)
-                reviews.extend(fill_reviews)
-                candidates = self._merge_puns(candidates, filled)
-            if dark_humor_needed(
-                input_model.candidate_count,
-                sum(1 for item in candidates if is_dark_humor(item)),
-            ):
-                filled, fill_usage, fill_reviews = self._fill_dark_humor(
-                    run,
-                    output_model,
-                    pipeline_module,
-                    dark_humor_needed(
-                        input_model.candidate_count,
-                        sum(1 for item in candidates if is_dark_humor(item)),
-                    ),
-                )
-                usage = self._add_usage(usage, fill_usage)
-                reviews.extend(fill_reviews)
-                candidates = self._merge_by_text(
-                    candidates,
-                    [item for item in filled if is_dark_humor(item)],
-                )
-            if candidates:
-                candidates, critic_usage, critic_rows = self._critic_pass(
-                    run,
-                    candidates,
-                    len(candidates),
-                    humor_block,
-                    critic_rubric,
-                )
-                usage = self._add_usage(usage, critic_usage)
-                reviews.extend(critic_rows)
+        if fast and candidates:
+            candidates, critic_usage, critic_rows = self._critic_pass(
+                run,
+                candidates,
+                len(candidates),
+                humor_block,
+                critic_rubric,
+            )
+            usage = self._add_usage(usage, critic_usage)
+            reviews.extend(critic_rows)
         if not fast and candidates:
             candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
@@ -648,7 +644,40 @@ class DiscoveryStageExecutor:
                 )
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
-        if needs_extra_line_round(len(candidates), input_model.candidate_count):
+        if fast and input_model.candidate_count >= 5:
+            need_dark = dark_humor_needed(
+                input_model.candidate_count,
+                sum(1 for item in candidates if is_dark_humor(item)),
+            )
+            need_groups = len(picked_groups) >= 3 and buyer_group_count(candidates) < 3
+            if need_dark or need_groups:
+                extra, extra_usage = self._draft_gap_lines(
+                    run,
+                    pipeline_module,
+                    output_model,
+                    picked_groups,
+                    need_dark=bool(need_dark),
+                )
+                usage = self._add_usage(usage, extra_usage)
+                if need_groups and picked_groups:
+                    extra = assign_buyer_groups(extra, picked_groups)
+                kept_extra = [
+                    item
+                    for item in extra
+                    if (need_dark and is_dark_humor(item)) or (need_groups and _has_group(item))
+                ]
+                if not kept_extra and need_dark:
+                    kept_extra = [item for item in extra if is_dark_humor(item)]
+                stamped = []
+                for item in kept_extra:
+                    if hasattr(item, "model_copy") and getattr(item, "funny_score", None) is None:
+                        item = item.model_copy(update={"funny_score": 7.0})
+                    stamped.append(item)
+                candidates = self._merge_by_text(candidates, stamped)
+                warnings.append(
+                    "One short refill covered a missing buyer group or the dark-humor line."
+                )
+        if not fast and needs_extra_line_round(len(candidates), input_model.candidate_count):
             extra, extra_usage, extra_reviews = self._draft_extra_survivors(
                 run,
                 pipeline_module,
@@ -684,7 +713,19 @@ class DiscoveryStageExecutor:
             ordered = order_kept_lines(eligible or candidates, input_model.candidate_count) or candidates[:1]
         else:
             ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
-        ordered, reviews = self._apply_who_its_for(ordered, reviews, atlas, chosen_names)
+        ordered, reviews = self._apply_who_its_for(
+            ordered,
+            reviews,
+            atlas,
+            [] if picked_groups else chosen_names,
+        )
+        if input_model.candidate_count >= 5 and picked_groups and buyer_group_count(ordered) < 3:
+            warnings.append(
+                f"Finals cover {buyer_group_count(ordered)} buyer groups. "
+                "At least 3 were requested."
+            )
+        if input_model.candidate_count >= 5 and not any(is_dark_humor(item) for item in ordered):
+            warnings.append("No dark-humor line is in the finals.")
         if getattr(run.config, "social_check_already_for_sale", False):
             ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
         else:
@@ -1163,14 +1204,52 @@ class DiscoveryStageExecutor:
 
         output = self._check_sticker_text(run, output)
         note = str(getattr(self._image_provider, "fallback_note", "") or "").strip()
+        check_note = str(getattr(output, "warning", "") or "").strip()
+        if note and hasattr(output, "model_copy"):
+            output = output.model_copy(update={"warning": " ".join(part for part in (check_note, note) if part)})
+            note = " ".join(part for part in (check_note, note) if part)
+        elif check_note:
+            note = check_note
+        if getattr(self, "_artworks", None) is not None and getattr(output, "artworks", None):
+            self._artworks.replace_for_run(run.run_id, output.artworks)
         if not note:
             return output, summary
-        if hasattr(output, "model_copy"):
-            output = output.model_copy(update={"warning": note})
         return output, f"{summary} {note}"
 
+    def _apply_image_model(self, run) -> None:
+        """Use the run's image model when one was chosen. Empty keeps grok-imagine-image."""
+
+        chosen = str(getattr(run.config, "social_image_model", "") or "").strip()
+        if not chosen:
+            return
+        image = self._image_provider
+        providers = [item[1] for item in getattr(image, "_providers", [])] or [image]
+        for provider in providers:
+            if hasattr(provider, "_model"):
+                provider._model = chosen
+        store = getattr(image, "label_store", None)
+        if isinstance(store, dict):
+            store["image"] = f"xAI {chosen}"
+
+    def _sticker_image_url(self, artwork) -> str:
+        """The die-cut file the vision model should read, or the provider URL."""
+
+        root = getattr(self._artwork_storage, "_root", None)
+        if root is not None:
+            for key in (artwork.storage_key, artwork.raw_storage_key):
+                if not key:
+                    continue
+                path = (Path(root) / str(key)).resolve()
+                try:
+                    if path.is_file() and path.is_relative_to(Path(root).resolve()):
+                        payload = base64.b64encode(path.read_bytes()).decode("ascii")
+                        return f"data:image/png;base64,{payload}"
+                except (OSError, ValueError):
+                    continue
+        return str(artwork.source_url or "")
+
     def _check_sticker_text(self, run, output):
-        """One low-detail vision call. Regenerate only the misspelled images, once, together."""
+        """One vision call against the exact sticker text. Regenerate only the failures, once."""
 
         if not getattr(run.config, "social_image_qa", True):
             return output
@@ -1180,7 +1259,10 @@ class DiscoveryStageExecutor:
         urls = []
         indexed = []
         for index, artwork in enumerate(artworks):
-            url = str(artwork.source_url or "")
+            source = str(artwork.source_url or "")
+            if source.startswith(("https://fixture.local/", "openai://")):
+                continue
+            url = self._sticker_image_url(artwork)
             if not url or url.startswith(("https://fixture.local/", "openai://")):
                 continue
             urls.append(url)
@@ -1188,54 +1270,68 @@ class DiscoveryStageExecutor:
         if not urls:
             return output
         lines = "\n".join(
-            f"{index}. expected text: {artwork.combination_name}"
-            for index, artwork in indexed
+            f'{number}. The sticker text must be exactly "{artwork.combination_name}" and appear once.'
+            for number, (_index, artwork) in enumerate(indexed, start=1)
         )
         try:
             response = self._reasoning_provider.complete_structured(
                 system_prompt=(
-                    "Check sticker images. text_ok is false only when the sticker text is "
-                    "misspelled or appears more than once. Ignore style."
+                    "Compare each sticker image to its expected text, character for character. "
+                    "text_ok is false when a letter is doubled or missing, such as STICKERRS "
+                    "instead of STICKERS, when the words are misspelled, or when the line "
+                    "appears more than once. Index starts at 1. Ignore drawing style."
                 ),
-                user_prompt=f"Images are in the same order as this list.\n{lines}",
+                user_prompt=f"Images are in this order.\n{lines}",
                 response_model=StickerTextBatch,
                 image_urls=urls,
-                image_detail="low",
+                image_detail="high",
                 reasoning_effort="low",
                 model=os.getenv("MVP_VISION_MODEL", "gpt-4o-mini"),
             )
-        except (OSError, RuntimeError, TypeError, ValueError):
-            return output
-        failed = {
-            check.index
-            for check in response.output.checks
-            if not check.text_ok and 0 <= check.index < len(indexed)
-        }
-        if not failed or self._image_provider is None:
-            return output
+        except (OSError, RuntimeError, TypeError, ValueError) as error:
+            marked = [_stamp_text_check(artwork, "skipped", str(error)[:180]) for artwork in artworks]
+            return output.model_copy(
+                update={
+                    "artworks": marked,
+                    "warning": "Text check did not run. The images were kept.",
+                }
+            )
+        problems: dict[int, str] = {}
+        for check in response.output.checks:
+            slot = check.index - 1
+            if check.text_ok or not 0 <= slot < len(indexed):
+                continue
+            problems[slot] = str(check.problem or "The sticker text does not match.")
+        for slot, (index, artwork) in enumerate(indexed):
+            if slot not in problems:
+                artworks[index] = _stamp_text_check(artwork, "passed", "")
 
-        def _redo(position: int):
-            index, artwork = indexed[position]
+        def _redo(slot: int):
+            index, artwork = indexed[slot]
             text = artwork.combination_name or ""
-            generated = self._image_provider.generate(
-                ImageGenerationRequest(
-                    concept_id=artwork.concept_id,
-                    brief_id=artwork.brief_id,
-                    prompt=(
-                        f"{artwork.prompt}\n"
-                        f'The previous image misspelled or repeated the words. '
-                        f'Text appears exactly once: "{text}".'
-                    ),
-                    variant_number=2,
+            problem = problems[slot]
+            try:
+                generated = self._image_provider.generate(
+                    ImageGenerationRequest(
+                        concept_id=artwork.concept_id,
+                        brief_id=artwork.brief_id,
+                        prompt=(
+                            f"{artwork.prompt}\n"
+                            "The previous image misspelled or repeated the words. "
+                            f'Text appears exactly once: "{text}".'
+                        ),
+                        variant_number=2,
+                    )
                 )
-            )
-            stored = (self._artwork_storage or ReferenceArtworkStorage()).persist(
-                source_url=generated.source_url,
-                storage_key=generated.storage_key,
-                reported_size_bytes=generated.file_size_bytes,
-                content=generated.content,
-            )
-            return index, artwork.model_copy(
+                stored = (self._artwork_storage or ReferenceArtworkStorage()).persist(
+                    source_url=generated.source_url,
+                    storage_key=generated.storage_key,
+                    reported_size_bytes=generated.file_size_bytes,
+                    content=generated.content,
+                )
+            except (OSError, RuntimeError, TypeError, ValueError):
+                return index, _stamp_text_check(artwork, "failed", problem)
+            revised = artwork.model_copy(
                 update={
                     "storage_key": stored.storage_key,
                     "raw_storage_key": stored.raw_storage_key,
@@ -1245,12 +1341,52 @@ class DiscoveryStageExecutor:
                     "file_size_bytes": stored.file_size_bytes,
                 }
             )
+            return index, _stamp_text_check(revised, "regenerated", problem)
 
-        with ThreadPoolExecutor(max_workers=min(5, len(failed))) as pool:
-            replaced = list(pool.map(_redo, sorted(failed)))
-        for index, artwork in replaced:
-            artworks[index] = artwork
-        return output.model_copy(update={"artworks": artworks})
+        if problems and self._image_provider is not None:
+            with ThreadPoolExecutor(max_workers=min(5, len(problems))) as pool:
+                replaced = list(pool.map(_redo, sorted(problems)))
+            for index, artwork in replaced:
+                artworks[index] = artwork
+        elif problems:
+            for slot, (index, artwork) in enumerate(indexed):
+                if slot in problems:
+                    artworks[index] = _stamp_text_check(artwork, "failed", problems[slot])
+        regenerated = sum(
+            1 for artwork in artworks if (artwork.critique or {}).get("text_check") == "regenerated"
+        )
+        failed = sum(
+            1 for artwork in artworks if (artwork.critique or {}).get("text_check") == "failed"
+        )
+        note = ""
+        if regenerated or failed:
+            note = f"Text check regenerated {regenerated} and still failed {failed}."
+        return output.model_copy(update={"artworks": artworks, "warning": note})
+
+    def _draft_gap_lines(self, run, pipeline_module, output_model, groups: list[dict], *, need_dark: bool):
+        """One short call for a missing group or dark line. No second critic."""
+
+        named = "; ".join(
+            f"{group['niche_a']} + {group['niche_b']}" for group in groups[:5]
+        ) or "the buyer groups already in the batch"
+        dark = (
+            "Two of the four lines must be dark humor with pattern dark_twist_scene. "
+            if need_dark
+            else ""
+        )
+        response = self._reasoning_provider.complete_structured(
+            system_prompt=pipeline_module.reasoning_instructions(run.config.humor_tone),
+            user_prompt=(
+                "Write 4 new sticker lines. Rotate them across these buyer groups: "
+                f"{named}. {dark}"
+                "Set who_its_for to that group's two labels. "
+                "Each artwork_prompt is a full cartoon sticker prompt with the exact text "
+                "in quotes and the words 'text appears exactly once'."
+            ),
+            response_model=output_model,
+            reasoning_effort="low",
+        )
+        return list(getattr(response.output, "candidates", [])), response.usage
 
     def _draft_extra_survivors(
         self,
@@ -2235,6 +2371,7 @@ class DiscoveryStageExecutor:
     def execute(self, run: WorkflowRun, stage: StageExecution, input_data: dict) -> StageResult:
         """Run one supported stage and retain exact input/output payloads for auditability."""
 
+        self._apply_image_model(run)
         usage = UsageMetrics()
         if run.config.pipeline_variant == PipelineVariant.SOCIAL_IDENTITY_V2:
             if stage.stage_number == 1:

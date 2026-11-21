@@ -3,6 +3,8 @@
 from types import SimpleNamespace
 
 from merchandise_discovery.domain.humor import (
+    assign_buyer_groups,
+    buyer_group_count,
     dark_humor_needed,
     is_brand_spoof,
     is_dark_humor,
@@ -18,6 +20,7 @@ from merchandise_discovery.domain.pipelines.social_behavior_text.pipeline import
 )
 from merchandise_discovery.domain.sticker_direction import (
     direct_image_prompt,
+    render_image_prompt,
     sticker_download_name,
 )
 from merchandise_discovery.infrastructure.brand_catalog import (
@@ -25,7 +28,10 @@ from merchandise_discovery.infrastructure.brand_catalog import (
     rotate_brands,
     style_for,
 )
-from merchandise_discovery.infrastructure.identity_atlas_loader import buyer_groups_block
+from merchandise_discovery.infrastructure.identity_atlas_loader import (
+    buyer_groups_block,
+    select_distinct_groups,
+)
 
 
 def test_brand_catalog_has_a_rotating_set_of_major_logos() -> None:
@@ -155,5 +161,85 @@ def test_a_rich_art_prompt_is_sent_to_the_image_model_unchanged() -> None:
             {"niche_a": "Truckers", "niche_b": "Coffee"},
         ]
     )
-    assert "at least 3" in block.casefold()
+    assert "not one person" in block.casefold()
     assert "Nurses" in block and "Truckers" in block
+
+
+def test_finals_are_forced_across_distinct_buyer_groups() -> None:
+    """The same who_its_for on every draft does not survive. Finals cover three groups."""
+
+    groups = select_distinct_groups(
+        [
+            {"niche_a": "Gen X", "niche_b": "Vapers"},
+            {"niche_a": "Gen X", "niche_b": "Grilling"},
+            {"niche_a": "Nurses", "niche_b": "Night shift"},
+            {"niche_a": "Truckers", "niche_b": "Coffee"},
+            {"niche_a": "Nurses", "niche_b": "Night shift"},
+        ],
+        4,
+    )
+    assert len(groups) >= 3
+    assert len({group["niche_a"] for group in groups}) >= 3
+    drafted = [
+        SimpleNamespace(
+            artwork_text=f"LINE {index}",
+            who_its_for=["Gen X", "Vapers"],
+            funny_score=9 - index,
+            pattern="pun",
+            humor_mechanism="wordplay",
+            image_idea="a mug",
+            spoof_brand="",
+        )
+        for index in range(6)
+    ]
+    stamped = assign_buyer_groups(drafted, groups)
+    assert buyer_group_count(stamped) >= 3
+    assert not all(item.who_its_for == ["Gen X", "Vapers"] for item in stamped)
+    finals = order_kept_lines(stamped, 5)
+    assert buyer_group_count(finals) >= 3
+
+
+def test_a_morbid_picture_still_counts_as_dark_humor() -> None:
+    """A dark joke the model forgot to tag is still seated."""
+
+    line = SimpleNamespace(
+        pattern="pun",
+        humor_mechanism="wordplay",
+        image_idea="A cute duck that is already dead.",
+        why_it_works="The smile is the morbid part.",
+    )
+    assert is_dark_humor(line)
+
+
+def test_a_medium_art_prompt_is_sent_without_the_flat_wrapper() -> None:
+    """Stage 2 keeps the writer's scene and only adds the exact-text line."""
+
+    body = (
+        "Grumpy orange cat with half-closed eyes kneading a steaming mug, "
+        "warm orange palette, cartoon shading, thick white border."
+    )
+    rendered = render_image_prompt(SimpleNamespace(artwork_prompt=body, artwork_text="I KNEAD COFFEE"))
+    assert rendered is not None
+    assert rendered.startswith("Grumpy orange cat")
+    assert 'Text appears exactly once: "I KNEAD COFFEE"' in rendered
+    assert "Do not use" not in rendered
+    wrapped = build_targeted_artwork_prompt(
+        SimpleNamespace(
+            artwork_prompt="A chip.",
+            artwork_text="NACHO",
+            things_to_avoid=["a scene"],
+            audience_context="Nurses",
+            audience_specific_cue="scrubs",
+            visual_punchline="The chip wears scrubs.",
+            main_visual_metaphor="A chip.",
+            tone="dry",
+            style_direction="Flat vector.",
+            image_idea="A chip in scrubs.",
+            why_it_works="The chip is the nacho.",
+            format="badge",
+            spoof_brand="",
+            pattern="",
+            humor_mechanism="",
+        )
+    )
+    assert "die-cut vinyl sticker" in wrapped.casefold()

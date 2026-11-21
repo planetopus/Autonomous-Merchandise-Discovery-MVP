@@ -48,6 +48,7 @@ def build_run_config(
     social_fast_mode: bool = True,
     social_check_already_for_sale: bool = False,
     social_image_qa: bool = True,
+    social_image_model: str = "",
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -75,6 +76,7 @@ def build_run_config(
         social_fast_mode=social_fast_mode,
         social_check_already_for_sale=social_check_already_for_sale,
         social_image_qa=social_image_qa,
+        social_image_model=social_image_model.strip(),
     )
 
 
@@ -160,6 +162,7 @@ def render_run_create(
     fast_mode = True
     check_already_for_sale = False
     image_qa = True
+    image_model = ""
     if is_social_pipeline:
         fast_mode = st.checkbox(
             "Fast mode",
@@ -178,10 +181,15 @@ def render_run_create(
             "Check sticker text",
             value=True,
             help=(
-                "After the images, one cheap vision pass looks for misspelled or repeated "
-                "text and regenerates only the failures once. About 30 to 40 seconds."
+                "After the images, one vision pass compares each sticker to its exact text "
+                "and regenerates only the failures once. The result is shown on each image."
             ),
         )
+        image_model = st.text_input(
+            "Image model",
+            value="grok-imagine-image",
+            help="xAI image model. Leave the default unless you want to try another model.",
+        ).strip()
     if is_social_pipeline:
         generate_images = st.checkbox(
             "Text + images",
@@ -394,6 +402,7 @@ def render_run_create(
                 social_fast_mode=fast_mode,
                 social_check_already_for_sale=check_already_for_sale,
                 social_image_qa=image_qa,
+                social_image_model=image_model,
             ),
             triggered_by="manual",
         )

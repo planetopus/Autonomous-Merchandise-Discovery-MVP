@@ -339,8 +339,13 @@ def is_dark_humor(candidate) -> bool:
 
     if pattern_key(candidate) in {"dark twist scene", "cheerful dark label", "dark comparison"}:
         return True
-    mechanism = str(getattr(candidate, "humor_mechanism", "") or "").casefold()
-    return any(word in mechanism for word in ("gallows", "morbid", "doom", "existential"))
+    blob = " ".join(
+        str(getattr(candidate, name, "") or "")
+        for name in ("humor_mechanism", "image_idea", "why_it_works", "pattern")
+    ).casefold()
+    return bool(
+        re.search(r"\b(gallows|morbid|doom|existential|funeral|grave|corpse|misery|dead)\b", blob)
+    )
 
 
 def dark_humor_needed(total: int, dark_count: int) -> int:
@@ -388,7 +393,34 @@ def _group_name(candidate) -> str:
         for item in (getattr(candidate, "who_its_for", None) or [])
         if str(item).strip()
     ]
-    return labels[0].casefold() if labels else ""
+    return " + ".join(labels[:2]).casefold() if labels else ""
+
+
+def assign_buyer_groups(candidates: list, groups: list[dict]) -> list:
+    """Stamp who_its_for from the group each line was ordered to write. The model cannot collapse them."""
+
+    labels = [
+        [str(group.get("niche_a") or "").strip(), str(group.get("niche_b") or "").strip()]
+        for group in groups
+        if str(group.get("niche_a") or "").strip() and str(group.get("niche_b") or "").strip()
+    ]
+    if len(labels) < 3 or not candidates:
+        return candidates
+    updated = []
+    for index, candidate in enumerate(candidates):
+        chosen = [part for part in labels[index % len(labels)] if part][:4]
+        if hasattr(candidate, "model_copy"):
+            updated.append(candidate.model_copy(update={"who_its_for": chosen}))
+        else:
+            candidate.who_its_for = chosen
+            updated.append(candidate)
+    return updated
+
+
+def buyer_group_count(candidates: list) -> int:
+    """How many distinct buyer pairs the lines actually name."""
+
+    return len({name for item in candidates if (name := _group_name(item))})
 
 
 def _cover_buyer_groups(chosen: list, ranked: list, minimum: int = 3) -> list:

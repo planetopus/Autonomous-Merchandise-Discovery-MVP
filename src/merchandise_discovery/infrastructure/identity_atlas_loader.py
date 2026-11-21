@@ -177,6 +177,36 @@ def diversity_factor(names: list[str], recent_counts: dict[str, int]) -> float:
     return factor
 
 
+def select_distinct_groups(pairs: list[dict], count: int = 4) -> list[dict]:
+    """Pick 3 to 5 buyer pairs that are not the same person."""
+
+    chosen: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+    firsts: set[str] = set()
+
+    def add(pair: dict, *, allow_repeat_first: bool) -> bool:
+        first = str(pair.get("niche_a") or "").strip()
+        second = str(pair.get("niche_b") or "").strip()
+        if not first or not second:
+            return False
+        key = tuple(sorted((first.casefold(), second.casefold())))
+        if key in seen or (not allow_repeat_first and first.casefold() in firsts):
+            return False
+        seen.add(key)
+        firsts.add(first.casefold())
+        chosen.append({"niche_a": first, "niche_b": second})
+        return len(chosen) >= count
+
+    for pair in pairs:
+        if add(pair, allow_repeat_first=False):
+            return chosen
+    if len(chosen) < 3:
+        for pair in pairs:
+            if add(pair, allow_repeat_first=True):
+                break
+    return chosen
+
+
 def buyer_groups_block(pairs: list[dict]) -> str:
     """Ask one text call to write across several buyer groups."""
 
@@ -184,14 +214,17 @@ def buyer_groups_block(pairs: list[dict]) -> str:
         return ""
     lines = [
         (
-            "Write this batch across these different buyer groups. "
-            "Do not make every line about the same person. "
-            "Cover at least 3 of these groups. "
-            "Set each line's who_its_for to that group's plain labels only."
+            "FINAL OVERRIDE: these are different buyers, not one person. "
+            "Ignore every instruction that says one real person, or that every line "
+            "must carry both lives of a single pair. "
+            "Rotate lines through the groups in order: line 1 is group 1, line 2 is group 2, "
+            "then repeat. Set who_its_for to exactly that group's two labels. "
+            "A batch where every line names the same group is invalid. "
+            "At least two lines are dark humor with pattern dark_twist_scene."
         )
     ]
     for index, pair in enumerate(pairs[:5], start=1):
-        lines.append(f"{index}. {pair.get('niche_a', '')} + {pair.get('niche_b', '')}")
+        lines.append(f"Group {index}: {pair.get('niche_a', '')} + {pair.get('niche_b', '')}")
     return "\n".join(lines) + "\n"
 
 
