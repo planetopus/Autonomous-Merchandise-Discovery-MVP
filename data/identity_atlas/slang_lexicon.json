@@ -1,0 +1,2367 @@
+{
+ "version": 1,
+ "generated": "2026-11-21",
+ "how_to_use": "Pick a subgroup with high buyer_pride, then a term with high funny_mismatch_score. Dated/cringe terms are deliberately funny when an older group uses them sincerely. Skip use_on_merch=false.",
+ "counts": {
+  "terms": 181,
+  "usable": 177,
+  "dated_or_cringe": 30
+ },
+ "terms": [
+  {
+   "term": "thicc",
+   "meaning": "curvy/heavier in an attractive or proud way",
+   "register": "Gen Z",
+   "funny_mismatch_score": 10,
+   "example_pattern": "THICC [GROUP] WHO [HABIT] FOR [SINCERE CAUSE]",
+   "status": "dated-but-iconic",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary 'thicc')"
+   ]
+  },
+  {
+   "term": "rizz",
+   "meaning": "charm, ability to attract someone",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[OLD/WHOLESOME GROUP] WITH UNSPOKEN RIZZ",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): One's charm/seduction skills. Derived from charisma."
+   ]
+  },
+  {
+   "term": "no cap",
+   "meaning": "no lie, for real",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[MUNDANE TRUTH] NO CAP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: no cap"
+   ]
+  },
+  {
+   "term": "cap",
+   "meaning": "a lie",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "'[COMMON EXCUSE]' IS CAP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To lie originating from AAVE. The antonym, \"no cap\", is typically used after a statement to indicate truthfulness or being genuine."
+   ]
+  },
+  {
+   "term": "bussin'",
+   "meaning": "really good (usually food)",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "GRANDMA'S CASSEROLE IS BUSSIN",
+   "status": "peaking",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Extremely good, excellent. Originated from African-American vernacular for delicious food."
+   ]
+  },
+  {
+   "term": "slay",
+   "meaning": "do something exceptionally well",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] WHO SLAY [UNGLAMOROUS TASK]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To do something well."
+   ]
+  },
+  {
+   "term": "ate",
+   "meaning": "did it perfectly ('ate and left no crumbs')",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP] ATE THAT [MUNDANE THING] UP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To have performed well or extremely good at something."
+   ]
+  },
+  {
+   "term": "delulu",
+   "meaning": "delusional, often hopefully so",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "DELULU [GROUP]: [UNREALISTIC BELIEF]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: delulu"
+   ]
+  },
+  {
+   "term": "gyatt",
+   "meaning": "exclamation at a big butt; big butt",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "use sparingly; punchline on dad-bod or church contexts only as self-own",
+   "status": "peaking-cringe",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): (1) someone's buttocks, specifically attractive ones (2) Someone with large buttocks or an hourglass figure. The word comes from a stylized way of spelling \"god damn\" as \"gyatt damn\" in the context of being in awe of see"
+   ]
+  },
+  {
+   "term": "skibidi",
+   "meaning": "nonsense brainrot word from Skibidi Toilet",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 10,
+   "example_pattern": "SKIBIDI [OLD GROUP] / GRANDPA IS SKIBIDI",
+   "status": "cringe-on-purpose",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Word of multiple parts of speech that derives from the web-series Skibidi Toilet with no real meaning, and often associated with brain rot."
+   ]
+  },
+  {
+   "term": "sigma",
+   "meaning": "lone-wolf high-status male (often ironic)",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "SIGMA [WHOLESOME GROUP] / SIGMA GRINDSET: [TINY HABIT]",
+   "status": "ironic",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A person who is individualistic, self-reliant, successful, and non-conforming to existing social norms. Used predominantly by the manosphere. Can also mean something that is good."
+   ]
+  },
+  {
+   "term": "aura",
+   "meaning": "someone's coolness/reputation; 'aura points'",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "+1000 AURA FOR [MUNDANE ACT] / [GROUP] AURA",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An individual's current reputation or charisma. Cultivating aura is known as aura farming."
+   ]
+  },
+  {
+   "term": "aura farming",
+   "meaning": "deliberately acting cool to gain aura",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP] AURA FARMING AT [MUNDANE PLACE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An individual's current reputation or charisma. Cultivating aura is known as aura farming."
+   ]
+  },
+  {
+   "term": "mewing",
+   "meaning": "tongue posture to sharpen jawline; 'shh I'm mewing'",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "CAN'T TALK, [GROUP] IS MEWING",
+   "status": "peaking-cringe",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Know Your Meme page fetched this run: mewing"
+   ]
+  },
+  {
+   "term": "mogging",
+   "meaning": "outshining someone by looks/presence",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] MOGGING [RIVAL GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: mogging",
+    "note: UD top definition differs; meaning here is the current TikTok usage"
+   ]
+  },
+  {
+   "term": "looksmaxxing",
+   "meaning": "optimizing appearance obsessively",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "DAD BOD LOOKSMAXXING / [X]MAXXING",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: looksmaxxing"
+   ]
+  },
+  {
+   "term": "-maxxing",
+   "meaning": "maximizing anything ('sleepmaxxing')",
+   "register": "Gen Z",
+   "funny_mismatch_score": 10,
+   "example_pattern": "NAPMAXXING / CASSEROLEMAXXING / [HOBBY]MAXXING",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: looksmaxxing"
+   ]
+  },
+  {
+   "term": "fanum tax",
+   "meaning": "stealing a bite of a friend's food",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "DAD FANUM TAX ON YOUR FRIES",
+   "status": "peaking",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Theft of food between friends. Referring to the Twitch streamer Fanum who took cookies from fellow streamer Kai Cenat as a \"tax\" during a livestream."
+   ]
+  },
+  {
+   "term": "unc",
+   "meaning": "uncle/old guy acting old",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "UNC STATUS ACHIEVED / [GROUP] UNC",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Abbreviation of uncle. Used mockingly or affectionately to refer to someone who is old or acting old."
+   ]
+  },
+  {
+   "term": "it's giving",
+   "meaning": "it has the vibe of...",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "IT'S GIVING [UNEXPECTED VIBE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to describe an attitude or connotation."
+   ]
+  },
+  {
+   "term": "bet",
+   "meaning": "okay/deal",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "BET. ([MUNDANE REQUEST])",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Agreeing to something; yes; okay; sure."
+   ]
+  },
+  {
+   "term": "mid",
+   "meaning": "mediocre",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[SACRED THING] IS MID (I SAID WHAT I SAID)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Average, mediocre, not bad or not special. Often used in a negative and insulting way. Sometimes used to emphasize the approachability of a conventionally attractive woman (e.g., \"beautiful mid\")."
+   ]
+  },
+  {
+   "term": "ratio",
+   "meaning": "my reply got more likes than yours; I win",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "RATIO + [PETTY INSULT]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): When a post, particularly on X (Twitter), receives more replies than retweets and likes combined. It can also be used when a reply has better reception and more likes than the original post being replied to. Originates f"
+   ]
+  },
+  {
+   "term": "L+ratio",
+   "meaning": "insult combo, you lose",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "L + RATIO + [GROUP-SPECIFIC BURN]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Insult used primarily online. Combined form of the L and ratio slang terms. Became popular in 2020."
+   ]
+  },
+  {
+   "term": "L",
+   "meaning": "a loss",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "TAKE THE L",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Short for \"loss,\" used to indicate failure, defeat, or something negative. Often contrasted with \"W\" (meaning win)."
+   ]
+  },
+  {
+   "term": "W",
+   "meaning": "a win",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "W [GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Short for \"win,\" used to indicate success, victory, or something positive. Often contrasted with \"L\" (loss). May also be used in the form of \"dub\"."
+   ]
+  },
+  {
+   "term": "main character",
+   "meaning": "acting like the protagonist",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "MAIN CHARACTER AT [BORING VENUE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Someone who is or wants to be the star of their life. Often refers to someone who strives to be the center of attention."
+   ]
+  },
+  {
+   "term": "NPC",
+   "meaning": "background person with no inner life/robotic behavior",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[CROWD] FULL OF NPCs / NPC BEHAVIOR",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: NPC"
+   ]
+  },
+  {
+   "term": "touch grass",
+   "meaning": "go outside, you're too online",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[OUTDOORS GROUP]: PROFESSIONALLY TOUCHING GRASS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A way of telling someone to \"go outside\", usually after said person is believed to have been online for too long. Believed to have originated in 2015, before experiencing a resurgence in 2020–2021."
+   ]
+  },
+  {
+   "term": "lowkey",
+   "meaning": "somewhat/secretly",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "LOWKEY [TRUE CONFESSION]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A portmanteau of 'lowkey' and 'genuinely'. Used to express a mix of emotions from both words."
+   ]
+  },
+  {
+   "term": "highkey",
+   "meaning": "very much/openly",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "HIGHKEY [STRONG OPINION]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: highkey"
+   ]
+  },
+  {
+   "term": "era",
+   "meaning": "a phase of life",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "IN MY [UNGLAMOROUS THING] ERA",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: era",
+    "note: UD top definition differs; meaning here is the current TikTok usage"
+   ]
+  },
+  {
+   "term": "-core",
+   "meaning": "an aesthetic built around a thing",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[MUNDANE THING]CORE (e.g. DADCORE, CASSEROLECORE)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: core"
+   ]
+  },
+  {
+   "term": "brain rot",
+   "meaning": "mush-brain from too much online content",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] BRAIN ROT",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): The state of being detached from the real world as a result of consuming hyper-stimulating or chronically online content, especially when characterized by online buzzwords (e.g., \"skibidi\", \"fanum tax\", \"rizz\", etc). Der"
+   ]
+  },
+  {
+   "term": "based",
+   "meaning": "admirably unbothered/authentic",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "BASED [GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Originated from rapper Lil B The BasedGod, who defined it as \"...being yourself. Not being scared of what people think about you. Not being afraid to do what you wanna do.\" More contemporary use has been to express appro"
+   ]
+  },
+  {
+   "term": "cooked",
+   "meaning": "doomed, finished",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "WE'RE COOKED / [GROUP] IS COOKED",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To \"be cooked\" is to be in trouble."
+   ]
+  },
+  {
+   "term": "let him cook",
+   "meaning": "let them do their thing",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "LET [GROUP] COOK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To \"cook\" is to perform or do well. Often used in the phrase \"let him cook\"."
+   ]
+  },
+  {
+   "term": "locked in",
+   "meaning": "fully focused",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] LOCKED IN ON [MUNDANE TASK]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A state of total concentration on a task. Similar to flow state."
+   ]
+  },
+  {
+   "term": "crash out",
+   "meaning": "lose it emotionally",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "ONE MORE [TRIGGER] AND I'M CRASHING OUT",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To have a bout of rage or upset. Sometimes more generally used to refer to anger or strong displeasure. Originated in the African-American community, specifically in Louisiana with usage by rappers like NBA YoungBoy, but"
+   ]
+  },
+  {
+   "term": "glaze",
+   "meaning": "over-praise someone",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "STOP GLAZING [THING]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To flatter, praise, or compliment someone or something so much that it becomes exasperating or excessive, coined in 2021 by Kai Cenat after reacting to a video by streamer Blueryai."
+   ]
+  },
+  {
+   "term": "yap",
+   "meaning": "talk too much",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] WILL YAP ABOUT [HOBBY] FOR HOURS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To talk excessively, especially without significant meaning. Speculated to be used as early as 1592 to express annoyance and irritation. Became a TikTok trend in 2023 for someone who talks too much or whose talking does "
+   ]
+  },
+  {
+   "term": "yapper",
+   "meaning": "one who yaps",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "CERTIFIED [HOBBY] YAPPER",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To talk excessively, especially without significant meaning. Speculated to be used as early as 1592 to express annoyance and irritation. Became a TikTok trend in 2023 for someone who talks too much or whose talking does "
+   ]
+  },
+  {
+   "term": "chopped",
+   "meaning": "ugly",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "self-own: CHOPPED BUT [POSITIVE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Physically unattractive or unfavorable."
+   ]
+  },
+  {
+   "term": "tuff",
+   "meaning": "cool/tough",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[UNTOUGH THING] IS TUFF",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Eye dialect spelling of tough. Commonly meaning something or someone is cool or impressive, this spelling of it is mostly seen on TikTok. Likely originates from the 1967 book The Outsiders."
+   ]
+  },
+  {
+   "term": "gng",
+   "meaning": "gang/friend group",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "WASSUP GNG ([OLD GROUP] EDITION)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to refer to a close group of friends or as a casual greeting/address (e.g., \"wassup gng\" meaning \"what's up, gang\"). Can also mean \"good night gang\" in parting contexts, especially among gamers or online communities"
+   ]
+  },
+  {
+   "term": "twin",
+   "meaning": "close friend/same vibe",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "HI TWIN",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A term of endearment for a close friend, indicating a strong, sibling-like bond. Also used to imply that the user is similar to another person in a particular manner."
+   ]
+  },
+  {
+   "term": "blud",
+   "meaning": "bro (UK)",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "BLUD THINKS HE'S [ROLE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A variant of \"blood brother\", \"mate\" or sometimes \"bro\"."
+   ]
+  },
+  {
+   "term": "icl",
+   "meaning": "I can't lie",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "ICL [CONFESSION]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Abbreviation of \"I can't lie\". Often used alongside ts and pmo."
+   ]
+  },
+  {
+   "term": "ts",
+   "meaning": "this (shit)",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "TS PMO ([MUNDANE ANNOYANCE])",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An abbreviation for \"this shit\", often used as a short form of \"this\"; it is also used as an initialism for \"type shit\" (or \"type shi\"), a Gen Z expression used to signal total agreement, validation, or shared vibes with"
+   ]
+  },
+  {
+   "term": "pmo",
+   "meaning": "pisses me off",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[THING] PMO",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An acronym that stands for \"piss(es) me off\", used to express discontent or anger at a certain topic. Often used alongside ts and icl."
+   ]
+  },
+  {
+   "term": "sybau",
+   "meaning": "shut your b*tch a** up (crude)",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 4,
+   "example_pattern": "avoid on Etsy; crude",
+   "status": "current-crude",
+   "dated_or_cringe": false,
+   "use_on_merch": false,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Not to be confused with Syabu. Acronym for \"shut your bitch ass up\"."
+   ]
+  },
+  {
+   "term": "six-seven",
+   "meaning": "nonsense number meme '6 7'",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP] AT 6-7 / '6 7' hand wave",
+   "status": "peaking",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A nonsense word derived from the song \"Doot Doot (6 7)\" by Skrilla. Inspired multiple numerical meme variants. Originating from TikTok."
+   ]
+  },
+  {
+   "term": "sheesh",
+   "meaning": "wow",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 6,
+   "example_pattern": "SHEEEESH",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To praise someone when they are doing something good. The vowels are often emphasized, as in \"sheeesh\". The one being praised is to do the \"ice in my veins\" pose popularized by basketball player D'Angelo Russell. Believe"
+   ]
+  },
+  {
+   "term": "sus",
+   "meaning": "suspicious",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 6,
+   "example_pattern": "[SUSPICIOUS BEHAVIOR] IS SUS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Short term for suspect/suspicious. Popularized in 2018 by players of the online video game Among Us and received mainstream usage with the game's explosion in popularity in mid-2020 amidst the COVID-19 pandemic. Accordin"
+   ]
+  },
+  {
+   "term": "sussy baka",
+   "meaning": "playful 'sus fool' (Among Us)",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "SUSSY [GROUP]",
+   "status": "cringe-on-purpose",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A combination of \"sus\" and \"baka\", the Japanese word for \"fool\". Stemmed from TikToker Akeam Francis."
+   ]
+  },
+  {
+   "term": "bruh",
+   "meaning": "bro/disbelief",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 6,
+   "example_pattern": "BRUH.",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A variant of \"bro\" originating in the 1800's, becoming more popular in 1967, again in 2003. Bruh resurged once more in the late 2010s, entering heavy use in Gen Z & Gen Alpha slang."
+   ]
+  },
+  {
+   "term": "fr",
+   "meaning": "for real",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "[TRUTH] FR",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (common)"
+   ]
+  },
+  {
+   "term": "ong",
+   "meaning": "on God, honestly",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[CHURCH GROUP] ONG (LITERALLY)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary 'ong')"
+   ]
+  },
+  {
+   "term": "deadass",
+   "meaning": "seriously",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "DEADASS [STATEMENT]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "periodt",
+   "meaning": "end of discussion",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[OPINION] PERIODT",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "slaps",
+   "meaning": "is great (music/food)",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "THIS HYMN SLAPS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to refer to something that is perceived to be good, particularly used when referring to music."
+   ]
+  },
+  {
+   "term": "hits different",
+   "meaning": "feels unusually good",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[MUNDANE THING] HITS DIFFERENT AT [AGE/TIME]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To be better in a distinctive manner. The origin of the term is unclear."
+   ]
+  },
+  {
+   "term": "vibe check",
+   "meaning": "assessment of energy",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[GROUP] VIBE CHECK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To check one's personality, behavior, or attitude."
+   ]
+  },
+  {
+   "term": "understood the assignment",
+   "meaning": "nailed it",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] UNDERSTOOD THE ASSIGNMENT",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To understand what was supposed to be done; to do something well. Popularized by American rapper Tay Money's 2021 song \"The Assignment\". She posted a video on TikTok stating that she \"understood the assignment\"."
+   ]
+  },
+  {
+   "term": "caught in 4K",
+   "meaning": "caught red-handed on camera",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[SNEAKY HABIT] CAUGHT IN 4K",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Refers to someone being indisputably caught doing something wrong or incriminating on camera or with evidence to prove it, referencing 4K resolution."
+   ]
+  },
+  {
+   "term": "out of pocket",
+   "meaning": "wildly inappropriate",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[GROUP] IS OUT OF POCKET",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): In 2020s slang, \"out of pocket\" means \"To act (or say something) crazy, wild, unexpected, or extreme, sometimes to an extent that is considered too far.\" This newer definition contrasts with historic meanings of \"out of "
+   ]
+  },
+  {
+   "term": "salty",
+   "meaning": "bitter/upset",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 6,
+   "example_pattern": "SALTY [GROUP]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to describe someone who is behaving or expressing themselves in a resentful, bitter, or irritated manner. Originally referred to \"racy\" or \"vulgar\" sailors in the 1800s."
+   ]
+  },
+  {
+   "term": "shook",
+   "meaning": "shocked",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "SHOOK",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To be shocked, surprised, or bothered. Became prominent in hip-hop starting in the 1990s, when it began to be used as a standalone adjective for uncontrollable emotions. One famous example is Mobb Deep's 1995 single \"Sho"
+   ]
+  },
+  {
+   "term": "tea",
+   "meaning": "gossip",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[GROUP] SPILLING THE TEA",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Secret information or rumors. Originates from Black drag culture of the 1990s, where the letter \"t\" was used to mean \"truth\". \"Spilling the tea\" means to share gossip or rumors. Another meaning was popularized on TikTok,"
+   ]
+  },
+  {
+   "term": "spill the tea",
+   "meaning": "share gossip",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "CHURCH LADIES SPILL THE TEA (SWEET TEA)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Secret information or rumors. Originates from Black drag culture of the 1990s, where the letter \"t\" was used to mean \"truth\". \"Spilling the tea\" means to share gossip or rumors. Another meaning was popularized on TikTok,"
+   ]
+  },
+  {
+   "term": "stan",
+   "meaning": "be a superfan",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "I STAN [UNCOOL THING]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Supporting something to an extreme degree. Specifically used in cases of overzealous or obsessive support of celebrities, originating with the eponymous song by Eminem."
+   ]
+  },
+  {
+   "term": "simp",
+   "meaning": "overly devoted to a crush",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "SIMP FOR [OBJECT OF DEVOTION]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Sycophancy, being overly affectionate or flattering in pursuit of a sexual or romantic relationship."
+   ]
+  },
+  {
+   "term": "ick",
+   "meaning": "sudden turn-off",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[OLD HABIT] GIVES ME THE ICK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A sudden feeling of disgust or repulsion for something one was previously attracted to."
+   ]
+  },
+  {
+   "term": "red flag",
+   "meaning": "warning sign",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[HOBBY] IS MY RED FLAG",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A warning sign indicating behaviors or characteristics within a relationship that may potentially be harmful or toxic. On the other hand, a green flag indicates positive aspects or healthy behaviors. The use of the term "
+   ]
+  },
+  {
+   "term": "green flag",
+   "meaning": "good sign",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[HOBBY] IS A GREEN FLAG",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Behaviors or personality traits that are considered positive, healthy, or desirable."
+   ]
+  },
+  {
+   "term": "beige flag",
+   "meaning": "odd but harmless quirk",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "BEIGE FLAG: [QUIRK]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A behavior or personality trait that is neither good nor bad. Derived from the relationship terms \"green flag\" and \"red flag\"."
+   ]
+  },
+  {
+   "term": "situationship",
+   "meaning": "undefined romance",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "IN A SITUATIONSHIP WITH [OBJECT]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): See also: casual dating Refers to an ambiguous romantic and/or sexual relationship in which both parties have feelings for one another, but said feelings are not clearly defined: a mid-point between dating and not dating"
+   ]
+  },
+  {
+   "term": "delusionship",
+   "meaning": "imaginary relationship",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "DELUSIONSHIP WITH [CELEB/OBJECT]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A relationship in which someone holds unrealistic or overly idealistic beliefs. A person who holds such beliefs is considered \"delulu\"."
+   ]
+  },
+  {
+   "term": "pick-me",
+   "meaning": "seeks validation by being 'not like other girls'",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "PICK-ME [GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Someone who seeks validation by trying to stand out, often putting down others in their gender or group to gain favor or attention. This is most commonly done by degrading oneself."
+   ]
+  },
+  {
+   "term": "baddie",
+   "meaning": "confident attractive woman",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "BADDIE GRANDMA / BADDIE [UNEXPECTED ROLE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A confident, stylish, and attractive woman or girl."
+   ]
+  },
+  {
+   "term": "face card",
+   "meaning": "pretty face that 'never declines'",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP]'S FACE CARD NEVER DECLINES",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An attractive face. Sometimes defined as never declining or receding."
+   ]
+  },
+  {
+   "term": "snatched",
+   "meaning": "looking great",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "SNATCHED [GROUP]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Amazing, attractive, or flawlessly styled. Sometimes used to particularly describe a person as having a narrow waist."
+   ]
+  },
+  {
+   "term": "glow-up",
+   "meaning": "big improvement",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[ITEM] GLOW-UP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A major improvement in oneself, usually an improvement in appearance, confidence, personality, and style. Frequently used in a context relating to puberty. A \"glow-down\" is a situation where someone's appearance has decl"
+   ]
+  },
+  {
+   "term": "drip",
+   "meaning": "stylish outfit",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[UNIFORM] DRIP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Good-looking or trendy high-class fashion."
+   ]
+  },
+  {
+   "term": "fit check",
+   "meaning": "show your outfit",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "FIT CHECK: [WORK UNIFORM]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Term used to highlight or bring attention to one's outfit or fashion. \"Fit\" is a truncation of \"outfit\"."
+   ]
+  },
+  {
+   "term": "fire",
+   "meaning": "great",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 6,
+   "example_pattern": "[THING] IS FIRE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Term used to describe that something is impressive, good, or pleasant."
+   ]
+  },
+  {
+   "term": "lit",
+   "meaning": "exciting",
+   "register": "Millennial (dated)",
+   "funny_mismatch_score": 6,
+   "example_pattern": "dated: LIT (LIKE MY [SMOKER] GRANDPA)",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Remarkable, interesting, fun, or amusing."
+   ]
+  },
+  {
+   "term": "GOAT",
+   "meaning": "greatest of all time",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "GOAT [MUNDANE ROLE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"greatest of all time\"."
+   ]
+  },
+  {
+   "term": "goated",
+   "meaning": "elite",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "GOATED [GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"greatest of all time\"."
+   ]
+  },
+  {
+   "term": "peak",
+   "meaning": "the best ever",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] IS PEAK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to describe something that is high-quality or exceptional; the best it can be."
+   ]
+  },
+  {
+   "term": "cracked",
+   "meaning": "extremely skilled",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "CRACKED AT [UNGLAMOROUS SKILL]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To be skilled at something."
+   ]
+  },
+  {
+   "term": "geeked",
+   "meaning": "very excited/high",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "GEEKED ON [CAFFEINE/HOBBY]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Intoxicated, usually on marijuana. It is also used to describe somebody filled with excitement, highly enthusiatic, and it can also be used as a verb (\"geeked out\"). Mostly considered to have a positive connotation, comp"
+   ]
+  },
+  {
+   "term": "tweaking",
+   "meaning": "acting crazy",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "YOU'RE TWEAKING",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To be acting strangely or thinking that someone is hallucinating. Often used to describe the effects of drugs."
+   ]
+  },
+  {
+   "term": "skill issue",
+   "meaning": "you're just bad at it",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[STRUGGLE] = SKILL ISSUE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Refers to a situation where a person's lack of ability or proficiency is seen as the cause of their failure or difficulty in completing a task, sometimes used ironically."
+   ]
+  },
+  {
+   "term": "iykyk",
+   "meaning": "if you know you know",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[INSIDE JOKE] IYKYK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"If you know, you know\". Used to describe inside jokes and niche references."
+   ]
+  },
+  {
+   "term": "nothing ever happens",
+   "meaning": "cynical 'boring outcome' meme",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[GROUP]: NOTHING EVER HAPPENS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Originating on 4chan's /pol/ board, it is used to cynically dismiss breaking news or dramatic predictions by asserting they will not lead to meaningful or status quo-shattering consequences."
+   ]
+  },
+  {
+   "term": "it's joever",
+   "meaning": "it's over",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "IT'S JOEVER FOR MY [BODY PART]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Replacement for it's over, standing for complete physical and mental defeat. Emerged in 2024, when former U.S. President Joe Biden withdrew from the presidential election."
+   ]
+  },
+  {
+   "term": "we're so back",
+   "meaning": "it's good again",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[COMEBACK] WE'RE SO BACK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (KYM 'it's over/we're so back')"
+   ]
+  },
+  {
+   "term": "big back",
+   "meaning": "gluttonous person",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "self-own: BIG BACK [GROUP] ACTIVITIES",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): an overweight and gluttonous person."
+   ]
+  },
+  {
+   "term": "goofy ahh",
+   "meaning": "silly/ridiculous",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "GOOFY AHH [THING]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An AAVE phrase and slang term meaning \"goofy ass\" used to label content as goofy or silly."
+   ]
+  },
+  {
+   "term": "oomf",
+   "meaning": "one of my followers",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "OOMF",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"one of my followers\" or \"one of my friends\". Can be turned into \"oomfie\" to represent affection towards another individual."
+   ]
+  },
+  {
+   "term": "mutuals",
+   "meaning": "people who follow each other",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "MUTUALS ONLY",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Short for \"mutuals\" or \"mutual followers\"."
+   ]
+  },
+  {
+   "term": "opp",
+   "meaning": "enemy",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[RIVAL] IS THE OPP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Short for opposition or enemies; describes an individual's opponents. A secondary, older definition has the term be short for \"other people's pussy\". Originated from street and gang culture. Dexerto claims that the prima"
+   ]
+  },
+  {
+   "term": "pookie",
+   "meaning": "cutesy nickname",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[TOUGH GROUP] CALLS IT POOKIE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An endearing nickname for a close friend or lover. Also used as a pet name, or in mocking sarcasm."
+   ]
+  },
+  {
+   "term": "clanker",
+   "meaning": "robot/AI slur",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "NO CLANKERS IN MY [SHOP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Slur for robots, primarily used against generative AI. Originated from Star Wars media."
+   ]
+  },
+  {
+   "term": "slop",
+   "meaning": "low-quality content, AI slop",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "NOT AI SLOP, [HANDMADE GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Low-quality internet content, particularly that which was created by generative AI."
+   ]
+  },
+  {
+   "term": "rage-bait",
+   "meaning": "post meant to anger",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[OPINION] (RAGE BAIT)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To deliberately elicit rage within an individual or group. Usually for an increase in web traffic or personal enjoyment."
+   ]
+  },
+  {
+   "term": "Roman Empire",
+   "meaning": "thing you think about constantly",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[HOBBY] IS MY ROMAN EMPIRE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A random event, person, incident, or thing that fascinates or intrigues one to the point that one is frequently thinking about it. Originated in 2023 after influencer Saskia Cort encouraged her Instagram followers to ask"
+   ]
+  },
+  {
+   "term": "coworker music",
+   "meaning": "music you can play with coworkers",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "n/a",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Generic or overrated music that one's coworker might listen to. Typical examples are stomp clap music or pop rock like the Imagine Dragons. It has also been adapted to \"coworker memes\" and \"coworker opinions\" similar to "
+   ]
+  },
+  {
+   "term": "larp",
+   "meaning": "pretend to be something",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "LARPING AS [IDENTITY]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"Live-Action Role-Playing.\" The term was popularized in 2026 in reference to people perceived as fake, performative, or as posers."
+   ]
+  },
+  {
+   "term": "washed",
+   "meaning": "past your prime",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "WASHED [ATHLETE GROUP] / WASHED BUT STILL [X]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To be no longer successful, popular, or skilled."
+   ]
+  },
+  {
+   "term": "nepo baby",
+   "meaning": "got ahead through famous parents",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "NEPO BABY OF [FAMILY TRADE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A colloquial term short for \"nepotism baby\". Used to describe a celebrity, influencer, or media professional whose career success is perceived to be heavily aided by their famous or wealthy parents. While the concept of "
+   ]
+  },
+  {
+   "term": "bffr",
+   "meaning": "be f***ing for real",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "BFFR",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"be fucking for real\"."
+   ]
+  },
+  {
+   "term": "IJBOL",
+   "meaning": "I just burst out laughing",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "IJBOL",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An acronym for \"I just burst out laughing\"."
+   ]
+  },
+  {
+   "term": "and I oop",
+   "meaning": "startled exclamation",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "AND I OOP",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to express shock, embarrassment, and/or amusement. Often associated with VSCO girls alongside 'sksksk'."
+   ]
+  },
+  {
+   "term": "sksksk",
+   "meaning": "VSCO girl laughter",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "SKSKSK (dated on purpose)",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to convey happiness/laughter. A form of keysmashing. The earliest known usage is by Brazilian users on Twitter. Used by various British, African-American, and gay communities before becoming associated with stan Twi"
+   ]
+  },
+  {
+   "term": "OK boomer",
+   "meaning": "dismissal of older opinions",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "OK BOOMER (SAID THE BOOMER)",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Pejorative directed toward members of the Baby Boomer generation, used to dismiss or mock attitudes typically associated with baby boomers as out of date."
+   ]
+  },
+  {
+   "term": "Karen",
+   "meaning": "entitled, manager-demanding woman",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 7,
+   "example_pattern": "[SIGN] FOR KARENS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Pejorative term for an obnoxious, abrasive, or entitled (usually but not exclusively white and middle-aged) woman."
+   ]
+  },
+  {
+   "term": "uwu",
+   "meaning": "cutesy face",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "TOUGH GROUP UWU",
+   "status": "cringe-on-purpose",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to portray happiness or someone wanting to appear cute. Used more or less as an expression. Originated in the 2000s as an emoticon, with U's capitalized: UwU. The expression is commonly associated with e-girls, furr"
+   ]
+  },
+  {
+   "term": "yassify",
+   "meaning": "over-glamorize",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "YASSIFIED [UGLY OBJECT]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To \"yassify\" something is to apply several beauty filters to a picture using FaceApp, an AI photo-editing application."
+   ]
+  },
+  {
+   "term": "who is this diva",
+   "meaning": "playful 'who's this star'",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "WHO IS THIS DIVA (IT'S A [ANIMAL])",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An affectionate rhetorical question used to compliment people who positively embody diva-like qualities such as boldness, style, and/or confidence. A Diva is a Roman goddess as its original meaning. Sometimes used with a"
+   ]
+  },
+  {
+   "term": "gagged",
+   "meaning": "amazed",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "GAGGED BY [MUNDANE THING]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Shocked, amazed, or at a loss for words."
+   ]
+  },
+  {
+   "term": "gaslight gatekeep girlboss",
+   "meaning": "ironic toxic-girl motto",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "GASLIGHT GATEKEEP [GROUP TASK]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (KYM)"
+   ]
+  },
+  {
+   "term": "girlboss",
+   "meaning": "ironic empowered woman",
+   "register": "Millennial (dated)",
+   "funny_mismatch_score": 7,
+   "example_pattern": "GIRLBOSS [MUNDANE]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (KYM)"
+   ]
+  },
+  {
+   "term": "hot girl walk",
+   "meaning": "walk for confidence",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "HOT GIRL WALK (TO THE MAILBOX)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (TikTok)"
+   ]
+  },
+  {
+   "term": "pushing P",
+   "meaning": "acting with integrity",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "PUSHING P",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A phrase meaning acting with integrity and style while maintaining and displaying one's success. The P in the phrase is most often interpreted as standing for the slang word \"player\". Originated from the song \"Pushin P\" "
+   ]
+  },
+  {
+   "term": "owned",
+   "meaning": "defeated",
+   "register": "Millennial (dated)",
+   "funny_mismatch_score": 5,
+   "example_pattern": "OWNED",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to refer to defeat in a video game, or domination of an opposition. Also less commonly used to describe defeat in sports. Originated in the 1990s as a term used to describe hackers gaining administrative control ove"
+   ]
+  },
+  {
+   "term": "big yikes",
+   "meaning": "very embarrassing",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "BIG YIKES",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): something embarrassing or cringeworthy, particularly in response to an offensive comment."
+   ]
+  },
+  {
+   "term": "oof",
+   "meaning": "ouch",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 5,
+   "example_pattern": "OOF",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to express discomfort, surprise, dismay, or sympathy for someone else's pain. It is also the sound of a Roblox avatar when it dies or respawns. Thus the verb \"to oof\" can mean killing another player in a game or mes"
+   ]
+  },
+  {
+   "term": "finna",
+   "meaning": "going to",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "FINNA [ACTION]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Term used meaning \"I am going to\" or \"I am about to\". The term has its roots in African American Vernacular English, where \"fixing to\" has been used to mean \"getting ready to\" since the 18th century. Often used interchan"
+   ]
+  },
+  {
+   "term": "bop",
+   "meaning": "a great song",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "THIS HYMN IS A BOP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): (1) A derogatory term, usually for females, suggesting excessive flirtatiousness or promiscuity. (2) An exceptionally good song. (3) An acronym for \"baddie on point\", meaning someone who uses their appearance to make mon"
+   ]
+  },
+  {
+   "term": "flop era",
+   "meaning": "a failing phase",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "IN MY FLOP ERA",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Primarily used on TikTok and Twitter when a person is not getting enough likes and views and starts posting memes and putting text over them in hope of going viral. Also refers to a period of time where one is experienci"
+   ]
+  },
+  {
+   "term": "glizzy",
+   "meaning": "hot dog",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "GLIZZY (cookout context only)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A hot dog. Popularized in 2020, possibly from the Washington metropolitan area, and possibly originating from the slang term \"glizzy\" for a Glock handgun. It may also refer to a penis."
+   ]
+  },
+  {
+   "term": "zaza",
+   "meaning": "weed",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "avoid",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": false,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A drug slang for cannabis."
+   ]
+  },
+  {
+   "term": "iPad kid",
+   "meaning": "kid glued to tablet",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "RETIRED IPAD KID",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Term describing late Gen Z and Generation Alpha children who spend most of their time consuming content via a phone or tablet screen. The term was popularized in January 2021 after a 21-year-old TikToker criticized Mille"
+   ]
+  },
+  {
+   "term": "only in Ohio",
+   "meaning": "weird things happen in Ohio meme",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "ONLY IN OHIO",
+   "status": "peaking",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Internet slang used to describe strange or surreal occurrences humorously attributed to Ohio; compare Florida man."
+   ]
+  },
+  {
+   "term": "Bean Soup Theory",
+   "meaning": "pile-ons about adjacent topics",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "niche",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A specific phenomenon described as a 'What about me' effect. An individual watches a video that doesn't pertain to them, but finds a way to make it about them anyway. Stems from a 2023 TikTok recipe for bean soup by @vib"
+   ]
+  },
+  {
+   "term": "ball knowledge",
+   "meaning": "knowing sports deeply",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] BALL KNOWLEDGE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): niche or uncommon knowledge, usually niche references, often in pop culture. Alternative forms include \"elite ball knowledge\" or \"knowing ball\"."
+   ]
+  },
+  {
+   "term": "truth nuke",
+   "meaning": "harsh true statement",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "TRUTH NUKE: [GROUP TRUTH]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An impactful telling of factual, or sometimes opinionated, information; Sometimes spelt \"trvthnvke\" or shortened to \"trvke\"."
+   ]
+  },
+  {
+   "term": "vaguepost",
+   "meaning": "post vaguely about drama",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "CHURCH LADY VAGUEPOSTING",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A social media post that is intentionally cryptic or ambiguous, often for engagement farming."
+   ]
+  },
+  {
+   "term": "unalive",
+   "meaning": "euphemism for kill/die",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "dark-humor: [JOB] TRYING NOT TO UNALIVE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An algospeak-based euphemism for the word \"kill\" or other death-related terms, often in the context of suicide. This word is often used to circumvent social media algorithms, especially YouTube and TikTok, from censoring"
+   ]
+  },
+  {
+   "term": "moving",
+   "meaning": "behaving",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "HOW [GROUP] BE MOVING",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An internet slang term and text-caption format – frequently structured as \"how I be moving\" or \"moving different\" – used to describe a person's behavior, tactical operations, or lifestyle choices in a given situation."
+   ]
+  },
+  {
+   "term": "BDE",
+   "meaning": "big confident energy",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "BIG [GROUP] ENERGY",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Abbreviation for \"big dick energy\": confidence and ease."
+   ]
+  },
+  {
+   "term": "basic",
+   "meaning": "mainstream/unoriginal",
+   "register": "Millennial (dated)",
+   "funny_mismatch_score": 7,
+   "example_pattern": "BASIC AND PROUD",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): those who prefer mainstream products, trends, and music. Derived from the term \"basic bitch\"."
+   ]
+  },
+  {
+   "term": "bar(s)",
+   "meaning": "clever line",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "BARS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A lyric in a rap song that is considered excellent. A talented rapper may be said to \"drop bars\" or be \"spitting bars\", sometimes shortened to just \"spitting\"."
+   ]
+  },
+  {
+   "term": "acoustic",
+   "meaning": "socially awkward/'autistic' euphemism",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "avoid unless ownership",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": false,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Algospeak forms of the word \"autistic.\" Used as insults to call someone stupid, in the same manner as \"retarded\" has come to be used."
+   ]
+  },
+  {
+   "term": "bet bro",
+   "meaning": "ok bro",
+   "register": "Gen Z",
+   "funny_mismatch_score": 5,
+   "example_pattern": "n/a",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Agreeing to something; yes; okay; sure."
+   ]
+  },
+  {
+   "term": "fah",
+   "meaning": "meme sound/exclamation",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 6,
+   "example_pattern": "FAHHH",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An onomatopoeic internet catchphrase and viral TikTok sound effect that represents a loud, distorted, and vocalized scream of the word \"fuck\". It is heavily used in video editing as an audio exclamation point or impact m"
+   ]
+  },
+  {
+   "term": "function",
+   "meaning": "party",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "CHURCH FUNCTION",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An event, party, hangout, or social gathering."
+   ]
+  },
+  {
+   "term": "flow state",
+   "meaning": "deep focus",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "FLOW STATE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Used to portray being 'in the flow' or intensely focusing on a task. Being fully immersed in a task that one enjoys doing."
+   ]
+  },
+  {
+   "term": "gas",
+   "meaning": "hype up; good",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "GAS IT UP",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To describe something as highly entertaining, pleasant, or good."
+   ]
+  },
+  {
+   "term": "ghost",
+   "meaning": "stop responding",
+   "register": "Gen Z + Gen Alpha",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] GHOSTED BY [THING]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): To end communication or contact with someone without warning."
+   ]
+  },
+  {
+   "term": "lowkenuinely",
+   "meaning": "lowkey + genuinely",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "LOWKENUINELY [CONFESSION]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A portmanteau of 'lowkey' and 'genuinely'. Used to express a mix of emotions from both words."
+   ]
+  },
+  {
+   "term": "hb/hg",
+   "meaning": "homeboy/homegirl",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "n/a",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): An initialism of homeboy/homegirl, respectively. Slang used to refer to one's friends."
+   ]
+  },
+  {
+   "term": "syfm",
+   "meaning": "shut your f mouth",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 3,
+   "example_pattern": "avoid crude",
+   "status": "current-crude",
+   "dated_or_cringe": false,
+   "use_on_merch": false,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Acronym for \"shut your fucking mouth\", originally a meme taken from a scene in the movie Bronson."
+   ]
+  },
+  {
+   "term": "skull emoji",
+   "meaning": "I'm dead laughing",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "💀 after a dark line",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Replacement for the phrase \"I'm dying\", representing laughter or when something is considered \"unhinged\"."
+   ]
+  },
+  {
+   "term": "crying emoji",
+   "meaning": "laughing hard (not sad)",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "😭 after a wholesome line",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Also a replacement for \"I'm dying\" or the crying with laughter emoji, representing laughter. Similar to the skull emoji."
+   ]
+  },
+  {
+   "term": "wilted rose",
+   "meaning": "melancholy/ironic sad",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "🥀 after a self-own",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Commonly referred to as the \"wilted rose emoji\", it replaces, or is used in addition to, the broken heart emoji."
+   ]
+  },
+  {
+   "term": "broken heart",
+   "meaning": "ironic heartbreak",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "💔",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): A way to express disappointment, albeit with humorous undertones."
+   ]
+  },
+  {
+   "term": "dead",
+   "meaning": "found it hilarious",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "I'M DEAD (MORTICIAN EDITION)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Wikipedia: Glossary of 2020s slang (fetched this run): Humorous to such an extent as to \"kill you\". Laughter and death have been associated since Ancient Greece, where it is held that Zeuxis died from laughing at a portrait of an ugly woman he was painting."
+   ]
+  },
+  {
+   "term": "built different",
+   "meaning": "uniquely tough",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP] BUILT DIFFERENT",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "rent free",
+   "meaning": "occupying thoughts",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[THING] LIVES IN MY HEAD RENT FREE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "say less",
+   "meaning": "got it",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "SAY LESS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "on God",
+   "meaning": "honestly",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "CHURCH DADS: ON GOD",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "goblin mode",
+   "meaning": "unapologetically slobby",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP] GOBLIN MODE",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Oxford Word of the Year 2022)"
+   ]
+  },
+  {
+   "term": "quiet quitting",
+   "meaning": "doing the minimum",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "QUIET QUITTING [FAMILY ROLE]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news)"
+   ]
+  },
+  {
+   "term": "bed rotting",
+   "meaning": "staying in bed all day",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "BED ROTTING [GROUP]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news)"
+   ]
+  },
+  {
+   "term": "girl dinner",
+   "meaning": "snack-plate dinner",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "DAD DINNER / [GROUP] DINNER",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (TikTok/news)"
+   ]
+  },
+  {
+   "term": "emotional support [x]",
+   "meaning": "thing you carry for comfort",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "EMOTIONAL SUPPORT [OBJECT]",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news)"
+   ]
+  },
+  {
+   "term": "the ick",
+   "meaning": "see ick",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[HABIT] GIVES ME THE ICK",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "Urban Dictionary page fetched this run: the ick"
+   ]
+  },
+  {
+   "term": "demure",
+   "meaning": "modest, mindful (2024 meme)",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "VERY DEMURE, VERY MINDFUL [GROUP]",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news 2024)"
+   ]
+  },
+  {
+   "term": "brat",
+   "meaning": "messy party-girl (brat summer)",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "BRAT [GROUP] SUMMER",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news 2024)"
+   ]
+  },
+  {
+   "term": "very mindful",
+   "meaning": "see demure",
+   "register": "Gen Z",
+   "funny_mismatch_score": 7,
+   "example_pattern": "n/a",
+   "status": "dated",
+   "dated_or_cringe": true,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news 2024)"
+   ]
+  },
+  {
+   "term": "chat",
+   "meaning": "addressing an imaginary audience",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "CHAT, IS THIS REAL? ([GROUP] EDITION)",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (streamer slang)"
+   ]
+  },
+  {
+   "term": "chat is this real",
+   "meaning": "is this real?",
+   "register": "Gen Alpha",
+   "funny_mismatch_score": 9,
+   "example_pattern": "CHAT IS THIS REAL",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (streamer slang)"
+   ]
+  },
+  {
+   "term": "gooberish",
+   "meaning": "silly",
+   "register": "Gen Z",
+   "funny_mismatch_score": 6,
+   "example_pattern": "n/a",
+   "status": "niche",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run ()"
+   ]
+  },
+  {
+   "term": "mother",
+   "meaning": "iconic woman ('she's mother')",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "GRANDMA IS MOTHER",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "mothering",
+   "meaning": "being iconic",
+   "register": "Gen Z",
+   "funny_mismatch_score": 9,
+   "example_pattern": "[GROUP] MOTHERING",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "let them",
+   "meaning": "let people be (2024 meme)",
+   "register": "Millennial (dated)",
+   "funny_mismatch_score": 6,
+   "example_pattern": "LET THEM",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (news)"
+   ]
+  },
+  {
+   "term": "standing on business",
+   "meaning": "following through",
+   "register": "Gen Z",
+   "funny_mismatch_score": 8,
+   "example_pattern": "[GROUP] STANDING ON BUSINESS",
+   "status": "current",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (Urban Dictionary)"
+   ]
+  },
+  {
+   "term": "ope",
+   "meaning": "Midwestern 'oops/excuse me' (regional, not Gen Z)",
+   "register": "Regional",
+   "funny_mismatch_score": 6,
+   "example_pattern": "OPE, [MIDWEST GROUP] [MINOR COLLISION]",
+   "status": "current-regional",
+   "dated_or_cringe": false,
+   "use_on_merch": true,
+   "sources": [
+    "common usage; not fetched this run (regional usage)"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+gamers|Gamers|Gaming & Tabletop|'one more game' at 3am;rage quits;headset hair;gamer chair back pain;'git gud'|gamer|basement dwellers|energy_drink_people,introverts,programmers,it_support,dad_bods,stoners|9|1|A;R:r/gaming;S
+dad_gamers|Dad gamers|Gaming & Tabletop|games after kids sleep;falls asleep with controller;'pause, the baby's up'|gamer dad|old gamer|gamers,dad_bods,boy_dads,new_parents|9|1|R:r/patientgamers;S
+girl_gamers|Girl gamers|Gaming & Tabletop|'are you even a real gamer';cozy games;Animal Crossing island pride|gamer girl|gamer girls|gamers,cozy_gamers|9|1|S
+cozy_gamers|Cozy gamers|Gaming & Tabletop|Stardew Valley;blanket and tea;Animal Crossing|cozy gamer|casuals|introverts,crocheters,cat_ladies|9|1|R:r/CozyGamers;S
+cod_players|Call of Duty players|Gaming & Tabletop|squeaker lobbies;trash talk;'camping';prestige|COD guy|tryhards|gamers,energy_drink_people|8|2|X
+minecraft|Minecraft players|Gaming & Tabletop|creeper aww man;dirt house;building for 1000 hours|Minecrafter|kids|gamers,gen_alpha|8|1|S
+retro_gamers|Retro gamers|Gaming & Tabletop|blew in cartridges;CRT TV hoarder;N64 nostalgia|retro gamer|old gamers|gen_x,elder_millennials,collectors|9|1|S
+gta_fans|GTA fans|Gaming & Tabletop|waiting for GTA VI since forever;'wasted';cop chases|GTA player|gamers|gamers,mechanics|8|2|O
+pokemon_fans|Pokémon fans|Fandoms & Pop Culture|gotta catch em all at 35;card prices;Snorlax energy|trainer|Pokémon nerds|gamers,collectors,millennials|9|1|W;S
+anime_fans|Anime fans|Fandoms & Pop Culture|'it's not a cartoon';waifu;naruto run;sub vs dub war|otaku, weeb (ironic)|weebs|gamers,cosplayers,introverts|9|1|W;R:r/anime;S
+disney_adults|Disney adults|Fandoms & Pop Culture|annual pass;Dole Whip;mouse ears;'it's for me not the kids'|Disney adult|Disney adults|millennials,dinks,teachers|8|1|R:r/DisneyWorld;S
+swifties|Swifties|Fandoms & Pop Culture|friendship bracelets;'era';Easter eggs decoded;Eras tour tickets|Swiftie|Swifties|girl_dads,millennials,gen_z|9|1|S
+star_wars|Star Wars fans|Fandoms & Pop Culture|'I have a bad feeling about this';prequel memes;May the 4th|Star Wars nerd|nerds|nerds,dad_bods,gen_x|9|1|S
+trekkies|Trekkies|Fandoms & Pop Culture|live long and prosper;Picard vs Kirk;Klingon|Trekkie, Trekker|nerds|nerds,engineers,boomers|9|1|W;S
+marvel_fans|Marvel fans|Fandoms & Pop Culture|post-credits scene stayers;Avengers assemble|MCU fan|fans|nerds,millennials|8|1|S
+potterheads|Harry Potter fans|Fandoms & Pop Culture|house sorting;'still waiting for my letter';wand|Potterhead|fans|millennials,book_lovers|8|1|S
+lotr|Lord of the Rings fans|Fandoms & Pop Culture|second breakfast;'one does not simply';hobbit feet|Tolkien nerd|nerds|nerds,dnd_players|9|1|S
+the_office_fans|The Office fans|Fandoms & Pop Culture|'that's what she said';rewatched 14 times;Dwight quotes|Office fan|fans|millennials,office_workers|8|1|O;S
+true_crime_fans|True crime fans|Fandoms & Pop Culture|podcast in the car;knows serial killers by name;'I'd make a good detective';Ring doorbell paranoia;murderino|murderino, true crime junkie|weirdos|er_nurse,dispatchers,wine_moms,anxiety_havers,dark_humor_people|9|3|A;S
+horror_fans|Horror fans|Fandoms & Pop Culture|October all year;'don't go in there';Scream quotes|horror fan|horror freaks|goths,true_crime_fans|9|2|S
+cryptid_believers|Cryptid believers|Fandoms & Pop Culture|Bigfoot is real;Mothman made out jokes;night drives looking|cryptid hunter|crazies|bigfoot_believers,mothman_believers,appalachians|9|1|W;O;S
+bigfoot_believers|Bigfoot believers|Fandoms & Pop Culture|'Bigfoot helped me commit tax fraud';blurry photos;PNW woods|Squatcher|crazy|cryptid_believers,pnw,hunters|9|1|O;S
+mothman_believers|Mothman fans|Fandoms & Pop Culture|Point Pleasant pilgrimage;moth girlies|Mothman fan|weirdos|cryptid_believers,appalachians|9|1|O;S
+alien_believers|Alien and UFO people|Fandoms & Pop Culture|'I want to believe';Area 51 raid|UFO hunter|tinfoil hats|cryptid_believers|8|1|S
+conspiracy|Conspiracy theorists (self-aware)|Fandoms & Pop Culture|'birds aren't real';tinfoil hat;'do your own research'|truther|nutjobs|cryptid_believers,preppers|7|1|O
+birds_arent_real|Birds Aren't Real fans|Online Communities|bird denier;'birds are drones';satire movement|bird truther|weirdos|conspiracy,gen_z|8|1|O;S
+furries|Furries|Fandoms & Pop Culture|fursuit;'OwO';con badge art|furry|furries|gamers,lgbtq_folks,programmers|8|1|W;R:r/furry
+bronies|Bronies|Fandoms & Pop Culture|My Little Pony adult fans;friendship is magic|brony|bronies|furries|6|1|W
+goths|Goths|Class & Subculture|black everything;'I'm not sad this is my face';graveyard picnics;bats|goth, spooky|goths|horror_fans,pagans,metalheads,dark_humor_people|9|2|W;S
+spooky_people|Spooky season people|Class & Subculture|Halloween is a lifestyle;skeleton decor in June;'365 spooky'|spooky bitch|Halloween freaks|goths,horror_fans|9|2|S
+emos|Emo kids (now adults)|Class & Subculture|My Chemical Romance;side bangs;'it's not a phase mom';eyeliner|emo, elder emo|emo kids|elder_millennials,punks|9|2|W;S
+punks|Punks|Class & Subculture|DIY patches;safety pins;mosh pit;eat the rich|punk|punks|skaters,emos,metalheads|9|2|W;S
+metalheads|Metalheads|Music Scenes|horns up;black band tees;headbang neck pain;sweetest people at shows|metalhead|metalheads|goths,tattooed_people,beard_guys|9|2|W;R:r/Metal;S
+deadheads|Deadheads|Music Scenes|tie-dye;tour stories;'there is nothing like a Grateful Dead concert'|Deadhead|hippies|hippies,stoners,boomers|9|1|W
+hippies|Hippies and crunchy granola|Class & Subculture|peace and love;patchouli;barefoot;Birkenstocks|hippie|hippies|stoners,crunchy_moms,deadheads|9|1|W;S
+hipsters|Hipsters|Class & Subculture|'before it was cool';vinyl;fixie bike;oat milk|hipster|hipsters|craft_beer_snobs,coffee_addicts|6|1|W
+juggalos|Juggalos|Music Scenes|Faygo;'whoop whoop';face paint;family|juggalo, juggalette|juggalos|punks|8|2|W
+ravers|Ravers and EDM fans|Music Scenes|PLUR;kandi bracelets;bass drop|raver|ravers|gen_z,stoners|8|1|W
+rockabilly|Rockabilly and pin-up folks|Class & Subculture|victory rolls;hot rods;50s style|rockabilly|retro|muscle_car,tattooed_people|8|1|W
+steampunks|Steampunks|Class & Subculture|goggles on top hat;gears glued on everything|steampunk|steampunks|ren_faire,cosplayers|8|1|W
+dark_academia|Dark academia aesthetes|Class & Subculture|tweed;Secret History;candlelit studying|dark academia girlie|pretentious|book_lovers,goths|7|1|W
+cottagecore|Cottagecore girls|Class & Subculture|frogs and mushrooms;bread baking;prairie dresses|cottagecore|cottagecore|bakers,crocheters,gardeners|8|1|S
+preppy|Preppy people|Class & Subculture|Vineyard Vines;pastel shorts;lacrosse|preppy|preps|college_football,golfers|7|1|W
+scouts|Scouts and scout parents|Class & Subculture|knot tying;camping badges;popcorn sales|scout, scout mom|scouts|campers,boy_dads|8|1|W
+boy_scouts_dads|Scout dads|Family Roles|campout dad;pinewood derby engineering|scout dad|dads|scouts,campers,boy_dads|8|1|S
+grunge_kids|Grunge and 90s kids|Music Scenes|flannel;Nirvana;'90s kid';Doc Martens|90s kid|old|gen_x|9|1|W;S
+musicians|Musicians|Music Scenes|'buy my mixtape';drummer jokes;GAS (gear acquisition syndrome)|musician|struggling artist|band_kids,stoners|8|1|S
+drummers|Drummers|Music Scenes|taps on everything;deaf;'what do you call a drummer without a girlfriend'|drummer|drummers|musicians|9|1|S
+guitarists|Guitarists|Music Scenes|plays Wonderwall;fourteen guitars;pedal board|guitarist|guitar guys|musicians,dad_bods|9|1|S
+hip_hop_heads|Hip-hop heads|Music Scenes|bars;golden era debates;sneakerhead|hip hop head|rap fans|sneakerheads|8|1|W
+sneakerheads|Sneakerheads|Class & Subculture|Jordans never worn;resale bots;crease protectors|sneakerhead|sneaker freaks|hip_hop_heads,resellers|8|1|R:r/Sneakers
+straight_edge|Straight edge|Music Scenes|X on the hands;no drugs no drink;hardcore shows|sXe|straight edge|punks,sober_people|8|1|W
+lgbtq_folks|LGBTQ+ folks (ownership)|Identity & Heritage|'I can't even think straight';pride flags;gay panic jokes they own;chosen family|queer, gay, LGBTQ|LGBTQ|theater_kids,dnd_players,cat_ladies,subaru_lesbians|9|1|R:r/lgbt;S
+lesbians|Lesbians (ownership)|Identity & Heritage|U-Haul on second date;flannel and Birkenstocks;cats;'lesbian uncle'|lesbian, sapphic|lesbians|subaru_lesbians,cat_ladies,hikers|9|1|O;S
+gay_men|Gay men (ownership)|Identity & Heritage|brunch;iced coffee;'I'm not gay but $20 is $20' (ally joke);gym|gay|gay men|gay_uncles,gym_bros|9|1|S
+bi_folks|Bisexuals (ownership)|Identity & Heritage|can't sit in chairs right;cuffed jeans;'bi-cycle'|bi|bisexual|lgbtq_folks|9|1|S

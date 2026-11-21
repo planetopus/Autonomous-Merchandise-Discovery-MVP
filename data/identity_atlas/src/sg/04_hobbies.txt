@@ -1,0 +1,43 @@
+3d_printing|3D printing people|Crafts & Making|spaghetti failures;bed leveling with paper;prints holders for things they don't own;filament hoard;'I could print that';Benchy collection|maker, printer nerd|nerds|stem_majors,engineers,dnd_players,gamers,dad_bods,adhd|8|1|A;R:r/3Dprinting;S
+woodworkers|Woodworkers|Crafts & Making|you can never have too many clamps;sawdust in coffee;all fingers (for now);builds a shop instead of furniture|woodworker, sawdust maker|handy guy|dad_bods,carpenters,boomers,retired_dads|9|2|R:r/woodworking;S
+crocheters|Crocheters|Crafts & Making|'it's not knitting';yarn stash bigger than closet;frogging is a verb;makes amigurumi for everyone;crochets during meetings|hooker (pun), crocheter, yarnie|grandma hobby|crafters,cat_ladies,anxiety_havers,gen_z,introverts|9|1|A;R:r/crochet;S
+knitters|Knitters|Crafts & Making|stabby needles;yarn smells good;'one more row';sweater curse|knitter|grannies|crocheters,cat_ladies,grandmas|8|1|R:r/knitting;S
+quilters|Quilters|Crafts & Making|fabric stash is retirement plan;'it started as a harmless hobby';scrap busting|quilter|quilting ladies|grandmas,church_ladies,sewists|8|1|S
+sewists|Sewists|Crafts & Making|sew busy;seam ripper is best friend;pins in carpet|sewist, sewer|seamstress|quilters,cosplayers|7|1|S
+crafters|Crafters (Cricut people)|Crafts & Making|Cricut owns the dining table;vinyl scraps everywhere;Hobby Lobby 40% off coupon;'I can make that'|crafter, Cricut mom|crafty moms|wine_moms,teachers,mlm_huns,boy_moms,girl_moms|8|1|R:r/cricut;S
+painters_artists|Artists and painters|Creative & Media|paint water drinker;'exposure doesn't pay';anti-AI|artist|starving artist|introverts,anxiety_havers,goths|8|2|R:r/Art;S;O
+photographers|Photographers|Creative & Media|'it's the camera not me' myth;lens budget > rent;'can you do my wedding for free'|photog|camera guy|travel_lovers,introverts|7|1|S
+writers|Writers|Creative & Media|writes 3 words and needs a nap;Google history is a crime scene;procrastinates by reorganizing desk|writer, author|aspiring novelist|book_lovers,introverts,coffee_addicts,anxiety_havers|8|2|R:r/writing;S
+book_lovers|Book lovers|Hobbies|'one more chapter';TBR pile collapses;smells books;BookTok shelves;romantasy girlies|bookworm, reader, BookToker|nerd|introverts,cat_ladies,wine_moms,librarians,romance_readers|9|1|R:r/books;S
+romance_readers|Romance readers|Hobbies|smut on Kindle in public;spicy level ratings;book boyfriends;morally gray men|romance reader, smut girlie|ladies|book_lovers,wine_moms,millennial_moms|9|1|R:r/RomanceBooks;S
+gardeners|Gardeners|Home & Garden|talks to plants;zucchini overload;compost pride;dirt under nails;squirrel war|gardener, plant parent|green thumb|crazy_plant_people,boomers,grandmas,chicken_people,retired_dads|9|1|A;R:r/gardening;S
+crazy_plant_people|Plant parents|Home & Garden|'just one more plant';monstera mom;names plants;grief for a fern|plant mom, plant dad|plant lady|gardeners,cat_ladies,millennials,introverts|9|1|R:r/houseplants;S
+chicken_people|Backyard chicken keepers|Home & Garden|names every hen;eggs cost $40 each in feed;chicken math|chicken lady, chicken mom|crazy chicken lady|gardeners,homesteaders,rural_folks|9|1|R:r/BackYardChickens;S
+homesteaders|Homesteaders|Home & Garden|cans everything;goat drama;sourdough starter named;off-grid dreams|homesteader|crunchy|chicken_people,crunchy_moms,rural_folks|8|1|R:r/homestead;S
+lawn_dads|Lawn dads|Home & Garden|stripes on the lawn;hates the neighbor's dandelions;thermostat guard;leaf blower at 7am|lawn guy|suburban dad|dad_bods,boomers,golfers,grilling_dads|9|1|R:r/lawncare;S
+grilling_dads|Grill and BBQ dads|Food & Drink|tongs click;'that's not done';Traeger cult;brisket at 4am;apron says something dumb|pitmaster, grill dad|BBQ dad|dad_bods,lawn_dads,beer_dads,church_dads,texans|9|1|R:r/BBQ;S
+bakers|Bakers and sourdough people|Food & Drink|sourdough starter has a name;flour everywhere;Great British Bake Off fan|baker, sourdough girlie|baker|homesteaders,crunchy_moms|8|1|R:r/Sourdough;S
+coffee_addicts|Coffee addicts|Food & Drink|don't talk to me before coffee;fourth cup by 10am;depends on caffeine to function;personality is coffee|coffee person|coffee addict|teachers,er_nurse,office_workers,moms,introverts|9|1|S;B
+iced_coffee_girls|Iced coffee girlies|Food & Drink|iced coffee in January;$8 a day habit;Stanley tumbler|iced coffee girl|basic|corporate_girlies,millennial_moms,gen_z|8|1|S
+wine_moms|Wine moms|Family Roles|mommy juice;'it's 5 o'clock somewhere';book club is wine club;stemless glass;'rosé all day'|wine mom|wine moms|millennial_moms,boy_moms,girl_moms,teachers,book_lovers|9|2|A;S;B
+beer_dads|Beer dads|Food & Drink|beer fridge in garage;IPA snob or Busch Light loyalist;dad bod sponsor|beer guy|drunk dad|dad_bods,grilling_dads,fishermen,football_fans|9|2|S
+craft_beer_snobs|Craft beer snobs|Food & Drink|IBU talk;hazy IPA;untappd check-ins;flight boards|beer nerd|beer snob|millennials,beer_dads,hipsters|7|1|R:r/CraftBeer
+foodies|Foodies|Food & Drink|photographs food before eating;knows chefs' names;'it's giving umami'|foodie|food snob|travel_lovers,millennials|7|1|S
+ham_radio|Ham radio operators|Hobbies|talks to 3 people worldwide;callsign on license plate;antenna in the yard;'the original wireless'|ham, operator|radio nerds|boomers,preppers,engineers,retired_dads|8|1|R:r/amateurradio;S
+model_trains|Model train and railfans|Hobbies|basement layout;train horn ID by ear;stops car for trains;conductor hat|railfan, model railroader, foamer|train nerds|boomers,retired_dads,autistic_people|8|1|W;R:r/trains;S
+birdwatchers|Birdwatchers|Hobbies|binoculars always;'that's a juvenile';life list;Merlin app;bird puns|birder|bird nerds|boomers,introverts,gardeners,retired_dads|8|1|W;R:r/birding;S
+board_gamers|Board gamers|Gaming & Tabletop|rule-reading takes an hour;Catan rivalries;sleeves cards;shelf of shame|board gamer|nerd|dnd_players,introverts|8|1|R:r/boardgames;S
+dnd_players|D&D players|Gaming & Tabletop|rolls nat 1 at worst time;dice goblin;'I seduce the dragon';bard horny;session canceled again|nerd, adventurer, dice goblin|nerds|board_gamers,gamers,introverts,adhd,lgbtq_folks,3d_printing|9|2|A;R:r/DnD;S
+dungeon_masters|Dungeon masters|Gaming & Tabletop|prepares 40 hours players skip in 4 minutes;'are you sure about that?';the god of the table|DM, GM|nerd|dnd_players,introverts|9|2|R:r/DMAcademy;S
+warhammer|Warhammer players|Gaming & Tabletop|grey plastic pile of shame;paints minis for years;'for the Emperor';wallet destroyed|hobbyist|nerds|board_gamers,dad_bods|8|2|R:r/Warhammer40k
+puzzlers|Jigsaw puzzlers|Hobbies|1000 pieces on dining table;missing piece rage;grandma hobbies|puzzler|old people|grandmas,introverts|7|1|S
+karaoke|Karaoke lovers|Hobbies|'Don't Stop Believin' every time;tipsy confidence;mic hog|karaoke queen|drunk singers|wine_moms,extroverts|7|1|S
+mahjong|Mahjong ladies|Hobbies|tile clack;Tuesday group gossip;cute mahjong bags|mahjong girlie|old ladies|grandmas,wine_moms|7|1|S
+swing_dancers|Line and swing dancers|Hobbies|vintage dresses;Boot Scootin' Boogie;dance hall Saturdays|dancer|dancers|country_music_fans,church_ladies|7|1|S
+bowlers|Bowlers|Sports & Fitness|league night is sacred;own ball and shoes;Big Lebowski|bowler|bowlers|beer_dads,boomers,dad_bods|8|1|R:r/Bowling
+collectors|Collectors (cards, coins, toys)|Hobbies|mint in box;'it's an investment';Funko wall;'money baseball card problem'|collector|hoarder|gamers,sports_fans,dad_bods|8|1|S
+thrifters|Thrifters|Hobbies|Goodwill bins;flip it on eBay;'it was $3';vintage hunters|thrifter, reseller|thrift girl|resellers,millennials,gen_z|8|1|R:r/ThriftStoreHauls;S
+resellers|Resellers and flippers|Money & Hustle|garage full of inventory;'sold!' dopamine;yard sale at 6am|reseller, flipper|hoarder|thrifters,side_hustlers|8|1|R:r/Flipping
+cosplayers|Cosplayers|Fandoms & Pop Culture|hot glue burns;worbla;con crunch;spent $400 on a wig|cosplayer|nerds|anime_fans,sewists,gen_z|8|1|W;R:r/cosplay
+larpers|LARPers|Gaming & Tabletop|foam swords;lightning bolt chants;camping in armor|LARPer|larpers|dnd_players,ren_faire|7|1|W
+ren_faire|Renaissance faire people|Fandoms & Pop Culture|turkey leg;'huzzah';corset;talks in thee and thou|faire folk, rennie|ren fair weirdos|larpers,dnd_players,pagans|8|1|R:r/renfaire;S

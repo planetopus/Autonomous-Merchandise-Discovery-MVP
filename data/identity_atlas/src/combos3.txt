@@ -1,0 +1,32 @@
+vet_tech+cat_ladies|vet techs who come home to five cats|cooked|BITTEN BY 3 CATS AT WORK, GOING HOME TO 5 MORE|confession|1
+cna+night_shift|CNAs lifting more than gym bros overnight|built different|CNA ON NIGHT SHIFT: LIFTS MORE THAN YOUR GYM BRO|built_different|1
+pharmacist+retail_workers|pharmacy techs hearing 'is it ready yet?'|NPC|'IS IT READY YET?' — NPC #47 TODAY|confession|0
+labor_nurse+boy_moms|L&D nurses who are boy moms|ate|L&D NURSE: CATCHES BABIES, CAN'T CATCH HER OWN TODDLER|confession|0
+plumbers+dad_jokes|plumber dads with butt-crack jokes|drip|PLUMBER DRIP (IT'S NOT JUST THE PIPES)|drip|0
+electricians+hunters|electricians who hunt on weekends|aura|ZAPPED ON MONDAY, TREE STAND ON SATURDAY|identity_stack|1
+hvac_techs+dad_jokes|HVAC dads who guard the thermostat at home|opp|HVAC DAD: THE THERMOSTAT IS MINE, THE KIDS ARE THE OPP|identity_stack|0
+diesel_mechanics+truckers|diesel mechanics who used to drive|goated|DIESEL MECHANIC: SMELLS LIKE A TRUCK STOP, GOATED ANYWAY|identity_stack|0
+oilfield+texans|Texas oilfield hands on hitch|built different|14 ON, 14 OFF, BUILT DIFFERENT|built_different|1
+farmers+gen_z|young farmers in a TikTok world|no cap|THE TRACTOR COST MORE THAN YOUR HOUSE NO CAP|mismatch|0
+minivan_moms+soccer_moms|minivan soccer moms|aura|SLIDING DOOR AURA|aura|0
+glammas+wine_moms|young grandmas with wine|baddie|BADDIE GRANDMA (GIGI, NOT GRANDMA)|mismatch|0
+step_parents+blended_families|step-parents at three Christmases|cooked|BONUS MOM: THREE CHRISTMASES, ONE BUDGET, COOKED|confession|0
+older_siblings+people_pleasers|eldest daughters as the third parent|built different|ELDEST DAUGHTER: THIRD PARENT SINCE AGE 6. BUILT DIFFERENT (DAMAGED).|identity_stack|1
+empty_nesters+dog_moms|empty nesters who replaced kids with a dog|era|EMPTY NEST, FULL DOG BED ERA|era|0
+widows+dark_humor_people|widows with a dark sense of humor|unalive|PRE-GRIEVING WIDOW (HE ATE GAS STATION SUSHI)|dark_label|3
+cancer_survivors+bald_guys|bald survivors of chemo|aura|BEAT CANCER, KEPT THE BALD, +1000 AURA|aura|3
+retired_dads+golfers|retired golf dads|sigma|RETIRED SIGMA: NO BOSS, NO JOB, 4 ROUNDS A WEEK|identity_stack|0
+pickleball+boomers|retired pickleball people|cracked|SEVENTY AND CRACKED AT PICKLEBALL|mismatch|0
+runners+marathoners|marathoners who say 'never again'|delulu|DELULU ENOUGH TO SIGN UP FOR ANOTHER MARATHON|confession|0
+crossfitters+dad_bods|middle-aged crossfit dads|washed|WASHED BUT STILL DOING MURPH|confession|0
+jeep_people+dog_moms|Jeep girls with dogs in the back|core|JEEP GIRL CORE: DOORS OFF, DOG OUT|core|0
+motorcyclists+military_vet|veteran bikers|BDE|VETERAN BIKER: BIG 'I WAS IN' ENERGY|mismatch|1
+cheapskates+dad_jokes|dads who won't pay to cool the neighborhood|opp|THE THERMOSTAT IS MINE, THE NEIGHBORHOOD IS THE OPP|confession|0
+lawn_dads+boomers|dads who stripe the lawn|aura|LAWN STRIPES = AURA POINTS|aura|0
+homeschool_moms+crunchy_moms|crunchy homeschool moms|era|IN MY RAW MILK AND RECESS ERA|era|0
+nosy_neighbors+karens|Ring-camera neighborhood watchers|caught in 4K|YOUR DOG POOPED ON MY LAWN — CAUGHT IN 4K|fake_warning_sign|0
+hoa_people+suburban_people|HOA board members with rulers|cooked|HOA LETTER #7: YOUR GRASS IS COOKED|mismatch|0
+book_lovers+introverts|readers who skip parties|core|ONE MORE CHAPTER CORE|core|0
+anxiety_havers+teachers|anxious teachers who rehearse parent emails|yap|REHEARSES A PARENT EMAIL FOR 3 HOURS, STILL YAPS|confession|0
+mortician+goths|goth morticians (yes, they exist)|aura|GOTH MORTICIAN AURA: BLACK NAILS, COLD CLIENTS|aura|3
+coroners+true_crime_fans|death investigators who watch true crime|cap|TRUE CRIME SHOWS ARE CAP (THE CORONER SAID)|confession|3

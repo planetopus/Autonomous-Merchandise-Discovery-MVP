@@ -1,0 +1,3305 @@
+{
+ "version": 1,
+ "generated": "2026-11-21",
+ "pattern_guide": {
+  "identity_stack": "[BODY/VIBE WORD] [PERSON TYPE] WHO [HABIT/VICE] FOR [SINCERE CAUSE] - the THICC DADS model",
+  "era": "IN MY [UNGLAMOROUS REALITY] ERA",
+  "core": "[GROUP] CORE: three true possessions",
+  "aura": "+AURA for a mundane true habit",
+  "maxxing": "[GROUP] [HABIT]MAXXING",
+  "confession": "first-person true admission in slang",
+  "mismatch": "old/wholesome group speaking Gen Z/Alpha slang sincerely",
+  "built_different": "[GROUP WITH HARD TRUTH] BUILT DIFFERENT",
+  "fake_warning_sign": "CAUTION-style sign",
+  "dark_label": "cheerful label on a dark truth",
+  "roman_empire": "[OBSESSION] IS MY ROMAN EMPIRE",
+  "its_giving": "IT'S GIVING [TRUE VIBE]",
+  "drip": "[WORK UNIFORM] DRIP",
+  "ate": "[GROUP] ATE [TASK]",
+  "emotional_support": "EMOTIONAL SUPPORT [OBJECT]"
+ },
+ "counts": {
+  "combos": 170,
+  "patterns": {
+   "identity_stack": 29,
+   "confession": 51,
+   "dark_label": 4,
+   "era": 13,
+   "built_different": 5,
+   "aura": 10,
+   "drip": 3,
+   "roman_empire": 2,
+   "its_giving": 2,
+   "mismatch": 34,
+   "ate": 1,
+   "core": 9,
+   "maxxing": 3,
+   "fake_warning_sign": 3,
+   "emotional_support": 1
+  }
+ },
+ "combos": [
+  {
+   "id": "c001",
+   "subgroups": [
+    "church_dads",
+    "vapers",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Church dads",
+    "Vapers",
+    "Dad bods"
+   ],
+   "shared_truth": "heavier church-going dads who quietly vape in the truck before service",
+   "slang_hook": "thicc",
+   "hook_in_lexicon": true,
+   "example_line": "THICC DEACONS WHO VAPE BETWEEN SERMONS",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c002",
+   "subgroups": [
+    "er_nurse",
+    "true_crime_fans"
+   ],
+   "subgroup_names": [
+    "ER nurses",
+    "True crime fans"
+   ],
+   "shared_truth": "ER nurses binge murder podcasts on the drive home after 12s",
+   "slang_hook": "no cap",
+   "hook_in_lexicon": true,
+   "example_line": "I KNOW 14 WAYS TO HIDE A BODY AND I USE THEM TO SAVE YOURS NO CAP",
+   "pattern": "confession",
+   "dark_level": 3,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c003",
+   "subgroups": [
+    "night_shift",
+    "er_nurse",
+    "energy_drink_people"
+   ],
+   "subgroup_names": [
+    "Night shift workers",
+    "ER nurses",
+    "Energy drink addicts"
+   ],
+   "shared_truth": "3am Monster to survive a full-moon night shift",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "NIGHT SHIFT NURSES RUNNING ON MONSTER AND AURA",
+   "pattern": "identity_stack",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c004",
+   "subgroups": [
+    "dispatchers",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "911 dispatchers",
+    "Anxiety havers"
+   ],
+   "shared_truth": "dispatchers stay calm for strangers then panic over their own voicemail",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "CALM DURING YOUR WORST DAY. PANICS WHEN THE DOORBELL RINGS.",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c005",
+   "subgroups": [
+    "mortician",
+    "introverts"
+   ],
+   "subgroup_names": [
+    "Morticians and funeral directors",
+    "Introverts"
+   ],
+   "shared_truth": "funeral directors prefer the quiet clients",
+   "slang_hook": "lowkey",
+   "hook_in_lexicon": true,
+   "example_line": "MY CLIENTS LOWKEY THE BEST LISTENERS",
+   "pattern": "dark_label",
+   "dark_level": 3,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c006",
+   "subgroups": [
+    "mortician",
+    "dad_jokes"
+   ],
+   "subgroup_names": [
+    "Morticians and funeral directors",
+    "Dads (general)"
+   ],
+   "shared_truth": "undertaker dads with the deadest jokes",
+   "slang_hook": "dead",
+   "hook_in_lexicon": true,
+   "example_line": "UNDERTAKER DAD: MY JOKES ARE DEAD, AND SO IS MY 2 O'CLOCK",
+   "pattern": "identity_stack",
+   "dark_level": 3,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c007",
+   "subgroups": [
+    "paramedic",
+    "dark_humor_people"
+   ],
+   "subgroup_names": [
+    "Paramedics and EMTs",
+    "Dark humor people"
+   ],
+   "shared_truth": "medics cope with gallows humor at 70 mph",
+   "slang_hook": "unalive",
+   "hook_in_lexicon": true,
+   "example_line": "PARAMEDIC: PROFESSIONALLY KEEPING YOU FROM BEING UNALIVED",
+   "pattern": "dark_label",
+   "dark_level": 3,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c008",
+   "subgroups": [
+    "cops",
+    "coffee_addicts",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Police officers",
+    "Coffee addicts",
+    "Dad bods"
+   ],
+   "shared_truth": "cop dads, coffee and the mustache",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "MUSTACHE COP IN HIS DONUT ERA",
+   "pattern": "era",
+   "dark_level": 1,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c009",
+   "subgroups": [
+    "firefighters",
+    "grilling_dads"
+   ],
+   "subgroup_names": [
+    "Firefighters",
+    "Grill and BBQ dads"
+   ],
+   "shared_truth": "firefighters cook giant station dinners and argue over chili",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "FIREFIGHTER DADS: WE PUT OUT FIRES AND STILL GOT COOKED AT THE CHILI COOK-OFF",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c010",
+   "subgroups": [
+    "truckers",
+    "energy_drink_people",
+    "night_shift"
+   ],
+   "subgroup_names": [
+    "Truckers",
+    "Energy drink addicts",
+    "Night shift workers"
+   ],
+   "shared_truth": "truckers live on gas station energy drinks overnight",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "TRUCKERS WHO HOLD IT FOR 400 MILES ARE BUILT DIFFERENT",
+   "pattern": "built_different",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c011",
+   "subgroups": [
+    "truckers",
+    "church_dads"
+   ],
+   "subgroup_names": [
+    "Truckers",
+    "Church dads"
+   ],
+   "shared_truth": "church-going truckers listening to sermons on the CB at 2am",
+   "slang_hook": "on God",
+   "hook_in_lexicon": true,
+   "example_line": "ON GOD I'M NOT STOPPING TILL AMARILLO",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c012",
+   "subgroups": [
+    "linemen",
+    "linemans_wife"
+   ],
+   "subgroup_names": [
+    "Linemen",
+    "Lineman wives"
+   ],
+   "shared_truth": "lineman's wives hold down the house during storm season",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "LINEMAN'S WIFE: SINGLE MOM DURING EVERY STORM, +1000 AURA",
+   "pattern": "aura",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c013",
+   "subgroups": [
+    "welders",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Welders",
+    "Dad bods"
+   ],
+   "shared_truth": "welder dads with burn holes in every shirt",
+   "slang_hook": "drip",
+   "hook_in_lexicon": true,
+   "example_line": "WELDER DAD DRIP: 47 BURN HOLES AND A CARHARTT",
+   "pattern": "drip",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c014",
+   "subgroups": [
+    "mechanics",
+    "boy_dads"
+   ],
+   "subgroup_names": [
+    "Mechanics",
+    "Boy dads"
+   ],
+   "shared_truth": "mechanic dads who hear 'it makes a noise' at home too",
+   "slang_hook": "skill issue",
+   "hook_in_lexicon": true,
+   "example_line": "'IT MAKES A NOISE' IS A SKILL ISSUE",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c015",
+   "subgroups": [
+    "mechanics",
+    "car_guys"
+   ],
+   "subgroup_names": [
+    "Mechanics",
+    "Car guys"
+   ],
+   "shared_truth": "everyone loses the 10mm socket",
+   "slang_hook": "Roman Empire",
+   "hook_in_lexicon": true,
+   "example_line": "THE 10MM SOCKET IS MY ROMAN EMPIRE",
+   "pattern": "roman_empire",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c016",
+   "subgroups": [
+    "it_support",
+    "introverts"
+   ],
+   "subgroup_names": [
+    "IT support",
+    "Introverts"
+   ],
+   "shared_truth": "IT guys who want users to stop talking to them",
+   "slang_hook": "NPC",
+   "hook_in_lexicon": true,
+   "example_line": "IT SUPPORT: TURNING NPCs OFF AND ON AGAIN SINCE 2009",
+   "pattern": "identity_stack",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c017",
+   "subgroups": [
+    "programmers",
+    "adhd"
+   ],
+   "subgroup_names": [
+    "Software developers",
+    "ADHD people"
+   ],
+   "shared_truth": "devs with ADHD hyperfocus on the wrong bug",
+   "slang_hook": "locked in",
+   "hook_in_lexicon": true,
+   "example_line": "LOCKED IN ON A BUG THAT ISN'T THE BUG",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c018",
+   "subgroups": [
+    "teachers",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "Teachers",
+    "Wine moms"
+   ],
+   "shared_truth": "teachers who are moms who survive on wine Fridays",
+   "slang_hook": "it's giving",
+   "hook_in_lexicon": true,
+   "example_line": "IT'S GIVING 'I'LL WAIT' (FOR FRIDAY WINE)",
+   "pattern": "its_giving",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c019",
+   "subgroups": [
+    "teachers",
+    "coffee_addicts",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "Teachers",
+    "Coffee addicts",
+    "Anxiety havers"
+   ],
+   "shared_truth": "teachers living on coffee and Diet Coke between bells",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "DELULU ENOUGH TO THINK I'LL PEE BEFORE 3PM",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c020",
+   "subgroups": [
+    "hs_teacher",
+    "gen_z"
+   ],
+   "subgroup_names": [
+    "High school teachers",
+    "Gen Z"
+   ],
+   "shared_truth": "teachers who know all the slang and pretend not to",
+   "slang_hook": "skibidi",
+   "hook_in_lexicon": true,
+   "example_line": "I KNOW WHAT SKIBIDI MEANS AND I'M STILL GIVING YOU DETENTION",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c021",
+   "subgroups": [
+    "kinder_teacher",
+    "girl_moms"
+   ],
+   "subgroup_names": [
+    "Kindergarten teachers",
+    "Girl moms"
+   ],
+   "shared_truth": "kinder teachers with glitter permanently in their hair",
+   "slang_hook": "ate",
+   "hook_in_lexicon": true,
+   "example_line": "KINDERGARTEN TEACHER: ATE 400 SHOELACES AND LEFT NO CRUMBS",
+   "pattern": "ate",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c022",
+   "subgroups": [
+    "servers",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "Servers and waiters",
+    "Anxiety havers"
+   ],
+   "shared_truth": "servers who are anxious everywhere except table 12",
+   "slang_hook": "slay",
+   "hook_in_lexicon": true,
+   "example_line": "SLAYS A DOUBLE SHIFT, CRIES ORDERING PIZZA ON THE PHONE",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c023",
+   "subgroups": [
+    "line_cooks",
+    "dark_humor_people"
+   ],
+   "subgroup_names": [
+    "Line cooks and chefs",
+    "Dark humor people"
+   ],
+   "shared_truth": "cooks with burn scars and a dark sense of humor",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "LINE COOK: I'M NOT STRESSED, I'M COOKED (MEDIUM RARE)",
+   "pattern": "dark_label",
+   "dark_level": 2,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c024",
+   "subgroups": [
+    "bartenders",
+    "therapist"
+   ],
+   "subgroup_names": [
+    "Bartenders",
+    "Therapists and counselors"
+   ],
+   "shared_truth": "bartenders hear more confessions than priests",
+   "slang_hook": "lowkey",
+   "hook_in_lexicon": true,
+   "example_line": "BARTENDER, LOWKEY A LICENSED THERAPIST (NOT LICENSED)",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c025",
+   "subgroups": [
+    "retail_workers",
+    "introverts"
+   ],
+   "subgroup_names": [
+    "Retail workers",
+    "Introverts"
+   ],
+   "shared_truth": "retail workers who hate people professionally",
+   "slang_hook": "NPC",
+   "hook_in_lexicon": true,
+   "example_line": "'I DON'T KNOW, I JUST WORK HERE' — A TIRED NPC",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c026",
+   "subgroups": [
+    "farmers",
+    "church_dads",
+    "small_town"
+   ],
+   "subgroup_names": [
+    "Farmers",
+    "Church dads",
+    "Small-town folks"
+   ],
+   "shared_truth": "farmers who pray for rain then complain about it",
+   "slang_hook": "ong",
+   "hook_in_lexicon": true,
+   "example_line": "FARMERS PRAYING FOR RAIN THEN CUSSING THE RAIN, ONG",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c027",
+   "subgroups": [
+    "hunters",
+    "dad_bods",
+    "church_dads"
+   ],
+   "subgroup_names": [
+    "Hunters",
+    "Dad bods",
+    "Church dads"
+   ],
+   "shared_truth": "deer-camp church dads who nap in the stand",
+   "slang_hook": "sigma",
+   "hook_in_lexicon": true,
+   "example_line": "SIGMA DEER CAMP DAD: ASLEEP IN THE TREE STAND BY 7",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c028",
+   "subgroups": [
+    "hunting_widow",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "Hunting widows",
+    "Wine moms"
+   ],
+   "shared_truth": "wives who disappear into wine during deer season",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "IN MY DEER SEASON WIDOW ERA",
+   "pattern": "era",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c029",
+   "subgroups": [
+    "fishermen",
+    "beer_dads",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Fishermen",
+    "Beer dads",
+    "Dad bods"
+   ],
+   "shared_truth": "fishing dads who mostly drink beer on the boat",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "FISHING DADS: ZERO FISH, MAXIMUM AURA",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c030",
+   "subgroups": [
+    "fishermen",
+    "grandpas"
+   ],
+   "subgroup_names": [
+    "Fishermen",
+    "Grandpas"
+   ],
+   "shared_truth": "grandpas who lie about fish size",
+   "slang_hook": "cap",
+   "hook_in_lexicon": true,
+   "example_line": "GRANDPA SAID IT WAS THIS BIG (CAP)",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c031",
+   "subgroups": [
+    "golfers",
+    "dad_bods",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Golfers",
+    "Dad bods",
+    "Baby boomers"
+   ],
+   "shared_truth": "boomer golf dads who blame the club",
+   "slang_hook": "skill issue",
+   "hook_in_lexicon": true,
+   "example_line": "IT'S NOT THE CLUB, PAPA, IT'S A SKILL ISSUE",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c032",
+   "subgroups": [
+    "gym_bros",
+    "church_dads"
+   ],
+   "subgroup_names": [
+    "Gym bros",
+    "Church dads"
+   ],
+   "shared_truth": "lifting dads who say grace over their protein shake",
+   "slang_hook": "sigma",
+   "hook_in_lexicon": true,
+   "example_line": "SIGMA GRINDSET: BIBLE, BULK, BED BY 9",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c033",
+   "subgroups": [
+    "gym_bros",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Gym bros",
+    "Dad bods"
+   ],
+   "shared_truth": "ex-gym bros now in dad-bod form",
+   "slang_hook": "washed",
+   "hook_in_lexicon": true,
+   "example_line": "WASHED GYM BRO, STILL GOT THE PRE-WORKOUT",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c034",
+   "subgroups": [
+    "dad_bods",
+    "grilling_dads"
+   ],
+   "subgroup_names": [
+    "Dad bods",
+    "Grill and BBQ dads"
+   ],
+   "shared_truth": "grill dads who eat the 'test' brisket",
+   "slang_hook": "big back",
+   "hook_in_lexicon": true,
+   "example_line": "BIG BACK DADS WHO 'TEST' THE BRISKET",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c035",
+   "subgroups": [
+    "runners",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "Runners",
+    "Anxiety havers"
+   ],
+   "shared_truth": "people who run to outrun their thoughts",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "I DON'T RUN FOR FITNESS, I RUN FROM MY THOUGHTS",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c036",
+   "subgroups": [
+    "crocheters",
+    "gen_z",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "Crocheters",
+    "Gen Z",
+    "Anxiety havers"
+   ],
+   "shared_truth": "young anxious crocheters making frogs for everyone",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "IN MY GRANDMA HOBBIES ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c037",
+   "subgroups": [
+    "crocheters",
+    "true_crime_fans"
+   ],
+   "subgroup_names": [
+    "Crocheters",
+    "True crime fans"
+   ],
+   "shared_truth": "crocheters who listen to murder podcasts while making cute animals",
+   "slang_hook": "lowkey",
+   "hook_in_lexicon": true,
+   "example_line": "LOWKEY CROCHETING A FROG, HIGHKEY LISTENING TO A MURDER PODCAST",
+   "pattern": "identity_stack",
+   "dark_level": 2,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c038",
+   "subgroups": [
+    "gardeners",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Gardeners",
+    "Baby boomers"
+   ],
+   "shared_truth": "retirees at war with squirrels",
+   "slang_hook": "opp",
+   "hook_in_lexicon": true,
+   "example_line": "THE SQUIRRELS ARE THE OPP",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c039",
+   "subgroups": [
+    "crazy_plant_people",
+    "cat_ladies"
+   ],
+   "subgroup_names": [
+    "Plant parents",
+    "Cat ladies"
+   ],
+   "shared_truth": "plant ladies whose cats eat the plants",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "DELULU PLANT MOM: MY CAT ISN'T EATING THE MONSTERA",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c040",
+   "subgroups": [
+    "cat_ladies",
+    "introverts",
+    "book_lovers"
+   ],
+   "subgroup_names": [
+    "Cat ladies",
+    "Introverts",
+    "Book lovers"
+   ],
+   "shared_truth": "bookish introverts with three cats and no plans",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "CAT LADY CORE: CANCELED PLANS, THREE CATS, ONE MORE CHAPTER",
+   "pattern": "core",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c041",
+   "subgroups": [
+    "dog_dads",
+    "truck_guys"
+   ],
+   "subgroup_names": [
+    "Dog dads",
+    "Truck guys"
+   ],
+   "shared_truth": "truck guys whose dog rides shotgun",
+   "slang_hook": "pookie",
+   "hook_in_lexicon": true,
+   "example_line": "BIG TRUCK, BIGGER LOVE FOR MY LITTLE POOKIE IN THE PASSENGER SEAT",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c042",
+   "subgroups": [
+    "cat_dads",
+    "gamers"
+   ],
+   "subgroup_names": [
+    "Cat dads",
+    "Gamers"
+   ],
+   "shared_truth": "gamer cat dads whose cat walks on the keyboard mid-match",
+   "slang_hook": "ratio",
+   "hook_in_lexicon": true,
+   "example_line": "MY CAT RATIO'D ME MID-RANKED MATCH",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c043",
+   "subgroups": [
+    "boy_moms",
+    "coffee_addicts"
+   ],
+   "subgroup_names": [
+    "Boy moms",
+    "Coffee addicts"
+   ],
+   "shared_truth": "boy moms living on coffee while everything becomes a weapon",
+   "slang_hook": "crash out",
+   "hook_in_lexicon": true,
+   "example_line": "BOY MOM: ONE MORE STICK SWORD AND I'M CRASHING OUT",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c044",
+   "subgroups": [
+    "girl_dads",
+    "swifties"
+   ],
+   "subgroup_names": [
+    "Girl dads",
+    "Swifties"
+   ],
+   "shared_truth": "dads who know every Taylor Swift lyric because of their daughters",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "GIRL DAD IN HIS SWIFTIE ERA (AGAINST HIS WILL)",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c045",
+   "subgroups": [
+    "girl_dads",
+    "church_dads"
+   ],
+   "subgroup_names": [
+    "Girl dads",
+    "Church dads"
+   ],
+   "shared_truth": "dads with braids in their beard from Sunday school",
+   "slang_hook": "slay",
+   "hook_in_lexicon": true,
+   "example_line": "GIRL DADS WHO SLAY BRAIDS FOR JESUS",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c046",
+   "subgroups": [
+    "new_parents",
+    "coffee_addicts"
+   ],
+   "subgroup_names": [
+    "New parents",
+    "Coffee addicts"
+   ],
+   "shared_truth": "sleep-deprived new parents",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "NEW PARENTS: WE ARE SO COOKED (AND SO IN LOVE)",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c047",
+   "subgroups": [
+    "divorced_dads",
+    "gym_bros"
+   ],
+   "subgroup_names": [
+    "Divorced dads",
+    "Gym bros"
+   ],
+   "shared_truth": "divorced dads who discovered the gym",
+   "slang_hook": "glow-up",
+   "hook_in_lexicon": true,
+   "example_line": "DIVORCED DAD GLOW-UP: GYM, HARLEY, ONE PLATE",
+   "pattern": "identity_stack",
+   "dark_level": 2,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c048",
+   "subgroups": [
+    "divorced_women",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "Divorced women",
+    "Wine moms"
+   ],
+   "shared_truth": "newly divorced moms thriving",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "IN MY 'HE TOOK THE COUCH, I KEPT MY PEACE' ERA",
+   "pattern": "era",
+   "dark_level": 2,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c049",
+   "subgroups": [
+    "grandmas",
+    "gen_alpha"
+   ],
+   "subgroup_names": [
+    "Grandmas",
+    "Gen Alpha"
+   ],
+   "shared_truth": "grandmas who learned slang from grandkids",
+   "slang_hook": "rizz",
+   "hook_in_lexicon": true,
+   "example_line": "GRANDMA HAS RIZZ (SHE GOT YOUR GRANDPA, DIDN'T SHE)",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 6,
+   "ownership_only": false
+  },
+  {
+   "id": "c050",
+   "subgroups": [
+    "grandpas",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Grandpas",
+    "Baby boomers"
+   ],
+   "shared_truth": "grandpas proud of their recliners",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "GRANDPA RECLINER AURA IS UNMATCHED",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c051",
+   "subgroups": [
+    "church_ladies",
+    "southerners"
+   ],
+   "subgroup_names": [
+    "Church ladies",
+    "Southerners"
+   ],
+   "shared_truth": "southern church ladies spreading 'prayer requests'",
+   "slang_hook": "tea",
+   "hook_in_lexicon": true,
+   "example_line": "PRAYER REQUESTS ARE JUST SWEET TEA WITH EXTRA STEPS",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c052",
+   "subgroups": [
+    "church_ladies",
+    "grandmas"
+   ],
+   "subgroup_names": [
+    "Church ladies",
+    "Grandmas"
+   ],
+   "shared_truth": "grandmas who bring casseroles to every funeral",
+   "slang_hook": "bussin'",
+   "hook_in_lexicon": true,
+   "example_line": "GRANDMA'S FUNERAL CASSEROLE IS BUSSIN (RIP DALE)",
+   "pattern": "mismatch",
+   "dark_level": 2,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c053",
+   "subgroups": [
+    "youth_pastors",
+    "gen_x"
+   ],
+   "subgroup_names": [
+    "Youth pastors",
+    "Gen X"
+   ],
+   "shared_truth": "youth pastors trying to be cool",
+   "slang_hook": "no cap",
+   "hook_in_lexicon": true,
+   "example_line": "JESUS DIED FOR YOUR SINS NO CAP — YOUR YOUTH PASTOR",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c054",
+   "subgroups": [
+    "catholics",
+    "italian_americans"
+   ],
+   "subgroup_names": [
+    "Catholics",
+    "Italian-Americans"
+   ],
+   "shared_truth": "Catholic guilt plus nonna guilt",
+   "slang_hook": "mid",
+   "hook_in_lexicon": true,
+   "example_line": "NONNA SAYS YOUR GRAVY IS MID AND GOD AGREES",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c055",
+   "subgroups": [
+    "midwesterners",
+    "lutherans"
+   ],
+   "subgroup_names": [
+    "Midwesterners",
+    "Lutherans"
+   ],
+   "shared_truth": "Lutheran Midwesterners who apologize to furniture",
+   "slang_hook": "ope",
+   "hook_in_lexicon": true,
+   "example_line": "OPE, JUST A LITTLE LUTHERAN GUILT",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c056",
+   "subgroups": [
+    "midwesterners",
+    "minnesotans"
+   ],
+   "subgroup_names": [
+    "Midwesterners",
+    "Minnesotans"
+   ],
+   "shared_truth": "40-minute Minnesota goodbyes",
+   "slang_hook": "yap",
+   "hook_in_lexicon": true,
+   "example_line": "MIDWEST GOODBYE: 45 MINUTES OF YAPPING IN THE DRIVEWAY",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c057",
+   "subgroups": [
+    "texans",
+    "grilling_dads"
+   ],
+   "subgroup_names": [
+    "Texans",
+    "Grill and BBQ dads"
+   ],
+   "shared_truth": "Texan dads who judge your brisket",
+   "slang_hook": "mid",
+   "hook_in_lexicon": true,
+   "example_line": "TEXAS DAD SAYS YOUR BRISKET IS MID",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c058",
+   "subgroups": [
+    "southerners",
+    "church_ladies"
+   ],
+   "subgroup_names": [
+    "Southerners",
+    "Church ladies"
+   ],
+   "shared_truth": "'bless your heart' as an insult",
+   "slang_hook": "ratio",
+   "hook_in_lexicon": true,
+   "example_line": "BLESS YOUR HEART (THAT'S A RATIO)",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c059",
+   "subgroups": [
+    "small_town",
+    "rural_folks"
+   ],
+   "subgroup_names": [
+    "Small-town folks",
+    "Rural folks and country people"
+   ],
+   "shared_truth": "everyone knows everyone in a one-stoplight town",
+   "slang_hook": "main character",
+   "hook_in_lexicon": true,
+   "example_line": "MAIN CHARACTER OF A ONE-STOPLIGHT TOWN",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c060",
+   "subgroups": [
+    "rural_folks",
+    "truck_guys"
+   ],
+   "subgroup_names": [
+    "Rural folks and country people",
+    "Truck guys"
+   ],
+   "shared_truth": "country boys whose truck is their personality",
+   "slang_hook": "drip",
+   "hook_in_lexicon": true,
+   "example_line": "COUNTRY BOY DRIP: MUD, CAMO, AND A TRUCK PAYMENT",
+   "pattern": "drip",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c061",
+   "subgroups": [
+    "floridians",
+    "boaters"
+   ],
+   "subgroup_names": [
+    "Floridians",
+    "Boaters"
+   ],
+   "shared_truth": "Florida boat dads at the sandbar",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "FLORIDA BOAT DADS ARE COOKED (SUNBURN)",
+   "pattern": "identity_stack",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c062",
+   "subgroups": [
+    "appalachians",
+    "cryptid_believers"
+   ],
+   "subgroup_names": [
+    "Appalachians",
+    "Cryptid believers"
+   ],
+   "shared_truth": "Appalachian folks proud of Mothman",
+   "slang_hook": "rizz",
+   "hook_in_lexicon": true,
+   "example_line": "MOTHMAN HAS MORE RIZZ THAN YOUR EX",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c063",
+   "subgroups": [
+    "pnw",
+    "bigfoot_believers"
+   ],
+   "subgroup_names": [
+    "Pacific Northwesterners",
+    "Bigfoot believers"
+   ],
+   "shared_truth": "Pacific Northwesterners who 'saw him once'",
+   "slang_hook": "no cap",
+   "hook_in_lexicon": true,
+   "example_line": "SAW BIGFOOT IN '96 NO CAP",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c064",
+   "subgroups": [
+    "boomers",
+    "facebook_moms"
+   ],
+   "subgroup_names": [
+    "Baby boomers",
+    "Facebook mom groups"
+   ],
+   "shared_truth": "boomer moms sharing Minion memes in all caps",
+   "slang_hook": "brain rot",
+   "hook_in_lexicon": true,
+   "example_line": "BOOMER BRAIN ROT: MINION MEMES SINCE 2012",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c065",
+   "subgroups": [
+    "gen_x",
+    "middle_aged"
+   ],
+   "subgroup_names": [
+    "Gen X",
+    "Middle-aged people"
+   ],
+   "shared_truth": "Gen X latchkey kids raised on the garden hose",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "GEN X: RAISED ON HOSE WATER, BUILT DIFFERENT",
+   "pattern": "built_different",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c066",
+   "subgroups": [
+    "millennials",
+    "back_pain"
+   ],
+   "subgroup_names": [
+    "Millennials",
+    "Bad back people"
+   ],
+   "shared_truth": "millennials whose back hurts at 34",
+   "slang_hook": "it's joever",
+   "hook_in_lexicon": true,
+   "example_line": "I SLEPT WRONG, IT'S JOEVER",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c067",
+   "subgroups": [
+    "elder_millennials",
+    "unc"
+   ],
+   "subgroup_names": [
+    "Elder millennials",
+    "Uncs (30s+ men)"
+   ],
+   "shared_truth": "elder millennials getting called unc",
+   "slang_hook": "unc",
+   "hook_in_lexicon": true,
+   "example_line": "DON'T CALL ME UNC, I HAVE A BAD BACK AND A 401K",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c068",
+   "subgroups": [
+    "gen_z",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "Gen Z",
+    "Anxiety havers"
+   ],
+   "shared_truth": "Gen Z dread of phone calls",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "SOMEONE CALLED ME INSTEAD OF TEXTING. I'M COOKED.",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c069",
+   "subgroups": [
+    "adhd",
+    "procrastinators"
+   ],
+   "subgroup_names": [
+    "ADHD people",
+    "Procrastinators"
+   ],
+   "shared_truth": "ADHD folks who get everything done at 11:59pm",
+   "slang_hook": "locked in",
+   "hook_in_lexicon": true,
+   "example_line": "LOCKED IN (IT'S 11:58 PM)",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c070",
+   "subgroups": [
+    "adhd",
+    "3d_printing"
+   ],
+   "subgroup_names": [
+    "ADHD people",
+    "3D printing people"
+   ],
+   "shared_truth": "ADHD makers who print a holder for a thing they lost",
+   "slang_hook": "-maxxing",
+   "hook_in_lexicon": true,
+   "example_line": "ADHD PRINTMAXXING: 40 HOLDERS, 0 ITEMS",
+   "pattern": "maxxing",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c071",
+   "subgroups": [
+    "adhd",
+    "dnd_players"
+   ],
+   "subgroup_names": [
+    "ADHD people",
+    "D&D players"
+   ],
+   "shared_truth": "ADHD D&D players who forget their character's name",
+   "slang_hook": "NPC",
+   "hook_in_lexicon": true,
+   "example_line": "I FORGOT MY OWN NAME, I'M THE NPC NOW",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c072",
+   "subgroups": [
+    "introverts",
+    "people_pleasers"
+   ],
+   "subgroup_names": [
+    "Introverts",
+    "People pleasers"
+   ],
+   "shared_truth": "introverts who say yes then pray for a cancellation",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "SAID YES TO PLANS, NOW DELULU PRAYING THEY CANCEL",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c073",
+   "subgroups": [
+    "overthinkers",
+    "insomniacs"
+   ],
+   "subgroup_names": [
+    "Overthinkers",
+    "Insomniacs"
+   ],
+   "shared_truth": "people replaying an old conversation at 3am",
+   "slang_hook": "Roman Empire",
+   "hook_in_lexicon": true,
+   "example_line": "SOMETHING I SAID IN 2011 IS MY ROMAN EMPIRE",
+   "pattern": "roman_empire",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c074",
+   "subgroups": [
+    "anxiety_havers",
+    "chronic_illness"
+   ],
+   "subgroup_names": [
+    "Anxiety havers",
+    "Chronic illness warriors (spoonies)"
+   ],
+   "shared_truth": "anxious spoonies with full-time doctor schedules",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "SPOONIE CORE: HEATING PAD, ANXIETY, 4 APPOINTMENTS",
+   "pattern": "core",
+   "dark_level": 2,
+   "min_buyer_pride": 8,
+   "ownership_only": true
+  },
+  {
+   "id": "c075",
+   "subgroups": [
+    "hot_girls",
+    "ibs_people"
+   ],
+   "subgroup_names": [
+    "Hot girls with problems",
+    "IBS and gut problem people"
+   ],
+   "shared_truth": "'hot girls have stomach issues'",
+   "slang_hook": "ate",
+   "hook_in_lexicon": true,
+   "example_line": "HOT GIRL. BAD GUT. ATE ANYWAY.",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c076",
+   "subgroups": [
+    "petty_people",
+    "church_ladies"
+   ],
+   "subgroup_names": [
+    "Petty people",
+    "Church ladies"
+   ],
+   "shared_truth": "church ladies who forgive but never forget",
+   "slang_hook": "bet",
+   "hook_in_lexicon": true,
+   "example_line": "I FORGAVE YOU. I DIDN'T FORGET. BET.",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c077",
+   "subgroups": [
+    "hot_tempered",
+    "truck_guys"
+   ],
+   "subgroup_names": [
+    "Hot-tempered people",
+    "Truck guys"
+   ],
+   "shared_truth": "truck guys with road rage",
+   "slang_hook": "crash out",
+   "hook_in_lexicon": true,
+   "example_line": "DON'T TAILGATE A MAN ONE BLINKER AWAY FROM A CRASH OUT",
+   "pattern": "fake_warning_sign",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c078",
+   "subgroups": [
+    "angry_people",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Grumpy and angry people",
+    "Baby boomers"
+   ],
+   "shared_truth": "grumpy old men at the wheel",
+   "slang_hook": "ratio",
+   "hook_in_lexicon": true,
+   "example_line": "GRUMPY OLD MAN AT THE WHEEL: HONK AND GET RATIO'D",
+   "pattern": "fake_warning_sign",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c079",
+   "subgroups": [
+    "class_clowns",
+    "teachers"
+   ],
+   "subgroup_names": [
+    "Class clowns",
+    "Teachers"
+   ],
+   "shared_truth": "former class clowns who became teachers",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "FORMER CLASS CLOWN, CURRENT TEACHER: KARMA FARMED",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c080",
+   "subgroups": [
+    "ugly_people",
+    "comedians"
+   ],
+   "subgroup_names": [
+    "Self-proclaimed ugly people",
+    "Comedians and funny people"
+   ],
+   "shared_truth": "self-proclaimed ugly funny people",
+   "slang_hook": "chopped",
+   "hook_in_lexicon": true,
+   "example_line": "CHOPPED BUT HILARIOUS",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c081",
+   "subgroups": [
+    "pretty_girls",
+    "gym_girls"
+   ],
+   "subgroup_names": [
+    "Pretty girls",
+    "Gym girls"
+   ],
+   "shared_truth": "pretty gym girls filming every set",
+   "slang_hook": "main character",
+   "hook_in_lexicon": true,
+   "example_line": "MAIN CHARACTER AT PLANET FITNESS",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c082",
+   "subgroups": [
+    "pretty_girls",
+    "anxiety_havers"
+   ],
+   "subgroup_names": [
+    "Pretty girls",
+    "Anxiety havers"
+   ],
+   "shared_truth": "pretty girls who are secretly anxious messes",
+   "slang_hook": "face card",
+   "hook_in_lexicon": true,
+   "example_line": "FACE CARD: NEVER DECLINES. ANXIETY: ALSO NEVER DECLINES.",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c083",
+   "subgroups": [
+    "mid_people",
+    "dating_app_users"
+   ],
+   "subgroup_names": [
+    "Average-looking people",
+    "Dating app users"
+   ],
+   "shared_truth": "average-looking people on dating apps",
+   "slang_hook": "mid",
+   "hook_in_lexicon": true,
+   "example_line": "A SOLID 6 IN GOOD LIGHTING, MID IN PERSON",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c084",
+   "subgroups": [
+    "sober_people",
+    "coffee_addicts"
+   ],
+   "subgroup_names": [
+    "Sober people and recovery",
+    "Coffee addicts"
+   ],
+   "shared_truth": "sober folks who replaced booze with coffee",
+   "slang_hook": "cracked",
+   "hook_in_lexicon": true,
+   "example_line": "SOBER AND CRACKED (ON COFFEE)",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c085",
+   "subgroups": [
+    "sober_people",
+    "gym_bros"
+   ],
+   "subgroup_names": [
+    "Sober people and recovery",
+    "Gym bros"
+   ],
+   "shared_truth": "sober guys who traded the bar for the gym",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "SOBER GYM BRO: I TRADED SHOTS FOR SQUATS",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c086",
+   "subgroups": [
+    "stoners",
+    "gamers"
+   ],
+   "subgroup_names": [
+    "Stoners",
+    "Gamers"
+   ],
+   "shared_truth": "stoner gamers who forget what they were doing",
+   "slang_hook": "brain rot",
+   "hook_in_lexicon": true,
+   "example_line": "STONER GAMER: WHAT WAS THE MISSION AGAIN",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c087",
+   "subgroups": [
+    "energy_drink_people",
+    "construction"
+   ],
+   "subgroup_names": [
+    "Energy drink addicts",
+    "Construction workers"
+   ],
+   "shared_truth": "construction guys with Monster for breakfast",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "MONSTER FOR BREAKFAST, AURA FOR LUNCH",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c088",
+   "subgroups": [
+    "dippers",
+    "baseball_parents"
+   ],
+   "subgroup_names": [
+    "Dip and chew users",
+    "Baseball and softball parents"
+   ],
+   "shared_truth": "baseball dads with dip in the bleachers",
+   "slang_hook": "goated",
+   "hook_in_lexicon": true,
+   "example_line": "DIP IN, SEEDS OUT, GOATED BASEBALL DAD",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c089",
+   "subgroups": [
+    "vapers",
+    "gen_x"
+   ],
+   "subgroup_names": [
+    "Vapers",
+    "Gen X"
+   ],
+   "shared_truth": "middle-aged moms who vape in the minivan",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "MINIVAN MOM IN HER VAPE ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c090",
+   "subgroups": [
+    "soda_people",
+    "teachers"
+   ],
+   "subgroup_names": [
+    "Soda loyalists",
+    "Teachers"
+   ],
+   "shared_truth": "teachers addicted to Diet Coke",
+   "slang_hook": "emotional support [x]",
+   "hook_in_lexicon": true,
+   "example_line": "EMOTIONAL SUPPORT DIET COKE (TEACHER EDITION)",
+   "pattern": "emotional_support",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c091",
+   "subgroups": [
+    "dirty_soda",
+    "mormons",
+    "millennial_moms"
+   ],
+   "subgroup_names": [
+    "Dirty soda moms",
+    "Latter-day Saints",
+    "Millennial moms"
+   ],
+   "shared_truth": "Utah moms with 44-ounce dirty sodas",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "UTAH MOMS WITH 44OZ DIRTY SODA ARE BUILT DIFFERENT",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c092",
+   "subgroups": [
+    "broke_people",
+    "millennials"
+   ],
+   "subgroup_names": [
+    "Broke people",
+    "Millennials"
+   ],
+   "shared_truth": "millennials paying off debt forever",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "FINANCIALLY COOKED BUT EMOTIONALLY UNBOTHERED",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c093",
+   "subgroups": [
+    "crypto_bros",
+    "gamblers"
+   ],
+   "subgroup_names": [
+    "Crypto bros",
+    "Gamblers and sports bettors"
+   ],
+   "shared_truth": "crypto guys who 'invest' like it's Vegas",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "DELULU IS THE SOLULU — MY CRYPTO PORTFOLIO",
+   "pattern": "mismatch",
+   "dark_level": 1,
+   "min_buyer_pride": 6,
+   "ownership_only": false
+  },
+  {
+   "id": "c094",
+   "subgroups": [
+    "day_traders",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Day traders and WSB",
+    "Dad bods"
+   ],
+   "shared_truth": "dads who day-trade on the toilet",
+   "slang_hook": "sigma",
+   "hook_in_lexicon": true,
+   "example_line": "SIGMA DAD: DAY-TRADING FROM THE TOILET",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c095",
+   "subgroups": [
+    "chronically_online",
+    "gen_z"
+   ],
+   "subgroup_names": [
+    "Chronically online people",
+    "Gen Z"
+   ],
+   "shared_truth": "terminally online gen z",
+   "slang_hook": "touch grass",
+   "hook_in_lexicon": true,
+   "example_line": "I TOUCHED GRASS ONCE. 0/10 NO WIFI.",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c096",
+   "subgroups": [
+    "chronically_online",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Chronically online people",
+    "Baby boomers"
+   ],
+   "shared_truth": "boomers who are now chronically online",
+   "slang_hook": "NPC",
+   "hook_in_lexicon": true,
+   "example_line": "BOOMER, CHRONICALLY ONLINE, COMMENTS 'AMEN' ON AI JESUS",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c097",
+   "subgroups": [
+    "gamers",
+    "dad_bods",
+    "new_parents"
+   ],
+   "subgroup_names": [
+    "Gamers",
+    "Dad bods",
+    "New parents"
+   ],
+   "shared_truth": "gamer dads who play after bedtime",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "GAMER DAD AT 1AM: KIDS WAKE UP AT 6. I'M COOKED.",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c098",
+   "subgroups": [
+    "dnd_players",
+    "dungeon_masters"
+   ],
+   "subgroup_names": [
+    "D&D players",
+    "Dungeon masters"
+   ],
+   "shared_truth": "DMs whose players skip 40 hours of prep",
+   "slang_hook": "skill issue",
+   "hook_in_lexicon": true,
+   "example_line": "PLAYERS SKIPPED MY DUNGEON. SKILL ISSUE (MINE).",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c099",
+   "subgroups": [
+    "dnd_players",
+    "church_dads"
+   ],
+   "subgroup_names": [
+    "D&D players",
+    "Church dads"
+   ],
+   "shared_truth": "church dads who play D&D on Wednesdays",
+   "slang_hook": "ong",
+   "hook_in_lexicon": true,
+   "example_line": "DUNGEON MASTER ON WEDNESDAY, DEACON ON SUNDAY, ONG",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c100",
+   "subgroups": [
+    "3d_printing",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "3D printing people",
+    "Dad bods"
+   ],
+   "shared_truth": "3D printing dads with a garage full of filament",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "DADCORE: 40 SPOOLS OF FILAMENT AND A DREAM",
+   "pattern": "core",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c101",
+   "subgroups": [
+    "woodworkers",
+    "retired_dads"
+   ],
+   "subgroup_names": [
+    "Woodworkers",
+    "Retirees"
+   ],
+   "shared_truth": "retired guys in the shop all day",
+   "slang_hook": "-maxxing",
+   "hook_in_lexicon": true,
+   "example_line": "RETIRED DAD CLAMPMAXXING",
+   "pattern": "maxxing",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c102",
+   "subgroups": [
+    "ham_radio",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Ham radio operators",
+    "Baby boomers"
+   ],
+   "shared_truth": "ham radio boomers with 3 friends worldwide",
+   "slang_hook": "rizz",
+   "hook_in_lexicon": true,
+   "example_line": "HAM RADIO RIZZ: I TALK TO 3 PEOPLE IN 40 COUNTRIES",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c103",
+   "subgroups": [
+    "model_trains",
+    "grandpas"
+   ],
+   "subgroup_names": [
+    "Model train and railfans",
+    "Grandpas"
+   ],
+   "shared_truth": "grandpas with basement train layouts",
+   "slang_hook": "main character",
+   "hook_in_lexicon": true,
+   "example_line": "GRANDPA IS THE MAIN CHARACTER OF A 1:87 SCALE TOWN",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c104",
+   "subgroups": [
+    "birdwatchers",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Birdwatchers",
+    "Baby boomers"
+   ],
+   "shared_truth": "retired birders with Merlin app",
+   "slang_hook": "lowkey",
+   "hook_in_lexicon": true,
+   "example_line": "LOWKEY OBSESSED WITH A WOODPECKER",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c105",
+   "subgroups": [
+    "quilters",
+    "church_ladies"
+   ],
+   "subgroup_names": [
+    "Quilters",
+    "Church ladies"
+   ],
+   "shared_truth": "church quilting circle gossip",
+   "slang_hook": "tea",
+   "hook_in_lexicon": true,
+   "example_line": "QUILTING CIRCLE: 10% QUILTING, 90% TEA",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c106",
+   "subgroups": [
+    "crafters",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "Crafters (Cricut people)",
+    "Wine moms"
+   ],
+   "shared_truth": "Cricut moms making shirts after wine",
+   "slang_hook": "it's giving",
+   "hook_in_lexicon": true,
+   "example_line": "IT'S GIVING CRICUT AFTER TWO GLASSES OF MERLOT",
+   "pattern": "its_giving",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c107",
+   "subgroups": [
+    "book_lovers",
+    "romance_readers",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "Book lovers",
+    "Romance readers",
+    "Wine moms"
+   ],
+   "shared_truth": "book club moms reading smut",
+   "slang_hook": "lowkey",
+   "hook_in_lexicon": true,
+   "example_line": "BOOK CLUB IS LOWKEY JUST SMUT AND MERLOT",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c108",
+   "subgroups": [
+    "true_crime_fans",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "True crime fans",
+    "Wine moms"
+   ],
+   "shared_truth": "moms who fall asleep to murder podcasts",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "TRUE CRIME MOM CORE: WINE, MURDER, BED BY 9",
+   "pattern": "core",
+   "dark_level": 2,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c109",
+   "subgroups": [
+    "true_crime_fans",
+    "dispatchers"
+   ],
+   "subgroup_names": [
+    "True crime fans",
+    "911 dispatchers"
+   ],
+   "shared_truth": "dispatchers who listen to true crime off shift",
+   "slang_hook": "NPC",
+   "hook_in_lexicon": true,
+   "example_line": "I TAKE 911 CALLS AT WORK AND LISTEN TO MURDER PODCASTS FOR FUN",
+   "pattern": "confession",
+   "dark_level": 2,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c110",
+   "subgroups": [
+    "horror_fans",
+    "goths",
+    "spooky_people"
+   ],
+   "subgroup_names": [
+    "Horror fans",
+    "Goths",
+    "Spooky season people"
+   ],
+   "shared_truth": "year-round Halloween people",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "IN MY SPOOKY SEASON ERA (IT'S JUNE)",
+   "pattern": "era",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c111",
+   "subgroups": [
+    "disney_adults",
+    "dinks"
+   ],
+   "subgroup_names": [
+    "Disney adults",
+    "DINKs"
+   ],
+   "shared_truth": "childless couples with Disney annual passes",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "NO KIDS. DISNEY PASS. DELULU AND HAPPY.",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c112",
+   "subgroups": [
+    "swifties",
+    "millennial_moms"
+   ],
+   "subgroup_names": [
+    "Swifties",
+    "Millennial moms"
+   ],
+   "shared_truth": "millennial moms trading bracelets with tweens",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "MILLENNIAL MOM IN HER FRIENDSHIP BRACELET ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c113",
+   "subgroups": [
+    "star_wars",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Star Wars fans",
+    "Dad bods"
+   ],
+   "shared_truth": "dad-bod Star Wars dads",
+   "slang_hook": "BDE",
+   "hook_in_lexicon": true,
+   "example_line": "BIG DAD VADER ENERGY",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c114",
+   "subgroups": [
+    "pokemon_fans",
+    "millennials"
+   ],
+   "subgroup_names": [
+    "Pokémon fans",
+    "Millennials"
+   ],
+   "shared_truth": "millennials who still play Pokémon",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "30 YEARS OLD, STILL CATCHING THEM ALL, BUILT DIFFERENT",
+   "pattern": "built_different",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c115",
+   "subgroups": [
+    "anime_fans",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Anime fans",
+    "Dad bods"
+   ],
+   "shared_truth": "anime dads",
+   "slang_hook": "-maxxing",
+   "hook_in_lexicon": true,
+   "example_line": "ANIME DAD AURAMAXXING",
+   "pattern": "maxxing",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c116",
+   "subgroups": [
+    "the_office_fans",
+    "office_workers"
+   ],
+   "subgroup_names": [
+    "The Office fans",
+    "Office workers"
+   ],
+   "shared_truth": "office workers quoting The Office",
+   "slang_hook": "rizz",
+   "hook_in_lexicon": true,
+   "example_line": "WORLD'S BEST BOSS RIZZ",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c117",
+   "subgroups": [
+    "cryptid_believers",
+    "hunters"
+   ],
+   "subgroup_names": [
+    "Cryptid believers",
+    "Hunters"
+   ],
+   "shared_truth": "hunters who've 'seen something' in the woods",
+   "slang_hook": "no cap",
+   "hook_in_lexicon": true,
+   "example_line": "DEER CAMP STORY: SAW A SASQUATCH, NO CAP",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c118",
+   "subgroups": [
+    "birds_arent_real",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Birds Aren't Real fans",
+    "Baby boomers"
+   ],
+   "shared_truth": "boomers who think birds are drones (joke)",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "BIRDS AREN'T REAL AND GRANDPA'S NOT DELULU",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c119",
+   "subgroups": [
+    "metalheads",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "Metalheads",
+    "Dad bods"
+   ],
+   "shared_truth": "metal dads with big beards and soft hearts",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "METAL DAD: HEADBANGS, CRIES AT PIXAR",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c120",
+   "subgroups": [
+    "emos",
+    "elder_millennials"
+   ],
+   "subgroup_names": [
+    "Emo kids (now adults)",
+    "Elder millennials"
+   ],
+   "shared_truth": "former emo kids now with mortgages",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "NOT A PHASE MOM, IT'S A MORTGAGE ERA",
+   "pattern": "era",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c121",
+   "subgroups": [
+    "punks",
+    "middle_aged"
+   ],
+   "subgroup_names": [
+    "Punks",
+    "Middle-aged people"
+   ],
+   "shared_truth": "aging punks",
+   "slang_hook": "washed",
+   "hook_in_lexicon": true,
+   "example_line": "WASHED PUNK: MOSH PIT, THEN CHIROPRACTOR",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c122",
+   "subgroups": [
+    "goths",
+    "cat_ladies"
+   ],
+   "subgroup_names": [
+    "Goths",
+    "Cat ladies"
+   ],
+   "shared_truth": "goths with black cats",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "GOTH CAT LADY CORE",
+   "pattern": "core",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c123",
+   "subgroups": [
+    "cottagecore",
+    "crocheters"
+   ],
+   "subgroup_names": [
+    "Cottagecore girls",
+    "Crocheters"
+   ],
+   "shared_truth": "cottagecore crocheters",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "COTTAGECORE AURA: FROGS, YARN, NO WIFI",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c124",
+   "subgroups": [
+    "hippies",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Hippies and crunchy granola",
+    "Baby boomers"
+   ],
+   "shared_truth": "boomer hippies",
+   "slang_hook": "lowkey",
+   "hook_in_lexicon": true,
+   "example_line": "BOOMER HIPPIE: STILL LOWKEY GROWING SOMETHING IN THE GARDEN",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c125",
+   "subgroups": [
+    "deadheads",
+    "retired_dads"
+   ],
+   "subgroup_names": [
+    "Deadheads",
+    "Retirees"
+   ],
+   "shared_truth": "retired deadheads",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "RETIRED DEADHEAD ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c126",
+   "subgroups": [
+    "country_music_fans",
+    "truck_guys"
+   ],
+   "subgroup_names": [
+    "Country music fans",
+    "Truck guys"
+   ],
+   "shared_truth": "country boys singing to trucks",
+   "slang_hook": "slaps",
+   "hook_in_lexicon": true,
+   "example_line": "THIS TRUCK SONG SLAPS (IT'S ABOUT MY TRUCK)",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c127",
+   "subgroups": [
+    "lgbtq_folks",
+    "church_ladies"
+   ],
+   "subgroup_names": [
+    "LGBTQ+ folks",
+    "Church ladies"
+   ],
+   "shared_truth": "queer kids raised by church ladies (ownership)",
+   "slang_hook": "ate",
+   "hook_in_lexicon": true,
+   "example_line": "RAISED IN CHURCH, ATE IN PRIDE",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c128",
+   "subgroups": [
+    "lesbians",
+    "subaru_lesbians",
+    "cat_ladies"
+   ],
+   "subgroup_names": [
+    "Lesbians",
+    "Subaru drivers",
+    "Cat ladies"
+   ],
+   "shared_truth": "lesbians with Subarus and cats (ownership)",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "LESBIAN CORE: SUBARU, CAT, SECOND DATE U-HAUL",
+   "pattern": "core",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": true
+  },
+  {
+   "id": "c129",
+   "subgroups": [
+    "gay_uncles",
+    "aunts"
+   ],
+   "subgroup_names": [
+    "Gay uncles",
+    "Fun aunts"
+   ],
+   "shared_truth": "cool gay uncles",
+   "slang_hook": "slay",
+   "hook_in_lexicon": true,
+   "example_line": "GUNCLE WHO SLAYS CHRISTMAS GIFTS",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c130",
+   "subgroups": [
+    "hispanic_moms",
+    "catholics"
+   ],
+   "subgroup_names": [
+    "Latina moms",
+    "Catholics"
+   ],
+   "shared_truth": "Latina Catholic moms (ownership)",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "LATINA MOM: CHANCLA + ROSARY, BUILT DIFFERENT",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c131",
+   "subgroups": [
+    "italian_americans",
+    "grandmas"
+   ],
+   "subgroup_names": [
+    "Italian-Americans",
+    "Grandmas"
+   ],
+   "shared_truth": "Italian nonnas (ownership)",
+   "slang_hook": "bussin'",
+   "hook_in_lexicon": true,
+   "example_line": "NONNA'S SUNDAY GRAVY IS BUSSIN",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c132",
+   "subgroups": [
+    "black_aunties",
+    "church_ladies"
+   ],
+   "subgroup_names": [
+    "Black aunties and cookout culture",
+    "Church ladies"
+   ],
+   "shared_truth": "church aunties at the cookout (ownership)",
+   "slang_hook": "tea",
+   "hook_in_lexicon": true,
+   "example_line": "AUNTIES WITH CHURCH FANS AND COOKOUT TEA",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c133",
+   "subgroups": [
+    "irish_americans",
+    "catholics"
+   ],
+   "subgroup_names": [
+    "Irish-Americans",
+    "Catholics"
+   ],
+   "shared_truth": "Irish-American Catholic guilt (ownership)",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "IRISH CATHOLIC: GUILTY AND COOKED",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c134",
+   "subgroups": [
+    "filipino_americans",
+    "er_nurse"
+   ],
+   "subgroup_names": [
+    "Filipino-Americans",
+    "ER nurses"
+   ],
+   "shared_truth": "Filipino nurse families (ownership)",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "FILIPINO NURSE CORE: KARAOKE AFTER 12S",
+   "pattern": "core",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": true
+  },
+  {
+   "id": "c135",
+   "subgroups": [
+    "conservatives",
+    "church_dads"
+   ],
+   "subgroup_names": [
+    "Conservatives",
+    "Church dads"
+   ],
+   "shared_truth": "church dads with flags",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "FREEDOM AURA: FLAG, GRILL, CHURCH AT 9",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c136",
+   "subgroups": [
+    "liberals",
+    "crazy_plant_people"
+   ],
+   "subgroup_names": [
+    "Liberals and progressives",
+    "Plant parents"
+   ],
+   "shared_truth": "progressive plant parents",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "IN MY COMPOSTING ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c137",
+   "subgroups": [
+    "political_independents",
+    "sarcastic"
+   ],
+   "subgroup_names": [
+    "Fed-up independents",
+    "Sarcastic people"
+   ],
+   "shared_truth": "people fed up with both parties",
+   "slang_hook": "mid",
+   "hook_in_lexicon": true,
+   "example_line": "BOTH CANDIDATES ARE MID",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c138",
+   "subgroups": [
+    "patriots",
+    "beer_dads"
+   ],
+   "subgroup_names": [
+    "Flag-waving patriots",
+    "Beer dads"
+   ],
+   "shared_truth": "patriotic beer dads on the 4th",
+   "slang_hook": "goated",
+   "hook_in_lexicon": true,
+   "example_line": "GOATED 4TH OF JULY DAD (BEER IN BOTH HANDS)",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c139",
+   "subgroups": [
+    "vet_tech",
+    "cat_ladies"
+   ],
+   "subgroup_names": [
+    "Vet techs",
+    "Cat ladies"
+   ],
+   "shared_truth": "vet techs who come home to five cats",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "BITTEN BY 3 CATS AT WORK, GOING HOME TO 5 MORE",
+   "pattern": "confession",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c140",
+   "subgroups": [
+    "cna",
+    "night_shift"
+   ],
+   "subgroup_names": [
+    "CNAs",
+    "Night shift workers"
+   ],
+   "shared_truth": "CNAs lifting more than gym bros overnight",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "CNA ON NIGHT SHIFT: LIFTS MORE THAN YOUR GYM BRO",
+   "pattern": "built_different",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c141",
+   "subgroups": [
+    "pharmacist",
+    "retail_workers"
+   ],
+   "subgroup_names": [
+    "Pharmacists and pharm techs",
+    "Retail workers"
+   ],
+   "shared_truth": "pharmacy techs hearing 'is it ready yet?'",
+   "slang_hook": "NPC",
+   "hook_in_lexicon": true,
+   "example_line": "'IS IT READY YET?' — NPC #47 TODAY",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c142",
+   "subgroups": [
+    "labor_nurse",
+    "boy_moms"
+   ],
+   "subgroup_names": [
+    "L&D nurses",
+    "Boy moms"
+   ],
+   "shared_truth": "L&D nurses who are boy moms",
+   "slang_hook": "ate",
+   "hook_in_lexicon": true,
+   "example_line": "L&D NURSE: CATCHES BABIES, CAN'T CATCH HER OWN TODDLER",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c143",
+   "subgroups": [
+    "plumbers",
+    "dad_jokes"
+   ],
+   "subgroup_names": [
+    "Plumbers",
+    "Dads (general)"
+   ],
+   "shared_truth": "plumber dads with butt-crack jokes",
+   "slang_hook": "drip",
+   "hook_in_lexicon": true,
+   "example_line": "PLUMBER DRIP (IT'S NOT JUST THE PIPES)",
+   "pattern": "drip",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c144",
+   "subgroups": [
+    "electricians",
+    "hunters"
+   ],
+   "subgroup_names": [
+    "Electricians",
+    "Hunters"
+   ],
+   "shared_truth": "electricians who hunt on weekends",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "ZAPPED ON MONDAY, TREE STAND ON SATURDAY",
+   "pattern": "identity_stack",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c145",
+   "subgroups": [
+    "hvac_techs",
+    "dad_jokes"
+   ],
+   "subgroup_names": [
+    "HVAC techs",
+    "Dads (general)"
+   ],
+   "shared_truth": "HVAC dads who guard the thermostat at home",
+   "slang_hook": "opp",
+   "hook_in_lexicon": true,
+   "example_line": "HVAC DAD: THE THERMOSTAT IS MINE, THE KIDS ARE THE OPP",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c146",
+   "subgroups": [
+    "diesel_mechanics",
+    "truckers"
+   ],
+   "subgroup_names": [
+    "Diesel mechanics",
+    "Truckers"
+   ],
+   "shared_truth": "diesel mechanics who used to drive",
+   "slang_hook": "goated",
+   "hook_in_lexicon": true,
+   "example_line": "DIESEL MECHANIC: SMELLS LIKE A TRUCK STOP, GOATED ANYWAY",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c147",
+   "subgroups": [
+    "oilfield",
+    "texans"
+   ],
+   "subgroup_names": [
+    "Oilfield workers",
+    "Texans"
+   ],
+   "shared_truth": "Texas oilfield hands on hitch",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "14 ON, 14 OFF, BUILT DIFFERENT",
+   "pattern": "built_different",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c148",
+   "subgroups": [
+    "farmers",
+    "gen_z"
+   ],
+   "subgroup_names": [
+    "Farmers",
+    "Gen Z"
+   ],
+   "shared_truth": "young farmers in a TikTok world",
+   "slang_hook": "no cap",
+   "hook_in_lexicon": true,
+   "example_line": "THE TRACTOR COST MORE THAN YOUR HOUSE NO CAP",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c149",
+   "subgroups": [
+    "minivan_moms",
+    "soccer_moms"
+   ],
+   "subgroup_names": [
+    "Minivan moms",
+    "Soccer moms"
+   ],
+   "shared_truth": "minivan soccer moms",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "SLIDING DOOR AURA",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c150",
+   "subgroups": [
+    "glammas",
+    "wine_moms"
+   ],
+   "subgroup_names": [
+    "Young grandmas (Glammas)",
+    "Wine moms"
+   ],
+   "shared_truth": "young grandmas with wine",
+   "slang_hook": "baddie",
+   "hook_in_lexicon": true,
+   "example_line": "BADDIE GRANDMA (GIGI, NOT GRANDMA)",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c151",
+   "subgroups": [
+    "step_parents",
+    "blended_families"
+   ],
+   "subgroup_names": [
+    "Step-parents",
+    "Blended families"
+   ],
+   "shared_truth": "step-parents at three Christmases",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "BONUS MOM: THREE CHRISTMASES, ONE BUDGET, COOKED",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c152",
+   "subgroups": [
+    "older_siblings",
+    "people_pleasers"
+   ],
+   "subgroup_names": [
+    "Oldest children",
+    "People pleasers"
+   ],
+   "shared_truth": "eldest daughters as the third parent",
+   "slang_hook": "built different",
+   "hook_in_lexicon": true,
+   "example_line": "ELDEST DAUGHTER: THIRD PARENT SINCE AGE 6. BUILT DIFFERENT (DAMAGED).",
+   "pattern": "identity_stack",
+   "dark_level": 1,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c153",
+   "subgroups": [
+    "empty_nesters",
+    "dog_moms"
+   ],
+   "subgroup_names": [
+    "Empty nesters",
+    "Dog moms"
+   ],
+   "shared_truth": "empty nesters who replaced kids with a dog",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "EMPTY NEST, FULL DOG BED ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c154",
+   "subgroups": [
+    "widows",
+    "dark_humor_people"
+   ],
+   "subgroup_names": [
+    "Widows and widowers",
+    "Dark humor people"
+   ],
+   "shared_truth": "widows with a dark sense of humor",
+   "slang_hook": "unalive",
+   "hook_in_lexicon": true,
+   "example_line": "PRE-GRIEVING WIDOW (HE ATE GAS STATION SUSHI)",
+   "pattern": "dark_label",
+   "dark_level": 3,
+   "min_buyer_pride": 6,
+   "ownership_only": false
+  },
+  {
+   "id": "c155",
+   "subgroups": [
+    "cancer_survivors",
+    "bald_guys"
+   ],
+   "subgroup_names": [
+    "Cancer survivors",
+    "Bald guys"
+   ],
+   "shared_truth": "bald survivors of chemo",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "BEAT CANCER, KEPT THE BALD, +1000 AURA",
+   "pattern": "aura",
+   "dark_level": 3,
+   "min_buyer_pride": 8,
+   "ownership_only": true
+  },
+  {
+   "id": "c156",
+   "subgroups": [
+    "retired_dads",
+    "golfers"
+   ],
+   "subgroup_names": [
+    "Retirees",
+    "Golfers"
+   ],
+   "shared_truth": "retired golf dads",
+   "slang_hook": "sigma",
+   "hook_in_lexicon": true,
+   "example_line": "RETIRED SIGMA: NO BOSS, NO JOB, 4 ROUNDS A WEEK",
+   "pattern": "identity_stack",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c157",
+   "subgroups": [
+    "pickleball",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Pickleball people",
+    "Baby boomers"
+   ],
+   "shared_truth": "retired pickleball people",
+   "slang_hook": "cracked",
+   "hook_in_lexicon": true,
+   "example_line": "SEVENTY AND CRACKED AT PICKLEBALL",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c158",
+   "subgroups": [
+    "runners",
+    "marathoners"
+   ],
+   "subgroup_names": [
+    "Runners",
+    "Marathon runners"
+   ],
+   "shared_truth": "marathoners who say 'never again'",
+   "slang_hook": "delulu",
+   "hook_in_lexicon": true,
+   "example_line": "DELULU ENOUGH TO SIGN UP FOR ANOTHER MARATHON",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c159",
+   "subgroups": [
+    "crossfitters",
+    "dad_bods"
+   ],
+   "subgroup_names": [
+    "CrossFitters",
+    "Dad bods"
+   ],
+   "shared_truth": "middle-aged crossfit dads",
+   "slang_hook": "washed",
+   "hook_in_lexicon": true,
+   "example_line": "WASHED BUT STILL DOING MURPH",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c160",
+   "subgroups": [
+    "jeep_people",
+    "dog_moms"
+   ],
+   "subgroup_names": [
+    "Jeep people",
+    "Dog moms"
+   ],
+   "shared_truth": "Jeep girls with dogs in the back",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "JEEP GIRL CORE: DOORS OFF, DOG OUT",
+   "pattern": "core",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c161",
+   "subgroups": [
+    "motorcyclists",
+    "military_vet"
+   ],
+   "subgroup_names": [
+    "Bikers",
+    "Military veterans"
+   ],
+   "shared_truth": "veteran bikers",
+   "slang_hook": "BDE",
+   "hook_in_lexicon": true,
+   "example_line": "VETERAN BIKER: BIG 'I WAS IN' ENERGY",
+   "pattern": "mismatch",
+   "dark_level": 1,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c162",
+   "subgroups": [
+    "cheapskates",
+    "dad_jokes"
+   ],
+   "subgroup_names": [
+    "Cheapskates and frugal people",
+    "Dads (general)"
+   ],
+   "shared_truth": "dads who won't pay to cool the neighborhood",
+   "slang_hook": "opp",
+   "hook_in_lexicon": true,
+   "example_line": "THE THERMOSTAT IS MINE, THE NEIGHBORHOOD IS THE OPP",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  },
+  {
+   "id": "c163",
+   "subgroups": [
+    "lawn_dads",
+    "boomers"
+   ],
+   "subgroup_names": [
+    "Lawn dads",
+    "Baby boomers"
+   ],
+   "shared_truth": "dads who stripe the lawn",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "LAWN STRIPES = AURA POINTS",
+   "pattern": "aura",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c164",
+   "subgroups": [
+    "homeschool_moms",
+    "crunchy_moms"
+   ],
+   "subgroup_names": [
+    "Homeschool moms",
+    "Crunchy moms"
+   ],
+   "shared_truth": "crunchy homeschool moms",
+   "slang_hook": "era",
+   "hook_in_lexicon": true,
+   "example_line": "IN MY RAW MILK AND RECESS ERA",
+   "pattern": "era",
+   "dark_level": 0,
+   "min_buyer_pride": 7,
+   "ownership_only": false
+  },
+  {
+   "id": "c165",
+   "subgroups": [
+    "nosy_neighbors",
+    "karens"
+   ],
+   "subgroup_names": [
+    "Nosy neighbors",
+    "Karens (self-aware)"
+   ],
+   "shared_truth": "Ring-camera neighborhood watchers",
+   "slang_hook": "caught in 4K",
+   "hook_in_lexicon": true,
+   "example_line": "YOUR DOG POOPED ON MY LAWN — CAUGHT IN 4K",
+   "pattern": "fake_warning_sign",
+   "dark_level": 0,
+   "min_buyer_pride": 5,
+   "ownership_only": false
+  },
+  {
+   "id": "c166",
+   "subgroups": [
+    "hoa_people",
+    "suburban_people"
+   ],
+   "subgroup_names": [
+    "HOA board members",
+    "Suburbanites"
+   ],
+   "shared_truth": "HOA board members with rulers",
+   "slang_hook": "cooked",
+   "hook_in_lexicon": true,
+   "example_line": "HOA LETTER #7: YOUR GRASS IS COOKED",
+   "pattern": "mismatch",
+   "dark_level": 0,
+   "min_buyer_pride": 5,
+   "ownership_only": false
+  },
+  {
+   "id": "c167",
+   "subgroups": [
+    "book_lovers",
+    "introverts"
+   ],
+   "subgroup_names": [
+    "Book lovers",
+    "Introverts"
+   ],
+   "shared_truth": "readers who skip parties",
+   "slang_hook": "core",
+   "hook_in_lexicon": true,
+   "example_line": "ONE MORE CHAPTER CORE",
+   "pattern": "core",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c168",
+   "subgroups": [
+    "anxiety_havers",
+    "teachers"
+   ],
+   "subgroup_names": [
+    "Anxiety havers",
+    "Teachers"
+   ],
+   "shared_truth": "anxious teachers who rehearse parent emails",
+   "slang_hook": "yap",
+   "hook_in_lexicon": true,
+   "example_line": "REHEARSES A PARENT EMAIL FOR 3 HOURS, STILL YAPS",
+   "pattern": "confession",
+   "dark_level": 0,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c169",
+   "subgroups": [
+    "mortician",
+    "goths"
+   ],
+   "subgroup_names": [
+    "Morticians and funeral directors",
+    "Goths"
+   ],
+   "shared_truth": "goth morticians (yes, they exist)",
+   "slang_hook": "aura",
+   "hook_in_lexicon": true,
+   "example_line": "GOTH MORTICIAN AURA: BLACK NAILS, COLD CLIENTS",
+   "pattern": "aura",
+   "dark_level": 3,
+   "min_buyer_pride": 9,
+   "ownership_only": false
+  },
+  {
+   "id": "c170",
+   "subgroups": [
+    "coroners",
+    "true_crime_fans"
+   ],
+   "subgroup_names": [
+    "Coroners and death investigators",
+    "True crime fans"
+   ],
+   "shared_truth": "death investigators who watch true crime",
+   "slang_hook": "cap",
+   "hook_in_lexicon": true,
+   "example_line": "TRUE CRIME SHOWS ARE CAP (THE CORONER SAID)",
+   "pattern": "confession",
+   "dark_level": 3,
+   "min_buyer_pride": 8,
+   "ownership_only": false
+  }
+ ]
+}

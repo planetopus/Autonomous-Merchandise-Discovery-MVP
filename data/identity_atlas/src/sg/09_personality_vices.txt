@@ -1,0 +1,56 @@
+introverts|Introverts|Personality & Temperament|cancelled plans are a gift;'Ew. People.';recharges alone;hides in bathroom at parties|introvert, homebody|antisocial|book_lovers,cat_ladies,gamers,anxiety_havers|9|1|A;O;S
+extroverts|Extroverts|Personality & Temperament|talks to strangers;adopts introverts;loud|extrovert|loud|karaoke,class_clowns|7|1|S
+overthinkers|Overthinkers|Personality & Temperament|replays a conversation from 2009;drafts texts 12 times;3am spiral|overthinker|worrier|anxiety_havers,introverts,insomniacs|9|2|A;S
+people_pleasers|People pleasers|Personality & Temperament|can't say no;'sorry' as punctuation;hosts everything|people pleaser|doormat|older_siblings,anxiety_havers,cna|8|2|A;S
+hot_tempered|Hot-tempered people|Personality & Temperament|zero to 100;road rage;'I'm not yelling this is my voice';counting to 10 doesn't work|hothead, short fuse|angry|angry_people,truck_guys,irish_americans|8|2|A;X
+angry_people|Grumpy and angry people|Personality & Temperament|resting angry face;hates everyone before coffee;'grumpy old man at the wheel'|grump, grumpy|mean|hot_tempered,boomers,introverts|8|2|A;O;S
+petty_people|Petty people|Personality & Temperament|holds grudges forever;'I'm not petty, I just remember';revenge cleaning|petty, grudge holder|petty|karens,hot_tempered|9|1|A;S
+sarcastic|Sarcastic people|Personality & Temperament|fluent in sarcasm;eye roll athlete;'I can't be held responsible for my face'|sarcastic|rude|gen_x,introverts|9|1|O;S
+class_clowns|Class clowns|Personality & Temperament|still the class clown at 40;inappropriate laughter at funerals;'detention regular'|class clown|annoying|comedians,ugly_people,middle_children|9|2|A;X
+comedians|Comedians and funny people|Creative & Media|'I'm not funny, my life is';open mic dreams;humor as coping|comedian, funny one|jokester|class_clowns,dark_humor_people,depression|9|3|A;R:r/Standup
+dark_humor_people|Dark humor people|Personality & Temperament|'dark humor is like food, not everyone gets it';laughs at funerals;medical/death jokes|dark humor, twisted|sick|er_nurse,paramedic,mortician,true_crime_fans,goths|9|3|S
+chaos_people|Chaotic people|Personality & Temperament|chaotic good;agent of chaos;'it's fine';last-minute everything|chaotic|messy|adhd,class_clowns|9|1|S
+type_a_people|Type A people|Personality & Temperament|color-coded calendar;label maker;'I have a system'|Type A|control freak|teachers,older_siblings,runners|8|1|S
+perfectionists|Perfectionists|Personality & Temperament|rewrites email 8 times;never done;'it's not right yet'|perfectionist|uptight|type_a_people,overthinkers|7|1|X
+procrastinators|Procrastinators|Personality & Temperament|works best under pressure;'I'll do it tomorrow';cleans house instead of work|procrastinator|lazy|adhd,writers,college_students|9|1|S
+lazy_people|Proudly lazy people|Personality & Temperament|nap champion;couch potato;'I'm not lazy I'm energy-efficient'|professional napper|lazy|introverts,cat_ladies|8|1|S
+know_it_alls|Know-it-alls|Personality & Temperament|'actually...';'I might be wrong but I doubt it';Googles mid-argument|know-it-all|annoying|engineers,boomers|7|1|O;S
+karens|Karens (self-aware)|Personality & Temperament|'let me speak to your manager';asymmetric bob;coupon clipping;Nextdoor reporter|Karen (ironic)|Karen|suburban_people,hoa_people,nosy_neighbors|5|1|O;W
+drama_queens|Drama queens|Personality & Temperament|'I'm literally dying';dramatic exits;theatre kid energy|drama queen|dramatic|theater_kids,girl_moms|8|1|S
+theater_kids|Theater kids|Fandoms & Pop Culture|breaks into song;jazz hands;'it's not a phase';Hamilton|theatre kid|theatre kids|drama_queens,lgbtq_folks,band_kids|9|1|S
+band_kids|Band kids|Fandoms & Pop Culture|band camp jokes;marching in July;trumpet player is here|band kid, band geek|band nerds|theater_kids,introverts|9|1|S
+nerds|Nerds and geeks|Fandoms & Pop Culture|proud nerd;'I'm not anti-social, just anti-stupid';glasses and graphic tees|nerd, geek|nerds|gamers,dnd_players,stem_majors|9|1|S
+silly_goose|Silly goose people|Personality & Temperament|'a silly goose drives this car';whimsy;goofy|silly goose|goofy|chaos_people,gen_z|9|1|O;S
+emotional_people|Criers and sensitive people|Personality & Temperament|cries at commercials;'I'm not crying you are';empath|crier, empath|sensitive|people_pleasers,dog_moms|8|1|S
+competitive|Overly competitive people|Personality & Temperament|board game flipper;'it's not about winning... yes it is'|competitive|sore loser|board_gamers,pickleball|8|1|X
+cheapskates|Cheapskates and frugal people|Money & Hustle|coupon king;thermostat lock;'we have food at home'|frugal|cheap|boomers,dad_jokes|8|1|S
+hoarders|Collectors-turned-hoarders|Personality & Temperament|'I might need it';junk drawer empire;garage full|collector|hoarder|thrifters,resellers|7|2|X
+clean_freaks|Clean freaks|Personality & Temperament|vacuum lines;Bleach smell is happiness;CleanTok|neat freak|anal|type_a_people|8|1|S
+messy_people|Messy people|Personality & Temperament|chair of clothes;organized chaos;'I know where everything is'|messy|slob|adhd,procrastinators|8|1|S
+vapers|Vapers|Vices & Habits|cloud chaser;loses vape in couch;flavor named 'blue razz ice';hits it in the car|vaper, cloud chaser|vape kids|gen_z,church_dads,dad_bods,truckers|8|1|A;O
+smokers|Smokers|Vices & Habits|smoke break is sacred;'I'll quit Monday';ashtray car|smoker|smokers|line_cooks,bartenders,truckers|6|2|X
+dippers|Dip and chew users|Vices & Habits|spitter bottle in the truck;Copenhagen ring in jeans;'dip spit Mountain Dew danger'|dipper|rednecks|truck_guys,hunters,baseball_parents|8|2|S
+stoners|Stoners|Vices & Habits|420;munchies;'what were we talking about';edible too strong|stoner, smoker|potheads|gamers,disc_golfers,skaters,hippies|9|1|R:r/trees;S
+energy_drink_people|Energy drink addicts|Vices & Habits|Monster for breakfast;Celsius girlies;heart racing|Monster guy|addicts|truckers,gamers,construction,night_shift,gym_bros|9|1|S
+soda_people|Soda loyalists|Food & Drink|Diet Coke breakfast;Dr Pepper runs this car;Mountain Dew teeth|Diet Coke girlie, Dr Pepper person|addicts|teachers,gamers|8|1|S;O
+dirty_soda|Dirty soda moms|Food & Drink|Swig runs;coconut cream in Coke|dirty soda girlie|Utah moms|utahns,mormons,millennial_moms|8|1|X
+gamblers|Gamblers and sports bettors|Vices & Habits|'one more parlay';DraftKings notifications;scratch-offs at the gas station|bettor|degenerates|football_fans,crypto_bros|7|2|R:r/sportsbook
+scratch_off|Scratch-off and lotto people|Vices & Habits|'when I win the lottery';gas station tickets;lucky numbers|lotto player|gamblers|boomers,grandmas|8|1|X
+shopaholics|Shopaholics|Vices & Habits|Amazon box every day;'it was on sale';hides bags from spouse|shopaholic|spendy|target_moms,wine_moms|8|1|S
+junk_food|Junk food lovers|Food & Drink|Red 40 enjoyer;gas station snacks;Taco Bell at 2am|snack goblin|unhealthy|gamers,stoners|8|1|O;S
+caffeine_queens|Caffeine dependent people|Vices & Habits|'I run on caffeine and chaos';jittery|caffeinated|addict|coffee_addicts,energy_drink_people|9|1|S
+nap_lovers|Nap lovers|Vices & Habits|'nap queen';couch closed eyes;'I'm just resting my eyes'|napper|lazy|grandpas,husbands,lazy_people|8|1|S
+doomscrollers|Doomscrollers|Online Communities|thumb hurts;3am TikTok;'just 5 more minutes'|doomscroller|addicted|chronically_online,insomniacs|8|2|X
+chronically_online|Chronically online people|Online Communities|speaks in memes;'touch grass';knows every drama;screen time report shame|terminally online|internet people|gen_z,doomscrollers,adhd,gamers|9|2|A;W
+tiktok_people|TikTok addicts|Online Communities|'I saw it on TikTok';trend dances;FYP|TikToker|TikTok kids|gen_z,millennial_moms|7|1|X
+facebook_moms|Facebook mom groups|Online Communities|'thoughts?' posts;essential oil fights;'mama bear'|mama bear|Facebook moms|millennial_moms,crunchy_moms|7|1|R:r/ShitMomGroupsSay
+redditors|Redditors|Online Communities|'this' replies;'source?';fedora jokes;karma farming|Redditor|neckbeards|chronically_online,gamers|7|2|X
+reply_guys|Reply guys and debaters|Online Communities|'well actually';'source?';argues with strangers|debater|reply guy|know_it_alls|5|1|X
+podcast_guys|Podcast guys|Online Communities|'I heard on Rogan';mic and headphones;starts a podcast|podcaster|podcast bros|gym_bros,crypto_bros|7|1|S
+crypto_bros|Crypto bros|Money & Hustle|HODL;diamond hands;bought the top;'have fun staying poor'|crypto guy|crypto bros|tech_bros,gym_bros,gamblers|6|2|S
+day_traders|Day traders and WSB|Money & Hustle|'stocks only go up';loss porn;wife's boyfriend joke;tendies|ape, regard (avoid)|degenerates|crypto_bros,gamblers|8|2|R:r/wallstreetbets;O
+side_hustlers|Side hustlers|Money & Hustle|5 Etsy shops;'passive income';hustle culture|hustler|grind bros|resellers,mlm_huns|7|1|S
+mlm_huns|MLM huns (self-aware)|Money & Hustle|'hey hun!';boss babe;leggings in garage|boss babe|huns|crunchy_moms,millennial_moms|4|1|R:r/antiMLM
+broke_people|Broke people|Money & Hustle|'I am in crippling debt';ramen;bank account in negatives;'can't afford therapy'|broke, financially challenged|poor|gen_z,millennials,college_students|9|2|O;S
+student_debt|Student debt havers|Money & Hustle|'paying until I die';degree in debt|in debt|student loans|millennials,grad_students|8|3|S
+rich_people|Old money and rich vibes|Class & Subculture|quiet luxury;yacht talk;'summer' as a verb|old money|rich|preppy|5|1|X

@@ -1,0 +1,51 @@
+church_dads|Church dads|Religion & Church|ushers with a smile;grill at the church picnic;fish decal on truck;'let's pray over this food';sleepy during sermon|church dad, believer|Christian dad|dad_bods,grilling_dads,girl_dads,boy_dads,vapers,truck_guys|9|1|A;O;S
+church_ladies|Church ladies|Religion & Church|casserole ministry;prayer chain gossip;'bless your heart';Easter hats|church lady|church ladies|grandmas,southerners,quilters|9|1|A;S
+pastors_wives|Pastor's wives|Religion & Church|always smiling;knows everyone's business;hosts every potluck|pastor's wife|first lady|church_ladies|8|1|S
+pastors|Pastors|Religion & Church|sermon runs long;'turn to your neighbor';youth pastor energy|pastor, preacher|preacher|church_dads|7|1|S
+youth_pastors|Youth pastors|Religion & Church|skinny jeans and Jesus;lock-in all-nighter;guitar|youth pastor|youth pastor|pastors,gen_x|8|1|S;X
+worship_team|Worship team members|Religion & Church|raises hands;Hillsong songs;'one more time';in-ear monitors|worship team|church band|church_ladies,musicians|8|1|S
+christian_moms|Christian moms|Religion & Church|'blessed and stressed';Bible journaling;VBS volunteer|Christian mom|church mom|church_ladies,homeschool_moms,boy_moms,girl_moms|9|1|S
+baptists|Southern Baptists|Religion & Church|potluck worship;no dancing jokes;'amen' from back row;long altar calls|Baptist|Baptists|southerners,church_ladies|9|1|S
+catholics|Catholics|Religion & Church|Catholic guilt;stand sit kneel;grandma's rosary;fish Fridays;CCD trauma|Catholic|Catholics|italian_americans,irish_americans,hispanic_moms|9|2|R:r/Catholicism;S
+lutherans|Lutherans|Religion & Church|hotdish;coffee after service;Minnesota nice|Lutheran|Lutherans|midwesterners,minnesotans|9|1|S
+methodists|Methodists|Religion & Church|potluck;casserole;covered dish|Methodist|Methodists|church_ladies|8|1|X
+pentecostals|Pentecostals|Religion & Church|church runs 4 hours;tambourine;long skirts|Pentecostal|holy rollers|church_ladies|8|1|X
+mormons|Latter-day Saints|Religion & Church|missionaries in white shirts;'oh my heck';big families;funeral potatoes;soda shops|LDS, member|Mormons|utahns|8|1|R:r/latterdaysaints;S
+jewish_folks|Jewish folks (ownership)|Religion & Church|Jewish mother guilt;'have you eaten';leaving without saying goodbye joke|Jewish|Jews|grandmas|8|2|X
+muslim_folks|Muslim folks (ownership)|Religion & Church|Ramadan hunger;'auntie network';Eid outfits|Muslim|Muslims|aunts|7|1|X
+pagans|Pagans and witchy folks|Religion & Church|crystal collection;moon water;tarot readings;'witch please'|witch, pagan|witchy|goths,crazy_plant_people,cat_ladies|9|2|R:r/witchcraft;S
+atheists|Atheists|Religion & Church|'thanks science';debates at Thanksgiving|atheist|godless|stem_majors|6|2|R:r/atheism
+spiritual_girls|Spiritual girlies|Religion & Church|Mercury retrograde blame;manifesting;sage burning|spiritual|woo-woo|astrology_people,yoga_people|8|1|S
+astrology_people|Astrology people|Personality & Temperament|'that's so Scorpio';blames Mercury;birth chart reading|astro girl|astrology girlies|spiritual_girls,gen_z|8|1|S
+exvangelicals|Ex-evangelicals|Religion & Church|purity ring survivor;religious trauma jokes;knows every worship song still|exvangelical|backslider|millennials,therapy_goers|7|3|R:r/Exvangelical
+southerners|Southerners|US Regions|'y'all' and 'fixin to';sweet tea;bless your heart;humidity;Waffle House|southern, Southern belle|rednecks (avoid)|church_ladies,college_football,texans,nascar_fans|9|1|A;S;B
+texans|Texans|US Regions|everything's bigger;Buc-ee's pilgrimage;Whataburger loyalty;don't mess with Texas|Texan|Texans|southerners,grilling_dads,oilfield|9|1|S;B
+midwesterners|Midwesterners|US Regions|'ope';Midwest goodbye takes 40 min;ranch on everything;casserole/hotdish|Midwesterner|flyover|lutherans,minnesotans,farmers,ice_fishers|9|1|A;R:r/midwest;S
+minnesotans|Minnesotans|US Regions|Minnesota nice;'uff da';-30 is fine;lake cabin|Minnesotan|Minnesotans|midwesterners,ice_fishers,lutherans|9|1|S
+wisconsinites|Wisconsinites|US Regions|cheese heads;Friday fish fry;brandy old fashioned;Packers|cheesehead|cheeseheads|midwesterners,beer_dads|9|1|S
+ohioans|Ohioans|US Regions|only in Ohio meme;Skyline chili;construction season|Ohioan|Ohio|midwesterners|8|1|S
+michiganders|Michiganders|US Regions|hand map;Faygo;pop not soda|Michigander|Michigan|midwesterners,lake_people|9|1|S
+new_englanders|New Englanders|US Regions|wicked;Dunkin' everything;'pahk the cah';snow complaints but staying|New Englander|Massholes|bostonians|9|1|S
+bostonians|Bostonians|US Regions|Dunks;sports fanatic;aggressive driving|Bostonian|Massholes|new_englanders|9|1|S
+new_yorkers|New Yorkers|US Regions|walks fast;bodega cat;rats on subway;'I'm walkin here'|New Yorker|rude|bodega_fans|9|1|S
+jersey|New Jersey folks|US Regions|pork roll vs Taylor ham war;'down the shore';no self-serve gas|Jersey|Jersey|italian_americans|9|1|S
+philly|Philadelphians|US Regions|Gritty;wawa;Eagles fans climb poles|Philly|Philly fans|football_fans|9|2|S
+californians|Californians|US Regions|traffic small talk;In-N-Out;'the 405';avocado|Californian|Californians|surfers,hikers|8|1|S
+pnw|Pacific Northwesterners|US Regions|no umbrella;flannel;coffee snobs;Bigfoot|PNW|hipsters|hikers,coffee_addicts,bigfoot_believers|9|1|S
+floridians|Floridians|US Regions|Florida Man;hurricane parties;gators in pools;humidity|Floridian, Florida Man|Florida people|southerners,boaters|8|2|S;O
+appalachians|Appalachians|US Regions|mountains;moonshine;pronunciation 'Appa-latch-un';Mothman|Appalachian|hillbilly (avoid)|small_town,mothman_believers|9|1|S
+coloradans|Coloradans|US Regions|altitude;ski talk;'native' sticker;microbrews|Coloradan|ski bros|hikers,craft_beer_snobs|8|1|S
+arizonans|Arizonans|US Regions|'it's a dry heat';oven mitts for steering wheel|Arizonan|Arizona|seniors,snowbirds|8|1|S
+snowbirds|Snowbirds|Life Stages|Florida winters;golf cart cruising;Canadian license plates|snowbird|snowbirds|retired_dads,rv_people,floridians|8|1|S
+alaskans|Alaskans|US Regions|moose traffic;24h daylight;cold proof|Alaskan|Alaskans|hunters,fishermen|9|1|X
+hawaiians|Hawaii locals|US Regions|island time;spam musubi;slippahs|local|islanders|surfers|8|1|X
+utahns|Utahns|US Regions|fry sauce;dirty soda;'oh my heck'|Utahn|Utah|mormons|8|1|S
+cajuns|Louisianans and Cajuns|US Regions|crawfish boil;'who dat';hot sauce on everything|Cajun|Cajuns|southerners,fishermen|9|1|S
+small_town|Small-town folks|Small Town & Rural|everyone knows your business;one stoplight;Friday night lights;Dollar General is the mall;gossip at the diner|small town, hometown|hicks|rural_folks,church_dads,truck_guys,volunteer_fire,farmers|9|1|A;S;B
+rural_folks|Rural folks and country people|Small Town & Rural|gravel roads;waves from trucks;'it's only 30 minutes to Walmart';burn barrel|country, country folk|rednecks|small_town,farmers,hunters,country_music_fans|9|2|A;S;B
+rednecks|Self-described rednecks|Small Town & Rural|'you might be a redneck';duct tape repairs;kiddie pool parties;car on blocks|redneck, hillbilly (ownership)|rednecks|rural_folks,truck_guys,nascar_fans|8|2|S;B
+country_music_fans|Country music fans|Music Scenes|truck songs;Morgan Wallen;concert boots;'I was country when country wasn't cool'|country fan|country|truck_guys,southerners,rural_folks,wine_moms|9|1|S
+suburban_people|Suburbanites|Small Town & Rural|HOA rules;Costco runs;cul-de-sac drama;Ring camera watchers|suburbs|suburbanites|lawn_dads,minivan_moms,karens|7|1|S
+hoa_people|HOA board members|Small Town & Rural|letters about your trash can;power hungry;grass height ruler|HOA|HOA Nazis (avoid)|suburban_people,karens|5|1|X
+nosy_neighbors|Nosy neighbors|Small Town & Rural|curtain twitchers;Ring app reporter;Nextdoor posts|neighbor watch|nosy neighbor|karens,grandmas|7|1|O
+city_people|City dwellers|US Regions|no car;tiny apartment rent shock;'brunch?'|city girl|city folk|millennials|7|1|S
