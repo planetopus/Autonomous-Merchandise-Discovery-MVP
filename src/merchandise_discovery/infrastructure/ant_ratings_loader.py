@@ -98,7 +98,10 @@ def ant_calibration_block(ratings: list[AntRating]) -> str:
             "A behavior description with no twist scores under 7. "
             "Insider jargon a random adult would not know scores at most 5. "
             "A universal hook, such as Karen or printer hell, can still be kind of funny "
-            "inside a niche."
+            "inside a niche. "
+            "A single tired trope scores at most 6 unless it stacks a second identity "
+            "or a fresh twist. Stacking 2 or 3 traits is the original shape and should "
+            "score higher."
         )
     ]
     for rating in ratings:
