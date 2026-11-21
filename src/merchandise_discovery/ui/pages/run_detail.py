@@ -48,6 +48,15 @@ def _render_manual_artwork_selection(
                 st.markdown(f"#### Candidate {index + 1}")
                 sticker_text = str(candidate.get("artwork_text") or "").strip()
                 st.write(f"**Text:** {sticker_text or 'Image only'}")
+                image_idea = str(candidate.get("image_idea") or "").strip()
+                if image_idea:
+                    st.caption(f"Image idea: {image_idea}")
+                why_it_works = str(candidate.get("why_it_works") or "").strip()
+                if why_it_works:
+                    st.caption(f"Why it works: {why_it_works}")
+                sticker_format = str(candidate.get("format") or "").strip()
+                if sticker_format:
+                    st.caption(f"Format: {sticker_format}")
                 if candidate.get("funny_score") is not None:
                     st.caption(f"Funny score: {candidate['funny_score']} / 10")
                 buyers = candidate.get("who_its_for") or []

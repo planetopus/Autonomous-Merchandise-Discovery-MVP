@@ -123,6 +123,7 @@ def style_examples_block(
         "(b) high competence versus a tiny fear; "
         "(c) a fake WARNING or NOTICE sign; "
         "(d) a deadpan dark one-liner; "
+        "(e) a word pun or spoof whose picture completes the joke; "
         "plus sarcastic or ironic one-liners. "
         "Do not write a behavior paragraph, a job procedure, or a scenario about two groups meeting.\n"
     )
@@ -159,7 +160,10 @@ def ant_calibration_block(ratings: list[AntRating]) -> str:
             "are concrete and surprising. "
             "Does every word earn its place in the joke? Outside or common words are "
             "allowed when everyone knows them and they serve the setup or the punchline. "
-            "Random filler disconnected from the joke scores at most 4."
+            "Random filler disconnected from the joke scores at most 4. "
+            "A clear pun or spoof whose picture completes the joke should score high. "
+            "A forced groan, an obscure pun, or a picture that only illustrates the words "
+            "scores at most 4."
         )
     ]
     for rating in ratings:

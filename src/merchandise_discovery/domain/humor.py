@@ -29,8 +29,9 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "concrete_detail, one object, time, or action taken from the source. "
         "Set source_quote to a verbatim sentence from a supplied comment or from the "
         "source you searched. That quote is evidence only. artwork_text must be an original "
-        "joke, never the source sentence, a close paraphrase, or a title pun. "
+        "joke, never the source sentence or a close paraphrase. "
         "Write in the insider voice of someone who lives the niche, about 4 to 14 words. "
+        "A pun or spoof may be shorter when the picture finishes the joke. "
         "Dark humor is welcome. "
         "Identity stacks must name a real group whose traits genuinely co-occur, never a "
         "random combo. A generational or register mismatch is a key comedy lever: use words "
@@ -41,8 +42,23 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
         "sarcastic understatement, situational or dramatic irony, or a clever wordplay "
         "or reversal. Identity stacks are the secondary mode: still write at least two, "
         "and do not let them replace the jokes. "
+        "About 30 to 40 percent of the lines must be puns or spoofs. "
+        "Each concept is one word-and-image pair, not a line with a picture added later. "
+        "The picture must complete, flip, or reveal the double meaning. "
+        "Set image_idea to that picture in one sentence. "
+        "Set why_it_works to one sentence on how the words and the picture combine. "
+        "Set format to the layout, such as retro sunset badge, logo spoof, circle badge, "
+        "or bold text stack. "
+        "Use wordplay_pun, image_pun, celebrity_food_pun, brand_logo_spoof, "
+        "innocent_image_innuendo, cute_but_menacing, dark_twist_scene, catchphrase_flip, "
+        "or relatable_confession_action. "
+        "A spoof of a famous logo, celebrity, or movie character is allowed. "
+        "Mild crude or adult innuendo is allowed when the picture completes the joke. "
+        "The wholesome bar applies to identity stacks, not to these pairs. "
+        "Text only. Do not generate an image. "
         "Set comic_turn to ironic, sarcastic, or straight. Irony and sarcasm are core "
         "mechanics: reward a clear turn, not a straight description of a rule. "
+        "The turn may live in the picture. "
         "Across the batch use at least 6 different pattern values and at least 4 different "
         "truths. Set who_its_for to 2 to 4 plain buyer categories, identity groups and "
         "interests, such as neighbors, commuters, and weeknight cooks. "
@@ -70,6 +86,61 @@ def humor_prompt_suffix(tone: HumorTone | str | None) -> str:
     return (
         rules
         + "Stay inside the requested tone. Do not invent sensitive traits about real people."
+    )
+
+
+def pun_examples_block() -> str:
+    """Best-seller word-and-image pairs. Learn the pairing. Do not reprint the lines."""
+
+    return (
+        "Pun and spoof pairs. The words and the picture are one joke. "
+        "Learn the pairing. Do not reprint these lines.\n"
+        "- celebrity_food_pun | bold text stack | TOAST MALONE | "
+        "a slice of toast with Post Malone's face tattoos | "
+        "the name is the celebrity until the toast shows the food pun.\n"
+        "- brand_logo_spoof | logo spoof | THIS MIGHT BE VODKA | "
+        "the Starbucks siren logo with that ring text | "
+        "the logo says coffee and the words flip the cup.\n"
+        "- brand_logo_spoof | logo spoof | BACK & BODY HURTS | "
+        "a Bath & Body Works pink logo on blue gingham | "
+        "the store logo makes the ache look like a product.\n"
+        "- brand_logo_spoof | logo spoof | WHY DON'T YOU BLOW ME | "
+        "a Bubble Yum style bubble-gum logo | "
+        "the gum logo turns the demand into a brand spoof.\n"
+        "- innocent_image_innuendo | bold text stack | SOMETIMES I WET MY PLANTS | "
+        "potted succulents | the plants reveal the innocent meaning.\n"
+        "- innocent_image_innuendo | bold text stack | SUC MY CAC | "
+        "a cactus in a pot | the cactus makes the crude reading a plant pun.\n"
+        "- innocent_image_innuendo | bold text stack | DON'T BE A CUNTASAURUS | "
+        "a cute dinosaur | the cute dinosaur lets the insult stay a joke.\n"
+        "- innocent_image_innuendo | retro sunset badge | JUST THE TIP | "
+        "Michael Myers holding a knife, retro stripes | "
+        "the knife completes the phrase the words leave hanging.\n"
+        "- innocent_image_innuendo | retro sunset badge | SHOW ME YOUR KITTIES | "
+        "a cool cat in sunglasses on a retro sunset | "
+        "the cat takes the phrase away from the crude reading.\n"
+        "- cute_but_menacing | circle badge | PEACE WAS NEVER AN OPTION | "
+        "a cute duck holding a knife | the duck looks sweet and the knife flips it.\n"
+        "- dark_twist_scene | retro sunset badge | "
+        "BRING A COMPASS, IT'S AWKWARD WHEN YOU HAVE TO EAT YOUR FRIENDS | "
+        "a hiker silhouette on a mountain with a bear | "
+        "the pretty badge turns into the dark hike.\n"
+        "- catchphrase_flip | circle badge | "
+        "THICK THIGHS SAVE LIVES / BUT THIGH HIGHS ARE MY DEMISE | "
+        "a torso in thigh-high stockings, warning-badge style | "
+        "the second line and the stockings flip the slogan.\n"
+        "- relatable_confession_action | bold text stack | "
+        "I'M JUST HERE TO GET DRUNK AND DRIVE THE GOLF CART | "
+        "a stick figure drinking in a golf cart chasing running golfers | "
+        "the chase shows the confession instead of restating it.\n"
+        "- wordplay_pun | bold text stack | I have patients, not patience | "
+        "a waiting-room clock melting | the clock shows patience running out.\n"
+        "Formats to reuse: retro sunset badge, logo spoof, circle badge, bold text stack. "
+        "Parody of a famous logo, celebrity, or movie character is allowed. "
+        "Mild adult innuendo is allowed when the picture completes it. "
+        "About 30 to 40 percent of the batch uses these shapes. "
+        "Every concept sets image_idea, why_it_works, and format. "
+        "Text only. Do not generate an image.\n"
     )
 
 
@@ -275,6 +346,27 @@ class HumorCritiqueItem(BaseModel):
             "Outside words are fine when everyone knows them and they serve the setup or punchline."
         ),
     )
+    word_image_synergy: float = Field(
+        default=8,
+        ge=1,
+        le=10,
+        description=(
+            "Do the words and the picture make one joke? "
+            "Under 7 if the line works alone or the picture only illustrates the words."
+        ),
+    )
+    pun_lands: bool = Field(
+        default=True,
+        description="False when the target group would not get the pun or spoof in 2 seconds.",
+    )
+    pun_forced: bool = Field(
+        default=False,
+        description="True when the pun is only a groan and the second meaning does not land.",
+    )
+    literal_image: bool = Field(
+        default=False,
+        description="True when the picture only illustrates the words and adds no twist.",
+    )
 
 
 class HumorCritiqueBatch(BaseModel):
@@ -326,6 +418,10 @@ class LineReview:
         can_explain: bool = True,
         words_earn_their_place: bool = True,
         filler_contrast: bool = False,
+        word_image_synergy: float = 8,
+        pun_lands: bool = True,
+        pun_forced: bool = False,
+        literal_image: bool = False,
     ):
         self.index = index
         self.humor_landed = humor_landed
@@ -343,6 +439,10 @@ class LineReview:
         self.can_explain = can_explain
         self.words_earn_their_place = words_earn_their_place
         self.filler_contrast = filler_contrast
+        self.word_image_synergy = word_image_synergy
+        self.pun_lands = pun_lands
+        self.pun_forced = pun_forced
+        self.literal_image = literal_image
 
 
 def critic_average(review) -> float | None:
@@ -507,17 +607,100 @@ def apply_line_caps(review, text: str):
         review.can_explain = False
         _cap_scores(review, 3, ("instantly_understandable",))
         _cap_scores(review, 4, ("sticker_buy_score", "humor_landed"))
+    if synergy_failed(review):
+        _cap_scores(review, 4, ("humor_landed", "sticker_buy_score", "reddit_upvote_score"))
+    return review
+
+
+_PUN_PATTERNS = {
+    "wordplay pun",
+    "image pun",
+    "celebrity food pun",
+    "brand logo spoof",
+    "innocent image innuendo",
+    "cute but menacing",
+    "dark twist scene",
+    "catchphrase flip",
+    "relatable confession action",
+}
+
+
+def pattern_key(candidate) -> str:
+    """Normalize a pattern id so pun shapes match with spaces or underscores."""
+
+    raw = str(getattr(candidate, "pattern", "") or "")
+    return " ".join(raw.casefold().replace("_", " ").replace("-", " ").split())
+
+
+def line_is_pun(candidate) -> bool:
+    """A word pun, image pun, or spoof. The picture is half of the joke."""
+
+    pattern = pattern_key(candidate)
+    if pattern in _PUN_PATTERNS or "pun" in pattern or "spoof" in pattern:
+        return True
+    mechanism = str(getattr(candidate, "humor_mechanism", "") or "").casefold()
+    return bool(re.search(r"\b(pun|puns|wordplay|spoof|spoofs|double meaning)\b", mechanism))
+
+
+def synergy_failed(review) -> bool:
+    """The picture does not complete the joke, or it only illustrates the words."""
+
+    if review is None:
+        return False
+    if getattr(review, "literal_image", False) is True:
+        return True
+    score = getattr(review, "word_image_synergy", None)
+    if score is None:
+        return False
+    try:
+        return float(score) < 7
+    except (TypeError, ValueError):
+        return False
+
+
+def apply_pun_cap(review, candidate):
+    """Cap a groan or an obscure pun. A clear pun keeps the score the critic gave it."""
+
+    if review is None or not line_is_pun(candidate):
+        return review
+    forced = getattr(review, "pun_forced", False) is True
+    lands = getattr(review, "pun_lands", True) is not False
+    if forced or not lands:
+        _cap_scores(
+            review,
+            4,
+            ("humor_landed", "sticker_buy_score", "instantly_understandable", "reddit_upvote_score"),
+        )
     return review
 
 
 def line_is_primary_wit(candidate) -> bool:
-    """Sarcasm, irony, or wit. An identity stack alone is the secondary mode."""
+    """Sarcasm, irony, wit, or a pun. An identity stack alone is the secondary mode."""
 
+    if line_is_pun(candidate):
+        return True
     turn = str(getattr(candidate, "comic_turn", "") or "").casefold()
     mechanism = str(getattr(candidate, "humor_mechanism", "") or "").casefold()
     if turn in {"ironic", "sarcastic", "sarcasm"}:
         return True
-    return any(word in mechanism for word in ("understatement", "reversal", "wordplay", "irony", "sarcasm", "wit"))
+    return any(
+        word in mechanism
+        for word in ("understatement", "reversal", "wordplay", "irony", "sarcasm", "wit")
+    )
+
+
+def pun_share(candidates: list) -> float:
+    """Share of a batch that is a pun or spoof."""
+
+    if not candidates:
+        return 1.0
+    return sum(1 for item in candidates if line_is_pun(item)) / len(candidates)
+
+
+def pun_share_is_thin(candidates: list) -> bool:
+    """A large batch under about 30 percent puns needs another pass. It does not fail the run."""
+
+    return len(candidates) >= 6 and pun_share(candidates) < 0.3
 
 
 def primary_wit_share(candidates: list) -> float:
@@ -741,6 +924,7 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
         text = str(getattr(candidate, "artwork_text", "") or "")
         apply_jargon_cap(review, text)
         apply_line_caps(review, text)
+        apply_pun_cap(review, candidate)
         humor = review.humor_landed if review is not None else 5.0
         novelty = review.novelty if review is not None else 5.0
         tone_match = review.tone_match if review is not None else 5.0
@@ -752,6 +936,8 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
         turn = str(getattr(candidate, "comic_turn", "") or "").casefold()
         if turn in {"ironic", "sarcastic", "sarcasm"}:
             score += 3
+        if line_is_pun(candidate) and not synergy_failed(review):
+            score += 2
         if review is None or not getattr(review, "tired_trope", False):
             traits = int(getattr(review, "trait_count", 0) or 0)
             if traits <= 0:
@@ -760,7 +946,10 @@ def apply_line_critic(candidates: list, reviews: list, *, keep_count: int, tone:
                 score += 3
         if member_would_not_buy(review):
             continue
-        if str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight":
+        if (
+            str(getattr(candidate, "comic_turn", "") or "").casefold() == "straight"
+            and not line_is_pun(candidate)
+        ):
             continue
         if identity_stack_is_too_long(
             str(getattr(candidate, "artwork_text", "") or ""),

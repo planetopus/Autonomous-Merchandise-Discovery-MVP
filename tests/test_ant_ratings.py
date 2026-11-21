@@ -217,6 +217,8 @@ def test_critic_prompt_opens_with_the_owner_ratings() -> None:
     assert "at most 5" in critic
     assert "at most 6" in critic
     assert "2 or 3" in critic
+    assert "word_image_synergy" in critic
+    assert "pun_forced" in critic
     writer = next(
         call.kwargs["system_prompt"]
         for call in provider.complete_structured.call_args_list
@@ -224,3 +226,6 @@ def test_critic_prompt_opens_with_the_owner_ratings() -> None:
         not in {"HumorCritiqueBatch", "NichePairBatch"}
     )
     assert "70%" in writer
+    assert "image_idea" in writer
+    assert "why_it_works" in writer
+    assert "30 to 40" in writer
