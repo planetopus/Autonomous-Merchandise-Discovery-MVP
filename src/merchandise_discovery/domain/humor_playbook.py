@@ -9,7 +9,31 @@ and does not cache it.
 import json
 from pathlib import Path
 
+from pydantic import BaseModel, ConfigDict, Field
+
 from merchandise_discovery.domain.humor_references import HumorReference
+
+
+class HumorPlaybookPattern(BaseModel):
+    """One joke shape. Examples are optional and are never required slogans."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    label: str
+    guidance: str
+    weight: int | None = None
+    priority: bool = False
+    examples: list[str] = Field(default_factory=list)
+
+
+class HumorPlaybook(BaseModel):
+    """The stored playbook. Strict so a nightly file can also be a response schema."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    source: str
+    patterns: list[HumorPlaybookPattern]
 
 # Hand-authored shapes. Guidance only: do not store sample slogans here.
 PRIORITY_PATTERNS = [
@@ -152,7 +176,9 @@ def build_playbook(references: list[HumorReference]) -> dict:
         }
         for item in PRIORITY_PATTERNS
     ]
-    return {"source": "data/humor_references.csv", "patterns": priority + patterns}
+    return HumorPlaybook.model_validate(
+        {"source": "data/humor_references.csv", "patterns": priority + patterns}
+    ).model_dump()
 
 
 def playbook_prompt(playbook: dict) -> str:

@@ -10,7 +10,15 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from merchandise_discovery.domain.humor import humor_prompt_suffix, niche_pair_block, quote_block
+from merchandise_discovery.domain.humor import (
+    HumorExampleRecord,
+    LineReviewRecord,
+    NichePairRecord,
+    PlaybookPatternRecord,
+    humor_prompt_suffix,
+    niche_pair_block,
+    quote_block,
+)
 from merchandise_discovery.domain.models.common import (
     HumorTone,
     IdentityType,
@@ -109,15 +117,15 @@ class SocialIdentityTextOutput(BaseModel):
     search_summary: str = Field(min_length=1, max_length=2_000)
     topic_explored: str = Field(default="", max_length=500)
     model: str = "deterministic"
-    humor_examples_used: list[dict] = Field(default_factory=list)
+    humor_examples_used: list[HumorExampleRecord] = Field(default_factory=list)
     humor_themes_used: list[str] = Field(default_factory=list)
     niche_pair_a: str = Field(default="", max_length=200)
     niche_pair_b: str = Field(default="", max_length=200)
     pairing_score: float | None = Field(default=None, ge=0, le=10)
     pairing_reason: str = Field(default="", max_length=500)
-    line_reviews: list[dict] = Field(default_factory=list)
-    niche_pair_candidates: list[dict] = Field(default_factory=list)
-    humor_playbook_used: list[dict] = Field(default_factory=list)
+    line_reviews: list[LineReviewRecord] = Field(default_factory=list)
+    niche_pair_candidates: list[NichePairRecord] = Field(default_factory=list)
+    humor_playbook_used: list[PlaybookPatternRecord] = Field(default_factory=list)
 
 
 def reasoning_instructions(tone: HumorTone | str = HumorTone.DRY) -> str:

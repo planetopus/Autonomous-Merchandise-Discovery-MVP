@@ -11,8 +11,12 @@ import logging
 from merchandise_discovery.application.stage_executor import StageNotImplementedError, StageResult
 from merchandise_discovery.domain.humor import (
     HumorCritiqueBatch,
+    HumorExampleRecord,
     LineReview,
+    LineReviewRecord,
     NichePairBatch,
+    NichePairRecord,
+    PlaybookPatternRecord,
     apply_line_critic,
     critic_average,
     keep_strong_pairs,
@@ -370,7 +374,10 @@ class DiscoveryStageExecutor:
         try:
             return self._reddit_reader.collect(query)
         except (OSError, RuntimeError, ValueError, TypeError) as error:
-            logger.warning("Reddit comment collection skipped: %s", error)
+            logger.warning(
+                "Reddit comment collection skipped: %s Web search will supply source evidence.",
+                error,
+            )
             return []
 
     def _humor_selection(self, run: WorkflowRun, input_model):
@@ -434,14 +441,14 @@ class DiscoveryStageExecutor:
                 "pairing_score": round((best.shared_life_score + best.recognizability_score) / 2, 2),
                 "pairing_reason": best.reason,
                 "niche_pair_candidates": [
-                    {
-                        "niche_a": pair.niche_a,
-                        "niche_b": pair.niche_b,
-                        "shared_life_score": pair.shared_life_score,
-                        "recognizability_score": pair.recognizability_score,
-                        "reason": pair.reason,
-                        "kept": pair.shared_life_score >= 7 and pair.recognizability_score >= 7,
-                    }
+                    NichePairRecord(
+                        niche_a=pair.niche_a,
+                        niche_b=pair.niche_b,
+                        shared_life_score=pair.shared_life_score,
+                        recognizability_score=pair.recognizability_score,
+                        reason=pair.reason,
+                        kept=pair.shared_life_score >= 7 and pair.recognizability_score >= 7,
+                    )
                     for pair in recorded
                 ],
             },
@@ -504,22 +511,22 @@ class DiscoveryStageExecutor:
                 str(getattr(candidate, "source_excerpt", "") or ""),
             ):
                 dropped.append(
-                    {
-                        "artwork_text": text,
-                        "funny_score": None,
-                        "kept": False,
-                        "reason": "copied source",
-                    }
+                    LineReviewRecord(
+                        artwork_text=text,
+                        funny_score=None,
+                        kept=False,
+                        reason="copied source",
+                    )
                 )
                 continue
             if is_too_similar_to_references(text, examples):
                 dropped.append(
-                    {
-                        "artwork_text": text,
-                        "funny_score": None,
-                        "kept": False,
-                        "reason": "copied reference",
-                    }
+                    LineReviewRecord(
+                        artwork_text=text,
+                        funny_score=None,
+                        kept=False,
+                        reason="copied reference",
+                    )
                 )
                 continue
             kept.append(candidate)
@@ -532,18 +539,22 @@ class DiscoveryStageExecutor:
         return output.model_copy(
             update={
                 "humor_playbook_used": [
-                    {"id": item["id"], "label": item["label"], "weight": item["weight"]}
+                    PlaybookPatternRecord(
+                        id=item["id"],
+                        label=item["label"],
+                        weight=item["weight"],
+                    )
                     for item in patterns[:12]
                 ],
                 "humor_examples_used": [
-                    {
-                        "text": item.text,
-                        "upvotes": item.upvotes,
-                        "humor_type": item.humor_type,
-                        "niche": item.niche,
-                        "subreddit": item.subreddit,
-                        "post_url": item.post_url,
-                    }
+                    HumorExampleRecord(
+                        text=item.text,
+                        upvotes=item.upvotes,
+                        humor_type=item.humor_type,
+                        niche=item.niche,
+                        subreddit=item.subreddit,
+                        post_url=item.post_url,
+                    )
                     for item in selection.display_examples
                 ],
                 "humor_themes_used": [item.text for item in selection.themes[:10]],
@@ -632,12 +643,12 @@ class DiscoveryStageExecutor:
             else:
                 reason, kept_flag = "cut by critic", False
             rows.append(
-                {
-                    "artwork_text": str(getattr(candidate, "artwork_text", "") or ""),
-                    "funny_score": round(average, 2) if average is not None else score,
-                    "kept": kept_flag,
-                    "reason": reason,
-                }
+                LineReviewRecord(
+                    artwork_text=str(getattr(candidate, "artwork_text", "") or ""),
+                    funny_score=round(average, 2) if average is not None else score,
+                    kept=kept_flag,
+                    reason=reason,
+                )
             )
         return kept, response.usage, rows
 
