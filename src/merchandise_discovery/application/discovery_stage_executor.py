@@ -396,17 +396,16 @@ class DiscoveryStageExecutor:
                     "niche_b": pair_meta["niche_pair_b"],
                 }
             )
-        # The pair call does not need Reddit, so the two waits overlap.
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            quote_job = pool.submit(self._collect_reddit_quotes, input_model)
-            pair_job = (
-                pool.submit(self._score_niche_pairs, input_model, pair_bank, supplied_names[:1])
-                if need_pair
-                else None
-            )
-            quotes = quote_job.result()
-            if pair_job is not None:
-                pair_meta, pair_usage, pair_warning = pair_job.result()
+        fast = bool(getattr(run.config, "social_fast_mode", True))
+        # Fast mode writes from the atlas, trending buyers, and anchors. No Reddit or web search.
+        if fast:
+            quotes = []
+            if need_pair:
+                pair_meta, pair_usage, pair_warning = self._score_niche_pairs(
+                    input_model,
+                    pair_bank,
+                    supplied_names[:1],
+                )
                 usage = self._add_usage(usage, pair_usage)
                 self._note_social_progress(usage, pair_meta, [], [], warnings)
                 if pair_warning:
@@ -417,8 +416,30 @@ class DiscoveryStageExecutor:
                         "niche_b": pair_meta["niche_pair_b"],
                     }
                 )
+        else:
+            # The pair call does not need Reddit, so the two waits overlap.
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                quote_job = pool.submit(self._collect_reddit_quotes, input_model)
+                pair_job = (
+                    pool.submit(self._score_niche_pairs, input_model, pair_bank, supplied_names[:1])
+                    if need_pair
+                    else None
+                )
+                quotes = quote_job.result()
+                if pair_job is not None:
+                    pair_meta, pair_usage, pair_warning = pair_job.result()
+                    usage = self._add_usage(usage, pair_usage)
+                    self._note_social_progress(usage, pair_meta, [], [], warnings)
+                    if pair_warning:
+                        warnings.append(pair_warning)
+                    input_model = input_model.model_copy(
+                        update={
+                            "niche_a": pair_meta["niche_pair_a"],
+                            "niche_b": pair_meta["niche_pair_b"],
+                        }
+                    )
         domains = None
-        if not quotes:
+        if not fast and not quotes:
             domains = tuple(
                 "reddit.com" if source.value == "reddit" else "x.com" for source in input_model.sources
             )
@@ -448,7 +469,54 @@ class DiscoveryStageExecutor:
         usage = self._add_usage(usage, response.usage)
         drafted = list(getattr(response.output, "candidates", []))
         candidates, reviews = self._drop_unoriginal(drafted, references, lab.gold_lines)
-        if candidates:
+        if fast:
+            if puns_still_needed(
+                input_model.candidate_count,
+                sum(1 for item in candidates if line_is_pun(item)),
+            ):
+                filled, fill_usage, fill_reviews = self._fill_puns(
+                    run,
+                    input_model,
+                    output_model,
+                    pipeline_module,
+                    puns_still_needed(
+                        input_model.candidate_count,
+                        sum(1 for item in candidates if line_is_pun(item)),
+                    ),
+                )
+                usage = self._add_usage(usage, fill_usage)
+                reviews.extend(fill_reviews)
+                candidates = self._merge_puns(candidates, filled)
+            if dark_humor_needed(
+                input_model.candidate_count,
+                sum(1 for item in candidates if is_dark_humor(item)),
+            ):
+                filled, fill_usage, fill_reviews = self._fill_dark_humor(
+                    run,
+                    output_model,
+                    pipeline_module,
+                    dark_humor_needed(
+                        input_model.candidate_count,
+                        sum(1 for item in candidates if is_dark_humor(item)),
+                    ),
+                )
+                usage = self._add_usage(usage, fill_usage)
+                reviews.extend(fill_reviews)
+                candidates = self._merge_by_text(
+                    candidates,
+                    [item for item in filled if is_dark_humor(item)],
+                )
+            if candidates:
+                candidates, critic_usage, critic_rows = self._critic_pass(
+                    run,
+                    candidates,
+                    len(candidates),
+                    humor_block,
+                    critic_rubric,
+                )
+                usage = self._add_usage(usage, critic_usage)
+                reviews.extend(critic_rows)
+        if not fast and candidates:
             candidates, critic_usage, critic_rows = self._critic_pass(
                 run,
                 candidates,
@@ -458,7 +526,9 @@ class DiscoveryStageExecutor:
             )
             usage = self._add_usage(usage, critic_usage)
             reviews.extend(critic_rows)
-        if self._spread_is_thin(drafted) or self._wit_is_thin(drafted) or pun_share_is_thin(drafted):
+        if not fast and (
+            self._spread_is_thin(drafted) or self._wit_is_thin(drafted) or pun_share_is_thin(drafted)
+        ):
             spread, spread_usage, spread_reviews = self._rewrite_for_spread(
                 run,
                 input_model,
@@ -489,7 +559,7 @@ class DiscoveryStageExecutor:
                     "Showing the widest lines available."
                 )
         self._note_social_progress(usage, pair_meta, candidates or drafted, reviews, warnings)
-        if self._needs_absurd_stacks(candidates, input_model.candidate_count):
+        if not fast and self._needs_absurd_stacks(candidates, input_model.candidate_count):
             filled, fill_usage, fill_reviews = self._fill_absurd_stacks(
                 run,
                 input_model,
@@ -509,7 +579,10 @@ class DiscoveryStageExecutor:
                     "Fewer than two absurd identity stack lines survived. "
                     "Showing the best lines anyway."
                 )
-        if puns_still_needed(input_model.candidate_count, sum(1 for item in candidates if line_is_pun(item))):
+        if not fast and puns_still_needed(
+            input_model.candidate_count,
+            sum(1 for item in candidates if line_is_pun(item)),
+        ):
             filled, fill_usage, fill_reviews = self._fill_puns(
                 run,
                 input_model,
@@ -532,7 +605,7 @@ class DiscoveryStageExecutor:
                 )
         dark_count = sum(1 for item in candidates if is_dark_humor(item))
         missing_dark = dark_humor_needed(input_model.candidate_count, dark_count)
-        if missing_dark:
+        if not fast and missing_dark:
             filled, fill_usage, fill_reviews = self._fill_dark_humor(
                 run,
                 output_model,
@@ -554,7 +627,7 @@ class DiscoveryStageExecutor:
                 )
         chosen = response.output
         usable = self._without_copied_lines(drafted, reviews)
-        if needs_extra_line_round(len(candidates), input_model.candidate_count):
+        if not fast and needs_extra_line_round(len(candidates), input_model.candidate_count):
             extra, extra_usage, extra_reviews = self._draft_extra_survivors(
                 run,
                 pipeline_module,
@@ -591,7 +664,10 @@ class DiscoveryStageExecutor:
         else:
             ordered = self._order_with_stacks(candidates, input_model.candidate_count) or candidates[:1]
         ordered, reviews = self._apply_who_its_for(ordered, reviews, atlas, chosen_names)
-        ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
+        if getattr(run.config, "social_check_already_for_sale", False):
+            ordered, reviews, sale_note = self._drop_already_for_sale(ordered, reviews)
+        else:
+            sale_note = ""
         if sale_note:
             warnings.append(sale_note)
         search_usage = getattr(self._listing_search, "usage", None)

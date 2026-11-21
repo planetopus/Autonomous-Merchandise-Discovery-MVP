@@ -69,6 +69,10 @@ class RunConfig(BaseModel):
     social_trending_share: float = Field(default_factory=default_trending_share, ge=0, le=1)
     # One click writes the lines and generates a finished sticker for each. Off keeps text only.
     social_generate_images: bool = True
+    # Fast mode skips Reddit and web evidence and writes from the atlas, buyers, and anchors.
+    social_fast_mode: bool = True
+    # The web "already for sale" check is off unless the run asks for it.
+    social_check_already_for_sale: bool = False
     social_selected_candidate_indices: list[int] = Field(default_factory=list)
 
     @model_validator(mode="after")

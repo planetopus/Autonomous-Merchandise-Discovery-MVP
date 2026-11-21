@@ -119,6 +119,7 @@ def test_live_stage_one_makes_one_structured_search_request() -> None:
     executor._reasoning_provider = provider
 
     run.config.social_candidate_count = 1
+    run.config.social_fast_mode = False
     input_model = pipeline.BehaviorIdentityInput.model_validate(executor.prepare(run, stage))
     result = executor.execute(run, stage, input_model.model_dump(mode="python"))
 

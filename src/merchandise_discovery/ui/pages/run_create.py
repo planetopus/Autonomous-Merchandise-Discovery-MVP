@@ -45,6 +45,8 @@ def build_run_config(
     humor_tone: HumorTone = HumorTone.DRY,
     social_trending_share: float = 0.6,
     social_generate_images: bool = True,
+    social_fast_mode: bool = True,
+    social_check_already_for_sale: bool = False,
 ) -> RunConfig:
     """Convert form primitives into the typed service contract used to create a run."""
 
@@ -69,6 +71,8 @@ def build_run_config(
         humor_tone=humor_tone,
         social_trending_share=min(1.0, max(0.0, social_trending_share)),
         social_generate_images=social_generate_images,
+        social_fast_mode=social_fast_mode,
+        social_check_already_for_sale=social_check_already_for_sale,
     )
 
 
@@ -151,6 +155,22 @@ def render_run_create(
     auto_identity = False
     manual_artwork_selection = False
     generate_images = True
+    fast_mode = True
+    check_already_for_sale = False
+    if is_social_pipeline:
+        fast_mode = st.checkbox(
+            "Fast mode",
+            value=True,
+            help=(
+                "Skip Reddit and web evidence. The run uses the identity atlas, "
+                "trending buyers, and the pun anchors. Turn off to search discussions."
+            ),
+        )
+        check_already_for_sale = st.checkbox(
+            "Check if already for sale",
+            value=False,
+            help="Search the web for each final line. Off by default so a run stays fast.",
+        )
     if is_social_pipeline:
         generate_images = st.checkbox(
             "Text + images",
@@ -360,6 +380,8 @@ def render_run_create(
                 humor_tone=humor_tone,
                 social_trending_share=trending_share,
                 social_generate_images=generate_images,
+                social_fast_mode=fast_mode,
+                social_check_already_for_sale=check_already_for_sale,
             ),
             triggered_by="manual",
         )

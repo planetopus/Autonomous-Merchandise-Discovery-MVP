@@ -38,6 +38,17 @@ def pipeline_display_name(pipeline_variant: str | PipelineVariant) -> str:
     return PIPELINE_DISPLAY_NAMES.get(value, value.replace("_", " ").title())
 
 
+def _format_elapsed(run: WorkflowRun) -> str:
+    """Wall-clock time from creation to the latest update."""
+
+    end = run.updated_at or run.created_at
+    seconds = max(0, int((end - run.created_at).total_seconds()))
+    minutes, remainder = divmod(seconds, 60)
+    if minutes:
+        return f"{minutes}m {remainder}s"
+    return f"{remainder}s"
+
+
 def _format_duration(stage: StageExecution) -> str:
     """Format persisted stage timestamps for compact pipeline labels."""
 
@@ -274,4 +285,5 @@ def snapshot_to_fixture(snapshot: RunSnapshot) -> RunFixture:
         total_tokens=total_tokens,
         estimated_cost_usd=estimated_cost,
         cost_is_estimate=cost_is_estimate,
+        elapsed=_format_elapsed(run),
     )
