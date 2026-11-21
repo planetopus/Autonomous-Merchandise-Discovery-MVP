@@ -5,6 +5,7 @@ and the worker receive the resulting runtime instead of constructing collections
 themselves, which keeps both entrypoints replaceable.
 """
 
+import os
 from dataclasses import dataclass, field
 
 from pymongo import MongoClient
@@ -169,13 +170,22 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             if live_mode and settings.openai_api_key
             else None
         )
+        image_prefer = os.getenv("MVP_IMAGE_PROVIDER", "")
         image_name = image_backend_name(
             settings.openai_api_key,
             settings.xai_api_key,
             live=live_mode,
+            prefer=image_prefer,
+            xai_model=settings.xai_image_model,
         )
+        use_openai = image_prefer.strip().casefold() == "openai" and bool(settings.openai_api_key)
+        provider_modes = {
+            "research": "openai web search" if live_mode and settings.openai_api_key else "fixture",
+            "reasoning": "openai structured outputs" if live_mode and settings.openai_api_key else "fixture",
+            "image": image_name,
+        }
         image_chain: list[tuple[str, object]] = []
-        if live_mode and settings.openai_api_key:
+        if live_mode and use_openai:
             image_chain.append(("OpenAI gpt-image-1", OpenAIImageProvider(settings.openai_api_key)))
         if live_mode and settings.xai_api_key:
             image_chain.append(
@@ -190,11 +200,11 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
                 )
             )
         image_chain.append(("fixture", FixtureImageProvider()))
-        image_provider = (
-            image_chain[0][1]
-            if len(image_chain) == 1
-            else FallbackImageProvider(image_chain)
-        )
+        if len(image_chain) == 1:
+            image_provider = image_chain[0][1]
+        else:
+            image_provider = FallbackImageProvider(image_chain)
+            image_provider.label_store = provider_modes
         artwork_storage = LocalArtworkStorage(settings.artwork_storage_dir) if live_mode else None
         stage_executor = DiscoveryStageExecutor(
             seed_repository,
@@ -243,11 +253,7 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             stage_log_repository=stage_log_repository,
             max_stage_attempts=settings.max_stage_attempts,
             stop_after_stage=settings.stop_after_stage,
-            provider_modes={
-                "research": "openai web search" if live_mode and settings.openai_api_key else "fixture",
-                "reasoning": "openai structured outputs" if live_mode and settings.openai_api_key else "fixture",
-                "image": image_name,
-            },
+            provider_modes=provider_modes,
             seed_repository=seed_repository,
             seed_library_repository=seed_library_repository,
             intersection_repository=intersection_repository,

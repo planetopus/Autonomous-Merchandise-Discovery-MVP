@@ -72,12 +72,17 @@ def test_openai_failure_uses_the_next_provider_once() -> None:
     provider = FallbackImageProvider([("OpenAI gpt-image-1", _Boom()), ("xAI grok-imagine-image", backup)])
     request = ImageGenerationRequest("c1", "b1", "prompt", 1)
 
+    labels: dict[str, str] = {"image": "OpenAI gpt-image-1"}
+    provider.label_store = labels
     first = provider.generate(request)
+    note = provider.fallback_note
     second = provider.generate(request)
 
     assert first.source_url.endswith("sticker.png")
     assert backup.calls == 2
-    assert "HTTP 403" in provider.fallback_note
-    assert "sk-" not in provider.fallback_note
-    assert "Used xAI" in provider.fallback_note
+    assert "HTTP 403" in note
+    assert "sk-" not in note
+    assert note.count("Used xAI") == 1
+    assert provider.fallback_note == note
+    assert labels["image"] == "xAI grok-imagine-image"
     assert second.source_url == first.source_url

@@ -5,6 +5,8 @@ T-shirt and poster art, so every artwork prompt and every upstream style field s
 ask for the same isolated sticker treatment.
 """
 
+import re
+
 STICKER_AVOID = (
     "scene or landscape background",
     "full-bleed background",
@@ -101,6 +103,20 @@ def _brand_logo_clause(candidate) -> str:
         f"Logo spoof of {note['name']}: {note['style']}. "
         "Recreate that layout and those colors. The only words are the new pun. "
     )
+
+
+def sticker_download_name(text: str, used: set[str] | None = None) -> str:
+    """A unique file name from the sticker line, such as kentucky-fried-couch.png."""
+
+    slug = "-".join(re.findall(r"[a-z0-9]+", str(text or "").casefold()))[:60] or "sticker"
+    name = f"{slug}.png"
+    taken = used if used is not None else set()
+    number = 2
+    while name in taken:
+        name = f"{slug}-{number}.png"
+        number += 1
+    taken.add(name)
+    return name
 
 
 def merchandise_text_clause(text: str) -> str:
