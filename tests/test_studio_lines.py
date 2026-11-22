@@ -98,10 +98,12 @@ def test_the_sense_gate_rejects_splices_stacked_puns_and_placeholder_buyers() ->
     assert styled[0][0].buyers == ["parents", "D&D"]
     assert "this group" not in styled[0][0].buyers
     prompt = crossover_writer_prompt(groups=[{"niche_a": "parents", "niche_b": "D&D"}], tone="dry")
-    assert "Moment first" in prompt
-    assert "exactly one pun" in prompt
+    assert "real moment" in prompt
+    assert "exactly one pun" in prompt or "One pun only" in prompt
     assert "I Rolled a Natural 1 on Bedtime." in prompt
     assert "Do not output these lines" in prompt
+    assert "punchline" in prompt.casefold()
+    assert "Stirring the soup" in prompt
     assert "PLEASE BE PATIENT" not in prompt
     assert "Here Lies" not in prompt
 
@@ -153,6 +155,46 @@ def test_one_pair_is_the_only_audience_and_templates_are_used_once() -> None:
     assert all(line in refill for line in avoid)
     assert "Subject hint only" in refill
     assert "Wisconsinites" in refill
+
+
+def test_a_clear_dark_punchline_is_not_dropped_for_taste() -> None:
+    """Dark humor with one joke stays even when the review withholds the buy score."""
+
+    from merchandise_discovery.domain.studio_lines import ComedyGateItem, apply_gate_reviews
+
+    line = _line(
+        "Saving a seat at the service. Winner must be present.",
+        dark=True,
+        critic_ok=False,
+        buyer_ok=False,
+        score=0,
+        buyers=["families", "funerals"],
+    )
+    long_line = _line(
+        "Stirring the soup and then scratching and then checking the pot and then sitting down again today",
+        buyers=["cooks", "grandmas"],
+    )
+    apply_gate_reviews(
+        [line],
+        [
+            ComedyGateItem(
+                index=0,
+                passed=False,
+                score=8,
+                reason="dark",
+                instant=True,
+                one_joke=True,
+                would_buy=False,
+            )
+        ],
+        [],
+    )
+
+    assert line.critic_ok is True
+    assert line.buyer_ok is True
+    from merchandise_discovery.domain.studio_lines import local_sense_failure
+
+    assert local_sense_failure(long_line) == "too long for a sticker"
 
 
 def test_a_short_batch_refills_until_the_count_or_the_cap() -> None:

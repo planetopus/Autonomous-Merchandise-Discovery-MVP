@@ -1,5 +1,7 @@
 """Tests for design briefs, prompts, artwork generation, and artwork QA."""
 
+import base64
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from merchandise_discovery.domain.models.artifacts import Artwork, MerchandiseConcept
@@ -32,6 +34,7 @@ from merchandise_discovery.domain.stages.stage_17_artwork_revision import (
 from merchandise_discovery.infrastructure.providers.image_provider import (
     FixtureImageProvider,
     ImageEditRequest,
+    ImageGenerationRequest,
     XAIImageProvider,
 )
 
@@ -249,6 +252,61 @@ def test_rejected_artwork_is_retained_for_final_comparison() -> None:
     assert final.artworks[0].decision == ArtworkDecision.REJECT
     assert final.revisions[0].status == "rejected"
     assert final.revisions[0].revised is False
+
+
+def test_xai_generate_uses_base64_bytes_and_does_not_need_a_download() -> None:
+    """A hosted URL that storage cannot fetch is unnecessary when the API returns bytes."""
+
+    provider = XAIImageProvider("test-key", "grok-imagine-image", 0.02, 0.022)
+    provider._client = MagicMock()
+    provider._client.images.generate.return_value = SimpleNamespace(
+        data=[
+            SimpleNamespace(
+                url="https://imgen.x.ai/private.png",
+                b64_json=base64.b64encode(b"png-bytes").decode("ascii"),
+            )
+        ]
+    )
+
+    result = provider.generate(
+        ImageGenerationRequest(
+            concept_id="concept-1",
+            brief_id="brief-1",
+            prompt="A die-cut sticker.",
+            variant_number=1,
+        )
+    )
+
+    assert result.content == b"png-bytes"
+    assert result.source_url == "https://imgen.x.ai/private.png"
+
+
+def test_xai_generate_downloads_an_xai_url_with_the_api_key() -> None:
+    """When xAI returns only a URL, the provider fetches the bytes before storage."""
+
+    provider = XAIImageProvider("test-key", "grok-imagine-image", 0.02, 0.022)
+    provider._client = MagicMock()
+    provider._client.images.generate.return_value = SimpleNamespace(
+        data=[SimpleNamespace(url="https://imgen.x.ai/only-url.png", b64_json=None)]
+    )
+    downloaded = MagicMock()
+    downloaded.content = b"downloaded-png"
+    downloaded.raise_for_status = MagicMock()
+    with patch("merchandise_discovery.infrastructure.providers.image_provider.httpx.Client") as client:
+        client.return_value.__enter__.return_value.get.return_value = downloaded
+        result = provider.generate(
+            ImageGenerationRequest(
+                concept_id="concept-1",
+                brief_id="brief-1",
+                prompt="A die-cut sticker.",
+                variant_number=1,
+            )
+        )
+
+    call = client.return_value.__enter__.return_value.get.call_args
+    assert call.args[0] == "https://imgen.x.ai/only-url.png"
+    assert call.kwargs["headers"]["Authorization"] == "Bearer test-key"
+    assert result.content == b"downloaded-png"
 
 
 def test_xai_edit_uses_json_endpoint_and_records_provider_cost() -> None:

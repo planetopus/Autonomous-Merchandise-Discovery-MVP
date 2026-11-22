@@ -46,6 +46,7 @@ PROTECTED_EXAMPLES: tuple[str, ...] = (
     "I Grounded the Panel. I Cannot Ground My Teen.",
     "OSHA Would Like a Word With My Weekend.",
     "Sorry I Missed Your Call. I Saw It Happen.",
+    "We Started Leaving Yesterday.",
     "Most Likely To Bring a Side and a Grudge.",
     "Text Me When You Get There. I'll Be Watching the Dots.",
     "I Tabbed the Red Flags. Then I Married Him.",
@@ -338,6 +339,13 @@ def stacked_pun(text: str) -> bool:
     return len(tokens & _STACKED_TOKENS) >= 3
 
 
+def sticker_too_long(text: str) -> bool:
+    """A sticker slogan is about 4 to 14 words. A run-on does not fit."""
+
+    words = re.findall(r"[A-Za-z0-9']+", text or "")
+    return len(words) > 16
+
+
 def local_sense_failure(line: ScoredLine) -> str:
     """The hard gate before any score. Empty means the line may be judged."""
 
@@ -345,6 +353,8 @@ def local_sense_failure(line: ScoredLine) -> str:
         return "invented mashup"
     if stacked_pun(line.text):
         return "stacked puns"
+    if sticker_too_long(line.text):
+        return "too long for a sticker"
     if not real_buyers(line.buyers):
         return "no real buyer group"
     return ""
@@ -369,6 +379,25 @@ def comedy_passed(review: ComedyGateItem | None, text: str) -> bool:
     except (TypeError, ValueError):
         return False
     return score >= 7
+
+
+def dark_punchline_survives(review: ComedyGateItem | None, line: ScoredLine) -> bool:
+    """A clear dark joke is not dropped for being dark."""
+
+    if review is None or not line_counts_as_dark(line):
+        return False
+    if (
+        review.cliche
+        or review.stacked
+        or review.invented_mashup
+        or not review.instant
+        or not review.one_joke
+    ):
+        return False
+    try:
+        return float(review.score) >= 7
+    except (TypeError, ValueError):
+        return False
 
 
 def line_counts_as_dark(line: ScoredLine) -> bool:
@@ -504,22 +533,12 @@ def studio_image_prompt(text: str, scene: str, style_name: str, style_note: str)
 
 
 # Three illustrations of the move. Not a menu of slogans to fill in.
-MOVE_EXAMPLES: tuple[tuple[str, str, str], ...] = (
-    (
-        "parents at bedtime",
-        "one game word for how the night went",
-        "I Rolled a Natural 1 on Bedtime.",
-    ),
-    (
-        "a baker whose starter stalled",
-        "one texting phrase",
-        "My Starter Left Me on Read.",
-    ),
-    (
-        "an introvert who watched the phone ring",
-        "one confession",
-        "Sorry I Missed Your Call. I Saw It Happen.",
-    ),
+MOVE_EXAMPLES: tuple[tuple[str, str], ...] = (
+    ("parents at bedtime", "I Rolled a Natural 1 on Bedtime."),
+    ("a cook and a smoke alarm", "Awarded One Star. By the Smoke Alarm."),
+    ("a baker whose starter stalled", "My Starter Left Me on Read."),
+    ("people who started leaving early", "We Started Leaving Yesterday."),
+    ("an introvert who saw the call", "Sorry I Missed Your Call. I Saw It Happen."),
 )
 
 
@@ -562,13 +581,13 @@ def calibration_block() -> str:
     """Two or three examples of the move: a real moment, then one twist."""
 
     rows = [
-        f'- Moment: {moment}. Twist: {twist}. Do not copy: "{line}"'
-        for moment, twist, line in MOVE_EXAMPLES
+        f'- The moment stays off the sticker. The line is the punchline: "{line}" ({who})'
+        for who, line in MOVE_EXAMPLES
     ]
     return (
-        "The move is a real moment, then exactly one twist. Do not output these lines.\n"
+        "Ship the punchline, not a description of the moment. Do not output these lines.\n"
         + "\n".join(rows)
-        + "\nDo not fill in a slogan. One opening per batch.\n"
+        + "\nA line that only narrates the scene is wrong. One opening per batch.\n"
     )
 
 
@@ -654,18 +673,20 @@ def _group_block(groups: list[dict]) -> str:
 
 def _moment_rules(count: int, tone: str) -> str:
     return (
-        f"Write {count} original die-cut sticker lines. Tone: {tone}.\n"
-        "Moment first. For each line, do this in order and do not skip:\n"
-        "1. Pick one real group, or one person who really is both of a pair.\n"
-        "2. Name one everyday moment that this person recognizes with no explanation.\n"
-        "3. Add exactly one pun or one twist. Then stop.\n"
+        f"Write {count} sticker slogans. Tone: {tone}.\n"
+        "Each slogan is a real moment this person knows, plus ONE punchline. "
+        "The moment is the setup. artwork_text is only the punchline, 4 to 14 words, "
+        "the kind of line a stranger laughs at in 2 seconds.\n"
+        "Wrong: 'Stirring the soup, I scratch one between stirs.' That only describes the scene.\n"
+        "Right: a short slogan with one turn, such as a game word on bedtime or a texting "
+        "phrase on a stalled starter. Do not copy the examples.\n"
         "One pun only. A second pun, a stacked game phrase, or a made-up splice "
-        "such as Ope'n is a failed line. Do not start from a joke-shape label and "
-        "force it onto a group.\n"
+        "such as Ope'n is a failed line. A run-on is a failed line.\n"
         "buyer_groups is the chosen person's real labels. Never write 'this group'. "
-        "scene is one sentence where the picture carries that single twist. "
-        "At least one line is dark humor the group would tell about itself, with dark true. "
-        "spoof_brand stays empty unless that brand is the single twist.\n"
+        "scene is one sentence where the picture carries that punchline. "
+        "At least one line is dark humor with a real punchline, dark true. "
+        "A dark punchline is still a joke, not a description of a funeral. "
+        "spoof_brand stays empty unless that brand is the punchline.\n"
     )
 
 
@@ -826,37 +847,38 @@ def comedy_gate_prompt(lines: list[ScoredLine]) -> str:
             f"Buyers: {', '.join(line.buyers) or 'unspecified'}."
         )
     return (
-        "Judge clarity, then whether that group would buy. Do not reward cleverness. "
-        "Order for every index: instant (a stranger in that group gets it in 2 seconds), "
-        "one_joke (exactly one pun or twist), stacked (a second pun piled on), "
-        "invented_mashup (a made-up splice such as Ope'n). "
-        "clarity score is 1 to 10 for how instant it is. A confusing line scores 4 or under. "
-        "would_buy is true only when that group would laugh and pay. "
-        "passed requires instant, one_joke, not stacked, not a mashup, and clarity >= 7. "
-        "For a brand spoof, brand_fits is true only when that brand is the single twist, "
-        "and brand_joke_link is that one sentence.\n" + "\n".join(rows)
+        "Require a punchline. A line that only describes a scene fails, even if the scene is specific. "
+        "instant means a stranger laughs in 2 seconds. one_joke means exactly one pun or twist. "
+        "A run-on or a caption scores 4 or under and passed is false. "
+        "Dark humor with a punchline passes. Do not fail it for being dark. "
+        "'Saving a seat at the service. Winner must be present.' is a clear dark joke. "
+        "would_buy is true when that group would laugh and pay, including at a dark joke. "
+        "passed requires instant, one_joke, not stacked, not a mashup, and clarity >= 7.\n"
+        + "\n".join(rows)
     )
 
 
 COMEDY_GATE_SYSTEM = (
-    "You judge sticker lines for a stranger in the named group, not for cleverness. "
-    "Decide the hard gate before the score. instant is false when the line needs an explanation "
-    "or does not name a moment that group already knows. one_joke is false when two puns are "
-    "stacked, as in 'Laundry Boss: Unlocks Level Mud.' stacked is true for that. "
+    "You judge sticker slogans. A line that only describes a scene fails, even if it is specific. "
+    "instant is false when a stranger would not laugh in 2 seconds. "
+    "one_joke is false when there is no punchline, or when two puns are stacked. "
     "invented_mashup is true for a made-up splice such as Ope'n. "
-    "Those lines fail even if they sound witty. score is clarity from 1 to 10, and a confusing "
-    "line is 4 or under. would_buy is true only if that exact group would laugh and buy it. "
-    "passed is true only when the gate passes and clarity is at least 7. "
+    "A run-on scores 4 or under. "
+    "Dark humor is allowed. Do not fail instant, one_joke, or would_buy because the joke is "
+    "about death, a funeral, or gallows humor. "
+    "'Saving a seat at the service. Winner must be present.' passes. "
+    "would_buy is true when that group would laugh and buy it, including a dark punchline. "
+    "passed is true only when there is one clear punchline and clarity is at least 7. "
     "Reject Knit Happens, Live Laugh Love, World's Okayest, and Keep Calm."
 )
 
 STUDIO_WRITER_SYSTEM = (
-    "You write die-cut sticker lines from a real moment, then exactly one twist. "
-    "Never copy an example. Never stack a second pun. Never invent a splice such as Ope'n. "
-    "A stranger in the named group must get the line in 2 seconds. "
-    "buyer_groups is two real labels, never 'this group'. "
-    "scene is one sentence where the picture carries that single twist. "
-    "dark is true only for gallows humor that group would tell about itself."
+    "You write short sticker slogans. Each one is a punchline, not a description of a scene. "
+    "A real moment is the setup. The words on the sticker are the one twist that makes a stranger laugh. "
+    "4 to 14 words. Never copy an example. Never stack a second pun. "
+    "Never invent a splice such as Ope'n. "
+    "Dark humor with a punchline is welcome. A scene caption is not. "
+    "buyer_groups is the real labels, never 'this group'."
 )
 
 
@@ -937,7 +959,14 @@ def apply_gate_reviews(
             line.buyer_reason = line.critic_reason
         else:
             line.buyer_reason = "no buyer review"
-        line.buyer_ok = bool(line.critic_ok and would_buy)
+        if dark_punchline_survives(review, line):
+            line.critic_ok = True
+            line.buyer_ok = True
+            if review is not None and line.score < float(review.score):
+                line.score = float(review.score)
+            line.buyer_reason = line.buyer_reason or "dark punchline"
+        else:
+            line.buyer_ok = bool(line.critic_ok and would_buy)
         stamped.append(line)
     return stamped
 

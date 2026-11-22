@@ -61,20 +61,23 @@ def execute(
 
     def _generate_one(job: tuple[int, PromptCompilation, int]):
         index, prompt, variant_number = job
-        generated = provider.generate(
-            ImageGenerationRequest(
-                concept_id=prompt.concept_id,
-                brief_id=prompt.brief_id,
-                prompt=prompt.prompt,
-                variant_number=variant_number,
+        try:
+            generated = provider.generate(
+                ImageGenerationRequest(
+                    concept_id=prompt.concept_id,
+                    brief_id=prompt.brief_id,
+                    prompt=prompt.prompt,
+                    variant_number=variant_number,
+                )
             )
-        )
-        stored = storage_adapter.persist(
-            source_url=generated.source_url,
-            storage_key=generated.storage_key,
-            reported_size_bytes=generated.file_size_bytes,
-            content=generated.content,
-        )
+            stored = storage_adapter.persist(
+                source_url=generated.source_url,
+                storage_key=generated.storage_key,
+                reported_size_bytes=generated.file_size_bytes,
+                content=generated.content,
+            )
+        except (OSError, RuntimeError, ValueError) as error:
+            return index, None, UsageMetrics(), str(error)
         artwork = Artwork(
             run_id=prompt.run_id,
             concept_id=prompt.concept_id,
@@ -90,7 +93,7 @@ def execute(
             mime_type=stored.mime_type or generated.mime_type,
             file_size_bytes=stored.file_size_bytes,
         )
-        return index, artwork, generated.usage
+        return index, artwork, generated.usage, ""
 
     if not jobs:
         return ArtworkGenerationOutput()
@@ -98,6 +101,16 @@ def execute(
     with ThreadPoolExecutor(max_workers=workers) as pool:
         finished = list(pool.map(_generate_one, jobs))
     finished.sort(key=lambda item: item[0])
-    artworks = [item[1] for item in finished]
-    usages = [item[2] for item in finished]
-    return ArtworkGenerationOutput(artworks=artworks, usage=combine_usage(*usages))
+    failures = [item[3] for item in finished if item[3]]
+    artworks = [item[1] for item in finished if item[1] is not None]
+    if not artworks:
+        raise RuntimeError(failures[0] if failures else "Artwork generation produced no images.")
+    usages = [item[2] for item in finished if item[2].request_count or item[2].image_count]
+    warning = ""
+    if failures:
+        warning = f"{len(failures)} images failed. {failures[0]}"
+    return ArtworkGenerationOutput(
+        artworks=artworks,
+        usage=combine_usage(*usages) if usages else UsageMetrics(),
+        warning=warning,
+    )
