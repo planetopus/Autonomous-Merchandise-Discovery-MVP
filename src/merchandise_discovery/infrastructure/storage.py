@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Protocol
 from urllib.request import Request, urlopen
 
+import httpx
+
 from merchandise_discovery.infrastructure.sticker_outline import render_die_cut_png
 
 
@@ -81,11 +83,9 @@ class LocalArtworkStorage:
             return StoredArtwork(storage_key=storage_key, file_size_bytes=reported_size_bytes)
 
         if content is None:
-            request = Request(source_url, headers={"User-Agent": "autonomous-merchandise-discovery/0.1"})
             try:
-                with urlopen(request, timeout=30) as response:  # URL is provider output.
-                    content = response.read()
-            except (OSError, ValueError) as error:
+                content = _download_artwork(source_url)
+            except (OSError, ValueError, httpx.HTTPError) as error:
                 raise RuntimeError("Artwork object storage download failed.") from error
         if not content:
             raise RuntimeError("Artwork object storage received an empty file.")
@@ -117,6 +117,31 @@ class LocalArtworkStorage:
             height=height,
             mime_type="image/png",
         )
+
+
+def _download_artwork(url: str) -> bytes:
+    """Read a provider file. Local fixture URIs stay on urllib. Hosted files use httpx."""
+
+    if url.startswith("file:"):
+        request = Request(url, headers={"User-Agent": "autonomous-merchandise-discovery/0.1"})
+        with urlopen(request, timeout=30) as response:
+            return response.read()
+    last_error: Exception | None = None
+    for _attempt in range(2):
+        try:
+            with httpx.Client(timeout=90.0, follow_redirects=True) as client:
+                response = client.get(
+                    url,
+                    headers={"User-Agent": "autonomous-merchandise-discovery/0.1"},
+                )
+                response.raise_for_status()
+        except httpx.HTTPError as error:
+            last_error = error
+            continue
+        if response.content:
+            return response.content
+        last_error = ValueError("empty artwork download")
+    raise RuntimeError("Artwork object storage download failed.") from last_error
 
 
 def _die_cut_storage_key(storage_key: str) -> str:

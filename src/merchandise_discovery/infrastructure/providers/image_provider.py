@@ -10,6 +10,7 @@ import logging
 import re
 from dataclasses import dataclass, field
 from typing import Protocol
+from urllib.parse import urlparse
 
 import httpx
 from openai import OpenAI, OpenAIError
@@ -17,6 +18,18 @@ from openai import OpenAI, OpenAIError
 from merchandise_discovery.domain.models.usage import UsageMetrics
 
 logger = logging.getLogger(__name__)
+
+
+def _decode_image_bytes(raw: str | None) -> bytes | None:
+    """Turn a provider base64 payload into bytes. A blank or broken payload is ignored."""
+
+    if not raw:
+        return None
+    try:
+        content = base64.b64decode(raw)
+    except (ValueError, TypeError):
+        return None
+    return content or None
 
 
 @dataclass(frozen=True)
@@ -287,9 +300,17 @@ class XAIImageProvider:
             response = self._client.images.generate(model=self._model, prompt=request.prompt)
         except (OpenAIError, TypeError, ValueError) as error:
             raise RuntimeError(public_image_error(f"xAI {self._model}", error)) from error
-        if not response.data or not getattr(response.data[0], "url", None):
+        if not response.data:
             raise RuntimeError("xAI image generation returned no image URL.")
-        source_url = response.data[0].url
+        record = response.data[0]
+        source_url = getattr(record, "url", None) or ""
+        content = _decode_image_bytes(getattr(record, "b64_json", None))
+        if content is None and source_url:
+            content = self._download_image(source_url)
+        if not content:
+            raise RuntimeError("xAI image generation returned no image bytes.")
+        if not source_url:
+            source_url = f"xai://{self._model}/{request.concept_id}"
         slug = re.sub(r"[^a-z0-9]+", "-", request.concept_id.lower()).strip("-")
         return GeneratedImage(
             source_url=source_url,
@@ -297,9 +318,8 @@ class XAIImageProvider:
             width=1024,
             height=1024,
             mime_type="image/png",
-            # xAI returns a hosted URL; Stage 15's storage adapter downloads it and replaces this
-            # estimate with the measured binary size before MongoDB persistence.
-            file_size_bytes=128_000,
+            file_size_bytes=len(content),
+            content=content,
             usage=UsageMetrics(
                 provider="xai",
                 model=self._model,
@@ -310,6 +330,24 @@ class XAIImageProvider:
                 pricing_note="Estimated from configured xAI per-image pricing.",
             ),
         )
+
+    def _download_image(self, url: str) -> bytes | None:
+        """Fetch the hosted file. An xAI host is retried with the API key."""
+
+        plain = {"User-Agent": "autonomous-merchandise-discovery/0.1"}
+        authed = {**plain, "Authorization": f"Bearer {self._api_key}"}
+        host = urlparse(url).netloc.casefold()
+        header_sets = [authed, plain] if host.endswith("x.ai") else [plain]
+        for headers in header_sets:
+            try:
+                with httpx.Client(timeout=90.0, follow_redirects=True) as client:
+                    response = client.get(url, headers=headers)
+                    response.raise_for_status()
+            except httpx.HTTPError:
+                continue
+            if response.content:
+                return response.content
+        return None
 
     def edit(self, request: ImageEditRequest) -> GeneratedImage:
         """Call xAI's JSON image-edit endpoint and convert its result to the image contract.
