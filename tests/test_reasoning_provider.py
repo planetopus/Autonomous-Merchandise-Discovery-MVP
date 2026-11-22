@@ -197,6 +197,24 @@ def test_search_web_uses_the_openai_web_search_tool() -> None:
     assert "web-search call" in (usage.pricing_note or "")
 
 
+def test_sale_search_uses_a_non_reasoning_model() -> None:
+    """The for-sale check does not pay for a reasoning pass."""
+
+    provider = _provider("gpt-5")
+    provider._client.responses.create.return_value = SimpleNamespace(
+        output=[],
+        usage=SimpleNamespace(input_tokens=2, output_tokens=3, total_tokens=5),
+    )
+
+    _citations, usage = provider.search_web_cheap('"Here Lies Dad" sticker OR shirt OR decal')
+
+    kwargs = provider._client.responses.create.call_args.kwargs
+    assert kwargs["model"] == "gpt-4o-mini"
+    assert kwargs["tools"] == [{"type": "web_search"}]
+    assert "reasoning" not in kwargs
+    assert usage.model == "gpt-4o-mini"
+
+
 def test_models_without_web_search_filters_fail_before_the_request() -> None:
     """gpt-4o-mini rejects web_search filters, so the adapter stops with a model hint."""
 

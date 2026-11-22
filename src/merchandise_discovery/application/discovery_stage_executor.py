@@ -122,6 +122,9 @@ from merchandise_discovery.domain.studio_lines import (
     apply_sale_flags,
     chunked,
     comedy_gate_prompt,
+    dark_refill_prompt,
+    limit_template_openings,
+    line_counts_as_dark,
     local_sense_failure,
     real_buyers,
     refill_writer_prompt,
@@ -130,6 +133,7 @@ from merchandise_discovery.domain.studio_lines import (
     select_studio_finals,
     studio_image_prompt,
     studio_opening_prompts,
+    studio_target_groups,
 )
 from merchandise_discovery.infrastructure.ant_ratings_loader import (
     ant_calibration_block,
@@ -301,6 +305,32 @@ def _survivor_count(lines: list, keep: int, flat_only: bool) -> int:
 
     styled, _note = select_studio_finals(lines, keep, flat_only=flat_only)
     return len(styled)
+
+
+def _has_dark_survivor(lines: list) -> bool:
+    """A gated line that is actually dark, including a tombstone opening."""
+
+    return any(
+        line_counts_as_dark(line)
+        and line.critic_ok
+        and line.buyer_ok
+        and not line.for_sale_url
+        and not local_sense_failure(line)
+        for line in lines
+    )
+
+
+def _prepare_new_lines(pool: list, extra: list, copied: list, references: list):
+    """Drop repeats, copies, and stacked lines from one refill before the critic sees it."""
+
+    already = {line.text.casefold() for line in pool}
+    fresh = [line for line in extra if line.text.casefold() not in already]
+    fresh, extra_copied = reject_unoriginal(fresh, references)
+    fresh, repeated = limit_template_openings(fresh)
+    copied.extend(extra_copied)
+    copied.extend(repeated)
+    readable, blocked = _split_sense(fresh)
+    return readable, blocked, copied
 
 
 def _stamp_text_check(artwork, status: str, problem: str):
@@ -880,10 +910,7 @@ class DiscoveryStageExecutor:
             self._recent_catalog_terms(run),
             market.token_weights if market.identities else None,
         )
-        groups: list[dict] = []
-        if len(supplied) >= 2:
-            groups.append({"niche_a": supplied[0], "niche_b": " + ".join(supplied[1:])})
-        groups.extend(select_distinct_groups(bank, 6) or bank[:6])
+        groups = studio_target_groups(supplied, bank)
         pair_a = str(groups[0]["niche_a"]) if groups else (supplied[0] if supplied else "")
         pair_b = str(groups[0]["niche_b"]) if groups else ""
         pair_meta = {
@@ -926,8 +953,12 @@ class DiscoveryStageExecutor:
             if (body := " ".join(str(getattr(quote, "body", "") or "").split()))
         ]
         fresh, copied = reject_unoriginal(drafted, [*references, *gold, *quote_refs])
+        fresh, repeated = limit_template_openings(fresh)
+        copied.extend(repeated)
         if copied:
-            warnings.append(f"Cut {len(copied)} lines that copied an example or a top seller.")
+            warnings.append(
+                f"Cut {len(copied)} lines that copied an example, a top seller, or a repeated template."
+            )
         if not fresh and not drafted:
             raise RuntimeError("Studio mode wrote no original sticker lines.")
         self._note_social_progress(usage, pair_meta, [], [], warnings)
@@ -944,17 +975,26 @@ class DiscoveryStageExecutor:
         keep = max(1, int(getattr(input_model, "candidate_count", 10) or 10))
         flat_only = bool(getattr(run.config, "social_flat_art", False))
         sale_on = bool(getattr(run.config, "social_check_already_for_sale", False))
-        if sale_on:
-            sale_note = self._flag_exact_phrases(
-                [line for line in readable if line.critic_ok and line.buyer_ok]
+        if keep >= 5 and not _has_dark_survivor(pool):
+            extra, extra_usage, extra_errors = self._draft_studio_prompts(
+                [dark_refill_prompt(groups=groups, tone=str(tone_text))]
             )
-            if sale_note:
-                warnings.append(sale_note)
-        else:
-            warnings.append(
-                "Exact-phrase sale check was off. "
-                "Turn on Check if already for sale to cut lines already sold."
+            usage = self._add_usage(usage, extra_usage)
+            for error in extra_errors:
+                warnings.append(f"The dark-line refill failed: {error}")
+            added, extra_blocked, copied = _prepare_new_lines(
+                pool,
+                extra,
+                copied,
+                [*references, *gold, *quote_refs],
             )
+            gate_usage, gate_note = self._run_studio_gates(added)
+            usage = self._add_usage(usage, gate_usage)
+            if gate_note:
+                warnings.append(gate_note)
+            pool.extend(added)
+            pool.extend(extra_blocked)
+            warnings.append("A refill asked for one dark line.")
         refill_rounds = 0
         while refill_rounds < REFILL_CAP and _survivor_count(pool, keep, flat_only) < keep:
             refill_rounds += 1
@@ -976,27 +1016,29 @@ class DiscoveryStageExecutor:
                 warnings.append(f"A refill draft failed: {error}")
             already = {line.text.casefold() for line in pool}
             extra = [line for line in extra if line.text.casefold() not in already]
-            extra, extra_copied = reject_unoriginal(
+            added, extra_blocked, copied = _prepare_new_lines(
+                pool,
                 extra,
+                copied,
                 [*references, *gold, *quote_refs],
             )
-            copied.extend(extra_copied)
-            extra_readable, extra_blocked = _split_sense(extra)
-            blocked.extend(extra_blocked)
-            gate_usage, gate_note = self._run_studio_gates(extra_readable)
+            gate_usage, gate_note = self._run_studio_gates(added)
             usage = self._add_usage(usage, gate_usage)
             if gate_note:
                 warnings.append(gate_note)
-            if sale_on:
-                sale_note = self._flag_exact_phrases(
-                    [line for line in extra_readable if line.critic_ok and line.buyer_ok]
-                )
-                if sale_note:
-                    warnings.append(sale_note)
-            pool.extend(extra_readable)
+            pool.extend(added)
             pool.extend(extra_blocked)
         if refill_rounds:
             warnings.append(f"Refill rounds: {refill_rounds}.")
+        if sale_on:
+            sale_note = self._sale_screen_finals(pool, keep, flat_only)
+            if sale_note:
+                warnings.append(sale_note)
+        else:
+            warnings.append(
+                "Exact-phrase sale check was off. "
+                "Turn on Check if already for sale to cut lines already sold."
+            )
         search_usage = getattr(self._listing_search, "usage", None)
         if search_usage is not None and getattr(search_usage, "request_count", 0):
             usage = self._add_usage(usage, search_usage)
@@ -1040,7 +1082,7 @@ class DiscoveryStageExecutor:
                     pattern=line.pattern,
                     who_its_for=line.buyers[:4],
                     kept=False,
-                    reason="copied example or top seller",
+                    reason=line.critic_reason or "copied example or top seller",
                 )
             )
         candidates = [
@@ -1149,6 +1191,30 @@ class DiscoveryStageExecutor:
             return UsageMetrics(), 1
         apply_gate_reviews(batch, response.output.reviews, [])
         return response.usage, 0
+
+    def _sale_screen_finals(self, pool: list, keep: int, flat_only: bool) -> str:
+        """Search the lines that would ship. A hit is replaced by the next best line."""
+
+        searched: set[str] = set()
+        notes: list[str] = []
+        budget = keep + 4
+        while len(searched) < budget:
+            styled, _note = select_studio_finals(pool, keep, flat_only=flat_only)
+            pending = [
+                line
+                for line, _style, _blurb in styled
+                if line.text not in searched and not line.for_sale_url
+            ]
+            if not pending:
+                break
+            notes.append(self._flag_exact_phrases(pending))
+            for line in pending:
+                searched.add(line.text)
+            if not any(line.for_sale_url for line in pending):
+                break
+        if not notes:
+            return "Exact-phrase check had no final lines to search."
+        return " ".join(note for note in notes if note)
 
     def _flag_exact_phrases(self, lines: list) -> str:
         """Exact-phrase web search on lines that already cleared the two reviews."""

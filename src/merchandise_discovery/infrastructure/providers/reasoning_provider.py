@@ -233,6 +233,36 @@ class OpenAIReasoningProvider:
             self._web_search_price_per_call,
         )
 
+    def search_web_cheap(self, query: str) -> tuple[list[dict[str, str]], UsageMetrics]:
+        """Phrase check on a non-reasoning model. The sale screen uses this, not gpt-5."""
+
+        model = os.getenv("MVP_SALE_SEARCH_MODEL", "gpt-4o-mini").strip() or "gpt-4o-mini"
+        request_kwargs: dict[str, object] = {
+            "model": model,
+            "tools": [{"type": "web_search"}],
+            "tool_choice": "required",
+            "input": query,
+        }
+        try:
+            response = self._client.responses.create(**request_kwargs)
+        except (OpenAIError, TypeError, ValueError) as error:
+            detail = str(error).strip() or type(error).__name__
+            raise ReasoningProviderError(f"Web search failed: {detail[:500]}") from error
+        citations: list[dict[str, str]] = []
+        seen: set[str] = set()
+        for annotation in _iter_annotations(response):
+            url = _annotation_value(annotation, "url")
+            if not url or url in seen:
+                continue
+            seen.add(url)
+            title = _annotation_value(annotation, "title") or url
+            citations.append({"url": url, "title": title})
+        return citations, self._usage_metrics(
+            getattr(response, "usage", None),
+            self._web_search_price_per_call,
+            model,
+        )
+
     def _usage_metrics(
         self,
         provider_usage: object,

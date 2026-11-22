@@ -51,25 +51,6 @@ PROTECTED_EXAMPLES: tuple[str, ...] = (
     "I Tabbed the Red Flags. Then I Married Him.",
 )
 
-# One twist each. Shown to the writer as calibration, then blocked as copies.
-CALIBRATION: tuple[tuple[str, str, str], ...] = (
-    ("parents who play D&D", "bedtime", "I Rolled a Natural 1 on Bedtime."),
-    ("home cooks", "the smoke alarm", "Awarded One Star. By the Smoke Alarm."),
-    ("hikers", "the trail sign", "Leave Only Footprints. Take Only Ibuprofen."),
-    ("sourdough bakers", "a starter that stalled", "My Starter Left Me on Read."),
-    ("electrician parents", "grounding a panel", "I Grounded the Panel. I Cannot Ground My Teen."),
-    ("weekend project people", "a risky Saturday", "OSHA Would Like a Word With My Weekend."),
-    ("introverts", "a missed call", "Sorry I Missed Your Call. I Saw It Happen."),
-    ("potluck regulars", "what they bring", "Most Likely To Bring a Side and a Grudge."),
-    ("moms", "a texted trip", "Text Me When You Get There. I'll Be Watching the Dots."),
-    ("romance readers", "the red flags", "I Tabbed the Red Flags. Then I Married Him."),
-    ("anyone with a fridge", "opening it again", "Fridge Opened 47 Times Today. No New Food Detected."),
-    ("a nervous performer", "the student-driver sign", "PLEASE BE PATIENT: Driver Is Attempting the High Note"),
-    ("families", "dad's shortcut", "Here Lies Dad. He Knew a Shortcut."),
-    ("gardeners who game", "what comes back next year", "Perennials Respawn. Annuals Rage Quit."),
-    ("mail carriers", "the dogs on the route", "Most Wanted by Every Dog on My Route"),
-)
-
 _PLACEHOLDER_BUYERS = {
     "this group",
     "people who know them",
@@ -522,18 +503,144 @@ def studio_image_prompt(text: str, scene: str, style_name: str, style_note: str)
     return prompt
 
 
+# Three illustrations of the move. Not a menu of slogans to fill in.
+MOVE_EXAMPLES: tuple[tuple[str, str, str], ...] = (
+    (
+        "parents at bedtime",
+        "one game word for how the night went",
+        "I Rolled a Natural 1 on Bedtime.",
+    ),
+    (
+        "a baker whose starter stalled",
+        "one texting phrase",
+        "My Starter Left Me on Read.",
+    ),
+    (
+        "an introvert who watched the phone ring",
+        "one confession",
+        "Sorry I Missed Your Call. I Saw It Happen.",
+    ),
+)
+
+
+def template_key(text: str) -> str:
+    """The protected opening, if this line is a fill-in of one slogan."""
+
+    lowered = " ".join(str(text or "").casefold().split())
+    if lowered.startswith("here lies"):
+        return "here lies"
+    if lowered.startswith("please be patient"):
+        return "please be patient"
+    if "★" in str(text or "") or "would not recommend" in lowered:
+        return "star rating"
+    return ""
+
+
+def limit_template_openings(
+    lines: list[ScoredLine],
+) -> tuple[list[ScoredLine], list[ScoredLine]]:
+    """Keep the first line of each protected opening and drop the repeats."""
+
+    seen: set[str] = set()
+    kept: list[ScoredLine] = []
+    dropped: list[ScoredLine] = []
+    for line in lines:
+        key = template_key(line.text)
+        if key and key in seen:
+            line.critic_ok = False
+            line.buyer_ok = False
+            line.critic_reason = f"repeated {key} template"
+            dropped.append(line)
+            continue
+        if key:
+            seen.add(key)
+        kept.append(line)
+    return kept, dropped
+
+
 def calibration_block() -> str:
-    """Few-shot quality bar. The lines are examples of the move, not lines to ship."""
+    """Two or three examples of the move: a real moment, then one twist."""
 
     rows = [
-        f'- {who}. Moment: {moment}. One twist, do not copy: "{line}"'
-        for who, moment, line in CALIBRATION
+        f'- Moment: {moment}. Twist: {twist}. Do not copy: "{line}"'
+        for moment, twist, line in MOVE_EXAMPLES
     ]
     return (
-        "Quality bar. Start from a real moment, then one twist. Do not output these lines.\n"
+        "The move is a real moment, then exactly one twist. Do not output these lines.\n"
         + "\n".join(rows)
-        + "\n"
+        + "\nDo not fill in a slogan. One opening per batch.\n"
     )
+
+
+def _avoid_block(avoid: list[str]) -> str:
+    """Every earlier line, with nothing cut off for length."""
+
+    lines = [text.strip() for text in avoid if text and str(text).strip()]
+    if not lines:
+        return "Do not repeat an earlier line.\n"
+    body = "\n".join(f'- "{text}"' for text in lines)
+    return f"Do not repeat any of these lines:\n{body}\n"
+
+
+def _subject_hint(market_block: str) -> str:
+    """Top sellers name subjects. They do not name the buyer."""
+
+    text = market_block.strip()
+    if not text:
+        return ""
+    return (
+        "Subject hint only. These topics are selling. They do not change who the line is for.\n"
+        f"{text}\n"
+    )
+
+
+def _audience_rule(groups: list[dict]) -> str:
+    """Every draft is for the chosen person, not a rotation of other buyers."""
+
+    if len(groups) == 1:
+        first = str(groups[0].get("niche_a") or "").strip()
+        second = str(groups[0].get("niche_b") or "").strip()
+        return (
+            f'Every line is for one person who is "{first}" and "{second}". '
+            f'buyer_groups must include "{first}" and "{second}". '
+            "Do not write for a different group.\n"
+        )
+    return (
+        "Every line is for one person named below. buyer_groups names that person. "
+        "Do not invent a different audience.\n"
+        f"{_group_block(groups)}\n"
+    )
+
+
+def studio_target_groups(supplied: list[str], bank: list[dict] | None = None) -> list[dict]:
+    """One pair, unless the run named more than two identities on purpose."""
+
+    names = [" ".join(name.split()) for name in supplied if name and str(name).strip()]
+    catalog = bank or []
+    if len(names) == 2:
+        return [{"niche_a": names[0], "niche_b": names[1]}]
+    if len(names) > 2:
+        return [{"niche_a": names[0], "niche_b": name} for name in names[1:]]
+    if len(names) == 1:
+        wanted = names[0].casefold()
+        for item in catalog:
+            sides = (
+                str(item.get("niche_a") or "").strip(),
+                str(item.get("niche_b") or "").strip(),
+            )
+            folded = (sides[0].casefold(), sides[1].casefold())
+            if wanted not in folded:
+                continue
+            other = sides[1] if folded[0] == wanted else sides[0]
+            return [{"niche_a": names[0], "niche_b": other or "everyday life"}]
+        partner = str(catalog[0].get("niche_b") or "").strip() if catalog else ""
+        return [{"niche_a": names[0], "niche_b": partner or "everyday life"}]
+    for item in catalog:
+        first = str(item.get("niche_a") or "").strip()
+        second = str(item.get("niche_b") or "").strip()
+        if first and second:
+            return [{"niche_a": first, "niche_b": second}]
+    return [{"niche_a": "parents", "niche_b": "everyday life"}]
 
 
 def _group_block(groups: list[dict]) -> str:
@@ -550,13 +657,12 @@ def _moment_rules(count: int, tone: str) -> str:
         f"Write {count} original die-cut sticker lines. Tone: {tone}.\n"
         "Moment first. For each line, do this in order and do not skip:\n"
         "1. Pick one real group, or one person who really is both of a pair.\n"
-        "2. Name one everyday moment that group recognizes with no explanation "
-        "(bedtime, the smoke alarm, a text from mom, the fridge door).\n"
+        "2. Name one everyday moment that this person recognizes with no explanation.\n"
         "3. Add exactly one pun or one twist. Then stop.\n"
         "One pun only. A second pun, a stacked game phrase, or a made-up splice "
         "such as Ope'n is a failed line. Do not start from a joke-shape label and "
         "force it onto a group.\n"
-        "buyer_groups is 2 real labels for those people. Never write 'this group'. "
+        "buyer_groups is the chosen person's real labels. Never write 'this group'. "
         "scene is one sentence where the picture carries that single twist. "
         "At least one line is dark humor the group would tell about itself, with dark true. "
         "spoof_brand stays empty unless that brand is the single twist.\n"
@@ -577,10 +683,9 @@ def crossover_writer_prompt(
     return (
         f"{batch_label}.\n"
         f"{_moment_rules(total, tone)}"
-        "These pairs are people who really live both sides. Rotate them. "
-        "Set kind to crossover. The pair is the person, not two jokes.\n"
+        f"{_audience_rule(groups)}"
+        "Set kind to crossover. The two labels are one person, not two jokes.\n"
         f"{calibration_block()}"
-        f"Buyer pairs:\n{_group_block(groups)}\n"
         f"{quotes}"
     )
 
@@ -589,45 +694,48 @@ def format_writer_prompt(
     *,
     market_block: str,
     tone: str,
+    groups: list[dict] | None = None,
     quotes: str = "",
     batch_label: str = "PROVEN FORMAT",
     shapes: str = "all",
     count: int | None = None,
 ) -> str:
-    """Ask for a real moment told in one proven shape. Do not copy the examples."""
+    """Ask for one line per shape, for the same person as the other drafts."""
 
-    total = count or DRAFT_PER_HALF
-    signal = market_block.strip() or (
-        "No top-seller list was loaded. Pick a specific real group yourself."
-    )
     if shapes == "count":
+        total = 2
         shape_block = (
-            "- A disappointing count, the way a doorbell log would. One number, one letdown.\n"
-            "- A patient-driver sign: PLEASE BE PATIENT, then one hard specific thing.\n"
+            "Write exactly 2 lines, one per shape. Do not write a second line in either shape.\n"
+            "- One disappointing count: a habit or device reports a number, and the number is the letdown.\n"
+            "- One patience sign: ask the reader to wait while this person attempts one hard thing.\n"
         )
     elif shapes == "plaque":
+        total = 3
         shape_block = (
-            "- One star from a specific object, not a review of a whole life piled with puns.\n"
-            "- A reading habit stated as one physical fact.\n"
-            "- A tombstone line: Here Lies, one role, one deadpan fact. Dark humor is allowed.\n"
+            "Write exactly 3 lines, one per shape. Do not write a second line in any shape.\n"
+            "- One object gives a one-star verdict on a real mishap.\n"
+            "- One reading habit stated as a single physical fact.\n"
+            "- One tombstone: this person's role and one deadpan fact. Set dark true.\n"
         )
     else:
+        total = count or 5
         shape_block = (
-            "- A disappointing count. One number, one letdown.\n"
-            "- PLEASE BE PATIENT, then one hard specific thing.\n"
-            "- One star from one specific object.\n"
-            "- A reading habit as one physical fact.\n"
-            "- Here Lies, one role, one deadpan fact.\n"
+            "Write one line per shape, and no seconds.\n"
+            "- One disappointing count.\n"
+            "- One patience sign for one hard attempt.\n"
+            "- One one-star verdict from one object.\n"
+            "- One reading habit as a physical fact.\n"
+            "- One tombstone with one deadpan fact. Set dark true.\n"
         )
     return (
         f"{batch_label}.\n"
         f"{_moment_rules(total, tone)}"
+        f"{_audience_rule(groups or [])}"
         "Set kind to format. Set format_source to the shape, not a product title. "
-        "Use one shape as the single twist on a real moment. Do not stack two shapes.\n"
-        f"Shapes:\n{shape_block}"
+        "Each shape is used once. Do not stack two shapes in one line.\n"
+        f"{shape_block}"
         f"{calibration_block()}"
-        "Top-seller signal is who is buying, not wording to copy.\n"
-        f"{signal}\n"
+        f"{_subject_hint(market_block)}"
         f"{quotes}"
     )
 
@@ -641,31 +749,32 @@ def studio_opening_prompts(
 ) -> list[str]:
     """Four short drafts in parallel, instead of two long ones."""
 
-    if not groups:
-        groups = [{"niche_a": "parents", "niche_b": "a hobby they actually have"}]
-    mid = max(1, len(groups) // 2)
-    first, second = groups[:mid], groups[mid:] or groups[:1]
+    pair = groups[:1] or [{"niche_a": "parents", "niche_b": "everyday life"}]
     return [
         crossover_writer_prompt(
-            groups=first,
+            groups=pair,
             tone=tone,
             quotes=quotes,
+            count=8,
             batch_label="MOMENT CROSSOVER A",
         ),
         crossover_writer_prompt(
-            groups=second,
+            groups=pair,
             tone=tone,
+            count=8,
             batch_label="MOMENT CROSSOVER B",
         ),
         format_writer_prompt(
             market_block=market_block,
             tone=tone,
+            groups=pair,
             batch_label="PROVEN FORMAT A",
             shapes="count",
         ),
         format_writer_prompt(
             market_block=market_block,
             tone=tone,
+            groups=pair,
             batch_label="PROVEN FORMAT B",
             shapes="plaque",
         ),
@@ -682,15 +791,27 @@ def refill_writer_prompt(
 ) -> str:
     """One short extra batch for the lines still missing. It does not redo the whole draft."""
 
-    skipped = "; ".join(f'"{text}"' for text in avoid if text)[:800]
     return (
         "REFILL.\n"
         f"{_moment_rules(count, tone)}"
-        "Mix real-life overlaps and one proven format. Set kind to crossover or format. "
-        f"Do not repeat these lines: {skipped or 'none'}.\n"
+        f"{_audience_rule(groups)}"
+        "Set kind to crossover or format. Each format shape at most once.\n"
+        f"{_avoid_block(avoid)}"
         f"{calibration_block()}"
-        f"Buyer pairs:\n{_group_block(groups)}\n"
-        f"{market_block}"
+        f"{_subject_hint(market_block)}"
+    )
+
+
+def dark_refill_prompt(*, groups: list[dict], tone: str) -> str:
+    """One short call when a batch of ten has no dark line."""
+
+    return (
+        "DARK REFILL.\n"
+        f"{_moment_rules(2, tone)}"
+        f"{_audience_rule(groups)}"
+        "Both lines are dark humor this person would tell about their own life. "
+        "Set dark true. One twist only.\n"
+        f"{calibration_block()}"
     )
 
 
@@ -717,21 +838,6 @@ def comedy_gate_prompt(lines: list[ScoredLine]) -> str:
     )
 
 
-def buyer_gate_prompt(lines: list[ScoredLine]) -> str:
-    """Number a batch for the buyer who would actually wear it."""
-
-    rows = []
-    for index, line in enumerate(lines):
-        buyers = ", ".join(line.buyers) or "the named group"
-        rows.append(
-            f'{index}. Buyers: {buyers}. Line: "{line.text}" Picture: {line.scene or "unspecified"}.'
-        )
-    return (
-        "For each index, would_buy is true only if that exact group would laugh and buy the sticker. "
-        "A clever line they would not wear is false.\n" + "\n".join(rows)
-    )
-
-
 COMEDY_GATE_SYSTEM = (
     "You judge sticker lines for a stranger in the named group, not for cleverness. "
     "Decide the hard gate before the score. instant is false when the line needs an explanation "
@@ -753,13 +859,6 @@ STUDIO_WRITER_SYSTEM = (
     "dark is true only for gallows humor that group would tell about itself."
 )
 
-BUYER_GATE_SYSTEM = (
-    "You are a real member of the buyer group named on each line, and you have five dollars "
-    "for one sticker. would_buy is true only if you would laugh and put it on your water bottle "
-    "or give it to someone in that exact group. Clever is not enough. If you would not buy it, "
-    "would_buy is false and reason says why in one sentence."
-)
-
 
 def scored_from_draft(draft: StudioLine) -> ScoredLine | None:
     """Turn one model line into a scored row. Empty text is dropped."""
@@ -771,7 +870,8 @@ def scored_from_draft(draft: StudioLine) -> ScoredLine | None:
     pattern = draft.pattern.strip() or (
         "wordplay pun" if draft.kind != "format" else "slogan twist"
     )
-    if draft.dark:
+    dark = bool(draft.dark) or template_key(text) == "here lies"
+    if dark:
         pattern = "dark twist scene"
     if draft.spoof_brand.strip():
         pattern = "brand logo spoof"
@@ -779,7 +879,7 @@ def scored_from_draft(draft: StudioLine) -> ScoredLine | None:
         text=text[:160],
         buyers=buyers,
         scene=" ".join(draft.scene.split())[:280],
-        dark=bool(draft.dark),
+        dark=dark,
         spoof_brand=draft.spoof_brand.strip()[:80],
         kind=draft.kind.strip() or "crossover",
         format_source=draft.format_source.strip()[:80],
