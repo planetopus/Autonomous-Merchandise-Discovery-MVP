@@ -102,6 +102,57 @@ def test_the_sense_gate_rejects_splices_stacked_puns_and_placeholder_buyers() ->
     assert "exactly one pun" in prompt
     assert "I Rolled a Natural 1 on Bedtime." in prompt
     assert "Do not output these lines" in prompt
+    assert "PLEASE BE PATIENT" not in prompt
+    assert "Here Lies" not in prompt
+
+
+def test_one_pair_is_the_only_audience_and_templates_are_used_once() -> None:
+    """A named pair is not diluted, and a second Here Lies or patience sign is dropped."""
+
+    from merchandise_discovery.domain.humor import is_dark_humor
+    from merchandise_discovery.domain.studio_lines import (
+        limit_template_openings,
+        refill_writer_prompt,
+        studio_opening_prompts,
+        studio_target_groups,
+        template_key,
+    )
+
+    bank = [
+        {"niche_a": "nurses", "niche_b": "night shift"},
+        {"niche_a": "gamers", "niche_b": "Gen Z"},
+        {"niche_a": "remote workers", "niche_b": "parents"},
+    ]
+    groups = studio_target_groups(["Wisconsinites", "Midwesterners"], bank)
+    assert groups == [{"niche_a": "Wisconsinites", "niche_b": "Midwesterners"}]
+    prompts = studio_opening_prompts(groups=groups, market_block="Trending buyers: nurses", tone="dry")
+    assert all("Wisconsinites" in prompt and "Midwesterners" in prompt for prompt in prompts)
+    assert all("Subject hint only" in prompt or "MOMENT CROSSOVER" in prompt for prompt in prompts)
+    assert all("nurses" not in prompt.split("Subject hint only")[0] for prompt in prompts if "PROVEN FORMAT" in prompt)
+    assert is_dark_humor(
+        type("Line", (), {"artwork_text": "Here Lies Dad. He Knew a Shortcut.", "pattern": "", "humor_mechanism": "", "image_idea": "", "why_it_works": ""})()
+    )
+    first, second, third = (
+        _line("Here Lies The Group Chat. It Knew The Shortcut.", buyers=["parents", "gamers"], score=9),
+        _line("Here Lies The Sourdough. It Never Texted Back.", buyers=["parents", "gamers"], score=8),
+        _line("Please Be Patient: Baker Is Attempting The Crumb.", buyers=["parents", "gamers"]),
+    )
+    assert template_key(first.text) == "here lies"
+    assert template_key(third.text) == "please be patient"
+    kept, dropped = limit_template_openings([first, second, third, _line("Please Be Patient: The Dog Is Learning Sit.", buyers=["parents", "gamers"])])
+    assert [line.text for line in kept] == [first.text, third.text]
+    assert len(dropped) == 2
+    avoid = [f"Line number {index} that must stay on the refill list" for index in range(30)]
+    refill = refill_writer_prompt(
+        count=4,
+        avoid=avoid,
+        groups=groups,
+        tone="dry",
+        market_block="Trending buyers: nurses",
+    )
+    assert all(line in refill for line in avoid)
+    assert "Subject hint only" in refill
+    assert "Wisconsinites" in refill
 
 
 def test_a_short_batch_refills_until_the_count_or_the_cap() -> None:
@@ -351,6 +402,8 @@ def test_studio_run_gates_lines_and_labels_every_survivor() -> None:
     assert any(review.kept is False and "already for sale" in review.reason for review in reviews)
     assert any(review.kept is False and "copied" in review.reason for review in reviews)
     assert search_calls
+    assert len(search_calls) <= 14
+    assert any("fridge" in query.casefold() for query in search_calls)
     assert "Fast mode skipped Reddit" in output.stage_warning
     direct = build_identity_artwork_prompt(output.candidates[0])
     assert direct == output.candidates[0].artwork_prompt
@@ -493,7 +546,12 @@ def _comedy(prompt: str):
                 )
             )
             continue
-        score = 7.5 if "died" in text.casefold() else 9
+        if "died" in text.casefold():
+            score = 7.5
+        elif "fridge" in text.casefold():
+            score = 9.5
+        else:
+            score = 8
         reviews.append(
             ComedyGateItem(
                 index=index,

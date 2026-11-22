@@ -339,10 +339,14 @@ def is_dark_humor(candidate) -> bool:
         return True
     blob = " ".join(
         str(getattr(candidate, name, "") or "")
-        for name in ("humor_mechanism", "image_idea", "why_it_works", "pattern")
+        for name in ("artwork_text", "humor_mechanism", "image_idea", "why_it_works", "pattern")
     ).casefold()
     return bool(
-        re.search(r"\b(gallows|morbid|doom|existential|funeral|grave|corpse|misery|dead)\b", blob)
+        re.search(
+            r"\b(gallows|morbid|doom|existential|funeral|grave|corpse|misery|dead|tombstone)\b"
+            r"|\bhere lies\b",
+            blob,
+        )
     )
 
 

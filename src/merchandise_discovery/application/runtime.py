@@ -227,7 +227,7 @@ def build_runtime(settings: Settings) -> ApplicationRuntime:
             ),
             ebay_checker=EbayStickerSearch(app_token=settings.ebay_app_token),
             listing_search=(
-                WebListingSearch(search=reasoning_provider.search_web)
+                WebListingSearch(search=reasoning_provider.search_web_cheap)
                 if reasoning_provider is not None
                 else None
             ),
