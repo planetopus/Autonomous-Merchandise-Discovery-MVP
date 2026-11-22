@@ -112,23 +112,24 @@ from merchandise_discovery.domain.stages import stage_16_artwork_critique as sta
 from merchandise_discovery.domain.stages import stage_17_artwork_revision as stage_17
 from merchandise_discovery.domain.sticker_direction import STICKER_AVOID
 from merchandise_discovery.domain.studio_lines import (
-    BUYER_GATE_SYSTEM,
     COMEDY_GATE_SYSTEM,
-    BuyerGateBatch,
+    REFILL_CAP,
+    STUDIO_WRITER_SYSTEM,
     ComedyGateBatch,
     ScoredLine,
     StudioBatch,
     apply_gate_reviews,
     apply_sale_flags,
-    buyer_gate_prompt,
     chunked,
     comedy_gate_prompt,
-    crossover_writer_prompt,
-    format_writer_prompt,
+    local_sense_failure,
+    real_buyers,
+    refill_writer_prompt,
     reject_unoriginal,
     scored_from_draft,
     select_studio_finals,
     studio_image_prompt,
+    studio_opening_prompts,
 )
 from merchandise_discovery.infrastructure.ant_ratings_loader import (
     ant_calibration_block,
@@ -274,6 +275,32 @@ def _shrink_vision_url(url: str, max_edge: int = 768) -> str:
     except (OSError, ValueError):
         return url
     return f"data:image/png;base64,{encoded}"
+
+
+def _split_sense(lines: list) -> tuple[list, list]:
+    """Hold back stacked puns, invented splices, and lines with no real buyer."""
+
+    readable = []
+    blocked = []
+    for line in lines:
+        reason = local_sense_failure(line)
+        if not reason:
+            readable.append(line)
+            continue
+        line.critic_ok = False
+        line.buyer_ok = False
+        line.score = 0
+        line.critic_reason = reason
+        line.buyer_reason = reason
+        blocked.append(line)
+    return readable, blocked
+
+
+def _survivor_count(lines: list, keep: int, flat_only: bool) -> int:
+    """How many lines would ship right now, before another refill."""
+
+    styled, _note = select_studio_finals(lines, keep, flat_only=flat_only)
+    return len(styled)
 
 
 def _stamp_text_check(artwork, status: str, problem: str):
@@ -872,32 +899,22 @@ class DiscoveryStageExecutor:
         quotes = [] if fast else self._collect_reddit_quotes(input_model)
         seasoning = quote_block(quotes) if quotes else ""
         usage = UsageMetrics()
-        warnings = ["Studio mode drafted crossover puns and original takes on proven formats."]
+        warnings = [
+            "Studio mode starts from a real moment, then one twist."
+        ]
         if fast:
-            warnings.append("Fast mode skipped Reddit. The two review gates still ran.")
-        crossover_prompt = crossover_writer_prompt(
+            warnings.append("Fast mode skipped Reddit. The clarity gate still ran.")
+        market_block = market_signal_prompt(market)
+        opening = studio_opening_prompts(
             groups=groups,
+            market_block=market_block,
             tone=str(tone_text),
             quotes=seasoning,
         )
-        format_prompt = format_writer_prompt(
-            market_block=market_signal_prompt(market),
-            tone=str(tone_text),
-            quotes=seasoning,
-        )
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            drafted_halves = list(
-                pool.map(
-                    lambda prompt: self._safe_studio_draft(prompt),
-                    (crossover_prompt, format_prompt),
-                )
-            )
-        drafted: list[ScoredLine] = []
-        for lines, draft_usage, error in drafted_halves:
-            usage = self._add_usage(usage, draft_usage)
-            drafted.extend(lines)
-            if error:
-                warnings.append(f"One draft half failed: {error}")
+        drafted, draft_usage, draft_errors = self._draft_studio_prompts(opening)
+        usage = self._add_usage(usage, draft_usage)
+        for error in draft_errors:
+            warnings.append(f"One draft half failed: {error}")
         gold = [
             HumorReference(text=line, upvotes=1, humor_type="gold")
             for line in (lab.gold_lines or [])
@@ -911,16 +928,26 @@ class DiscoveryStageExecutor:
         fresh, copied = reject_unoriginal(drafted, [*references, *gold, *quote_refs])
         if copied:
             warnings.append(f"Cut {len(copied)} lines that copied an example or a top seller.")
-        if not fresh:
+        if not fresh and not drafted:
             raise RuntimeError("Studio mode wrote no original sticker lines.")
         self._note_social_progress(usage, pair_meta, [], [], warnings)
-        gate_usage, gate_note = self._run_studio_gates(fresh)
+        readable, blocked = _split_sense(fresh)
+        if blocked:
+            warnings.append(
+                f"Cut {len(blocked)} lines that were stacked, spliced, or had no real buyer."
+            )
+        gate_usage, gate_note = self._run_studio_gates(readable)
         usage = self._add_usage(usage, gate_usage)
         if gate_note:
             warnings.append(gate_note)
-        contenders = [line for line in fresh if line.critic_ok and line.buyer_ok]
-        if getattr(run.config, "social_check_already_for_sale", False):
-            sale_note = self._flag_exact_phrases(contenders)
+        pool = readable + blocked
+        keep = max(1, int(getattr(input_model, "candidate_count", 10) or 10))
+        flat_only = bool(getattr(run.config, "social_flat_art", False))
+        sale_on = bool(getattr(run.config, "social_check_already_for_sale", False))
+        if sale_on:
+            sale_note = self._flag_exact_phrases(
+                [line for line in readable if line.critic_ok and line.buyer_ok]
+            )
             if sale_note:
                 warnings.append(sale_note)
         else:
@@ -928,18 +955,59 @@ class DiscoveryStageExecutor:
                 "Exact-phrase sale check was off. "
                 "Turn on Check if already for sale to cut lines already sold."
             )
+        refill_rounds = 0
+        while refill_rounds < REFILL_CAP and _survivor_count(pool, keep, flat_only) < keep:
+            refill_rounds += 1
+            gap = keep - _survivor_count(pool, keep, flat_only)
+            ask = min(12, max(6, gap * 2))
+            extra, extra_usage, extra_errors = self._draft_studio_prompts(
+                [
+                    refill_writer_prompt(
+                        count=ask,
+                        avoid=[line.text for line in pool],
+                        groups=groups,
+                        tone=str(tone_text),
+                        market_block=market_block,
+                    )
+                ]
+            )
+            usage = self._add_usage(usage, extra_usage)
+            for error in extra_errors:
+                warnings.append(f"A refill draft failed: {error}")
+            already = {line.text.casefold() for line in pool}
+            extra = [line for line in extra if line.text.casefold() not in already]
+            extra, extra_copied = reject_unoriginal(
+                extra,
+                [*references, *gold, *quote_refs],
+            )
+            copied.extend(extra_copied)
+            extra_readable, extra_blocked = _split_sense(extra)
+            blocked.extend(extra_blocked)
+            gate_usage, gate_note = self._run_studio_gates(extra_readable)
+            usage = self._add_usage(usage, gate_usage)
+            if gate_note:
+                warnings.append(gate_note)
+            if sale_on:
+                sale_note = self._flag_exact_phrases(
+                    [line for line in extra_readable if line.critic_ok and line.buyer_ok]
+                )
+                if sale_note:
+                    warnings.append(sale_note)
+            pool.extend(extra_readable)
+            pool.extend(extra_blocked)
+        if refill_rounds:
+            warnings.append(f"Refill rounds: {refill_rounds}.")
         search_usage = getattr(self._listing_search, "usage", None)
         if search_usage is not None and getattr(search_usage, "request_count", 0):
             usage = self._add_usage(usage, search_usage)
-        keep = max(1, int(getattr(input_model, "candidate_count", 10) or 10))
-        flat_only = bool(getattr(run.config, "social_flat_art", False))
+        fresh = pool
         styled, style_note = select_studio_finals(fresh, keep, flat_only=flat_only)
         if style_note:
             warnings.append(style_note)
         if not styled:
-            raise RuntimeError("No studio line cleared the comedy critic and the buyer review.")
+            raise RuntimeError("No studio line cleared the clarity gate and the buyer test.")
         for line, _style_name, _style_note in styled:
-            line.buyers = infer_who_its_for(line.buyers, [], [], atlas)
+            line.buyers = real_buyers(line.buyers)
         kept_text = {line.text for line, _name, _note in styled}
         reviews = []
         for line in fresh:
@@ -981,7 +1049,7 @@ class DiscoveryStageExecutor:
         ]
         summary = (
             f"Studio drafted {len(drafted)} lines and kept {len(candidates)} "
-            "after a comedy critic, a buyer review, and the sale check."
+            "after a 2-second sense gate, a clarity-and-buy review, and the sale check."
         )
         payload = {
             "candidates": candidates,
@@ -1007,18 +1075,30 @@ class DiscoveryStageExecutor:
         self._note_social_progress(usage, pair_meta, output.candidates, reviews, warnings)
         return output, usage, selection, reviews, playbook, pair_meta
 
+    def _draft_studio_prompts(self, prompts: list[str]):
+        """Run the short drafts together. One failure does not drop the others."""
+
+        if not prompts:
+            return [], UsageMetrics(), []
+        workers = min(4, len(prompts))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            halves = list(pool.map(self._safe_studio_draft, prompts))
+        drafted: list[ScoredLine] = []
+        usage = UsageMetrics()
+        errors = []
+        for lines, draft_usage, error in halves:
+            usage = self._add_usage(usage, draft_usage)
+            drafted.extend(lines)
+            if error:
+                errors.append(error)
+        return drafted, usage, errors
+
     def _safe_studio_draft(self, prompt: str):
-        """One half of the draft. A failed half does not throw away the other."""
+        """One short draft. A failed call does not throw away the others."""
 
         try:
             response = self._reasoning_provider.complete_structured(
-                system_prompt=(
-                    "You write original die-cut sticker lines. Never copy an example. "
-                    "Every line is about 4 to 14 words and readable in one second. "
-                    "buyer_groups has 2 to 4 short labels. scene is one sentence where "
-                    "the picture carries the joke. dark is true only for gallows humor "
-                    "that group would tell about itself."
-                ),
+                system_prompt=STUDIO_WRITER_SYSTEM,
                 user_prompt=prompt,
                 response_model=StudioBatch,
                 reasoning_effort="low",
@@ -1033,7 +1113,7 @@ class DiscoveryStageExecutor:
         return lines, response.usage, ""
 
     def _run_studio_gates(self, lines: list) -> tuple[UsageMetrics, str]:
-        """Comedy critic and buyer review, in parallel, on batches of twenty."""
+        """One clarity-and-buy review per batch. The sense gate already ran."""
 
         batches = chunked(lines)
         if not batches:
@@ -1056,47 +1136,19 @@ class DiscoveryStageExecutor:
         return usage, note
 
     def _gate_studio_batch(self, batch: list) -> tuple[UsageMetrics, int]:
-        """Run the two review personas at the same time for one batch."""
+        """One review call. It scores clarity and the buy only after the sense flags."""
 
-        usage = UsageMetrics()
-        failures = 0
-
-        def _critic():
+        try:
             response = self._reasoning_provider.complete_structured(
                 system_prompt=COMEDY_GATE_SYSTEM,
                 user_prompt=comedy_gate_prompt(batch),
                 response_model=ComedyGateBatch,
                 reasoning_effort="low",
             )
-            return response.output.reviews, response.usage
-
-        def _buyer():
-            response = self._reasoning_provider.complete_structured(
-                system_prompt=BUYER_GATE_SYSTEM,
-                user_prompt=buyer_gate_prompt(batch),
-                response_model=BuyerGateBatch,
-                reasoning_effort="low",
-            )
-            return response.output.reviews, response.usage
-
-        comedy: list = []
-        buyers: list = []
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            critic_job = pool.submit(_critic)
-            buyer_job = pool.submit(_buyer)
-            for job, sink in ((critic_job, "comedy"), (buyer_job, "buyer")):
-                try:
-                    reviews, review_usage = job.result()
-                except (OSError, RuntimeError, TypeError, ValueError):
-                    failures += 1
-                    continue
-                usage = self._add_usage(usage, review_usage)
-                if sink == "comedy":
-                    comedy = reviews
-                else:
-                    buyers = reviews
-        apply_gate_reviews(batch, comedy, buyers)
-        return usage, failures
+        except (OSError, RuntimeError, TypeError, ValueError):
+            return UsageMetrics(), 1
+        apply_gate_reviews(batch, response.output.reviews, [])
+        return response.usage, 0
 
     def _flag_exact_phrases(self, lines: list) -> str:
         """Exact-phrase web search on lines that already cleared the two reviews."""
@@ -1139,12 +1191,11 @@ class DiscoveryStageExecutor:
             url = f"https://x.com/studio/status/{index}"
         else:
             url = f"https://www.reddit.com/r/stickers/comments/studio{index}/line"
-        scene = line.scene or "The picture completes the joke."
-        identity = " + ".join(line.buyers[:2]) or str(
-            getattr(input_model, "identity", "") or "this group"
-        )
+        scene = line.scene or "The picture completes the single twist."
+        buyers = real_buyers(line.buyers)
+        identity = " + ".join(buyers[:2]) or str(getattr(input_model, "identity", "") or "").strip()
         if len(identity) < 2:
-            identity = "this group"
+            identity = "specific buyers"
         tone = getattr(input_model, "humor_tone", None)
         tone_text = getattr(tone, "value", None) or "dry"
         prompt = studio_image_prompt(line.text, scene, style_name, style_note)
@@ -1170,19 +1221,19 @@ class DiscoveryStageExecutor:
             "artwork_prompt": prompt[:4000],
             "visual_punchline": scene[:500],
             "main_visual_metaphor": scene[:500],
-            "audience_specific_cue": (", ".join(line.buyers) or identity)[:500],
+            "audience_specific_cue": (", ".join(buyers) or identity)[:500],
             "tone": str(tone_text)[:200],
             "style_direction": f"{style_name}. {style_note}"[:500],
             "things_to_avoid": list(STICKER_AVOID)[:7],
             "specificity_reason": (
-                f"Buyers: {', '.join(line.buyers) or identity}. Style: {style_name}."
+                f"Buyers: {', '.join(buyers) or identity}. Style: {style_name}."
             )[:700],
             "humor_mechanism": ("gallows" if line.dark else line.kind)[:200],
             "concrete_detail": (line.format_source or line.kind)[:200],
             "pattern": line.pattern,
             "truth": (line.format_source or line.kind)[:160],
             "comic_turn": "ironic",
-            "who_its_for": line.buyers[:4],
+            "who_its_for": buyers[:4],
             "funny_score": max(0.0, min(10.0, float(line.score or 0))),
         }
         if "identity" in candidate_cls.model_fields:

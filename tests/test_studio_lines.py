@@ -70,6 +70,113 @@ def _line(
     )
 
 
+def test_the_sense_gate_rejects_splices_stacked_puns_and_placeholder_buyers() -> None:
+    """Ope'n, a piled-on game phrase, and 'this group' never reach a cleverness score."""
+
+    from merchandise_discovery.domain.studio_lines import (
+        crossover_writer_prompt,
+        local_sense_failure,
+    )
+
+    splice = _line("Ope'n Container: Just Ranch.", buyers=["cooks", "midwest"])
+    stacked = _line("Laundry Boss: Unlocks Level Mud.", buyers=["parents", "laundry"])
+    semicolon = _line("We Count Heads; Coyotes Count Too.", buyers=["ranchers", "coworkers"])
+    placeholder = _line("I Rolled a Natural 1 on Bedtime.", buyers=["this group"])
+    clear = _line("I Rolled a Natural 1 on Bedtime.", buyers=["parents", "D&D"])
+
+    assert local_sense_failure(splice) == "invented mashup"
+    assert local_sense_failure(stacked) == "stacked puns"
+    assert local_sense_failure(semicolon) == "stacked puns"
+    assert local_sense_failure(placeholder) == "no real buyer group"
+    assert local_sense_failure(clear) == ""
+    styled, _note = select_studio_finals(
+        [splice, stacked, placeholder, clear],
+        4,
+        flat_only=True,
+    )
+    assert [line.text for line, _name, _style in styled] == ["I Rolled a Natural 1 on Bedtime."]
+    assert styled[0][0].buyers == ["parents", "D&D"]
+    assert "this group" not in styled[0][0].buyers
+    prompt = crossover_writer_prompt(groups=[{"niche_a": "parents", "niche_b": "D&D"}], tone="dry")
+    assert "Moment first" in prompt
+    assert "exactly one pun" in prompt
+    assert "I Rolled a Natural 1 on Bedtime." in prompt
+    assert "Do not output these lines" in prompt
+
+
+def test_a_short_batch_refills_until_the_count_or_the_cap() -> None:
+    """When the first drafts do not fill the order, one short refill is written, not another 40."""
+
+    calls: list[str] = []
+
+    def respond(**kwargs):
+        model = kwargs["response_model"]
+        name = model.__name__
+        prompt = kwargs["user_prompt"]
+        usage = UsageMetrics(provider="openai", model="gpt-5", request_count=1, total_tokens=8)
+        if name == "StudioBatch":
+            calls.append(prompt)
+            if prompt.startswith("REFILL"):
+                lines = [
+                    _draft("The smoke alarm left a one star review", kind="format"),
+                    _draft("Text me when the bread is out of the oven", kind="crossover"),
+                ]
+            else:
+                lines = [
+                    _draft("Bedtime rolled a one and stayed up", kind="crossover"),
+                    _draft("this group only", kind="crossover", buyers=["this group"]),
+                ]
+            return SimpleNamespace(output=StudioBatch(lines=lines), usage=usage)
+        if name == "ComedyGateBatch":
+            from merchandise_discovery.domain.studio_lines import ComedyGateItem
+
+            reviews = [
+                ComedyGateItem(
+                    index=index,
+                    passed=True,
+                    score=8,
+                    reason="clear",
+                    instant=True,
+                    one_joke=True,
+                    would_buy=True,
+                )
+                for index, _text in _quoted(prompt)
+            ]
+            return SimpleNamespace(output=model(reviews=reviews), usage=usage)
+        raise AssertionError(name)
+
+    executor = _executor(SimpleNamespace())
+    executor._reasoning_provider = SimpleNamespace(complete_structured=respond)
+    executor._listing_search = None
+    run = WorkflowRun(
+        title="Refill",
+        config=RunConfig(
+            pipeline_variant=PipelineVariant.SOCIAL_IDENTITY_V2,
+            social_generation_mode="studio",
+            social_fast_mode=True,
+            social_check_already_for_sale=False,
+            social_identity="parents",
+            social_identity_type=IdentityType.ROLE,
+            social_query="bedtime",
+            social_candidate_count=3,
+        ),
+    )
+    input_model = SocialIdentityV2Input(
+        sources=[SocialSource.REDDIT],
+        identity="parents",
+        identity_type=IdentityType.ROLE,
+        query="bedtime",
+        candidate_count=3,
+    )
+    output, *_rest = executor._studio_reasoning(run, input_model, None, SocialIdentityV2Output)
+    texts = [candidate.artwork_text for candidate in output.candidates]
+    assert len(texts) == 3
+    assert any(prompt.startswith("REFILL") for prompt in calls)
+    assert sum(prompt.startswith("REFILL") for prompt in calls) == 1
+    assert all("this group" not in " ".join(candidate.who_its_for) for candidate in output.candidates)
+    assert "this group only" not in texts
+
+
 def test_finals_keep_one_dark_line_and_do_not_reuse_a_style() -> None:
     """Ten survivors include the dark joke, and each one gets a different style."""
 
@@ -164,7 +271,7 @@ def test_studio_run_gates_lines_and_labels_every_survivor() -> None:
         prompt = kwargs["user_prompt"]
         usage = UsageMetrics(provider="openai", model="gpt-5", request_count=1, total_tokens=12)
         if name == "StudioBatch":
-            half = "format" if "ORIGINAL" in prompt else "crossover"
+            half = "format" if "PROVEN FORMAT" in prompt else "crossover"
             return SimpleNamespace(output=StudioBatch(lines=drafts[half]), usage=usage)
         if name == "ComedyGateBatch":
             return SimpleNamespace(output=model(reviews=_comedy(prompt)), usage=usage)
@@ -340,10 +447,17 @@ def test_vision_images_are_shrunk_before_the_text_check() -> None:
     assert max(opened.size) <= 768
 
 
-def _draft(text: str, *, kind: str, dark: bool = False, spoof: str = "") -> StudioLine:
+def _draft(
+    text: str,
+    *,
+    kind: str,
+    dark: bool = False,
+    spoof: str = "",
+    buyers: list[str] | None = None,
+) -> StudioLine:
     return StudioLine(
         artwork_text=text,
-        buyer_groups=["gardeners", "gamers"],
+        buyer_groups=buyers or ["gardeners", "gamers"],
         scene=f"The picture for {text} carries the joke.",
         dark=dark,
         spoof_brand=spoof,
@@ -393,6 +507,7 @@ def _comedy(prompt: str):
                 brand_joke_link=""
                 if "knead" not in text.casefold()
                 else "The siren is only a name swap.",
+                would_buy="grievance" not in text.casefold(),
             )
         )
     return reviews
