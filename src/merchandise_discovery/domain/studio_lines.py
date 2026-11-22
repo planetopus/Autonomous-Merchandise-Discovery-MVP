@@ -1,11 +1,13 @@
-"""Studio sticker lines: wide draft, three gates, one style each.
+"""Studio sticker lines: a real moment, one twist, then the gates.
 
-Half the draft is a niche-crossover pun where the words and the picture are one joke.
-Half is an original line in a shape taken from a proven top seller. Nothing in the
-example list is a line to ship. Survivors keep a buyer label, a one-sentence scene,
-and an art style that is not reused unless the run asked for flat vector only.
+Each line starts from an everyday moment a real group already recognizes, then
+adds exactly one pun or twist. Stacked puns and invented splices never score.
+Nothing in the example list is a line to ship. Survivors keep real buyer labels,
+a one-sentence scene, and an art style that is not reused unless the run asked
+for flat vector only.
 """
 
+import re
 from dataclasses import dataclass
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -17,8 +19,9 @@ from merchandise_discovery.domain.humor_references import (
     is_too_similar_to_references,
 )
 
-DRAFT_PER_HALF = 20
+DRAFT_PER_HALF = 10
 GATE_BATCH = 20
+REFILL_CAP = 2
 
 # Shapes the writer may learn from. The lines themselves are blocked as copies.
 PROTECTED_EXAMPLES: tuple[str, ...] = (
@@ -36,7 +39,117 @@ PROTECTED_EXAMPLES: tuple[str, ...] = (
     "Knit Happens",
     "My TBR Is Load-Bearing",
     "Yes, I Can Back It In",
+    "I Rolled a Natural 1 on Bedtime.",
+    "Awarded One Star. By the Smoke Alarm.",
+    "Leave Only Footprints. Take Only Ibuprofen.",
+    "My Starter Left Me on Read.",
+    "I Grounded the Panel. I Cannot Ground My Teen.",
+    "OSHA Would Like a Word With My Weekend.",
+    "Sorry I Missed Your Call. I Saw It Happen.",
+    "Most Likely To Bring a Side and a Grudge.",
+    "Text Me When You Get There. I'll Be Watching the Dots.",
+    "I Tabbed the Red Flags. Then I Married Him.",
 )
+
+# One twist each. Shown to the writer as calibration, then blocked as copies.
+CALIBRATION: tuple[tuple[str, str, str], ...] = (
+    ("parents who play D&D", "bedtime", "I Rolled a Natural 1 on Bedtime."),
+    ("home cooks", "the smoke alarm", "Awarded One Star. By the Smoke Alarm."),
+    ("hikers", "the trail sign", "Leave Only Footprints. Take Only Ibuprofen."),
+    ("sourdough bakers", "a starter that stalled", "My Starter Left Me on Read."),
+    ("electrician parents", "grounding a panel", "I Grounded the Panel. I Cannot Ground My Teen."),
+    ("weekend project people", "a risky Saturday", "OSHA Would Like a Word With My Weekend."),
+    ("introverts", "a missed call", "Sorry I Missed Your Call. I Saw It Happen."),
+    ("potluck regulars", "what they bring", "Most Likely To Bring a Side and a Grudge."),
+    ("moms", "a texted trip", "Text Me When You Get There. I'll Be Watching the Dots."),
+    ("romance readers", "the red flags", "I Tabbed the Red Flags. Then I Married Him."),
+    ("anyone with a fridge", "opening it again", "Fridge Opened 47 Times Today. No New Food Detected."),
+    ("a nervous performer", "the student-driver sign", "PLEASE BE PATIENT: Driver Is Attempting the High Note"),
+    ("families", "dad's shortcut", "Here Lies Dad. He Knew a Shortcut."),
+    ("gardeners who game", "what comes back next year", "Perennials Respawn. Annuals Rage Quit."),
+    ("mail carriers", "the dogs on the route", "Most Wanted by Every Dog on My Route"),
+)
+
+_PLACEHOLDER_BUYERS = {
+    "this group",
+    "people who know them",
+    "people who recognize it",
+    "unspecified",
+    "the named group",
+    "buyers",
+    "everyone",
+    "people",
+    "a group",
+    "the group",
+}
+
+_CONTRACTIONS = {
+    "i'm",
+    "i'd",
+    "i'll",
+    "i've",
+    "don't",
+    "doesn't",
+    "didn't",
+    "can't",
+    "won't",
+    "isn't",
+    "aren't",
+    "wasn't",
+    "weren't",
+    "haven't",
+    "hasn't",
+    "hadn't",
+    "wouldn't",
+    "couldn't",
+    "shouldn't",
+    "it's",
+    "that's",
+    "there's",
+    "here's",
+    "what's",
+    "who's",
+    "let's",
+    "you're",
+    "we're",
+    "they're",
+    "you've",
+    "we've",
+    "they've",
+    "you'd",
+    "we'd",
+    "they'd",
+    "you'll",
+    "we'll",
+    "they'll",
+    "y'all",
+    "ya'll",
+    "ma'am",
+    "o'clock",
+    "ain't",
+}
+
+# A third one of these in a short line is a second joke piled on the first.
+_STACKED_TOKENS = {
+    "boss",
+    "unlock",
+    "unlocks",
+    "unlocked",
+    "level",
+    "levels",
+    "respawn",
+    "respawns",
+    "loot",
+    "quest",
+    "quests",
+    "npc",
+    "xp",
+    "hp",
+    "raid",
+    "raids",
+    "spawn",
+    "spawns",
+}
 
 _CLICHE_PHRASES = (
     "knit happens",
@@ -127,6 +240,9 @@ class ComedyGateItem(BaseModel):
     cliche: bool = False
     instant: bool = False
     one_joke: bool = False
+    stacked: bool = False
+    invented_mashup: bool = False
+    would_buy: bool = False
     brand_fits: bool = True
     brand_joke_link: str = ""
 
@@ -206,12 +322,66 @@ def is_cliche(text: str) -> bool:
     return any(phrase in lowered for phrase in _CLICHE_PHRASES)
 
 
-def comedy_passed(review: ComedyGateItem | None, text: str) -> bool:
-    """A line clears the critic only when every strict flag agrees."""
+def real_buyers(labels: list[str] | None) -> list[str]:
+    """Buyer names a person would recognize. Placeholders such as 'this group' are dropped."""
 
-    if review is None or is_cliche(text):
+    kept: list[str] = []
+    seen: set[str] = set()
+    for label in labels or []:
+        cleaned = " ".join(str(label).split())
+        key = cleaned.casefold()
+        if not cleaned or key in _PLACEHOLDER_BUYERS or key in seen:
+            continue
+        seen.add(key)
+        kept.append(cleaned[:40])
+        if len(kept) == 4:
+            break
+    return kept
+
+
+def invented_splice(text: str) -> bool:
+    """A made-up apostrophe splice, such as Ope'n. Ordinary contractions stay."""
+
+    for token in re.findall(r"[A-Za-z]+'[A-Za-z]+", text or ""):
+        if token.casefold() not in _CONTRACTIONS:
+            return True
+    return False
+
+
+def stacked_pun(text: str) -> bool:
+    """Two punchlines joined, or three game-words piled onto one line."""
+
+    if ";" in (text or ""):
+        return True
+    tokens = set(re.findall(r"[a-z0-9']+", (text or "").casefold()))
+    return len(tokens & _STACKED_TOKENS) >= 3
+
+
+def local_sense_failure(line: ScoredLine) -> str:
+    """The hard gate before any score. Empty means the line may be judged."""
+
+    if invented_splice(line.text):
+        return "invented mashup"
+    if stacked_pun(line.text):
+        return "stacked puns"
+    if not real_buyers(line.buyers):
+        return "no real buyer group"
+    return ""
+
+
+def comedy_passed(review: ComedyGateItem | None, text: str) -> bool:
+    """Clarity first. A clever line that is stacked, spliced, or slow does not pass."""
+
+    if review is None or is_cliche(text) or invented_splice(text) or stacked_pun(text):
         return False
-    if review.cliche or not review.instant or not review.one_joke or not review.passed:
+    if (
+        review.cliche
+        or review.stacked
+        or review.invented_mashup
+        or not review.instant
+        or not review.one_joke
+        or not review.passed
+    ):
         return False
     try:
         score = float(review.score)
@@ -280,8 +450,11 @@ def select_studio_finals(
         if line.critic_ok
         and line.buyer_ok
         and not line.for_sale_url
+        and not local_sense_failure(line)
         and spoof_earns_final(line.probe())
     ]
+    for line in eligible:
+        line.buyers = real_buyers(line.buyers)
     ranked = sorted(eligible, key=lambda line: (-line.score, line.text.casefold()))
     limit = max(1, keep_count)
     if not flat_only:
@@ -349,44 +522,65 @@ def studio_image_prompt(text: str, scene: str, style_name: str, style_note: str)
     return prompt
 
 
+def calibration_block() -> str:
+    """Few-shot quality bar. The lines are examples of the move, not lines to ship."""
+
+    rows = [
+        f'- {who}. Moment: {moment}. One twist, do not copy: "{line}"'
+        for who, moment, line in CALIBRATION
+    ]
+    return (
+        "Quality bar. Start from a real moment, then one twist. Do not output these lines.\n"
+        + "\n".join(rows)
+        + "\n"
+    )
+
+
+def _group_block(groups: list[dict]) -> str:
+    lines = [
+        f"- {item.get('niche_a', '')} + {item.get('niche_b', '')}"
+        for item in groups
+        if item.get("niche_a") and item.get("niche_b")
+    ]
+    return "\n".join(lines) or "- parents + a hobby one parent actually has"
+
+
+def _moment_rules(count: int, tone: str) -> str:
+    return (
+        f"Write {count} original die-cut sticker lines. Tone: {tone}.\n"
+        "Moment first. For each line, do this in order and do not skip:\n"
+        "1. Pick one real group, or one person who really is both of a pair.\n"
+        "2. Name one everyday moment that group recognizes with no explanation "
+        "(bedtime, the smoke alarm, a text from mom, the fridge door).\n"
+        "3. Add exactly one pun or one twist. Then stop.\n"
+        "One pun only. A second pun, a stacked game phrase, or a made-up splice "
+        "such as Ope'n is a failed line. Do not start from a joke-shape label and "
+        "force it onto a group.\n"
+        "buyer_groups is 2 real labels for those people. Never write 'this group'. "
+        "scene is one sentence where the picture carries that single twist. "
+        "At least one line is dark humor the group would tell about itself, with dark true. "
+        "spoof_brand stays empty unless that brand is the single twist.\n"
+    )
+
+
 def crossover_writer_prompt(
     *,
     groups: list[dict],
     tone: str,
     quotes: str = "",
+    batch_label: str = "MOMENT CROSSOVER",
+    count: int | None = None,
 ) -> str:
-    """Ask for niche-crossover puns. The examples are shapes, not lines to copy."""
+    """Ask for one real overlap and one twist. The examples are not lines to copy."""
 
-    group_lines = [
-        f"- {item.get('niche_a', '')} + {item.get('niche_b', '')}"
-        for item in groups
-        if item.get("niche_a") and item.get("niche_b")
-    ]
-    group_block = (
-        "\n".join(group_lines) or "- gardeners + gamers\n- knitters + their own hobby panic"
-    )
-    banned = "; ".join(f'"{line}"' for line in PROTECTED_EXAMPLES[:8])
+    total = count or DRAFT_PER_HALF
     return (
-        f"Write {DRAFT_PER_HALF} original die-cut sticker lines. "
-        "Each one is a niche crossover built on a pun. The words and the picture make ONE joke. "
-        f"Tone: {tone}.\n"
-        "Rotate across these buyer pairs. Set buyer_groups to that pair's two labels. "
-        "Set kind to crossover. Set scene to one sentence where the picture carries the joke. "
-        "At least two lines are dark humor with dark true. "
-        "Set spoof_brand only when that brand is the joke, otherwise leave it empty. "
-        "Do not swap a brand name in just to look clever.\n"
-        "Shapes to learn from, and then NOT copy:\n"
-        '- Gardeners who game: a plant-care word used as a game rule, as in "Perennials Respawn. '
-        'Annuals Rage Quit."\n'
-        '- Knitters: a stitch name that is also a panic, as in "Professional Purl Clutcher".\n'
-        '- Teachers who game: recess or grading as a boss fight, as in "Indoor Recess: Final Boss" '
-        'or "Teacher HP 3%".\n'
-        "- Mail carriers: the route as a wanted poster, as in "
-        '"Most Wanted by Every Dog on My Route".\n'
-        '- Parents who also tend bar: bedtime as last call, as in "Last Call for Juice Boxes".\n'
-        f"Never write these lines or a close paraphrase: {banned}. "
-        "Reject clichés such as Knit Happens.\n"
-        f"Buyer pairs:\n{group_block}\n"
+        f"{batch_label}.\n"
+        f"{_moment_rules(total, tone)}"
+        "These pairs are people who really live both sides. Rotate them. "
+        "Set kind to crossover. The pair is the person, not two jokes.\n"
+        f"{calibration_block()}"
+        f"Buyer pairs:\n{_group_block(groups)}\n"
         f"{quotes}"
     )
 
@@ -396,37 +590,107 @@ def format_writer_prompt(
     market_block: str,
     tone: str,
     quotes: str = "",
+    batch_label: str = "PROVEN FORMAT",
+    shapes: str = "all",
+    count: int | None = None,
 ) -> str:
-    """Ask for original lines in proven top-seller shapes. Do not copy the examples."""
+    """Ask for a real moment told in one proven shape. Do not copy the examples."""
 
+    total = count or DRAFT_PER_HALF
     signal = market_block.strip() or (
-        "No top-seller list was loaded. Invent the buyer yourself from a specific real group."
+        "No top-seller list was loaded. Pick a specific real group yourself."
     )
-    banned = "; ".join(f'"{line}"' for line in PROTECTED_EXAMPLES[6:])
+    if shapes == "count":
+        shape_block = (
+            "- A disappointing count, the way a doorbell log would. One number, one letdown.\n"
+            "- A patient-driver sign: PLEASE BE PATIENT, then one hard specific thing.\n"
+        )
+    elif shapes == "plaque":
+        shape_block = (
+            "- One star from a specific object, not a review of a whole life piled with puns.\n"
+            "- A reading habit stated as one physical fact.\n"
+            "- A tombstone line: Here Lies, one role, one deadpan fact. Dark humor is allowed.\n"
+        )
+    else:
+        shape_block = (
+            "- A disappointing count. One number, one letdown.\n"
+            "- PLEASE BE PATIENT, then one hard specific thing.\n"
+            "- One star from one specific object.\n"
+            "- A reading habit as one physical fact.\n"
+            "- Here Lies, one role, one deadpan fact.\n"
+        )
     return (
-        f"Write {DRAFT_PER_HALF} ORIGINAL die-cut sticker lines. "
-        "Each one reverse-engineers a proven top-selling format. Steal the shape, write a new joke. "
-        f"Tone: {tone}. Set kind to format. Set format_source to the shape name, not a product title. "
-        "Set buyer_groups to 2 to 4 labels for the exact people who would buy it. "
-        "Set scene to one sentence where the picture carries the joke. "
-        "At least two lines are dark humor with dark true. "
-        "A brand spoof is allowed only when that brand is why the joke is funny.\n"
-        "Shapes, with an example that must NOT be copied:\n"
-        "- Ring-doorbell meme: a device reports a disappointing count. "
-        'Example of the shape only: "Fridge Opened 47 Times Today. No New Food Detected."\n'
-        "- Student-driver magnet: PLEASE BE PATIENT, then the person is attempting one hard "
-        'specific thing. Example: "PLEASE BE PATIENT: Driver Is Attempting the High Note".\n'
-        "- One-star review: the experience, one filled star, Would Not Recommend, and a count. "
-        'Example: "Childbirth ★☆☆☆☆ Would Not Recommend (Did It 3 Times)".\n'
-        "- Book sticker: a reading habit stated as a physical fact. "
-        'Example: "My Bookmark Is Whatever Was Closest".\n'
-        "- Tombstone decal, dark humor allowed: Here Lies, a role, and a deadpan specific. "
-        'Example: "Here Lies Dad. He Knew a Shortcut."\n'
-        f"Never write these lines or a close paraphrase: {banned}.\n"
-        "Use this top-seller signal for WHO is buying and which subjects are selling. "
-        "Do not copy product wording.\n"
+        f"{batch_label}.\n"
+        f"{_moment_rules(total, tone)}"
+        "Set kind to format. Set format_source to the shape, not a product title. "
+        "Use one shape as the single twist on a real moment. Do not stack two shapes.\n"
+        f"Shapes:\n{shape_block}"
+        f"{calibration_block()}"
+        "Top-seller signal is who is buying, not wording to copy.\n"
         f"{signal}\n"
         f"{quotes}"
+    )
+
+
+def studio_opening_prompts(
+    *,
+    groups: list[dict],
+    market_block: str,
+    tone: str,
+    quotes: str = "",
+) -> list[str]:
+    """Four short drafts in parallel, instead of two long ones."""
+
+    if not groups:
+        groups = [{"niche_a": "parents", "niche_b": "a hobby they actually have"}]
+    mid = max(1, len(groups) // 2)
+    first, second = groups[:mid], groups[mid:] or groups[:1]
+    return [
+        crossover_writer_prompt(
+            groups=first,
+            tone=tone,
+            quotes=quotes,
+            batch_label="MOMENT CROSSOVER A",
+        ),
+        crossover_writer_prompt(
+            groups=second,
+            tone=tone,
+            batch_label="MOMENT CROSSOVER B",
+        ),
+        format_writer_prompt(
+            market_block=market_block,
+            tone=tone,
+            batch_label="PROVEN FORMAT A",
+            shapes="count",
+        ),
+        format_writer_prompt(
+            market_block=market_block,
+            tone=tone,
+            batch_label="PROVEN FORMAT B",
+            shapes="plaque",
+        ),
+    ]
+
+
+def refill_writer_prompt(
+    *,
+    count: int,
+    avoid: list[str],
+    groups: list[dict],
+    tone: str,
+    market_block: str,
+) -> str:
+    """One short extra batch for the lines still missing. It does not redo the whole draft."""
+
+    skipped = "; ".join(f'"{text}"' for text in avoid if text)[:800]
+    return (
+        "REFILL.\n"
+        f"{_moment_rules(count, tone)}"
+        "Mix real-life overlaps and one proven format. Set kind to crossover or format. "
+        f"Do not repeat these lines: {skipped or 'none'}.\n"
+        f"{calibration_block()}"
+        f"Buyer pairs:\n{_group_block(groups)}\n"
+        f"{market_block}"
     )
 
 
@@ -441,9 +705,14 @@ def comedy_gate_prompt(lines: list[ScoredLine]) -> str:
             f"Buyers: {', '.join(line.buyers) or 'unspecified'}."
         )
     return (
-        "Score every index once. passed is true only at 7 or higher when the line is instant, "
-        "not a cliché, and the words plus the picture are one joke. "
-        "For a brand spoof, brand_fits is true only when that brand is why it is funny, "
+        "Judge clarity, then whether that group would buy. Do not reward cleverness. "
+        "Order for every index: instant (a stranger in that group gets it in 2 seconds), "
+        "one_joke (exactly one pun or twist), stacked (a second pun piled on), "
+        "invented_mashup (a made-up splice such as Ope'n). "
+        "clarity score is 1 to 10 for how instant it is. A confusing line scores 4 or under. "
+        "would_buy is true only when that group would laugh and pay. "
+        "passed requires instant, one_joke, not stacked, not a mashup, and clarity >= 7. "
+        "For a brand spoof, brand_fits is true only when that brand is the single twist, "
         "and brand_joke_link is that one sentence.\n" + "\n".join(rows)
     )
 
@@ -464,14 +733,24 @@ def buyer_gate_prompt(lines: list[ScoredLine]) -> str:
 
 
 COMEDY_GATE_SYSTEM = (
-    "You are a harsh comedy critic who has already seen every sticker cliché. "
-    "Reject 'Knit Happens', 'Live Laugh Love', 'World's Okayest', 'Keep Calm', "
-    "title puns, lines that do not make sense in one second, and forced brand-name swaps. "
-    "A brand spoof passes only when the brand's product or slogan is the joke. "
-    "The words and the picture must be ONE joke. If the line is just as funny with no picture, "
-    "or the picture only illustrates the words, set one_joke false and passed false. "
-    "Set instant false when a stranger would need the line explained. "
-    "Set cliche true for a stock slogan. score is 1 to 10. passed requires score >= 7."
+    "You judge sticker lines for a stranger in the named group, not for cleverness. "
+    "Decide the hard gate before the score. instant is false when the line needs an explanation "
+    "or does not name a moment that group already knows. one_joke is false when two puns are "
+    "stacked, as in 'Laundry Boss: Unlocks Level Mud.' stacked is true for that. "
+    "invented_mashup is true for a made-up splice such as Ope'n. "
+    "Those lines fail even if they sound witty. score is clarity from 1 to 10, and a confusing "
+    "line is 4 or under. would_buy is true only if that exact group would laugh and buy it. "
+    "passed is true only when the gate passes and clarity is at least 7. "
+    "Reject Knit Happens, Live Laugh Love, World's Okayest, and Keep Calm."
+)
+
+STUDIO_WRITER_SYSTEM = (
+    "You write die-cut sticker lines from a real moment, then exactly one twist. "
+    "Never copy an example. Never stack a second pun. Never invent a splice such as Ope'n. "
+    "A stranger in the named group must get the line in 2 seconds. "
+    "buyer_groups is two real labels, never 'this group'. "
+    "scene is one sentence where the picture carries that single twist. "
+    "dark is true only for gallows humor that group would tell about itself."
 )
 
 BUYER_GATE_SYSTEM = (
@@ -488,13 +767,7 @@ def scored_from_draft(draft: StudioLine) -> ScoredLine | None:
     text = " ".join(draft.artwork_text.split())
     if len(text) < 2:
         return None
-    buyers = []
-    for label in draft.buyer_groups:
-        cleaned = " ".join(str(label).split())
-        if cleaned and cleaned.casefold() not in {item.casefold() for item in buyers}:
-            buyers.append(cleaned[:40])
-        if len(buyers) == 4:
-            break
+    buyers = real_buyers(list(draft.buyer_groups))
     pattern = draft.pattern.strip() or (
         "wordplay pun" if draft.kind != "format" else "slogan twist"
     )
@@ -532,22 +805,39 @@ def apply_gate_reviews(
     buyer_by_index = {item.index: item for item in buyers}
     stamped: list[ScoredLine] = []
     for index, line in enumerate(lines):
+        failure = local_sense_failure(line)
         review = comedy_by_index.get(index)
         buyer = buyer_by_index.get(index)
+        if failure:
+            line.critic_ok = False
+            line.buyer_ok = False
+            line.score = 0
+            line.critic_reason = failure
+            line.buyer_reason = failure
+            stamped.append(line)
+            continue
         line.critic_ok = comedy_passed(review, line.text)
         line.critic_reason = "" if review is None else " ".join(review.reason.split())[:300]
         if review is not None:
-            line.score = float(review.score)
+            line.score = 0 if not line.critic_ok else float(review.score)
             line.brand_fits = bool(review.brand_fits)
             line.brand_joke_link = " ".join(review.brand_joke_link.split())[:240]
             if review.cliche or is_cliche(line.text):
                 line.critic_reason = line.critic_reason or "cliché"
+            if review.stacked or review.invented_mashup or not review.instant:
+                line.critic_reason = line.critic_reason or "does not make sense in 2 seconds"
         else:
             line.critic_reason = "no critic review"
-        line.buyer_ok = buyer is not None and bool(buyer.would_buy)
-        line.buyer_reason = "" if buyer is None else " ".join(buyer.reason.split())[:300]
-        if buyer is None:
+            line.score = 0
+        would_buy = bool(review.would_buy) if review is not None else False
+        if buyer is not None:
+            would_buy = bool(buyer.would_buy)
+            line.buyer_reason = " ".join(buyer.reason.split())[:300]
+        elif review is not None:
+            line.buyer_reason = line.critic_reason
+        else:
             line.buyer_reason = "no buyer review"
+        line.buyer_ok = bool(line.critic_ok and would_buy)
         stamped.append(line)
     return stamped
 
